@@ -37,10 +37,10 @@ func NewGlobalDispatchCenterService(opts ...option.RequestOption) (r GlobalDispa
 }
 
 // Create a new global dispatch center. Requires scope: globalDispatch:create
-func (r *GlobalDispatchCenterService) New(ctx context.Context, body GlobalDispatchCenterNewParams, opts ...option.RequestOption) (res *GlobalDispatchCenterNewResponse, err error) {
+func (r *GlobalDispatchCenterService) New(ctx context.Context, opts ...option.RequestOption) (res *GlobalDispatchCenterNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/global-dispatch-centers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -77,7 +77,7 @@ func (r *GlobalDispatchCenterService) List(ctx context.Context, opts ...option.R
 }
 
 // Delete a global dispatch center. Requires scope: globalDispatch:delete
-func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalDispatchCenterDeleteResponse, err error) {
+func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -89,10 +89,20 @@ func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opt
 }
 
 type GlobalDispatchCenterNewResponse struct {
-	Data any `json:"data"`
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	IsEnabled bool   `json:"isEnabled,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,nullable"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsEnabled   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -105,10 +115,20 @@ func (r *GlobalDispatchCenterNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterGetResponse struct {
-	Data any `json:"data"`
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	IsEnabled bool   `json:"isEnabled,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,nullable"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsEnabled   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -121,10 +141,20 @@ func (r *GlobalDispatchCenterGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterUpdateResponse struct {
-	Data any `json:"data"`
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	IsEnabled bool   `json:"isEnabled,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,nullable"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsEnabled   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -137,10 +167,10 @@ func (r *GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterListResponse struct {
-	Data any `json:"data"`
+	Entities []GlobalDispatchCenterListResponseEntity `json:"entities,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		Entities    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -152,35 +182,37 @@ func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type GlobalDispatchCenterDeleteResponse struct {
-	Data any `json:"data"`
+type GlobalDispatchCenterListResponseEntity struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	IsEnabled bool   `json:"isEnabled,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,nullable"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsEnabled   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterDeleteResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type GlobalDispatchCenterNewParams struct {
-	paramObj
-}
-
-func (r GlobalDispatchCenterNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow GlobalDispatchCenterNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *GlobalDispatchCenterNewParams) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterListResponseEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type GlobalDispatchCenterUpdateParams struct {
+	IsEnabled  param.Opt[bool]                            `json:"isEnabled,omitzero"`
+	Name       param.Opt[string]                          `json:"name,omitzero"`
+	Notes      param.Opt[string]                          `json:"notes,omitzero"`
+	Categories []GlobalDispatchCenterUpdateParamsCategory `json:"categories,omitzero"`
 	paramObj
 }
 
@@ -189,5 +221,22 @@ func (r GlobalDispatchCenterUpdateParams) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *GlobalDispatchCenterUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterUpdateParamsCategory struct {
+	Description    param.Opt[string]  `json:"description,omitzero"`
+	Name           param.Opt[string]  `json:"name,omitzero"`
+	Priority       param.Opt[float64] `json:"priority,omitzero"`
+	DestinationIDs []string           `json:"destinationIds,omitzero"`
+	Logic          any                `json:"logic,omitzero"`
+	paramObj
+}
+
+func (r GlobalDispatchCenterUpdateParamsCategory) MarshalJSON() (data []byte, err error) {
+	type shadow GlobalDispatchCenterUpdateParamsCategory
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *GlobalDispatchCenterUpdateParamsCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

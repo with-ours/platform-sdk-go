@@ -65,7 +65,7 @@ func (r *AllowedEventService) List(ctx context.Context, opts ...option.RequestOp
 }
 
 // Delete a allowed event. Requires scope: allowedEvent:delete
-func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *AllowedEventDeleteResponse, err error) {
+func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -77,12 +77,20 @@ func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...opt
 }
 
 type AllowedEventNewResponse struct {
-	Data any `json:"data"`
+	ID             string   `json:"id,required"`
+	CreatedAt      string   `json:"createdAt,required"`
+	DestinationIDs []string `json:"destinationIds,required"`
+	Name           string   `json:"name,required"`
+	UpdatedAt      string   `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -93,12 +101,20 @@ func (r *AllowedEventNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventGetResponse struct {
-	Data any `json:"data"`
+	ID             string   `json:"id,required"`
+	CreatedAt      string   `json:"createdAt,required"`
+	DestinationIDs []string `json:"destinationIds,required"`
+	Name           string   `json:"name,required"`
+	UpdatedAt      string   `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -109,10 +125,10 @@ func (r *AllowedEventGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventListResponse struct {
-	Data any `json:"data"`
+	Entities []AllowedEventListResponseEntity `json:"entities,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		Entities    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -124,23 +140,33 @@ func (r *AllowedEventListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type AllowedEventDeleteResponse struct {
-	Data any `json:"data"`
+type AllowedEventListResponseEntity struct {
+	ID             string   `json:"id,required"`
+	CreatedAt      string   `json:"createdAt,required"`
+	DestinationIDs []string `json:"destinationIds,required"`
+	Name           string   `json:"name,required"`
+	UpdatedAt      string   `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r AllowedEventDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *AllowedEventDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r AllowedEventListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *AllowedEventListResponseEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type AllowedEventNewParams struct {
+	Name           string                                   `json:"name,required"`
+	DestinationIDs AllowedEventNewParamsDestinationIDsUnion `json:"destinationIds,omitzero"`
 	paramObj
 }
 
@@ -150,4 +176,20 @@ func (r AllowedEventNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AllowedEventNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type AllowedEventNewParamsDestinationIDsUnion struct {
+	OfStringArray []string          `json:",omitzero,inline"`
+	OfString      param.Opt[string] `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u AllowedEventNewParamsDestinationIDsUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfStringArray, u.OfString)
+}
+func (u *AllowedEventNewParamsDestinationIDsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }

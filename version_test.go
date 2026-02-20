@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestVersionNew(t *testing.T) {
+func TestVersionNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,21 @@ func TestVersionNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Versions.New(context.TODO(), githubcomwithoursplatformsdkgo.VersionNewParams{})
+	_, err := client.Versions.New(context.TODO(), githubcomwithoursplatformsdkgo.VersionNewParams{
+		IncludeAllowedEvents:            []string{"string"},
+		IncludeConsentSettings:          []string{"string"},
+		IncludeDestinations:             []string{"string"},
+		IncludeExternalAllowedEventData: []string{"string"},
+		IncludeGlobalDispatchCenters:    []string{"string"},
+		IncludeMappings:                 []string{"string"},
+		IncludeReplaySettings:           []string{"string"},
+		IncludeSources:                  []string{"string"},
+		IncludeTagManagerTags:           []string{"string"},
+		IncludeTagManagerTriggers:       []string{"string"},
+		IncludeTagManagerVariables:      []string{"string"},
+		Name:                            githubcomwithoursplatformsdkgo.String("name"),
+		Notes:                           githubcomwithoursplatformsdkgo.String("notes"),
+	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
@@ -57,7 +71,7 @@ func TestVersionGet(t *testing.T) {
 	}
 }
 
-func TestVersionUpdate(t *testing.T) {
+func TestVersionUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,7 +86,10 @@ func TestVersionUpdate(t *testing.T) {
 	_, err := client.Versions.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.VersionUpdateParams{},
+		githubcomwithoursplatformsdkgo.VersionUpdateParams{
+			Name:  githubcomwithoursplatformsdkgo.String("name"),
+			Notes: githubcomwithoursplatformsdkgo.String("notes"),
+		},
 	)
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error

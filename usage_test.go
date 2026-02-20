@@ -28,5 +28,5 @@ func TestUsage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", sources.Data)
+	t.Logf("%+v\n", sources.Entities)
 }

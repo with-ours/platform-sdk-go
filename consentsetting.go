@@ -37,10 +37,10 @@ func NewConsentSettingService(opts ...option.RequestOption) (r ConsentSettingSer
 }
 
 // Create a new consent setting. Requires scope: consentSettings:create
-func (r *ConsentSettingService) New(ctx context.Context, body ConsentSettingNewParams, opts ...option.RequestOption) (res *ConsentSettingNewResponse, err error) {
+func (r *ConsentSettingService) New(ctx context.Context, opts ...option.RequestOption) (res *ConsentSettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -89,12 +89,16 @@ func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...o
 }
 
 type ConsentSettingNewResponse struct {
-	Data any `json:"data"`
+	IsSuccess       bool                                     `json:"isSuccess,required"`
+	Cause           string                                   `json:"cause,nullable"`
+	ConsentSettings ConsentSettingNewResponseConsentSettings `json:"consentSettings,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		IsSuccess       respjson.Field
+		Cause           respjson.Field
+		ConsentSettings respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -104,11 +108,49 @@ func (r *ConsentSettingNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingGetResponse struct {
-	Data any `json:"data"`
+type ConsentSettingNewResponseConsentSettings struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,required"`
+	// Any of "Disabled", "Enabled".
+	Status    string `json:"status,required"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingNewResponseConsentSettings) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingNewResponseConsentSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponse struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,required"`
+	// Any of "Disabled", "Enabled".
+	Status    ConsentSettingGetResponseStatus `json:"status,required"`
+	UpdatedAt string                          `json:"updatedAt,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -120,13 +162,24 @@ func (r *ConsentSettingGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ConsentSettingGetResponseStatus string
+
+const (
+	ConsentSettingGetResponseStatusDisabled ConsentSettingGetResponseStatus = "Disabled"
+	ConsentSettingGetResponseStatusEnabled  ConsentSettingGetResponseStatus = "Enabled"
+)
+
 type ConsentSettingUpdateResponse struct {
-	Data any `json:"data"`
+	IsSuccess       bool                                        `json:"isSuccess,required"`
+	Cause           string                                      `json:"cause,nullable"`
+	ConsentSettings ConsentSettingUpdateResponseConsentSettings `json:"consentSettings,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		IsSuccess       respjson.Field
+		Cause           respjson.Field
+		ConsentSettings respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -136,11 +189,38 @@ func (r *ConsentSettingUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingListResponse struct {
-	Data any `json:"data"`
+type ConsentSettingUpdateResponseConsentSettings struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,required"`
+	// Any of "Disabled", "Enabled".
+	Status    string `json:"status,required"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingUpdateResponseConsentSettings) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingUpdateResponseConsentSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingListResponse struct {
+	Entities []ConsentSettingListResponseEntity `json:"entities,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -152,11 +232,49 @@ func (r *ConsentSettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingDeleteResponse struct {
-	Data any `json:"data"`
+type ConsentSettingListResponseEntity struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,required"`
+	// Any of "Disabled", "Enabled".
+	Status    string `json:"status,required"`
+	UpdatedAt string `json:"updatedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingListResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingDeleteResponse struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	Kind      string `json:"kind,required"`
+	Name      string `json:"name,required"`
+	// Any of "Disabled", "Enabled".
+	Status    ConsentSettingDeleteResponseStatus `json:"status,required"`
+	UpdatedAt string                             `json:"updatedAt,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Kind        respjson.Field
+		Name        respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -168,19 +286,27 @@ func (r *ConsentSettingDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingNewParams struct {
-	paramObj
-}
+type ConsentSettingDeleteResponseStatus string
 
-func (r ConsentSettingNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow ConsentSettingNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ConsentSettingNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	ConsentSettingDeleteResponseStatusDisabled ConsentSettingDeleteResponseStatus = "Disabled"
+	ConsentSettingDeleteResponseStatusEnabled  ConsentSettingDeleteResponseStatus = "Enabled"
+)
 
 type ConsentSettingUpdateParams struct {
+	Categories []any  `json:"categories,omitzero,required"`
+	Name       string `json:"name,required"`
+	Regions    []any  `json:"regions,omitzero,required"`
+	Services   []any  `json:"services,omitzero,required"`
+	// Any of "Disabled", "Enabled".
+	Status                 ConsentSettingUpdateParamsStatus `json:"status,omitzero,required"`
+	ConsentCookieName      param.Opt[string]                `json:"consentCookieName,omitzero"`
+	Revision               param.Opt[float64]               `json:"revision,omitzero"`
+	WebSDKToken            param.Opt[string]                `json:"webSDKToken,omitzero"`
+	SkipBlockingClassNames []string                         `json:"skipBlockingClassNames,omitzero"`
+	WhitelistDomains       []any                            `json:"whitelistDomains,omitzero"`
+	CustomDomain           any                              `json:"customDomain,omitzero"`
+	Default                any                              `json:"default,omitzero"`
 	paramObj
 }
 
@@ -191,3 +317,10 @@ func (r ConsentSettingUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *ConsentSettingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ConsentSettingUpdateParamsStatus string
+
+const (
+	ConsentSettingUpdateParamsStatusDisabled ConsentSettingUpdateParamsStatus = "Disabled"
+	ConsentSettingUpdateParamsStatusEnabled  ConsentSettingUpdateParamsStatus = "Enabled"
+)
