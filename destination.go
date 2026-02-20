@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
 	"context"
@@ -10,85 +10,85 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/requestconfig"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
 
-// RestV1SourceService contains methods and other services that help with
+// DestinationService contains methods and other services that help with
 // interacting with the ours-privacy-platform API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewRestV1SourceService] method instead.
-type RestV1SourceService struct {
+// the [NewDestinationService] method instead.
+type DestinationService struct {
 	Options []option.RequestOption
 }
 
-// NewRestV1SourceService generates a new service that applies the given options to
+// NewDestinationService generates a new service that applies the given options to
 // each request. These options are applied after the parent client's options (if
 // there is one), and before any request-specific options.
-func NewRestV1SourceService(opts ...option.RequestOption) (r RestV1SourceService) {
-	r = RestV1SourceService{}
+func NewDestinationService(opts ...option.RequestOption) (r DestinationService) {
+	r = DestinationService{}
 	r.Options = opts
 	return
 }
 
-// Create a new source. Requires scope: source:create
-func (r *RestV1SourceService) New(ctx context.Context, body RestV1SourceNewParams, opts ...option.RequestOption) (res *RestV1SourceNewResponse, err error) {
+// Create a new destination. Requires scope: destination:create
+func (r *DestinationService) New(ctx context.Context, body DestinationNewParams, opts ...option.RequestOption) (res *DestinationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/sources"
+	path := "rest/v1/destinations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-// Find a single source by ID. Requires scope: source:view
-func (r *RestV1SourceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1SourceGetResponse, err error) {
+// Find a single destination by ID. Requires scope: destination:find
+func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// Update a source. Requires scope: source:update
-func (r *RestV1SourceService) Update(ctx context.Context, id string, body RestV1SourceUpdateParams, opts ...option.RequestOption) (res *RestV1SourceUpdateResponse, err error) {
+// Update a destination. Requires scope: destination:update
+func (r *DestinationService) Update(ctx context.Context, id string, body DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
-// List all sources. Requires scope: source:list
-func (r *RestV1SourceService) List(ctx context.Context, opts ...option.RequestOption) (res *RestV1SourceListResponse, err error) {
+// List all destinations. Requires scope: destination:list
+func (r *DestinationService) List(ctx context.Context, opts ...option.RequestOption) (res *DestinationListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/sources"
+	path := "rest/v1/destinations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// Delete a source. Requires scope: source:delete
-func (r *RestV1SourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1SourceDeleteResponse, err error) {
+// Delete a destination. Requires scope: destination:delete
+func (r *DestinationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return
 	}
-	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
-type RestV1SourceNewResponse struct {
+type DestinationNewResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -99,12 +99,12 @@ type RestV1SourceNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1SourceNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1SourceNewResponse) UnmarshalJSON(data []byte) error {
+func (r DestinationNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1SourceGetResponse struct {
+type DestinationGetResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -115,12 +115,12 @@ type RestV1SourceGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1SourceGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1SourceGetResponse) UnmarshalJSON(data []byte) error {
+func (r DestinationGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1SourceUpdateResponse struct {
+type DestinationUpdateResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -131,12 +131,12 @@ type RestV1SourceUpdateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1SourceUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1SourceUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r DestinationUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1SourceListResponse struct {
+type DestinationListResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -147,12 +147,12 @@ type RestV1SourceListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1SourceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1SourceListResponse) UnmarshalJSON(data []byte) error {
+func (r DestinationListResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1SourceDeleteResponse struct {
+type DestinationDeleteResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -163,31 +163,31 @@ type RestV1SourceDeleteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1SourceDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1SourceDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r DestinationDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1SourceNewParams struct {
+type DestinationNewParams struct {
 	paramObj
 }
 
-func (r RestV1SourceNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1SourceNewParams
+func (r DestinationNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow DestinationNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1SourceNewParams) UnmarshalJSON(data []byte) error {
+func (r *DestinationNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1SourceUpdateParams struct {
+type DestinationUpdateParams struct {
 	paramObj
 }
 
-func (r RestV1SourceUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1SourceUpdateParams
+func (r DestinationUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow DestinationUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1SourceUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *DestinationUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

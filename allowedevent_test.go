@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform_test
+package githubcomwithoursplatformsdkgo_test
 
 import (
 	"context"
@@ -8,13 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/testutil"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
+	"github.com/with-ours/platform-sdk-go"
+	"github.com/with-ours/platform-sdk-go/internal/testutil"
+	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestRestV1AllowedEventNew(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestAllowedEventNew(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -22,13 +21,13 @@ func TestRestV1AllowedEventNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.AllowedEvents.New(context.TODO(), oursprivacyplatform.RestV1AllowedEventNewParams{})
+	_, err := client.AllowedEvents.New(context.TODO(), githubcomwithoursplatformsdkgo.AllowedEventNewParams{})
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -36,8 +35,7 @@ func TestRestV1AllowedEventNew(t *testing.T) {
 	}
 }
 
-func TestRestV1AllowedEventGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestAllowedEventGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -45,13 +43,13 @@ func TestRestV1AllowedEventGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.AllowedEvents.Get(context.TODO(), "id")
+	_, err := client.AllowedEvents.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -59,8 +57,7 @@ func TestRestV1AllowedEventGet(t *testing.T) {
 	}
 }
 
-func TestRestV1AllowedEventList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestAllowedEventList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,13 +65,13 @@ func TestRestV1AllowedEventList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.AllowedEvents.List(context.TODO())
+	_, err := client.AllowedEvents.List(context.TODO())
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -82,8 +79,7 @@ func TestRestV1AllowedEventList(t *testing.T) {
 	}
 }
 
-func TestRestV1AllowedEventDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestAllowedEventDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,13 +87,13 @@ func TestRestV1AllowedEventDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.AllowedEvents.Delete(context.TODO(), "id")
+	_, err := client.AllowedEvents.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

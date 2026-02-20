@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
 	"context"
@@ -8,41 +8,53 @@ import (
 	"os"
 	"slices"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/requestconfig"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
+	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with
 // interacting with the ours-privacy-platform API. You should not instantiate this
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options []option.RequestOption
-	Rest    RestService
+	Options               []option.RequestOption
+	Destinations          DestinationService
+	Sources               SourceService
+	AllowedEvents         AllowedEventService
+	ConsentSettings       ConsentSettingService
+	GlobalDispatchCenters GlobalDispatchCenterService
+	ReplaySettings        ReplaySettingService
+	Versions              VersionService
 }
 
-// DefaultClientOptions read from the environment (OURS_PRIVACY_PLATFORM_API_KEY,
+// DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
 // OURS_PRIVACY_PLATFORM_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("OURS_PRIVACY_PLATFORM_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	if o, ok := os.LookupEnv("OURS_PRIVACY_PLATFORM_API_KEY"); ok {
+	if o, ok := os.LookupEnv("OURS_PRIVACY_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (OURS_PRIVACY_PLATFORM_API_KEY, OURS_PRIVACY_PLATFORM_BASE_URL). The
-// option passed in as arguments are applied after these default arguments, and all
-// option will be passed down to the services and requests that this client makes.
+// environment (OURS_PRIVACY_API_KEY, OURS_PRIVACY_PLATFORM_BASE_URL). The option
+// passed in as arguments are applied after these default arguments, and all option
+// will be passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
 	r = Client{Options: opts}
 
-	r.Rest = NewRestService(opts...)
+	r.Destinations = NewDestinationService(opts...)
+	r.Sources = NewSourceService(opts...)
+	r.AllowedEvents = NewAllowedEventService(opts...)
+	r.ConsentSettings = NewConsentSettingService(opts...)
+	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
+	r.ReplaySettings = NewReplaySettingService(opts...)
+	r.Versions = NewVersionService(opts...)
 
 	return
 }

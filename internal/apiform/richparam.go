@@ -1,7 +1,7 @@
 package apiform
 
 import (
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/param"
 	"mime/multipart"
 	"reflect"
 )

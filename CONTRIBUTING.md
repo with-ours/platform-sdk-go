@@ -41,10 +41,16 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/ours-privacy-platform-go=/path/to/ours-privacy-platform-go
+$ go mod edit -replace github.com/with-ours/platform-sdk-go=/path/to/platform-sdk-go
 ```
 
 ## Running tests
+
+Most tests require you to [set up a mock server](https://github.com/stoplightio/prism) against the OpenAPI spec to run the tests.
+
+```sh
+$ ./scripts/mock
+```
 
 ```sh
 $ ./scripts/test

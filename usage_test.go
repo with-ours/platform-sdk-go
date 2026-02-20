@@ -1,15 +1,15 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform_test
+package githubcomwithoursplatformsdkgo_test
 
 import (
 	"context"
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/testutil"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
+	"github.com/with-ours/platform-sdk-go"
+	"github.com/with-ours/platform-sdk-go/internal/testutil"
+	"github.com/with-ours/platform-sdk-go/option"
 )
 
 func TestUsage(t *testing.T) {
@@ -20,14 +20,13 @@ func TestUsage(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	t.Skip("Mock server tests are disabled")
-	destinations, err := client.Rest.V1.Destinations.List(context.TODO())
+	sources, err := client.Sources.List(context.TODO())
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", destinations.Data)
+	t.Logf("%+v\n", sources.Data)
 }

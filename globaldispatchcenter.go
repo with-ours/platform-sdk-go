@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
 	"context"
@@ -10,34 +10,34 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/requestconfig"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
 
-// RestV1GlobalDispatchCenterService contains methods and other services that help
-// with interacting with the ours-privacy-platform API.
+// GlobalDispatchCenterService contains methods and other services that help with
+// interacting with the ours-privacy-platform API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewRestV1GlobalDispatchCenterService] method instead.
-type RestV1GlobalDispatchCenterService struct {
+// the [NewGlobalDispatchCenterService] method instead.
+type GlobalDispatchCenterService struct {
 	Options []option.RequestOption
 }
 
-// NewRestV1GlobalDispatchCenterService generates a new service that applies the
-// given options to each request. These options are applied after the parent
-// client's options (if there is one), and before any request-specific options.
-func NewRestV1GlobalDispatchCenterService(opts ...option.RequestOption) (r RestV1GlobalDispatchCenterService) {
-	r = RestV1GlobalDispatchCenterService{}
+// NewGlobalDispatchCenterService generates a new service that applies the given
+// options to each request. These options are applied after the parent client's
+// options (if there is one), and before any request-specific options.
+func NewGlobalDispatchCenterService(opts ...option.RequestOption) (r GlobalDispatchCenterService) {
+	r = GlobalDispatchCenterService{}
 	r.Options = opts
 	return
 }
 
 // Create a new global dispatch center. Requires scope: globalDispatch:create
-func (r *RestV1GlobalDispatchCenterService) New(ctx context.Context, body RestV1GlobalDispatchCenterNewParams, opts ...option.RequestOption) (res *RestV1GlobalDispatchCenterNewResponse, err error) {
+func (r *GlobalDispatchCenterService) New(ctx context.Context, body GlobalDispatchCenterNewParams, opts ...option.RequestOption) (res *GlobalDispatchCenterNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/global-dispatch-centers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -45,7 +45,7 @@ func (r *RestV1GlobalDispatchCenterService) New(ctx context.Context, body RestV1
 }
 
 // Find a single global dispatch center by ID. Requires scope: globalDispatch:find
-func (r *RestV1GlobalDispatchCenterService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1GlobalDispatchCenterGetResponse, err error) {
+func (r *GlobalDispatchCenterService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalDispatchCenterGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -57,7 +57,7 @@ func (r *RestV1GlobalDispatchCenterService) Get(ctx context.Context, id string, 
 }
 
 // Update a global dispatch center. Requires scope: globalDispatch:update
-func (r *RestV1GlobalDispatchCenterService) Update(ctx context.Context, id string, body RestV1GlobalDispatchCenterUpdateParams, opts ...option.RequestOption) (res *RestV1GlobalDispatchCenterUpdateResponse, err error) {
+func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, body GlobalDispatchCenterUpdateParams, opts ...option.RequestOption) (res *GlobalDispatchCenterUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -69,7 +69,7 @@ func (r *RestV1GlobalDispatchCenterService) Update(ctx context.Context, id strin
 }
 
 // List all global dispatch centers. Requires scope: globalDispatch:list
-func (r *RestV1GlobalDispatchCenterService) List(ctx context.Context, opts ...option.RequestOption) (res *RestV1GlobalDispatchCenterListResponse, err error) {
+func (r *GlobalDispatchCenterService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalDispatchCenterListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/global-dispatch-centers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -77,7 +77,7 @@ func (r *RestV1GlobalDispatchCenterService) List(ctx context.Context, opts ...op
 }
 
 // Delete a global dispatch center. Requires scope: globalDispatch:delete
-func (r *RestV1GlobalDispatchCenterService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1GlobalDispatchCenterDeleteResponse, err error) {
+func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalDispatchCenterDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -88,7 +88,7 @@ func (r *RestV1GlobalDispatchCenterService) Delete(ctx context.Context, id strin
 	return
 }
 
-type RestV1GlobalDispatchCenterNewResponse struct {
+type GlobalDispatchCenterNewResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -99,12 +99,12 @@ type RestV1GlobalDispatchCenterNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1GlobalDispatchCenterNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1GlobalDispatchCenterNewResponse) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1GlobalDispatchCenterGetResponse struct {
+type GlobalDispatchCenterGetResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -115,12 +115,12 @@ type RestV1GlobalDispatchCenterGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1GlobalDispatchCenterGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1GlobalDispatchCenterGetResponse) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1GlobalDispatchCenterUpdateResponse struct {
+type GlobalDispatchCenterUpdateResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -131,12 +131,12 @@ type RestV1GlobalDispatchCenterUpdateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1GlobalDispatchCenterUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1GlobalDispatchCenterListResponse struct {
+type GlobalDispatchCenterListResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -147,12 +147,12 @@ type RestV1GlobalDispatchCenterListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1GlobalDispatchCenterListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterListResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1GlobalDispatchCenterDeleteResponse struct {
+type GlobalDispatchCenterDeleteResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -163,31 +163,31 @@ type RestV1GlobalDispatchCenterDeleteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1GlobalDispatchCenterDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1GlobalDispatchCenterDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1GlobalDispatchCenterNewParams struct {
+type GlobalDispatchCenterNewParams struct {
 	paramObj
 }
 
-func (r RestV1GlobalDispatchCenterNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1GlobalDispatchCenterNewParams
+func (r GlobalDispatchCenterNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow GlobalDispatchCenterNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1GlobalDispatchCenterNewParams) UnmarshalJSON(data []byte) error {
+func (r *GlobalDispatchCenterNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1GlobalDispatchCenterUpdateParams struct {
+type GlobalDispatchCenterUpdateParams struct {
 	paramObj
 }
 
-func (r RestV1GlobalDispatchCenterUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1GlobalDispatchCenterUpdateParams
+func (r GlobalDispatchCenterUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow GlobalDispatchCenterUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1GlobalDispatchCenterUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *GlobalDispatchCenterUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

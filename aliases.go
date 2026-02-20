@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apierror"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/internal/apierror"
+	"github.com/with-ours/platform-sdk-go/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding
