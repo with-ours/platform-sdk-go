@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform_test
+package githubcomwithoursplatformsdkgo_test
 
 import (
 	"context"
@@ -8,13 +8,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/testutil"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
+	"github.com/with-ours/platform-sdk-go"
+	"github.com/with-ours/platform-sdk-go/internal/testutil"
+	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestRestV1VersionNew(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestConsentSettingNew(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -22,13 +21,13 @@ func TestRestV1VersionNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.Versions.New(context.TODO(), oursprivacyplatform.RestV1VersionNewParams{})
+	_, err := client.ConsentSettings.New(context.TODO(), githubcomwithoursplatformsdkgo.ConsentSettingNewParams{})
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -36,8 +35,7 @@ func TestRestV1VersionNew(t *testing.T) {
 	}
 }
 
-func TestRestV1VersionGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestConsentSettingGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -45,13 +43,13 @@ func TestRestV1VersionGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.Versions.Get(context.TODO(), "id")
+	_, err := client.ConsentSettings.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -59,8 +57,7 @@ func TestRestV1VersionGet(t *testing.T) {
 	}
 }
 
-func TestRestV1VersionUpdate(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestConsentSettingUpdate(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -68,17 +65,17 @@ func TestRestV1VersionUpdate(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.Versions.Update(
+	_, err := client.ConsentSettings.Update(
 		context.TODO(),
 		"id",
-		oursprivacyplatform.RestV1VersionUpdateParams{},
+		githubcomwithoursplatformsdkgo.ConsentSettingUpdateParams{},
 	)
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -86,8 +83,7 @@ func TestRestV1VersionUpdate(t *testing.T) {
 	}
 }
 
-func TestRestV1VersionList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
+func TestConsentSettingList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -95,13 +91,35 @@ func TestRestV1VersionList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := oursprivacyplatform.NewClient(
+	client := githubcomwithoursplatformsdkgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Rest.V1.Versions.List(context.TODO())
+	_, err := client.ConsentSettings.List(context.TODO())
 	if err != nil {
-		var apierr *oursprivacyplatform.Error
+		var apierr *githubcomwithoursplatformsdkgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConsentSettingDelete(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := githubcomwithoursplatformsdkgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.ConsentSettings.Delete(context.TODO(), "id")
+	if err != nil {
+		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

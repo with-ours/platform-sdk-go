@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
 	"context"
@@ -10,34 +10,34 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/requestconfig"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
 
-// RestV1ReplaySettingService contains methods and other services that help with
+// ReplaySettingService contains methods and other services that help with
 // interacting with the ours-privacy-platform API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewRestV1ReplaySettingService] method instead.
-type RestV1ReplaySettingService struct {
+// the [NewReplaySettingService] method instead.
+type ReplaySettingService struct {
 	Options []option.RequestOption
 }
 
-// NewRestV1ReplaySettingService generates a new service that applies the given
-// options to each request. These options are applied after the parent client's
-// options (if there is one), and before any request-specific options.
-func NewRestV1ReplaySettingService(opts ...option.RequestOption) (r RestV1ReplaySettingService) {
-	r = RestV1ReplaySettingService{}
+// NewReplaySettingService generates a new service that applies the given options
+// to each request. These options are applied after the parent client's options (if
+// there is one), and before any request-specific options.
+func NewReplaySettingService(opts ...option.RequestOption) (r ReplaySettingService) {
+	r = ReplaySettingService{}
 	r.Options = opts
 	return
 }
 
 // Create a new replay setting. Requires scope: replaySettings:create
-func (r *RestV1ReplaySettingService) New(ctx context.Context, body RestV1ReplaySettingNewParams, opts ...option.RequestOption) (res *RestV1ReplaySettingNewResponse, err error) {
+func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewParams, opts ...option.RequestOption) (res *ReplaySettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -45,7 +45,7 @@ func (r *RestV1ReplaySettingService) New(ctx context.Context, body RestV1ReplayS
 }
 
 // Find a single replay setting by ID. Requires scope: replaySettings:find
-func (r *RestV1ReplaySettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1ReplaySettingGetResponse, err error) {
+func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -57,7 +57,7 @@ func (r *RestV1ReplaySettingService) Get(ctx context.Context, id string, opts ..
 }
 
 // Update a replay setting. Requires scope: replaySettings:update
-func (r *RestV1ReplaySettingService) Update(ctx context.Context, id string, body RestV1ReplaySettingUpdateParams, opts ...option.RequestOption) (res *RestV1ReplaySettingUpdateResponse, err error) {
+func (r *ReplaySettingService) Update(ctx context.Context, id string, body ReplaySettingUpdateParams, opts ...option.RequestOption) (res *ReplaySettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -69,7 +69,7 @@ func (r *RestV1ReplaySettingService) Update(ctx context.Context, id string, body
 }
 
 // List all replay settings. Requires scope: replaySettings:list
-func (r *RestV1ReplaySettingService) List(ctx context.Context, opts ...option.RequestOption) (res *RestV1ReplaySettingListResponse, err error) {
+func (r *ReplaySettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ReplaySettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -77,7 +77,7 @@ func (r *RestV1ReplaySettingService) List(ctx context.Context, opts ...option.Re
 }
 
 // Delete a replay setting. Requires scope: replaySettings:delete
-func (r *RestV1ReplaySettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1ReplaySettingDeleteResponse, err error) {
+func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -88,7 +88,7 @@ func (r *RestV1ReplaySettingService) Delete(ctx context.Context, id string, opts
 	return
 }
 
-type RestV1ReplaySettingNewResponse struct {
+type ReplaySettingNewResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -99,12 +99,12 @@ type RestV1ReplaySettingNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ReplaySettingNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ReplaySettingNewResponse) UnmarshalJSON(data []byte) error {
+func (r ReplaySettingNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ReplaySettingGetResponse struct {
+type ReplaySettingGetResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -115,12 +115,12 @@ type RestV1ReplaySettingGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ReplaySettingGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ReplaySettingGetResponse) UnmarshalJSON(data []byte) error {
+func (r ReplaySettingGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ReplaySettingUpdateResponse struct {
+type ReplaySettingUpdateResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -131,12 +131,12 @@ type RestV1ReplaySettingUpdateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ReplaySettingUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ReplaySettingUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r ReplaySettingUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ReplaySettingListResponse struct {
+type ReplaySettingListResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -147,12 +147,12 @@ type RestV1ReplaySettingListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ReplaySettingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ReplaySettingListResponse) UnmarshalJSON(data []byte) error {
+func (r ReplaySettingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ReplaySettingDeleteResponse struct {
+type ReplaySettingDeleteResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -163,31 +163,31 @@ type RestV1ReplaySettingDeleteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ReplaySettingDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ReplaySettingDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r ReplaySettingDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ReplaySettingNewParams struct {
+type ReplaySettingNewParams struct {
 	paramObj
 }
 
-func (r RestV1ReplaySettingNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1ReplaySettingNewParams
+func (r ReplaySettingNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow ReplaySettingNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1ReplaySettingNewParams) UnmarshalJSON(data []byte) error {
+func (r *ReplaySettingNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ReplaySettingUpdateParams struct {
+type ReplaySettingUpdateParams struct {
 	paramObj
 }
 
-func (r RestV1ReplaySettingUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1ReplaySettingUpdateParams
+func (r ReplaySettingUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow ReplaySettingUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1ReplaySettingUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *ReplaySettingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

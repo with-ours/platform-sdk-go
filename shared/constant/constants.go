@@ -3,7 +3,7 @@
 package constant
 
 import (
-	shimjson "github.com/stainless-sdks/ours-privacy-platform-go/internal/encoding/json"
+	shimjson "github.com/with-ours/platform-sdk-go/internal/encoding/json"
 )
 
 type Constant[T any] interface {

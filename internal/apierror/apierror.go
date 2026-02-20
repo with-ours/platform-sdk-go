@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is

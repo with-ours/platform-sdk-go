@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
 	"context"
@@ -10,34 +10,34 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/requestconfig"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
 
-// RestV1VersionService contains methods and other services that help with
-// interacting with the ours-privacy-platform API.
+// VersionService contains methods and other services that help with interacting
+// with the ours-privacy-platform API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewRestV1VersionService] method instead.
-type RestV1VersionService struct {
+// the [NewVersionService] method instead.
+type VersionService struct {
 	Options []option.RequestOption
 }
 
-// NewRestV1VersionService generates a new service that applies the given options
-// to each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewRestV1VersionService(opts ...option.RequestOption) (r RestV1VersionService) {
-	r = RestV1VersionService{}
+// NewVersionService generates a new service that applies the given options to each
+// request. These options are applied after the parent client's options (if there
+// is one), and before any request-specific options.
+func NewVersionService(opts ...option.RequestOption) (r VersionService) {
+	r = VersionService{}
 	r.Options = opts
 	return
 }
 
 // Create a new version. Requires scope: version:publish
-func (r *RestV1VersionService) New(ctx context.Context, body RestV1VersionNewParams, opts ...option.RequestOption) (res *RestV1VersionNewResponse, err error) {
+func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ...option.RequestOption) (res *VersionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -45,7 +45,7 @@ func (r *RestV1VersionService) New(ctx context.Context, body RestV1VersionNewPar
 }
 
 // Find a single version by ID. Requires scope: version:find
-func (r *RestV1VersionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1VersionGetResponse, err error) {
+func (r *VersionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -57,7 +57,7 @@ func (r *RestV1VersionService) Get(ctx context.Context, id string, opts ...optio
 }
 
 // Update a version. Requires scope: version:update
-func (r *RestV1VersionService) Update(ctx context.Context, id string, body RestV1VersionUpdateParams, opts ...option.RequestOption) (res *RestV1VersionUpdateResponse, err error) {
+func (r *VersionService) Update(ctx context.Context, id string, body VersionUpdateParams, opts ...option.RequestOption) (res *VersionUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -69,14 +69,14 @@ func (r *RestV1VersionService) Update(ctx context.Context, id string, body RestV
 }
 
 // List all versions. Requires scope: version:list
-func (r *RestV1VersionService) List(ctx context.Context, opts ...option.RequestOption) (res *RestV1VersionListResponse, err error) {
+func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption) (res *VersionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-type RestV1VersionNewResponse struct {
+type VersionNewResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -87,12 +87,12 @@ type RestV1VersionNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1VersionNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1VersionNewResponse) UnmarshalJSON(data []byte) error {
+func (r VersionNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1VersionGetResponse struct {
+type VersionGetResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -103,12 +103,12 @@ type RestV1VersionGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1VersionGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1VersionGetResponse) UnmarshalJSON(data []byte) error {
+func (r VersionGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1VersionUpdateResponse struct {
+type VersionUpdateResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -119,12 +119,12 @@ type RestV1VersionUpdateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1VersionUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1VersionUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r VersionUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1VersionListResponse struct {
+type VersionListResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -135,31 +135,31 @@ type RestV1VersionListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1VersionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1VersionListResponse) UnmarshalJSON(data []byte) error {
+func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1VersionNewParams struct {
+type VersionNewParams struct {
 	paramObj
 }
 
-func (r RestV1VersionNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1VersionNewParams
+func (r VersionNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow VersionNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1VersionNewParams) UnmarshalJSON(data []byte) error {
+func (r *VersionNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1VersionUpdateParams struct {
+type VersionUpdateParams struct {
 	paramObj
 }
 
-func (r RestV1VersionUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1VersionUpdateParams
+func (r VersionUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow VersionUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1VersionUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *VersionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
