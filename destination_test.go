@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestDestinationNew(t *testing.T) {
+func TestDestinationNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,10 @@ func TestDestinationNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Destinations.New(context.TODO(), githubcomwithoursplatformsdkgo.DestinationNewParams{})
+	_, err := client.Destinations.New(context.TODO(), githubcomwithoursplatformsdkgo.DestinationNewParams{
+		Type: githubcomwithoursplatformsdkgo.DestinationNewParamsTypeAwsEventBridge,
+		Name: githubcomwithoursplatformsdkgo.String("name"),
+	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
@@ -57,7 +60,7 @@ func TestDestinationGet(t *testing.T) {
 	}
 }
 
-func TestDestinationUpdate(t *testing.T) {
+func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,7 +75,25 @@ func TestDestinationUpdate(t *testing.T) {
 	_, err := client.Destinations.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.DestinationUpdateParams{},
+		githubcomwithoursplatformsdkgo.DestinationUpdateParams{
+			Status:                   githubcomwithoursplatformsdkgo.DestinationUpdateParamsStatusDisabled,
+			FacebookConversionAPIKey: githubcomwithoursplatformsdkgo.String("facebookConversionAPIKey"),
+			FacebookPixelID:          githubcomwithoursplatformsdkgo.String("facebookPixelId"),
+			G4AnalyticsAPIKey:        githubcomwithoursplatformsdkgo.String("g4AnalyticsApiKey"),
+			G4AnalyticsMeasurementID: githubcomwithoursplatformsdkgo.String("g4AnalyticsMeasurementId"),
+			G4AnalyticsTrackOnPage:   githubcomwithoursplatformsdkgo.Bool(true),
+			HashingSalt:              githubcomwithoursplatformsdkgo.String("hashingSalt"),
+			HTTPDestinationURL:       githubcomwithoursplatformsdkgo.String("httpDestinationUrl"),
+			LimitedToSourceIDs:       []string{"string"},
+			ManagerGoogleCustomerID:  githubcomwithoursplatformsdkgo.String("managerGoogleCustomerId"),
+			Name:                     githubcomwithoursplatformsdkgo.String("name"),
+			ProjectAPIKey:            githubcomwithoursplatformsdkgo.String("projectAPIKey"),
+			ProjectToken:             githubcomwithoursplatformsdkgo.String("projectToken"),
+			SelectedAccountID:        githubcomwithoursplatformsdkgo.String("selectedAccountId"),
+			Settings: map[string]any{
+				"foo": "bar",
+			},
+		},
 	)
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error

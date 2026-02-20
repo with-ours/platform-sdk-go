@@ -25,7 +25,7 @@ func TestConsentSettingNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ConsentSettings.New(context.TODO(), githubcomwithoursplatformsdkgo.ConsentSettingNewParams{})
+	_, err := client.ConsentSettings.New(context.TODO())
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
@@ -57,7 +57,7 @@ func TestConsentSettingGet(t *testing.T) {
 	}
 }
 
-func TestConsentSettingUpdate(t *testing.T) {
+func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,7 +72,20 @@ func TestConsentSettingUpdate(t *testing.T) {
 	_, err := client.ConsentSettings.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.ConsentSettingUpdateParams{},
+		githubcomwithoursplatformsdkgo.ConsentSettingUpdateParams{
+			Categories:             []any{map[string]any{}},
+			Name:                   "name",
+			Regions:                []any{map[string]any{}},
+			Services:               []any{map[string]any{}},
+			Status:                 githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsStatusDisabled,
+			ConsentCookieName:      githubcomwithoursplatformsdkgo.String("consentCookieName"),
+			CustomDomain:           map[string]any{},
+			Default:                map[string]any{},
+			Revision:               githubcomwithoursplatformsdkgo.Float(0),
+			SkipBlockingClassNames: []string{"string"},
+			WebSDKToken:            githubcomwithoursplatformsdkgo.String("webSDKToken"),
+			WhitelistDomains:       []any{map[string]any{}},
+		},
 	)
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error

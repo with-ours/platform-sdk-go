@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestAllowedEventNew(t *testing.T) {
+func TestAllowedEventNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,12 @@ func TestAllowedEventNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AllowedEvents.New(context.TODO(), githubcomwithoursplatformsdkgo.AllowedEventNewParams{})
+	_, err := client.AllowedEvents.New(context.TODO(), githubcomwithoursplatformsdkgo.AllowedEventNewParams{
+		Name: "name",
+		DestinationIDs: githubcomwithoursplatformsdkgo.AllowedEventNewParamsDestinationIDsUnion{
+			OfStringArray: []string{"string"},
+		},
+	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {

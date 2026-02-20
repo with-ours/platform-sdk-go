@@ -77,7 +77,7 @@ func (r *SourceService) List(ctx context.Context, opts ...option.RequestOption) 
 }
 
 // Delete a source. Requires scope: source:delete
-func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceDeleteResponse, err error) {
+func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -89,10 +89,26 @@ func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.Re
 }
 
 type SourceNewResponse struct {
-	Data any `json:"data"`
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	// Any of "Disabled", "Enabled".
+	Status SourceNewResponseStatus `json:"status,required"`
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
+	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
+	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
+	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
+	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
+	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	Type SourceNewResponseType `json:"type,required"`
+	Name string                `json:"name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Status      respjson.Field
+		Type        respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -104,11 +120,70 @@ func (r *SourceNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SourceNewResponseStatus string
+
+const (
+	SourceNewResponseStatusDisabled SourceNewResponseStatus = "Disabled"
+	SourceNewResponseStatusEnabled  SourceNewResponseStatus = "Enabled"
+)
+
+type SourceNewResponseType string
+
+const (
+	SourceNewResponseTypeAlchemerWebhook     SourceNewResponseType = "AlchemerWebhook"
+	SourceNewResponseTypeAndroidNativeAPI    SourceNewResponseType = "AndroidNativeApi"
+	SourceNewResponseTypeCSharpAPI           SourceNewResponseType = "CSharpApi"
+	SourceNewResponseTypeCalComWebhooks      SourceNewResponseType = "CalComWebhooks"
+	SourceNewResponseTypeCalendlyWebhook     SourceNewResponseType = "CalendlyWebhook"
+	SourceNewResponseTypeCallRail            SourceNewResponseType = "CallRail"
+	SourceNewResponseTypeCallTrackingMetrics SourceNewResponseType = "CallTrackingMetrics"
+	SourceNewResponseTypeDotNetAPI           SourceNewResponseType = "DotNetApi"
+	SourceNewResponseTypeFacebookLeadAds     SourceNewResponseType = "FacebookLeadAds"
+	SourceNewResponseTypeFormsortWebhooks    SourceNewResponseType = "FormsortWebhooks"
+	SourceNewResponseTypeFormstack           SourceNewResponseType = "Formstack"
+	SourceNewResponseTypeGoLangAPI           SourceNewResponseType = "GoLangApi"
+	SourceNewResponseTypeHTTPAPISource       SourceNewResponseType = "HTTPApiSource"
+	SourceNewResponseTypeHealthie            SourceNewResponseType = "Healthie"
+	SourceNewResponseTypeHubspotAppActions   SourceNewResponseType = "HubspotAppActions"
+	SourceNewResponseTypeHubspotFormWebhook  SourceNewResponseType = "HubspotFormWebhook"
+	SourceNewResponseTypeJotFormWebhooks     SourceNewResponseType = "JotFormWebhooks"
+	SourceNewResponseTypeKotlinAPI           SourceNewResponseType = "KotlinApi"
+	SourceNewResponseTypeNodejsAPI           SourceNewResponseType = "NodejsApi"
+	SourceNewResponseTypePhpAPI              SourceNewResponseType = "PHPApi"
+	SourceNewResponseTypePixelImage          SourceNewResponseType = "PixelImage"
+	SourceNewResponseTypePythonAPI           SourceNewResponseType = "PythonApi"
+	SourceNewResponseTypeReactNativeAPI      SourceNewResponseType = "ReactNativeApi"
+	SourceNewResponseTypeRedirectSource      SourceNewResponseType = "RedirectSource"
+	SourceNewResponseTypeRubyAPI             SourceNewResponseType = "RubyApi"
+	SourceNewResponseTypeSegmentWebPlugin    SourceNewResponseType = "SegmentWebPlugin"
+	SourceNewResponseTypeTypeformWebhooks    SourceNewResponseType = "TypeformWebhooks"
+	SourceNewResponseTypeWebSource           SourceNewResponseType = "WebSource"
+	SourceNewResponseTypeWebhook             SourceNewResponseType = "Webhook"
+	SourceNewResponseTypeWhatConverts        SourceNewResponseType = "WhatConverts"
+	SourceNewResponseTypeIOsNativeAPI        SourceNewResponseType = "iOSNativeApi"
+)
+
 type SourceGetResponse struct {
-	Data any `json:"data"`
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	// Any of "Disabled", "Enabled".
+	Status SourceGetResponseStatus `json:"status,required"`
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
+	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
+	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
+	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
+	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
+	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	Type SourceGetResponseType `json:"type,required"`
+	Name string                `json:"name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Status      respjson.Field
+		Type        respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -120,11 +195,70 @@ func (r *SourceGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SourceGetResponseStatus string
+
+const (
+	SourceGetResponseStatusDisabled SourceGetResponseStatus = "Disabled"
+	SourceGetResponseStatusEnabled  SourceGetResponseStatus = "Enabled"
+)
+
+type SourceGetResponseType string
+
+const (
+	SourceGetResponseTypeAlchemerWebhook     SourceGetResponseType = "AlchemerWebhook"
+	SourceGetResponseTypeAndroidNativeAPI    SourceGetResponseType = "AndroidNativeApi"
+	SourceGetResponseTypeCSharpAPI           SourceGetResponseType = "CSharpApi"
+	SourceGetResponseTypeCalComWebhooks      SourceGetResponseType = "CalComWebhooks"
+	SourceGetResponseTypeCalendlyWebhook     SourceGetResponseType = "CalendlyWebhook"
+	SourceGetResponseTypeCallRail            SourceGetResponseType = "CallRail"
+	SourceGetResponseTypeCallTrackingMetrics SourceGetResponseType = "CallTrackingMetrics"
+	SourceGetResponseTypeDotNetAPI           SourceGetResponseType = "DotNetApi"
+	SourceGetResponseTypeFacebookLeadAds     SourceGetResponseType = "FacebookLeadAds"
+	SourceGetResponseTypeFormsortWebhooks    SourceGetResponseType = "FormsortWebhooks"
+	SourceGetResponseTypeFormstack           SourceGetResponseType = "Formstack"
+	SourceGetResponseTypeGoLangAPI           SourceGetResponseType = "GoLangApi"
+	SourceGetResponseTypeHTTPAPISource       SourceGetResponseType = "HTTPApiSource"
+	SourceGetResponseTypeHealthie            SourceGetResponseType = "Healthie"
+	SourceGetResponseTypeHubspotAppActions   SourceGetResponseType = "HubspotAppActions"
+	SourceGetResponseTypeHubspotFormWebhook  SourceGetResponseType = "HubspotFormWebhook"
+	SourceGetResponseTypeJotFormWebhooks     SourceGetResponseType = "JotFormWebhooks"
+	SourceGetResponseTypeKotlinAPI           SourceGetResponseType = "KotlinApi"
+	SourceGetResponseTypeNodejsAPI           SourceGetResponseType = "NodejsApi"
+	SourceGetResponseTypePhpAPI              SourceGetResponseType = "PHPApi"
+	SourceGetResponseTypePixelImage          SourceGetResponseType = "PixelImage"
+	SourceGetResponseTypePythonAPI           SourceGetResponseType = "PythonApi"
+	SourceGetResponseTypeReactNativeAPI      SourceGetResponseType = "ReactNativeApi"
+	SourceGetResponseTypeRedirectSource      SourceGetResponseType = "RedirectSource"
+	SourceGetResponseTypeRubyAPI             SourceGetResponseType = "RubyApi"
+	SourceGetResponseTypeSegmentWebPlugin    SourceGetResponseType = "SegmentWebPlugin"
+	SourceGetResponseTypeTypeformWebhooks    SourceGetResponseType = "TypeformWebhooks"
+	SourceGetResponseTypeWebSource           SourceGetResponseType = "WebSource"
+	SourceGetResponseTypeWebhook             SourceGetResponseType = "Webhook"
+	SourceGetResponseTypeWhatConverts        SourceGetResponseType = "WhatConverts"
+	SourceGetResponseTypeIOsNativeAPI        SourceGetResponseType = "iOSNativeApi"
+)
+
 type SourceUpdateResponse struct {
-	Data any `json:"data"`
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	// Any of "Disabled", "Enabled".
+	Status SourceUpdateResponseStatus `json:"status,required"`
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
+	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
+	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
+	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
+	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
+	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	Type SourceUpdateResponseType `json:"type,required"`
+	Name string                   `json:"name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Status      respjson.Field
+		Type        respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -136,11 +270,54 @@ func (r *SourceUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SourceUpdateResponseStatus string
+
+const (
+	SourceUpdateResponseStatusDisabled SourceUpdateResponseStatus = "Disabled"
+	SourceUpdateResponseStatusEnabled  SourceUpdateResponseStatus = "Enabled"
+)
+
+type SourceUpdateResponseType string
+
+const (
+	SourceUpdateResponseTypeAlchemerWebhook     SourceUpdateResponseType = "AlchemerWebhook"
+	SourceUpdateResponseTypeAndroidNativeAPI    SourceUpdateResponseType = "AndroidNativeApi"
+	SourceUpdateResponseTypeCSharpAPI           SourceUpdateResponseType = "CSharpApi"
+	SourceUpdateResponseTypeCalComWebhooks      SourceUpdateResponseType = "CalComWebhooks"
+	SourceUpdateResponseTypeCalendlyWebhook     SourceUpdateResponseType = "CalendlyWebhook"
+	SourceUpdateResponseTypeCallRail            SourceUpdateResponseType = "CallRail"
+	SourceUpdateResponseTypeCallTrackingMetrics SourceUpdateResponseType = "CallTrackingMetrics"
+	SourceUpdateResponseTypeDotNetAPI           SourceUpdateResponseType = "DotNetApi"
+	SourceUpdateResponseTypeFacebookLeadAds     SourceUpdateResponseType = "FacebookLeadAds"
+	SourceUpdateResponseTypeFormsortWebhooks    SourceUpdateResponseType = "FormsortWebhooks"
+	SourceUpdateResponseTypeFormstack           SourceUpdateResponseType = "Formstack"
+	SourceUpdateResponseTypeGoLangAPI           SourceUpdateResponseType = "GoLangApi"
+	SourceUpdateResponseTypeHTTPAPISource       SourceUpdateResponseType = "HTTPApiSource"
+	SourceUpdateResponseTypeHealthie            SourceUpdateResponseType = "Healthie"
+	SourceUpdateResponseTypeHubspotAppActions   SourceUpdateResponseType = "HubspotAppActions"
+	SourceUpdateResponseTypeHubspotFormWebhook  SourceUpdateResponseType = "HubspotFormWebhook"
+	SourceUpdateResponseTypeJotFormWebhooks     SourceUpdateResponseType = "JotFormWebhooks"
+	SourceUpdateResponseTypeKotlinAPI           SourceUpdateResponseType = "KotlinApi"
+	SourceUpdateResponseTypeNodejsAPI           SourceUpdateResponseType = "NodejsApi"
+	SourceUpdateResponseTypePhpAPI              SourceUpdateResponseType = "PHPApi"
+	SourceUpdateResponseTypePixelImage          SourceUpdateResponseType = "PixelImage"
+	SourceUpdateResponseTypePythonAPI           SourceUpdateResponseType = "PythonApi"
+	SourceUpdateResponseTypeReactNativeAPI      SourceUpdateResponseType = "ReactNativeApi"
+	SourceUpdateResponseTypeRedirectSource      SourceUpdateResponseType = "RedirectSource"
+	SourceUpdateResponseTypeRubyAPI             SourceUpdateResponseType = "RubyApi"
+	SourceUpdateResponseTypeSegmentWebPlugin    SourceUpdateResponseType = "SegmentWebPlugin"
+	SourceUpdateResponseTypeTypeformWebhooks    SourceUpdateResponseType = "TypeformWebhooks"
+	SourceUpdateResponseTypeWebSource           SourceUpdateResponseType = "WebSource"
+	SourceUpdateResponseTypeWebhook             SourceUpdateResponseType = "Webhook"
+	SourceUpdateResponseTypeWhatConverts        SourceUpdateResponseType = "WhatConverts"
+	SourceUpdateResponseTypeIOsNativeAPI        SourceUpdateResponseType = "iOSNativeApi"
+)
+
 type SourceListResponse struct {
-	Data any `json:"data"`
+	Entities []SourceListResponseEntity `json:"entities,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		Entities    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -152,23 +329,48 @@ func (r *SourceListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SourceDeleteResponse struct {
-	Data any `json:"data"`
+type SourceListResponseEntity struct {
+	ID        string `json:"id,required"`
+	CreatedAt string `json:"createdAt,required"`
+	// Any of "Disabled", "Enabled".
+	Status string `json:"status,required"`
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
+	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
+	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
+	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
+	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
+	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	Type string `json:"type,required"`
+	Name string `json:"name,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		Status      respjson.Field
+		Type        respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r SourceDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *SourceDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r SourceListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *SourceListResponseEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type SourceNewParams struct {
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
+	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
+	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
+	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
+	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
+	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	Type SourceNewParamsType `json:"type,omitzero,required"`
+	Name param.Opt[string]   `json:"name,omitzero"`
 	paramObj
 }
 
@@ -180,7 +382,54 @@ func (r *SourceNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type SourceNewParamsType string
+
+const (
+	SourceNewParamsTypeAlchemerWebhook     SourceNewParamsType = "AlchemerWebhook"
+	SourceNewParamsTypeAndroidNativeAPI    SourceNewParamsType = "AndroidNativeApi"
+	SourceNewParamsTypeCSharpAPI           SourceNewParamsType = "CSharpApi"
+	SourceNewParamsTypeCalComWebhooks      SourceNewParamsType = "CalComWebhooks"
+	SourceNewParamsTypeCalendlyWebhook     SourceNewParamsType = "CalendlyWebhook"
+	SourceNewParamsTypeCallRail            SourceNewParamsType = "CallRail"
+	SourceNewParamsTypeCallTrackingMetrics SourceNewParamsType = "CallTrackingMetrics"
+	SourceNewParamsTypeDotNetAPI           SourceNewParamsType = "DotNetApi"
+	SourceNewParamsTypeFacebookLeadAds     SourceNewParamsType = "FacebookLeadAds"
+	SourceNewParamsTypeFormsortWebhooks    SourceNewParamsType = "FormsortWebhooks"
+	SourceNewParamsTypeFormstack           SourceNewParamsType = "Formstack"
+	SourceNewParamsTypeGoLangAPI           SourceNewParamsType = "GoLangApi"
+	SourceNewParamsTypeHTTPAPISource       SourceNewParamsType = "HTTPApiSource"
+	SourceNewParamsTypeHealthie            SourceNewParamsType = "Healthie"
+	SourceNewParamsTypeHubspotAppActions   SourceNewParamsType = "HubspotAppActions"
+	SourceNewParamsTypeHubspotFormWebhook  SourceNewParamsType = "HubspotFormWebhook"
+	SourceNewParamsTypeJotFormWebhooks     SourceNewParamsType = "JotFormWebhooks"
+	SourceNewParamsTypeKotlinAPI           SourceNewParamsType = "KotlinApi"
+	SourceNewParamsTypeNodejsAPI           SourceNewParamsType = "NodejsApi"
+	SourceNewParamsTypePhpAPI              SourceNewParamsType = "PHPApi"
+	SourceNewParamsTypePixelImage          SourceNewParamsType = "PixelImage"
+	SourceNewParamsTypePythonAPI           SourceNewParamsType = "PythonApi"
+	SourceNewParamsTypeReactNativeAPI      SourceNewParamsType = "ReactNativeApi"
+	SourceNewParamsTypeRedirectSource      SourceNewParamsType = "RedirectSource"
+	SourceNewParamsTypeRubyAPI             SourceNewParamsType = "RubyApi"
+	SourceNewParamsTypeSegmentWebPlugin    SourceNewParamsType = "SegmentWebPlugin"
+	SourceNewParamsTypeTypeformWebhooks    SourceNewParamsType = "TypeformWebhooks"
+	SourceNewParamsTypeWebSource           SourceNewParamsType = "WebSource"
+	SourceNewParamsTypeWebhook             SourceNewParamsType = "Webhook"
+	SourceNewParamsTypeWhatConverts        SourceNewParamsType = "WhatConverts"
+	SourceNewParamsTypeIOsNativeAPI        SourceNewParamsType = "iOSNativeApi"
+)
+
 type SourceUpdateParams struct {
+	// Any of "Disabled", "Enabled".
+	Status                SourceUpdateParamsStatus `json:"status,omitzero,required"`
+	ExcludeRequestContext param.Opt[bool]          `json:"excludeRequestContext,omitzero"`
+	Name                  param.Opt[string]        `json:"name,omitzero"`
+	ProjectAPIKey         param.Opt[string]        `json:"projectAPIKey,omitzero"`
+	RedirectURL           param.Opt[string]        `json:"redirectUrl,omitzero"`
+	SelectedAccountID     param.Opt[string]        `json:"selectedAccountId,omitzero"`
+	// Any of "Allow", "Block".
+	BotControlMode   SourceUpdateParamsBotControlMode `json:"botControlMode,omitzero"`
+	WhitelistDomains []any                            `json:"whitelistDomains,omitzero"`
+	WhitelistIPs     []string                         `json:"whitelistIps,omitzero"`
 	paramObj
 }
 
@@ -191,3 +440,17 @@ func (r SourceUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *SourceUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type SourceUpdateParamsStatus string
+
+const (
+	SourceUpdateParamsStatusDisabled SourceUpdateParamsStatus = "Disabled"
+	SourceUpdateParamsStatusEnabled  SourceUpdateParamsStatus = "Enabled"
+)
+
+type SourceUpdateParamsBotControlMode string
+
+const (
+	SourceUpdateParamsBotControlModeAllow SourceUpdateParamsBotControlMode = "Allow"
+	SourceUpdateParamsBotControlModeBlock SourceUpdateParamsBotControlMode = "Block"
+)

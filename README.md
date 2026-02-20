@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/with-ours/platform-sdk-go@v1.0.0'
+go get -u 'github.com/with-ours/platform-sdk-go@v1.1.0'
 ```
 
 <!-- x-release-please-end -->
@@ -60,7 +60,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", sources.Data)
+	fmt.Printf("%+v\n", sources.Entities)
 }
 
 ```

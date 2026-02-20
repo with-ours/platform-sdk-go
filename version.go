@@ -69,7 +69,7 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 }
 
 // List all versions. Requires scope: version:list
-func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption) (res *VersionListResponse, err error) {
+func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption) (res *[]VersionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -77,10 +77,12 @@ func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption)
 }
 
 type VersionNewResponse struct {
-	Data any `json:"data"`
+	Success bool   `json:"success,required"`
+	Error   string `json:"error,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
+		Success     respjson.Field
+		Error       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -93,12 +95,24 @@ func (r *VersionNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionGetResponse struct {
-	Data any `json:"data"`
+	ID            string  `json:"id,required"`
+	CreatedAt     string  `json:"createdAt,required"`
+	IsPublished   bool    `json:"isPublished,required"`
+	VersionNumber float64 `json:"versionNumber,required"`
+	Name          string  `json:"name,nullable"`
+	Notes         string  `json:"notes,nullable"`
+	PublishedAt   string  `json:"publishedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		IsPublished   respjson.Field
+		VersionNumber respjson.Field
+		Name          respjson.Field
+		Notes         respjson.Field
+		PublishedAt   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -109,12 +123,24 @@ func (r *VersionGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionUpdateResponse struct {
-	Data any `json:"data"`
+	ID            string  `json:"id,required"`
+	CreatedAt     string  `json:"createdAt,required"`
+	IsPublished   bool    `json:"isPublished,required"`
+	VersionNumber float64 `json:"versionNumber,required"`
+	Name          string  `json:"name,nullable"`
+	Notes         string  `json:"notes,nullable"`
+	PublishedAt   string  `json:"publishedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		IsPublished   respjson.Field
+		VersionNumber respjson.Field
+		Name          respjson.Field
+		Notes         respjson.Field
+		PublishedAt   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -125,12 +151,22 @@ func (r *VersionUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionListResponse struct {
-	Data any `json:"data"`
+	ID            string  `json:"id,required"`
+	CreatedAt     string  `json:"createdAt,required"`
+	IsPublished   bool    `json:"isPublished,required"`
+	VersionNumber float64 `json:"versionNumber,required"`
+	Name          string  `json:"name,nullable"`
+	PublishedAt   string  `json:"publishedAt,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		IsPublished   respjson.Field
+		VersionNumber respjson.Field
+		Name          respjson.Field
+		PublishedAt   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -141,6 +177,19 @@ func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionNewParams struct {
+	Name                            param.Opt[string] `json:"name,omitzero"`
+	Notes                           param.Opt[string] `json:"notes,omitzero"`
+	IncludeAllowedEvents            []string          `json:"includeAllowedEvents,omitzero"`
+	IncludeConsentSettings          []string          `json:"includeConsentSettings,omitzero"`
+	IncludeDestinations             []string          `json:"includeDestinations,omitzero"`
+	IncludeExternalAllowedEventData []string          `json:"includeExternalAllowedEventData,omitzero"`
+	IncludeGlobalDispatchCenters    []string          `json:"includeGlobalDispatchCenters,omitzero"`
+	IncludeMappings                 []string          `json:"includeMappings,omitzero"`
+	IncludeReplaySettings           []string          `json:"includeReplaySettings,omitzero"`
+	IncludeSources                  []string          `json:"includeSources,omitzero"`
+	IncludeTagManagerTags           []string          `json:"includeTagManagerTags,omitzero"`
+	IncludeTagManagerTriggers       []string          `json:"includeTagManagerTriggers,omitzero"`
+	IncludeTagManagerVariables      []string          `json:"includeTagManagerVariables,omitzero"`
 	paramObj
 }
 
@@ -153,6 +202,8 @@ func (r *VersionNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type VersionUpdateParams struct {
+	Name  param.Opt[string] `json:"name,omitzero"`
+	Notes param.Opt[string] `json:"notes,omitzero"`
 	paramObj
 }
 
