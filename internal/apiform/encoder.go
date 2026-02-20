@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

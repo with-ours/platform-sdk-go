@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/ours-privacy-platform-go
+module github.com/with-ours/platform-sdk-go
 
 go 1.22
 

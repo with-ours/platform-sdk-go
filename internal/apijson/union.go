@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"

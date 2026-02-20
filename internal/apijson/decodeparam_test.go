@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/packages/param"
 	"reflect"
 	"testing"
 )

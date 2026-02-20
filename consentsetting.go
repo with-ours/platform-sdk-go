@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package oursprivacyplatform
+package githubcomwithoursplatformsdkgo
 
 import (
 	"context"
@@ -10,34 +10,34 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/apijson"
-	"github.com/stainless-sdks/ours-privacy-platform-go/internal/requestconfig"
-	"github.com/stainless-sdks/ours-privacy-platform-go/option"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/param"
-	"github.com/stainless-sdks/ours-privacy-platform-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
 
-// RestV1ConsentSettingService contains methods and other services that help with
+// ConsentSettingService contains methods and other services that help with
 // interacting with the ours-privacy-platform API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewRestV1ConsentSettingService] method instead.
-type RestV1ConsentSettingService struct {
+// the [NewConsentSettingService] method instead.
+type ConsentSettingService struct {
 	Options []option.RequestOption
 }
 
-// NewRestV1ConsentSettingService generates a new service that applies the given
-// options to each request. These options are applied after the parent client's
-// options (if there is one), and before any request-specific options.
-func NewRestV1ConsentSettingService(opts ...option.RequestOption) (r RestV1ConsentSettingService) {
-	r = RestV1ConsentSettingService{}
+// NewConsentSettingService generates a new service that applies the given options
+// to each request. These options are applied after the parent client's options (if
+// there is one), and before any request-specific options.
+func NewConsentSettingService(opts ...option.RequestOption) (r ConsentSettingService) {
+	r = ConsentSettingService{}
 	r.Options = opts
 	return
 }
 
 // Create a new consent setting. Requires scope: consentSettings:create
-func (r *RestV1ConsentSettingService) New(ctx context.Context, body RestV1ConsentSettingNewParams, opts ...option.RequestOption) (res *RestV1ConsentSettingNewResponse, err error) {
+func (r *ConsentSettingService) New(ctx context.Context, body ConsentSettingNewParams, opts ...option.RequestOption) (res *ConsentSettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -45,7 +45,7 @@ func (r *RestV1ConsentSettingService) New(ctx context.Context, body RestV1Consen
 }
 
 // Find a single consent setting by ID. Requires scope: consentSettings:find
-func (r *RestV1ConsentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1ConsentSettingGetResponse, err error) {
+func (r *ConsentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConsentSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -57,7 +57,7 @@ func (r *RestV1ConsentSettingService) Get(ctx context.Context, id string, opts .
 }
 
 // Update a consent setting. Requires scope: consentSettings:update
-func (r *RestV1ConsentSettingService) Update(ctx context.Context, id string, body RestV1ConsentSettingUpdateParams, opts ...option.RequestOption) (res *RestV1ConsentSettingUpdateResponse, err error) {
+func (r *ConsentSettingService) Update(ctx context.Context, id string, body ConsentSettingUpdateParams, opts ...option.RequestOption) (res *ConsentSettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -69,7 +69,7 @@ func (r *RestV1ConsentSettingService) Update(ctx context.Context, id string, bod
 }
 
 // List all consent settings. Requires scope: consentSettings:list
-func (r *RestV1ConsentSettingService) List(ctx context.Context, opts ...option.RequestOption) (res *RestV1ConsentSettingListResponse, err error) {
+func (r *ConsentSettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ConsentSettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -77,7 +77,7 @@ func (r *RestV1ConsentSettingService) List(ctx context.Context, opts ...option.R
 }
 
 // Delete a consent setting. Requires scope: consentSettings:delete
-func (r *RestV1ConsentSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *RestV1ConsentSettingDeleteResponse, err error) {
+func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ConsentSettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
@@ -88,7 +88,7 @@ func (r *RestV1ConsentSettingService) Delete(ctx context.Context, id string, opt
 	return
 }
 
-type RestV1ConsentSettingNewResponse struct {
+type ConsentSettingNewResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -99,12 +99,12 @@ type RestV1ConsentSettingNewResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ConsentSettingNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ConsentSettingNewResponse) UnmarshalJSON(data []byte) error {
+func (r ConsentSettingNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ConsentSettingGetResponse struct {
+type ConsentSettingGetResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -115,12 +115,12 @@ type RestV1ConsentSettingGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ConsentSettingGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ConsentSettingGetResponse) UnmarshalJSON(data []byte) error {
+func (r ConsentSettingGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ConsentSettingUpdateResponse struct {
+type ConsentSettingUpdateResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -131,12 +131,12 @@ type RestV1ConsentSettingUpdateResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ConsentSettingUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ConsentSettingUpdateResponse) UnmarshalJSON(data []byte) error {
+func (r ConsentSettingUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ConsentSettingListResponse struct {
+type ConsentSettingListResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -147,12 +147,12 @@ type RestV1ConsentSettingListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ConsentSettingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ConsentSettingListResponse) UnmarshalJSON(data []byte) error {
+func (r ConsentSettingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ConsentSettingDeleteResponse struct {
+type ConsentSettingDeleteResponse struct {
 	Data any `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -163,31 +163,31 @@ type RestV1ConsentSettingDeleteResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r RestV1ConsentSettingDeleteResponse) RawJSON() string { return r.JSON.raw }
-func (r *RestV1ConsentSettingDeleteResponse) UnmarshalJSON(data []byte) error {
+func (r ConsentSettingDeleteResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ConsentSettingNewParams struct {
+type ConsentSettingNewParams struct {
 	paramObj
 }
 
-func (r RestV1ConsentSettingNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1ConsentSettingNewParams
+func (r ConsentSettingNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConsentSettingNewParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1ConsentSettingNewParams) UnmarshalJSON(data []byte) error {
+func (r *ConsentSettingNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type RestV1ConsentSettingUpdateParams struct {
+type ConsentSettingUpdateParams struct {
 	paramObj
 }
 
-func (r RestV1ConsentSettingUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow RestV1ConsentSettingUpdateParams
+func (r ConsentSettingUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow ConsentSettingUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *RestV1ConsentSettingUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *ConsentSettingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
