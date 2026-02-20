@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestSourceNew(t *testing.T) {
+func TestSourceNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,10 @@ func TestSourceNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.New(context.TODO(), githubcomwithoursplatformsdkgo.SourceNewParams{})
+	_, err := client.Sources.New(context.TODO(), githubcomwithoursplatformsdkgo.SourceNewParams{
+		Type: githubcomwithoursplatformsdkgo.SourceNewParamsTypeAlchemerWebhook,
+		Name: githubcomwithoursplatformsdkgo.String("name"),
+	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
@@ -57,7 +60,7 @@ func TestSourceGet(t *testing.T) {
 	}
 }
 
-func TestSourceUpdate(t *testing.T) {
+func TestSourceUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,7 +75,17 @@ func TestSourceUpdate(t *testing.T) {
 	_, err := client.Sources.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.SourceUpdateParams{},
+		githubcomwithoursplatformsdkgo.SourceUpdateParams{
+			Status:                githubcomwithoursplatformsdkgo.SourceUpdateParamsStatusDisabled,
+			BotControlMode:        githubcomwithoursplatformsdkgo.SourceUpdateParamsBotControlModeAllow,
+			ExcludeRequestContext: githubcomwithoursplatformsdkgo.Bool(true),
+			Name:                  githubcomwithoursplatformsdkgo.String("name"),
+			ProjectAPIKey:         githubcomwithoursplatformsdkgo.String("projectAPIKey"),
+			RedirectURL:           githubcomwithoursplatformsdkgo.String("redirectUrl"),
+			SelectedAccountID:     githubcomwithoursplatformsdkgo.String("selectedAccountId"),
+			WhitelistDomains:      []any{map[string]any{}},
+			WhitelistIPs:          []string{"string"},
+		},
 	)
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
