@@ -89,10 +89,10 @@ func (r *DestinationService) Delete(ctx context.Context, id string, opts ...opti
 }
 
 type DestinationNewResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status DestinationNewResponseStatus `json:"status,required"`
+	Status DestinationNewResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
 	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
@@ -107,9 +107,9 @@ type DestinationNewResponse struct {
 	// "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
 	// "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe", "Woopra", "XAds",
 	// "Zendesk", "ZoomInfo".
-	Type      DestinationNewResponseType `json:"type,required"`
-	Name      string                     `json:"name,nullable"`
-	UpdatedAt string                     `json:"updatedAt,nullable"`
+	Type      DestinationNewResponseType `json:"type" api:"required"`
+	Name      string                     `json:"name" api:"nullable"`
+	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -207,10 +207,10 @@ const (
 )
 
 type DestinationGetResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status DestinationGetResponseStatus `json:"status,required"`
+	Status DestinationGetResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
 	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
@@ -225,9 +225,9 @@ type DestinationGetResponse struct {
 	// "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
 	// "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe", "Woopra", "XAds",
 	// "Zendesk", "ZoomInfo".
-	Type      DestinationGetResponseType `json:"type,required"`
-	Name      string                     `json:"name,nullable"`
-	UpdatedAt string                     `json:"updatedAt,nullable"`
+	Type      DestinationGetResponseType `json:"type" api:"required"`
+	Name      string                     `json:"name" api:"nullable"`
+	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -325,10 +325,10 @@ const (
 )
 
 type DestinationUpdateResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status DestinationUpdateResponseStatus `json:"status,required"`
+	Status DestinationUpdateResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
 	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
@@ -343,9 +343,9 @@ type DestinationUpdateResponse struct {
 	// "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
 	// "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe", "Woopra", "XAds",
 	// "Zendesk", "ZoomInfo".
-	Type      DestinationUpdateResponseType `json:"type,required"`
-	Name      string                        `json:"name,nullable"`
-	UpdatedAt string                        `json:"updatedAt,nullable"`
+	Type      DestinationUpdateResponseType `json:"type" api:"required"`
+	Name      string                        `json:"name" api:"nullable"`
+	UpdatedAt string                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -443,7 +443,7 @@ const (
 )
 
 type DestinationListResponse struct {
-	Entities []DestinationListResponseEntity `json:"entities,required"`
+	Entities []DestinationListResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -459,10 +459,10 @@ func (r *DestinationListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DestinationListResponseEntity struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
 	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
@@ -477,9 +477,9 @@ type DestinationListResponseEntity struct {
 	// "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
 	// "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe", "Woopra", "XAds",
 	// "Zendesk", "ZoomInfo".
-	Type      string `json:"type,required"`
-	Name      string `json:"name,nullable"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Type      string `json:"type" api:"required"`
+	Name      string `json:"name" api:"nullable"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -514,7 +514,7 @@ type DestinationNewParams struct {
 	// "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
 	// "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe", "Woopra", "XAds",
 	// "Zendesk", "ZoomInfo".
-	Type DestinationNewParamsType `json:"type,omitzero,required"`
+	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	paramObj
 }
@@ -599,7 +599,7 @@ const (
 
 type DestinationUpdateParams struct {
 	// Any of "Disabled", "Enabled".
-	Status                   DestinationUpdateParamsStatus `json:"status,omitzero,required"`
+	Status                   DestinationUpdateParamsStatus `json:"status,omitzero" api:"required"`
 	FacebookConversionAPIKey param.Opt[string]             `json:"facebookConversionAPIKey,omitzero"`
 	FacebookPixelID          param.Opt[string]             `json:"facebookPixelId,omitzero"`
 	G4AnalyticsAPIKey        param.Opt[string]             `json:"g4AnalyticsApiKey,omitzero"`
