@@ -89,12 +89,12 @@ func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opt
 }
 
 type GlobalDispatchCenterNewResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	IsEnabled bool   `json:"isEnabled,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,nullable"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	IsEnabled bool   `json:"isEnabled" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"nullable"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -115,12 +115,12 @@ func (r *GlobalDispatchCenterNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterGetResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	IsEnabled bool   `json:"isEnabled,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,nullable"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	IsEnabled bool   `json:"isEnabled" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"nullable"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -141,12 +141,12 @@ func (r *GlobalDispatchCenterGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterUpdateResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	IsEnabled bool   `json:"isEnabled,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,nullable"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	IsEnabled bool   `json:"isEnabled" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"nullable"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -167,7 +167,7 @@ func (r *GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterListResponse struct {
-	Entities []GlobalDispatchCenterListResponseEntity `json:"entities,required"`
+	Entities []GlobalDispatchCenterListResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -183,12 +183,12 @@ func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterListResponseEntity struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	IsEnabled bool   `json:"isEnabled,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,nullable"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	IsEnabled bool   `json:"isEnabled" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"nullable"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
