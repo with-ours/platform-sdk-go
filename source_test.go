@@ -78,6 +78,7 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 		githubcomwithoursplatformsdkgo.SourceUpdateParams{
 			Status:                githubcomwithoursplatformsdkgo.SourceUpdateParamsStatusDisabled,
 			BotControlMode:        githubcomwithoursplatformsdkgo.SourceUpdateParamsBotControlModeAllow,
+			BotScoreThreshold:     githubcomwithoursplatformsdkgo.Float(0),
 			ExcludeRequestContext: githubcomwithoursplatformsdkgo.Bool(true),
 			Name:                  githubcomwithoursplatformsdkgo.String("name"),
 			ProjectAPIKey:         githubcomwithoursplatformsdkgo.String("projectAPIKey"),

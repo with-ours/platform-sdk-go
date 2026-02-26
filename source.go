@@ -421,12 +421,13 @@ const (
 type SourceUpdateParams struct {
 	// Any of "Disabled", "Enabled".
 	Status                SourceUpdateParamsStatus `json:"status,omitzero" api:"required"`
+	BotScoreThreshold     param.Opt[float64]       `json:"botScoreThreshold,omitzero"`
 	ExcludeRequestContext param.Opt[bool]          `json:"excludeRequestContext,omitzero"`
 	Name                  param.Opt[string]        `json:"name,omitzero"`
 	ProjectAPIKey         param.Opt[string]        `json:"projectAPIKey,omitzero"`
 	RedirectURL           param.Opt[string]        `json:"redirectUrl,omitzero"`
 	SelectedAccountID     param.Opt[string]        `json:"selectedAccountId,omitzero"`
-	// Any of "Allow", "Block".
+	// Any of "Allow", "Block", "Threshold".
 	BotControlMode   SourceUpdateParamsBotControlMode `json:"botControlMode,omitzero"`
 	WhitelistDomains []any                            `json:"whitelistDomains,omitzero"`
 	WhitelistIPs     []string                         `json:"whitelistIps,omitzero"`
@@ -451,6 +452,7 @@ const (
 type SourceUpdateParamsBotControlMode string
 
 const (
-	SourceUpdateParamsBotControlModeAllow SourceUpdateParamsBotControlMode = "Allow"
-	SourceUpdateParamsBotControlModeBlock SourceUpdateParamsBotControlMode = "Block"
+	SourceUpdateParamsBotControlModeAllow     SourceUpdateParamsBotControlMode = "Allow"
+	SourceUpdateParamsBotControlModeBlock     SourceUpdateParamsBotControlMode = "Block"
+	SourceUpdateParamsBotControlModeThreshold SourceUpdateParamsBotControlMode = "Threshold"
 )
