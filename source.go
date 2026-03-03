@@ -428,9 +428,10 @@ type SourceUpdateParams struct {
 	RedirectURL           param.Opt[string]        `json:"redirectUrl,omitzero"`
 	SelectedAccountID     param.Opt[string]        `json:"selectedAccountId,omitzero"`
 	// Any of "Allow", "Block", "Threshold".
-	BotControlMode   SourceUpdateParamsBotControlMode `json:"botControlMode,omitzero"`
-	WhitelistDomains []any                            `json:"whitelistDomains,omitzero"`
-	WhitelistIPs     []string                         `json:"whitelistIps,omitzero"`
+	BotControlMode        SourceUpdateParamsBotControlMode        `json:"botControlMode,omitzero"`
+	ProbabilisticIdentity SourceUpdateParamsProbabilisticIdentity `json:"probabilisticIdentity,omitzero"`
+	WhitelistDomains      []any                                   `json:"whitelistDomains,omitzero"`
+	WhitelistIPs          []string                                `json:"whitelistIps,omitzero"`
 	paramObj
 }
 
@@ -456,3 +457,19 @@ const (
 	SourceUpdateParamsBotControlModeBlock     SourceUpdateParamsBotControlMode = "Block"
 	SourceUpdateParamsBotControlModeThreshold SourceUpdateParamsBotControlMode = "Threshold"
 )
+
+// The property Enabled is required.
+type SourceUpdateParamsProbabilisticIdentity struct {
+	Enabled            bool             `json:"enabled" api:"required"`
+	MatchWindowMinutes param.Opt[int64] `json:"matchWindowMinutes,omitzero"`
+	MaxMatchesPerIP    param.Opt[int64] `json:"maxMatchesPerIp,omitzero"`
+	paramObj
+}
+
+func (r SourceUpdateParamsProbabilisticIdentity) MarshalJSON() (data []byte, err error) {
+	type shadow SourceUpdateParamsProbabilisticIdentity
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SourceUpdateParamsProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

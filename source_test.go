@@ -81,11 +81,16 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 			BotScoreThreshold:     githubcomwithoursplatformsdkgo.Float(0),
 			ExcludeRequestContext: githubcomwithoursplatformsdkgo.Bool(true),
 			Name:                  githubcomwithoursplatformsdkgo.String("name"),
-			ProjectAPIKey:         githubcomwithoursplatformsdkgo.String("projectAPIKey"),
-			RedirectURL:           githubcomwithoursplatformsdkgo.String("redirectUrl"),
-			SelectedAccountID:     githubcomwithoursplatformsdkgo.String("selectedAccountId"),
-			WhitelistDomains:      []any{map[string]any{}},
-			WhitelistIPs:          []string{"string"},
+			ProbabilisticIdentity: githubcomwithoursplatformsdkgo.SourceUpdateParamsProbabilisticIdentity{
+				Enabled:            true,
+				MatchWindowMinutes: githubcomwithoursplatformsdkgo.Int(1),
+				MaxMatchesPerIP:    githubcomwithoursplatformsdkgo.Int(1),
+			},
+			ProjectAPIKey:     githubcomwithoursplatformsdkgo.String("projectAPIKey"),
+			RedirectURL:       githubcomwithoursplatformsdkgo.String("redirectUrl"),
+			SelectedAccountID: githubcomwithoursplatformsdkgo.String("selectedAccountId"),
+			WhitelistDomains:  []any{map[string]any{}},
+			WhitelistIPs:      []string{"string"},
 		},
 	)
 	if err != nil {
