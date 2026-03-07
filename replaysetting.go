@@ -89,9 +89,9 @@ func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...op
 }
 
 type ReplaySettingNewResponse struct {
-	IsSuccess      bool                                   `json:"isSuccess,required"`
-	Cause          string                                 `json:"cause,nullable"`
-	ReplaySettings ReplaySettingNewResponseReplaySettings `json:"replaySettings,nullable"`
+	IsSuccess      bool                                   `json:"isSuccess" api:"required"`
+	Cause          string                                 `json:"cause" api:"nullable"`
+	ReplaySettings ReplaySettingNewResponseReplaySettings `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -109,12 +109,12 @@ func (r *ReplaySettingNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingNewResponseReplaySettings struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -134,12 +134,12 @@ func (r *ReplaySettingNewResponseReplaySettings) UnmarshalJSON(data []byte) erro
 }
 
 type ReplaySettingGetResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    ReplaySettingGetResponseStatus `json:"status,required"`
-	UpdatedAt string                         `json:"updatedAt,nullable"`
+	Status    ReplaySettingGetResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                         `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -166,9 +166,9 @@ const (
 )
 
 type ReplaySettingUpdateResponse struct {
-	IsSuccess      bool                                      `json:"isSuccess,required"`
-	Cause          string                                    `json:"cause,nullable"`
-	ReplaySettings ReplaySettingUpdateResponseReplaySettings `json:"replaySettings,nullable"`
+	IsSuccess      bool                                      `json:"isSuccess" api:"required"`
+	Cause          string                                    `json:"cause" api:"nullable"`
+	ReplaySettings ReplaySettingUpdateResponseReplaySettings `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -186,12 +186,12 @@ func (r *ReplaySettingUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingUpdateResponseReplaySettings struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -211,7 +211,7 @@ func (r *ReplaySettingUpdateResponseReplaySettings) UnmarshalJSON(data []byte) e
 }
 
 type ReplaySettingListResponse struct {
-	Entities []ReplaySettingListResponseEntity `json:"entities,required"`
+	Entities []ReplaySettingListResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -227,12 +227,12 @@ func (r *ReplaySettingListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingListResponseEntity struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -252,9 +252,9 @@ func (r *ReplaySettingListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingDeleteResponse struct {
-	IsSuccess      bool                                      `json:"isSuccess,required"`
-	Cause          string                                    `json:"cause,nullable"`
-	ReplaySettings ReplaySettingDeleteResponseReplaySettings `json:"replaySettings,nullable"`
+	IsSuccess      bool                                      `json:"isSuccess" api:"required"`
+	Cause          string                                    `json:"cause" api:"nullable"`
+	ReplaySettings ReplaySettingDeleteResponseReplaySettings `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -272,12 +272,12 @@ func (r *ReplaySettingDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingDeleteResponseReplaySettings struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

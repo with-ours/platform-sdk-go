@@ -77,11 +77,11 @@ func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...opt
 }
 
 type AllowedEventNewResponse struct {
-	ID             string   `json:"id,required"`
-	CreatedAt      string   `json:"createdAt,required"`
-	DestinationIDs []string `json:"destinationIds,required"`
-	Name           string   `json:"name,required"`
-	UpdatedAt      string   `json:"updatedAt,nullable"`
+	ID             string   `json:"id" api:"required"`
+	CreatedAt      string   `json:"createdAt" api:"required"`
+	DestinationIDs []string `json:"destinationIds" api:"required"`
+	Name           string   `json:"name" api:"required"`
+	UpdatedAt      string   `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -101,11 +101,11 @@ func (r *AllowedEventNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventGetResponse struct {
-	ID             string   `json:"id,required"`
-	CreatedAt      string   `json:"createdAt,required"`
-	DestinationIDs []string `json:"destinationIds,required"`
-	Name           string   `json:"name,required"`
-	UpdatedAt      string   `json:"updatedAt,nullable"`
+	ID             string   `json:"id" api:"required"`
+	CreatedAt      string   `json:"createdAt" api:"required"`
+	DestinationIDs []string `json:"destinationIds" api:"required"`
+	Name           string   `json:"name" api:"required"`
+	UpdatedAt      string   `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -125,7 +125,7 @@ func (r *AllowedEventGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventListResponse struct {
-	Entities []AllowedEventListResponseEntity `json:"entities,required"`
+	Entities []AllowedEventListResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -141,11 +141,11 @@ func (r *AllowedEventListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventListResponseEntity struct {
-	ID             string   `json:"id,required"`
-	CreatedAt      string   `json:"createdAt,required"`
-	DestinationIDs []string `json:"destinationIds,required"`
-	Name           string   `json:"name,required"`
-	UpdatedAt      string   `json:"updatedAt,nullable"`
+	ID             string   `json:"id" api:"required"`
+	CreatedAt      string   `json:"createdAt" api:"required"`
+	DestinationIDs []string `json:"destinationIds" api:"required"`
+	Name           string   `json:"name" api:"required"`
+	UpdatedAt      string   `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -165,7 +165,7 @@ func (r *AllowedEventListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventNewParams struct {
-	Name           string                                   `json:"name,required"`
+	Name           string                                   `json:"name" api:"required"`
 	DestinationIDs AllowedEventNewParamsDestinationIDsUnion `json:"destinationIds,omitzero"`
 	paramObj
 }

@@ -89,9 +89,9 @@ func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...o
 }
 
 type ConsentSettingNewResponse struct {
-	IsSuccess       bool                                     `json:"isSuccess,required"`
-	Cause           string                                   `json:"cause,nullable"`
-	ConsentSettings ConsentSettingNewResponseConsentSettings `json:"consentSettings,nullable"`
+	IsSuccess       bool                                     `json:"isSuccess" api:"required"`
+	Cause           string                                   `json:"cause" api:"nullable"`
+	ConsentSettings ConsentSettingNewResponseConsentSettings `json:"consentSettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess       respjson.Field
@@ -109,13 +109,13 @@ func (r *ConsentSettingNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ConsentSettingNewResponseConsentSettings struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -136,13 +136,13 @@ func (r *ConsentSettingNewResponseConsentSettings) UnmarshalJSON(data []byte) er
 }
 
 type ConsentSettingGetResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    ConsentSettingGetResponseStatus `json:"status,required"`
-	UpdatedAt string                          `json:"updatedAt,nullable"`
+	Status    ConsentSettingGetResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                          `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -170,9 +170,9 @@ const (
 )
 
 type ConsentSettingUpdateResponse struct {
-	IsSuccess       bool                                        `json:"isSuccess,required"`
-	Cause           string                                      `json:"cause,nullable"`
-	ConsentSettings ConsentSettingUpdateResponseConsentSettings `json:"consentSettings,nullable"`
+	IsSuccess       bool                                        `json:"isSuccess" api:"required"`
+	Cause           string                                      `json:"cause" api:"nullable"`
+	ConsentSettings ConsentSettingUpdateResponseConsentSettings `json:"consentSettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess       respjson.Field
@@ -190,13 +190,13 @@ func (r *ConsentSettingUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ConsentSettingUpdateResponseConsentSettings struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -217,7 +217,7 @@ func (r *ConsentSettingUpdateResponseConsentSettings) UnmarshalJSON(data []byte)
 }
 
 type ConsentSettingListResponse struct {
-	Entities []ConsentSettingListResponseEntity `json:"entities,required"`
+	Entities []ConsentSettingListResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -233,13 +233,13 @@ func (r *ConsentSettingListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ConsentSettingListResponseEntity struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status,required"`
-	UpdatedAt string `json:"updatedAt,nullable"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -260,13 +260,13 @@ func (r *ConsentSettingListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type ConsentSettingDeleteResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
-	Kind      string `json:"kind,required"`
-	Name      string `json:"name,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	Kind      string `json:"kind" api:"required"`
+	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    ConsentSettingDeleteResponseStatus `json:"status,required"`
-	UpdatedAt string                             `json:"updatedAt,nullable"`
+	Status    ConsentSettingDeleteResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                             `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -294,12 +294,12 @@ const (
 )
 
 type ConsentSettingUpdateParams struct {
-	Categories []any  `json:"categories,omitzero,required"`
-	Name       string `json:"name,required"`
-	Regions    []any  `json:"regions,omitzero,required"`
-	Services   []any  `json:"services,omitzero,required"`
+	Categories []any  `json:"categories,omitzero" api:"required"`
+	Name       string `json:"name" api:"required"`
+	Regions    []any  `json:"regions,omitzero" api:"required"`
+	Services   []any  `json:"services,omitzero" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status                 ConsentSettingUpdateParamsStatus `json:"status,omitzero,required"`
+	Status                 ConsentSettingUpdateParamsStatus `json:"status,omitzero" api:"required"`
 	ConsentCookieName      param.Opt[string]                `json:"consentCookieName,omitzero"`
 	Revision               param.Opt[float64]               `json:"revision,omitzero"`
 	WebSDKToken            param.Opt[string]                `json:"webSDKToken,omitzero"`

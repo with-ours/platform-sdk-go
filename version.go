@@ -77,8 +77,8 @@ func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption)
 }
 
 type VersionNewResponse struct {
-	Success bool   `json:"success,required"`
-	Error   string `json:"error,nullable"`
+	Success bool   `json:"success" api:"required"`
+	Error   string `json:"error" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Success     respjson.Field
@@ -95,13 +95,13 @@ func (r *VersionNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionGetResponse struct {
-	ID            string  `json:"id,required"`
-	CreatedAt     string  `json:"createdAt,required"`
-	IsPublished   bool    `json:"isPublished,required"`
-	VersionNumber float64 `json:"versionNumber,required"`
-	Name          string  `json:"name,nullable"`
-	Notes         string  `json:"notes,nullable"`
-	PublishedAt   string  `json:"publishedAt,nullable"`
+	ID            string  `json:"id" api:"required"`
+	CreatedAt     string  `json:"createdAt" api:"required"`
+	IsPublished   bool    `json:"isPublished" api:"required"`
+	VersionNumber float64 `json:"versionNumber" api:"required"`
+	Name          string  `json:"name" api:"nullable"`
+	Notes         string  `json:"notes" api:"nullable"`
+	PublishedAt   string  `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -123,13 +123,13 @@ func (r *VersionGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionUpdateResponse struct {
-	ID            string  `json:"id,required"`
-	CreatedAt     string  `json:"createdAt,required"`
-	IsPublished   bool    `json:"isPublished,required"`
-	VersionNumber float64 `json:"versionNumber,required"`
-	Name          string  `json:"name,nullable"`
-	Notes         string  `json:"notes,nullable"`
-	PublishedAt   string  `json:"publishedAt,nullable"`
+	ID            string  `json:"id" api:"required"`
+	CreatedAt     string  `json:"createdAt" api:"required"`
+	IsPublished   bool    `json:"isPublished" api:"required"`
+	VersionNumber float64 `json:"versionNumber" api:"required"`
+	Name          string  `json:"name" api:"nullable"`
+	Notes         string  `json:"notes" api:"nullable"`
+	PublishedAt   string  `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -151,12 +151,12 @@ func (r *VersionUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionListResponse struct {
-	ID            string  `json:"id,required"`
-	CreatedAt     string  `json:"createdAt,required"`
-	IsPublished   bool    `json:"isPublished,required"`
-	VersionNumber float64 `json:"versionNumber,required"`
-	Name          string  `json:"name,nullable"`
-	PublishedAt   string  `json:"publishedAt,nullable"`
+	ID            string  `json:"id" api:"required"`
+	CreatedAt     string  `json:"createdAt" api:"required"`
+	IsPublished   bool    `json:"isPublished" api:"required"`
+	VersionNumber float64 `json:"versionNumber" api:"required"`
+	Name          string  `json:"name" api:"nullable"`
+	PublishedAt   string  `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field

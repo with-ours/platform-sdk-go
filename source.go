@@ -89,10 +89,10 @@ func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.Re
 }
 
 type SourceNewResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status SourceNewResponseStatus `json:"status,required"`
+	Status SourceNewResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
 	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
 	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
@@ -100,8 +100,8 @@ type SourceNewResponse struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type SourceNewResponseType `json:"type,required"`
-	Name string                `json:"name,nullable"`
+	Type SourceNewResponseType `json:"type" api:"required"`
+	Name string                `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -164,10 +164,10 @@ const (
 )
 
 type SourceGetResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status SourceGetResponseStatus `json:"status,required"`
+	Status SourceGetResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
 	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
 	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
@@ -175,8 +175,8 @@ type SourceGetResponse struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type SourceGetResponseType `json:"type,required"`
-	Name string                `json:"name,nullable"`
+	Type SourceGetResponseType `json:"type" api:"required"`
+	Name string                `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -239,10 +239,10 @@ const (
 )
 
 type SourceUpdateResponse struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status SourceUpdateResponseStatus `json:"status,required"`
+	Status SourceUpdateResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
 	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
 	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
@@ -250,8 +250,8 @@ type SourceUpdateResponse struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type SourceUpdateResponseType `json:"type,required"`
-	Name string                   `json:"name,nullable"`
+	Type SourceUpdateResponseType `json:"type" api:"required"`
+	Name string                   `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -314,7 +314,7 @@ const (
 )
 
 type SourceListResponse struct {
-	Entities []SourceListResponseEntity `json:"entities,required"`
+	Entities []SourceListResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -330,10 +330,10 @@ func (r *SourceListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type SourceListResponseEntity struct {
-	ID        string `json:"id,required"`
-	CreatedAt string `json:"createdAt,required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
 	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
 	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
@@ -341,8 +341,8 @@ type SourceListResponseEntity struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type string `json:"type,required"`
-	Name string `json:"name,nullable"`
+	Type string `json:"type" api:"required"`
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -369,7 +369,7 @@ type SourceNewParams struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type SourceNewParamsType `json:"type,omitzero,required"`
+	Type SourceNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]   `json:"name,omitzero"`
 	paramObj
 }
@@ -420,16 +420,18 @@ const (
 
 type SourceUpdateParams struct {
 	// Any of "Disabled", "Enabled".
-	Status                SourceUpdateParamsStatus `json:"status,omitzero,required"`
+	Status                SourceUpdateParamsStatus `json:"status,omitzero" api:"required"`
+	BotScoreThreshold     param.Opt[float64]       `json:"botScoreThreshold,omitzero"`
 	ExcludeRequestContext param.Opt[bool]          `json:"excludeRequestContext,omitzero"`
 	Name                  param.Opt[string]        `json:"name,omitzero"`
 	ProjectAPIKey         param.Opt[string]        `json:"projectAPIKey,omitzero"`
 	RedirectURL           param.Opt[string]        `json:"redirectUrl,omitzero"`
 	SelectedAccountID     param.Opt[string]        `json:"selectedAccountId,omitzero"`
-	// Any of "Allow", "Block".
-	BotControlMode   SourceUpdateParamsBotControlMode `json:"botControlMode,omitzero"`
-	WhitelistDomains []any                            `json:"whitelistDomains,omitzero"`
-	WhitelistIPs     []string                         `json:"whitelistIps,omitzero"`
+	// Any of "Allow", "Block", "Threshold".
+	BotControlMode        SourceUpdateParamsBotControlMode        `json:"botControlMode,omitzero"`
+	ProbabilisticIdentity SourceUpdateParamsProbabilisticIdentity `json:"probabilisticIdentity,omitzero"`
+	WhitelistDomains      []any                                   `json:"whitelistDomains,omitzero"`
+	WhitelistIPs          []string                                `json:"whitelistIps,omitzero"`
 	paramObj
 }
 
@@ -451,6 +453,23 @@ const (
 type SourceUpdateParamsBotControlMode string
 
 const (
-	SourceUpdateParamsBotControlModeAllow SourceUpdateParamsBotControlMode = "Allow"
-	SourceUpdateParamsBotControlModeBlock SourceUpdateParamsBotControlMode = "Block"
+	SourceUpdateParamsBotControlModeAllow     SourceUpdateParamsBotControlMode = "Allow"
+	SourceUpdateParamsBotControlModeBlock     SourceUpdateParamsBotControlMode = "Block"
+	SourceUpdateParamsBotControlModeThreshold SourceUpdateParamsBotControlMode = "Threshold"
 )
+
+// The property Enabled is required.
+type SourceUpdateParamsProbabilisticIdentity struct {
+	Enabled            bool             `json:"enabled" api:"required"`
+	MatchWindowMinutes param.Opt[int64] `json:"matchWindowMinutes,omitzero"`
+	MaxMatchesPerIP    param.Opt[int64] `json:"maxMatchesPerIp,omitzero"`
+	paramObj
+}
+
+func (r SourceUpdateParamsProbabilisticIdentity) MarshalJSON() (data []byte, err error) {
+	type shadow SourceUpdateParamsProbabilisticIdentity
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SourceUpdateParamsProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
