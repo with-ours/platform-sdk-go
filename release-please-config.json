@@ -59,6 +59,9 @@
       "hidden": true
     }
   ],
+  "reviewers": [
+    "tylerzey"
+  ],
   "release-type": "go",
   "extra-files": [
     "internal/version.go",
