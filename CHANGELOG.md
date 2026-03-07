@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.2.0 (2026-03-07)
+
+Full Changelog: [v1.1.0...v1.2.0](https://github.com/with-ours/platform-sdk-go/compare/v1.1.0...v1.2.0)
+
+### Features
+
+* **api:** api update ([6523afc](https://github.com/with-ours/platform-sdk-go/commit/6523afc0c1376cc5257dcb45d13551525f5eb453))
+* **api:** api update ([c825f88](https://github.com/with-ours/platform-sdk-go/commit/c825f881540de5a1d4b60448aaf18dadb202600e))
+* **api:** api update ([483a36d](https://github.com/with-ours/platform-sdk-go/commit/483a36d92a7353863bcf02d04fb911c1e1bb7708))
+
+
+### Bug Fixes
+
+* fix request delays for retrying to be more respectful of high requested delays ([00e29ce](https://github.com/with-ours/platform-sdk-go/commit/00e29ce958e37120d01b64fab158cbfceb4b77ad))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([23a35e1](https://github.com/with-ours/platform-sdk-go/commit/23a35e1571414a41342517e216edeb49793b56a0))
+* **internal:** codegen related update ([06f586a](https://github.com/with-ours/platform-sdk-go/commit/06f586abb904a973ac80b45e4240bf45575f6e85))
+* **internal:** move custom custom `json` tags to `api` ([1081ab8](https://github.com/with-ours/platform-sdk-go/commit/1081ab8ec11e521639fef588a497d2c29b263765))
+* **test:** do not count install time for mock server timeout ([16f8b67](https://github.com/with-ours/platform-sdk-go/commit/16f8b67a735fed1d33ffebf5bd09785822627b9d))
+
 ## 1.1.0 (2026-02-20)
 
 Full Changelog: [v1.0.0...v1.1.0](https://github.com/with-ours/platform-sdk-go/compare/v1.0.0...v1.1.0)
