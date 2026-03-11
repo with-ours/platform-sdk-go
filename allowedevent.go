@@ -41,7 +41,7 @@ func (r *AllowedEventService) New(ctx context.Context, body AllowedEventNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/allowed-events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Find a single allowed event by ID. Requires scope: allowedEvent:find
@@ -49,11 +49,11 @@ func (r *AllowedEventService) Get(ctx context.Context, id string, opts ...option
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/allowed-events/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // List all allowed events. Requires scope: allowedEvent:list
@@ -61,7 +61,7 @@ func (r *AllowedEventService) List(ctx context.Context, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/allowed-events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a allowed event. Requires scope: allowedEvent:delete
@@ -69,11 +69,11 @@ func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/allowed-events/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type AllowedEventNewResponse struct {
