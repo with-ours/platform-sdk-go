@@ -41,7 +41,7 @@ func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Find a single version by ID. Requires scope: version:find
@@ -49,11 +49,11 @@ func (r *VersionService) Get(ctx context.Context, id string, opts ...option.Requ
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/versions/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a version. Requires scope: version:update
@@ -61,11 +61,11 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/versions/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all versions. Requires scope: version:list
@@ -73,7 +73,7 @@ func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type VersionNewResponse struct {

@@ -41,7 +41,7 @@ func (r *GlobalDispatchCenterService) New(ctx context.Context, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/global-dispatch-centers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Find a single global dispatch center by ID. Requires scope: globalDispatch:find
@@ -49,11 +49,11 @@ func (r *GlobalDispatchCenterService) Get(ctx context.Context, id string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/global-dispatch-centers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a global dispatch center. Requires scope: globalDispatch:update
@@ -61,11 +61,11 @@ func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, bod
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/global-dispatch-centers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all global dispatch centers. Requires scope: globalDispatch:list
@@ -73,7 +73,7 @@ func (r *GlobalDispatchCenterService) List(ctx context.Context, opts ...option.R
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/global-dispatch-centers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a global dispatch center. Requires scope: globalDispatch:delete
@@ -81,11 +81,11 @@ func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opt
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/global-dispatch-centers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type GlobalDispatchCenterNewResponse struct {

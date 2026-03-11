@@ -41,7 +41,7 @@ func (r *DestinationService) New(ctx context.Context, body DestinationNewParams,
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/destinations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Find a single destination by ID. Requires scope: destination:find
@@ -49,11 +49,11 @@ func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a destination. Requires scope: destination:update
@@ -61,11 +61,11 @@ func (r *DestinationService) Update(ctx context.Context, id string, body Destina
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all destinations. Requires scope: destination:list
@@ -73,7 +73,7 @@ func (r *DestinationService) List(ctx context.Context, opts ...option.RequestOpt
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/destinations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a destination. Requires scope: destination:delete
@@ -81,11 +81,11 @@ func (r *DestinationService) Delete(ctx context.Context, id string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type DestinationNewResponse struct {
