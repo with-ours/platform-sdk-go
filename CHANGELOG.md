@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.3.1 (2026-03-11)
+
+Full Changelog: [v1.3.0...v1.3.1](https://github.com/with-ours/platform-sdk-go/compare/v1.3.0...v1.3.1)
+
+### Chores
+
+* **internal:** minor cleanup ([f388ba7](https://github.com/with-ours/platform-sdk-go/commit/f388ba77f86c2394abdf3c6760b5495d2b6f5f89))
+* **internal:** use explicit returns ([b254be9](https://github.com/with-ours/platform-sdk-go/commit/b254be916e985bd9d0e59eb51a3ba3d027cee3f3))
+* **internal:** use explicit returns in more places ([c996e47](https://github.com/with-ours/platform-sdk-go/commit/c996e472e13914487167549093d128c7012ba1c5))
+
 ## 1.3.0 (2026-03-07)
 
 Full Changelog: [v1.2.0...v1.3.0](https://github.com/with-ours/platform-sdk-go/compare/v1.2.0...v1.3.0)
