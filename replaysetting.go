@@ -41,7 +41,7 @@ func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewPar
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Find a single replay setting by ID. Requires scope: replaySettings:find
@@ -49,11 +49,11 @@ func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update a replay setting. Requires scope: replaySettings:update
@@ -61,11 +61,11 @@ func (r *ReplaySettingService) Update(ctx context.Context, id string, body Repla
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // List all replay settings. Requires scope: replaySettings:list
@@ -73,7 +73,7 @@ func (r *ReplaySettingService) List(ctx context.Context, opts ...option.RequestO
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a replay setting. Requires scope: replaySettings:delete
@@ -81,11 +81,11 @@ func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...op
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 type ReplaySettingNewResponse struct {
