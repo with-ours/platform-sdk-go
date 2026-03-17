@@ -89,7 +89,7 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 			ProjectAPIKey:     githubcomwithoursplatformsdkgo.String("projectAPIKey"),
 			RedirectURL:       githubcomwithoursplatformsdkgo.String("redirectUrl"),
 			SelectedAccountID: githubcomwithoursplatformsdkgo.String("selectedAccountId"),
-			WhitelistDomains:  []any{map[string]any{}},
+			WhitelistDomains:  []string{"string"},
 			WhitelistIPs:      []string{"string"},
 		},
 	)
