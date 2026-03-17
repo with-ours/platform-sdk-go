@@ -90,8 +90,10 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 			ProjectAPIKey:            githubcomwithoursplatformsdkgo.String("projectAPIKey"),
 			ProjectToken:             githubcomwithoursplatformsdkgo.String("projectToken"),
 			SelectedAccountID:        githubcomwithoursplatformsdkgo.String("selectedAccountId"),
-			Settings: map[string]any{
-				"foo": "bar",
+			Settings: map[string]githubcomwithoursplatformsdkgo.DestinationUpdateParamsSettingUnion{
+				"foo": {
+					OfString: githubcomwithoursplatformsdkgo.String("string"),
+				},
 			},
 		},
 	)

@@ -430,7 +430,7 @@ type SourceUpdateParams struct {
 	// Any of "Allow", "Block", "Threshold".
 	BotControlMode        SourceUpdateParamsBotControlMode        `json:"botControlMode,omitzero"`
 	ProbabilisticIdentity SourceUpdateParamsProbabilisticIdentity `json:"probabilisticIdentity,omitzero"`
-	WhitelistDomains      []any                                   `json:"whitelistDomains,omitzero"`
+	WhitelistDomains      []string                                `json:"whitelistDomains,omitzero"`
 	WhitelistIPs          []string                                `json:"whitelistIps,omitzero"`
 	paramObj
 }
