@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 (2026-03-20)
+
+Full Changelog: [v1.4.0...v1.4.1](https://github.com/with-ours/platform-sdk-go/compare/v1.4.0...v1.4.1)
+
+### Refactors
+
+* **tests:** switch from prism to steady ([968ec73](https://github.com/with-ours/platform-sdk-go/commit/968ec7363c2618064db35c2e7c1f375a391eb0a1))
+
 ## 1.4.0 (2026-03-17)
 
 Full Changelog: [v1.3.1...v1.4.0](https://github.com/with-ours/platform-sdk-go/compare/v1.3.1...v1.4.0)
