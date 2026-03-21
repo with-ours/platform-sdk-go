@@ -608,24 +608,26 @@ func init() {
 }
 
 type ConsentSettingUpdateParamsDefaultGuiOptionsCssVariables struct {
-	ButtonBorderRadius        param.Opt[string] `json:"buttonBorderRadius,omitzero"`
-	FooterBg                  param.Opt[string] `json:"footerBg,omitzero"`
-	FooterColor               param.Opt[string] `json:"footerColor,omitzero"`
-	FooterLinkColor           param.Opt[string] `json:"footerLinkColor,omitzero"`
-	FooterLinkHoverColor      param.Opt[string] `json:"footerLinkHoverColor,omitzero"`
-	ModalBg                   param.Opt[string] `json:"modalBg,omitzero"`
-	ModalBorderRadius         param.Opt[string] `json:"modalBorderRadius,omitzero"`
-	PrimaryButtonBg           param.Opt[string] `json:"primaryButtonBg,omitzero"`
-	PrimaryButtonColor        param.Opt[string] `json:"primaryButtonColor,omitzero"`
-	PrimaryButtonHoverBg      param.Opt[string] `json:"primaryButtonHoverBg,omitzero"`
-	PrimaryButtonHoverColor   param.Opt[string] `json:"primaryButtonHoverColor,omitzero"`
-	PrimaryTextColor          param.Opt[string] `json:"primaryTextColor,omitzero"`
-	SecondaryButtonBg         param.Opt[string] `json:"secondaryButtonBg,omitzero"`
-	SecondaryButtonColor      param.Opt[string] `json:"secondaryButtonColor,omitzero"`
-	SecondaryButtonHoverBg    param.Opt[string] `json:"secondaryButtonHoverBg,omitzero"`
-	SecondaryButtonHoverColor param.Opt[string] `json:"secondaryButtonHoverColor,omitzero"`
-	SecondaryTextColor        param.Opt[string] `json:"secondaryTextColor,omitzero"`
-	ToggleOnBg                param.Opt[string] `json:"toggleOnBg,omitzero"`
+	ButtonBorderRadius         param.Opt[string] `json:"buttonBorderRadius,omitzero"`
+	CookieCategoryBlockBg      param.Opt[string] `json:"cookieCategoryBlockBg,omitzero"`
+	CookieCategoryBlockHoverBg param.Opt[string] `json:"cookieCategoryBlockHoverBg,omitzero"`
+	FooterBg                   param.Opt[string] `json:"footerBg,omitzero"`
+	FooterColor                param.Opt[string] `json:"footerColor,omitzero"`
+	FooterLinkColor            param.Opt[string] `json:"footerLinkColor,omitzero"`
+	FooterLinkHoverColor       param.Opt[string] `json:"footerLinkHoverColor,omitzero"`
+	ModalBg                    param.Opt[string] `json:"modalBg,omitzero"`
+	ModalBorderRadius          param.Opt[string] `json:"modalBorderRadius,omitzero"`
+	PrimaryButtonBg            param.Opt[string] `json:"primaryButtonBg,omitzero"`
+	PrimaryButtonColor         param.Opt[string] `json:"primaryButtonColor,omitzero"`
+	PrimaryButtonHoverBg       param.Opt[string] `json:"primaryButtonHoverBg,omitzero"`
+	PrimaryButtonHoverColor    param.Opt[string] `json:"primaryButtonHoverColor,omitzero"`
+	PrimaryTextColor           param.Opt[string] `json:"primaryTextColor,omitzero"`
+	SecondaryButtonBg          param.Opt[string] `json:"secondaryButtonBg,omitzero"`
+	SecondaryButtonColor       param.Opt[string] `json:"secondaryButtonColor,omitzero"`
+	SecondaryButtonHoverBg     param.Opt[string] `json:"secondaryButtonHoverBg,omitzero"`
+	SecondaryButtonHoverColor  param.Opt[string] `json:"secondaryButtonHoverColor,omitzero"`
+	SecondaryTextColor         param.Opt[string] `json:"secondaryTextColor,omitzero"`
+	ToggleOnBg                 param.Opt[string] `json:"toggleOnBg,omitzero"`
 	paramObj
 }
 
@@ -959,24 +961,26 @@ func init() {
 }
 
 type ConsentSettingUpdateParamsRegionRuleGuiOptionsCssVariables struct {
-	ButtonBorderRadius        param.Opt[string] `json:"buttonBorderRadius,omitzero"`
-	FooterBg                  param.Opt[string] `json:"footerBg,omitzero"`
-	FooterColor               param.Opt[string] `json:"footerColor,omitzero"`
-	FooterLinkColor           param.Opt[string] `json:"footerLinkColor,omitzero"`
-	FooterLinkHoverColor      param.Opt[string] `json:"footerLinkHoverColor,omitzero"`
-	ModalBg                   param.Opt[string] `json:"modalBg,omitzero"`
-	ModalBorderRadius         param.Opt[string] `json:"modalBorderRadius,omitzero"`
-	PrimaryButtonBg           param.Opt[string] `json:"primaryButtonBg,omitzero"`
-	PrimaryButtonColor        param.Opt[string] `json:"primaryButtonColor,omitzero"`
-	PrimaryButtonHoverBg      param.Opt[string] `json:"primaryButtonHoverBg,omitzero"`
-	PrimaryButtonHoverColor   param.Opt[string] `json:"primaryButtonHoverColor,omitzero"`
-	PrimaryTextColor          param.Opt[string] `json:"primaryTextColor,omitzero"`
-	SecondaryButtonBg         param.Opt[string] `json:"secondaryButtonBg,omitzero"`
-	SecondaryButtonColor      param.Opt[string] `json:"secondaryButtonColor,omitzero"`
-	SecondaryButtonHoverBg    param.Opt[string] `json:"secondaryButtonHoverBg,omitzero"`
-	SecondaryButtonHoverColor param.Opt[string] `json:"secondaryButtonHoverColor,omitzero"`
-	SecondaryTextColor        param.Opt[string] `json:"secondaryTextColor,omitzero"`
-	ToggleOnBg                param.Opt[string] `json:"toggleOnBg,omitzero"`
+	ButtonBorderRadius         param.Opt[string] `json:"buttonBorderRadius,omitzero"`
+	CookieCategoryBlockBg      param.Opt[string] `json:"cookieCategoryBlockBg,omitzero"`
+	CookieCategoryBlockHoverBg param.Opt[string] `json:"cookieCategoryBlockHoverBg,omitzero"`
+	FooterBg                   param.Opt[string] `json:"footerBg,omitzero"`
+	FooterColor                param.Opt[string] `json:"footerColor,omitzero"`
+	FooterLinkColor            param.Opt[string] `json:"footerLinkColor,omitzero"`
+	FooterLinkHoverColor       param.Opt[string] `json:"footerLinkHoverColor,omitzero"`
+	ModalBg                    param.Opt[string] `json:"modalBg,omitzero"`
+	ModalBorderRadius          param.Opt[string] `json:"modalBorderRadius,omitzero"`
+	PrimaryButtonBg            param.Opt[string] `json:"primaryButtonBg,omitzero"`
+	PrimaryButtonColor         param.Opt[string] `json:"primaryButtonColor,omitzero"`
+	PrimaryButtonHoverBg       param.Opt[string] `json:"primaryButtonHoverBg,omitzero"`
+	PrimaryButtonHoverColor    param.Opt[string] `json:"primaryButtonHoverColor,omitzero"`
+	PrimaryTextColor           param.Opt[string] `json:"primaryTextColor,omitzero"`
+	SecondaryButtonBg          param.Opt[string] `json:"secondaryButtonBg,omitzero"`
+	SecondaryButtonColor       param.Opt[string] `json:"secondaryButtonColor,omitzero"`
+	SecondaryButtonHoverBg     param.Opt[string] `json:"secondaryButtonHoverBg,omitzero"`
+	SecondaryButtonHoverColor  param.Opt[string] `json:"secondaryButtonHoverColor,omitzero"`
+	SecondaryTextColor         param.Opt[string] `json:"secondaryTextColor,omitzero"`
+	ToggleOnBg                 param.Opt[string] `json:"toggleOnBg,omitzero"`
 	paramObj
 }
 
