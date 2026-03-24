@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.1 (2026-03-24)
+
+Full Changelog: [v1.5.0...v1.5.1](https://github.com/with-ours/platform-sdk-go/compare/v1.5.0...v1.5.1)
+
+### Chores
+
+* **internal:** update gitignore ([45b6ce4](https://github.com/with-ours/platform-sdk-go/commit/45b6ce4011a5fd8281f5585dd05d62e1aa6d346f))
+* **tests:** bump steady to v0.19.6 ([b16953f](https://github.com/with-ours/platform-sdk-go/commit/b16953fdece22a33b72d55ab93dbab4616426d6e))
+
 ## 1.5.0 (2026-03-21)
 
 Full Changelog: [v1.4.1...v1.5.0](https://github.com/with-ours/platform-sdk-go/compare/v1.4.1...v1.5.0)
