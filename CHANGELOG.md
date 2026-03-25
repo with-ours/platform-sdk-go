@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.2 (2026-03-25)
+
+Full Changelog: [v1.5.1...v1.5.2](https://github.com/with-ours/platform-sdk-go/compare/v1.5.1...v1.5.2)
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([4434db0](https://github.com/with-ours/platform-sdk-go/commit/4434db075ee60e87417e55f8fb8fc4fe653d9c79))
+* **tests:** bump steady to v0.19.7 ([0b98b8b](https://github.com/with-ours/platform-sdk-go/commit/0b98b8b9910031d483f44f42125d86093e71a57c))
+
 ## 1.5.1 (2026-03-24)
 
 Full Changelog: [v1.5.0...v1.5.1](https://github.com/with-ours/platform-sdk-go/compare/v1.5.0...v1.5.1)
