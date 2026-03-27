@@ -105,8 +105,8 @@ type DestinationNewResponse struct {
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
+	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
 	Type      DestinationNewResponseType `json:"type" api:"required"`
 	Name      string                     `json:"name" api:"nullable"`
 	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
@@ -199,6 +199,7 @@ const (
 	DestinationNewResponseTypeTatari                       DestinationNewResponseType = "Tatari"
 	DestinationNewResponseTypeTheTradeDesk                 DestinationNewResponseType = "TheTradeDesk"
 	DestinationNewResponseTypeTikTok                       DestinationNewResponseType = "TikTok"
+	DestinationNewResponseTypeVwo                          DestinationNewResponseType = "VWO"
 	DestinationNewResponseTypeViant                        DestinationNewResponseType = "Viant"
 	DestinationNewResponseTypeVibe                         DestinationNewResponseType = "Vibe"
 	DestinationNewResponseTypeWoopra                       DestinationNewResponseType = "Woopra"
@@ -224,8 +225,8 @@ type DestinationGetResponse struct {
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
+	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
 	Type      DestinationGetResponseType `json:"type" api:"required"`
 	Name      string                     `json:"name" api:"nullable"`
 	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
@@ -318,6 +319,7 @@ const (
 	DestinationGetResponseTypeTatari                       DestinationGetResponseType = "Tatari"
 	DestinationGetResponseTypeTheTradeDesk                 DestinationGetResponseType = "TheTradeDesk"
 	DestinationGetResponseTypeTikTok                       DestinationGetResponseType = "TikTok"
+	DestinationGetResponseTypeVwo                          DestinationGetResponseType = "VWO"
 	DestinationGetResponseTypeViant                        DestinationGetResponseType = "Viant"
 	DestinationGetResponseTypeVibe                         DestinationGetResponseType = "Vibe"
 	DestinationGetResponseTypeWoopra                       DestinationGetResponseType = "Woopra"
@@ -343,8 +345,8 @@ type DestinationUpdateResponse struct {
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
+	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
 	Type      DestinationUpdateResponseType `json:"type" api:"required"`
 	Name      string                        `json:"name" api:"nullable"`
 	UpdatedAt string                        `json:"updatedAt" api:"nullable"`
@@ -437,6 +439,7 @@ const (
 	DestinationUpdateResponseTypeTatari                       DestinationUpdateResponseType = "Tatari"
 	DestinationUpdateResponseTypeTheTradeDesk                 DestinationUpdateResponseType = "TheTradeDesk"
 	DestinationUpdateResponseTypeTikTok                       DestinationUpdateResponseType = "TikTok"
+	DestinationUpdateResponseTypeVwo                          DestinationUpdateResponseType = "VWO"
 	DestinationUpdateResponseTypeViant                        DestinationUpdateResponseType = "Viant"
 	DestinationUpdateResponseTypeVibe                         DestinationUpdateResponseType = "Vibe"
 	DestinationUpdateResponseTypeWoopra                       DestinationUpdateResponseType = "Woopra"
@@ -478,8 +481,8 @@ type DestinationListResponseEntity struct {
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
+	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
 	Type      string `json:"type" api:"required"`
 	Name      string `json:"name" api:"nullable"`
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
@@ -515,8 +518,8 @@ type DestinationNewParams struct {
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "Viant", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
+	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	paramObj
@@ -593,6 +596,7 @@ const (
 	DestinationNewParamsTypeTatari                       DestinationNewParamsType = "Tatari"
 	DestinationNewParamsTypeTheTradeDesk                 DestinationNewParamsType = "TheTradeDesk"
 	DestinationNewParamsTypeTikTok                       DestinationNewParamsType = "TikTok"
+	DestinationNewParamsTypeVwo                          DestinationNewParamsType = "VWO"
 	DestinationNewParamsTypeViant                        DestinationNewParamsType = "Viant"
 	DestinationNewParamsTypeVibe                         DestinationNewParamsType = "Vibe"
 	DestinationNewParamsTypeWoopra                       DestinationNewParamsType = "Woopra"
