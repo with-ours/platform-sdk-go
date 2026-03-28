@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.6.0 (2026-03-28)
+
+Full Changelog: [v1.5.2...v1.6.0](https://github.com/with-ours/platform-sdk-go/compare/v1.5.2...v1.6.0)
+
+### Features
+
+* **api:** api update ([238a2e6](https://github.com/with-ours/platform-sdk-go/commit/238a2e6b4974a79ddec2597c348bbf068b6d840e))
+* **internal:** support comma format in multipart form encoding ([b2a2ee6](https://github.com/with-ours/platform-sdk-go/commit/b2a2ee66dcbd91b9daa6befcfcaab48f25ea62b5))
+
+
+### Bug Fixes
+
+* prevent duplicate ? in query params ([5b74eca](https://github.com/with-ours/platform-sdk-go/commit/5b74ecaaa6f7a51e7bc6c5ac7000be3f5fa7c527))
+
+
+### Chores
+
+* **ci:** support opting out of skipping builds on metadata-only commits ([c7f8412](https://github.com/with-ours/platform-sdk-go/commit/c7f841250d6e371b57c8ce20b6dfdb20a0da01c4))
+* **client:** fix multipart serialisation of Default() fields ([46b2ca5](https://github.com/with-ours/platform-sdk-go/commit/46b2ca5968a41c9aff83056f21368ad4fefe09e6))
+* **internal:** support default value struct tag ([2501f72](https://github.com/with-ours/platform-sdk-go/commit/2501f728d0e5988ce4fa1330f8bea8715a592635))
+* remove unnecessary error check for url parsing ([3b21ed7](https://github.com/with-ours/platform-sdk-go/commit/3b21ed75d4a0c3d92fe5fb0fa3da0e47d4136e75))
+* update docs for api:"required" ([86b814a](https://github.com/with-ours/platform-sdk-go/commit/86b814ad302640943c4edf0c48c364fba02ceeb0))
+
 ## 1.5.2 (2026-03-25)
 
 Full Changelog: [v1.5.1...v1.5.2](https://github.com/with-ours/platform-sdk-go/compare/v1.5.1...v1.5.2)
