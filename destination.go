@@ -607,21 +607,21 @@ const (
 
 type DestinationUpdateParams struct {
 	// Any of "Disabled", "Enabled".
-	Status                   DestinationUpdateParamsStatus                  `json:"status,omitzero" api:"required"`
-	FacebookConversionAPIKey param.Opt[string]                              `json:"facebookConversionAPIKey,omitzero"`
-	FacebookPixelID          param.Opt[string]                              `json:"facebookPixelId,omitzero"`
-	G4AnalyticsAPIKey        param.Opt[string]                              `json:"g4AnalyticsApiKey,omitzero"`
-	G4AnalyticsMeasurementID param.Opt[string]                              `json:"g4AnalyticsMeasurementId,omitzero"`
-	G4AnalyticsTrackOnPage   param.Opt[bool]                                `json:"g4AnalyticsTrackOnPage,omitzero"`
-	HashingSalt              param.Opt[string]                              `json:"hashingSalt,omitzero"`
-	HTTPDestinationURL       param.Opt[string]                              `json:"httpDestinationUrl,omitzero"`
-	ManagerGoogleCustomerID  param.Opt[string]                              `json:"managerGoogleCustomerId,omitzero"`
-	Name                     param.Opt[string]                              `json:"name,omitzero"`
-	ProjectAPIKey            param.Opt[string]                              `json:"projectAPIKey,omitzero"`
-	ProjectToken             param.Opt[string]                              `json:"projectToken,omitzero"`
-	SelectedAccountID        param.Opt[string]                              `json:"selectedAccountId,omitzero"`
-	LimitedToSourceIDs       []string                                       `json:"limitedToSourceIds,omitzero"`
-	Settings                 map[string]DestinationUpdateParamsSettingUnion `json:"settings,omitzero"`
+	Status                   DestinationUpdateParamsStatus `json:"status,omitzero" api:"required"`
+	FacebookConversionAPIKey param.Opt[string]             `json:"facebookConversionAPIKey,omitzero"`
+	FacebookPixelID          param.Opt[string]             `json:"facebookPixelId,omitzero"`
+	G4AnalyticsAPIKey        param.Opt[string]             `json:"g4AnalyticsApiKey,omitzero"`
+	G4AnalyticsMeasurementID param.Opt[string]             `json:"g4AnalyticsMeasurementId,omitzero"`
+	G4AnalyticsTrackOnPage   param.Opt[bool]               `json:"g4AnalyticsTrackOnPage,omitzero"`
+	HashingSalt              param.Opt[string]             `json:"hashingSalt,omitzero"`
+	HTTPDestinationURL       param.Opt[string]             `json:"httpDestinationUrl,omitzero"`
+	ManagerGoogleCustomerID  param.Opt[string]             `json:"managerGoogleCustomerId,omitzero"`
+	Name                     param.Opt[string]             `json:"name,omitzero"`
+	ProjectAPIKey            param.Opt[string]             `json:"projectAPIKey,omitzero"`
+	ProjectToken             param.Opt[string]             `json:"projectToken,omitzero"`
+	SelectedAccountID        param.Opt[string]             `json:"selectedAccountId,omitzero"`
+	LimitedToSourceIDs       []any                         `json:"limitedToSourceIds,omitzero"`
+	Settings                 any                           `json:"settings,omitzero"`
 	paramObj
 }
 
@@ -639,20 +639,3 @@ const (
 	DestinationUpdateParamsStatusDisabled DestinationUpdateParamsStatus = "Disabled"
 	DestinationUpdateParamsStatusEnabled  DestinationUpdateParamsStatus = "Enabled"
 )
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type DestinationUpdateParamsSettingUnion struct {
-	OfString param.Opt[string]  `json:",omitzero,inline"`
-	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
-	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u DestinationUpdateParamsSettingUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
-}
-func (u *DestinationUpdateParamsSettingUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}

@@ -421,17 +421,16 @@ const (
 type SourceUpdateParams struct {
 	// Any of "Disabled", "Enabled".
 	Status                SourceUpdateParamsStatus `json:"status,omitzero" api:"required"`
+	BotControlMode        param.Opt[string]        `json:"botControlMode,omitzero"`
 	BotScoreThreshold     param.Opt[float64]       `json:"botScoreThreshold,omitzero"`
 	ExcludeRequestContext param.Opt[bool]          `json:"excludeRequestContext,omitzero"`
 	Name                  param.Opt[string]        `json:"name,omitzero"`
 	ProjectAPIKey         param.Opt[string]        `json:"projectAPIKey,omitzero"`
 	RedirectURL           param.Opt[string]        `json:"redirectUrl,omitzero"`
 	SelectedAccountID     param.Opt[string]        `json:"selectedAccountId,omitzero"`
-	// Any of "Allow", "Block", "Threshold".
-	BotControlMode        SourceUpdateParamsBotControlMode        `json:"botControlMode,omitzero"`
-	ProbabilisticIdentity SourceUpdateParamsProbabilisticIdentity `json:"probabilisticIdentity,omitzero"`
-	WhitelistDomains      []string                                `json:"whitelistDomains,omitzero"`
-	WhitelistIPs          []string                                `json:"whitelistIps,omitzero"`
+	ProbabilisticIdentity any                      `json:"probabilisticIdentity,omitzero"`
+	WhitelistDomains      []any                    `json:"whitelistDomains,omitzero"`
+	WhitelistIPs          []any                    `json:"whitelistIps,omitzero"`
 	paramObj
 }
 
@@ -449,27 +448,3 @@ const (
 	SourceUpdateParamsStatusDisabled SourceUpdateParamsStatus = "Disabled"
 	SourceUpdateParamsStatusEnabled  SourceUpdateParamsStatus = "Enabled"
 )
-
-type SourceUpdateParamsBotControlMode string
-
-const (
-	SourceUpdateParamsBotControlModeAllow     SourceUpdateParamsBotControlMode = "Allow"
-	SourceUpdateParamsBotControlModeBlock     SourceUpdateParamsBotControlMode = "Block"
-	SourceUpdateParamsBotControlModeThreshold SourceUpdateParamsBotControlMode = "Threshold"
-)
-
-// The property Enabled is required.
-type SourceUpdateParamsProbabilisticIdentity struct {
-	Enabled            bool             `json:"enabled" api:"required"`
-	MatchWindowMinutes param.Opt[int64] `json:"matchWindowMinutes,omitzero"`
-	MaxMatchesPerIP    param.Opt[int64] `json:"maxMatchesPerIp,omitzero"`
-	paramObj
-}
-
-func (r SourceUpdateParamsProbabilisticIdentity) MarshalJSON() (data []byte, err error) {
-	type shadow SourceUpdateParamsProbabilisticIdentity
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SourceUpdateParamsProbabilisticIdentity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}

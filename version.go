@@ -179,17 +179,17 @@ func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
 type VersionNewParams struct {
 	Name                            param.Opt[string] `json:"name,omitzero"`
 	Notes                           param.Opt[string] `json:"notes,omitzero"`
-	IncludeAllowedEvents            []string          `json:"includeAllowedEvents,omitzero"`
-	IncludeConsentSettings          []string          `json:"includeConsentSettings,omitzero"`
-	IncludeDestinations             []string          `json:"includeDestinations,omitzero"`
-	IncludeExternalAllowedEventData []string          `json:"includeExternalAllowedEventData,omitzero"`
-	IncludeGlobalDispatchCenters    []string          `json:"includeGlobalDispatchCenters,omitzero"`
-	IncludeMappings                 []string          `json:"includeMappings,omitzero"`
-	IncludeReplaySettings           []string          `json:"includeReplaySettings,omitzero"`
-	IncludeSources                  []string          `json:"includeSources,omitzero"`
-	IncludeTagManagerTags           []string          `json:"includeTagManagerTags,omitzero"`
-	IncludeTagManagerTriggers       []string          `json:"includeTagManagerTriggers,omitzero"`
-	IncludeTagManagerVariables      []string          `json:"includeTagManagerVariables,omitzero"`
+	IncludeAllowedEvents            []any             `json:"includeAllowedEvents,omitzero"`
+	IncludeConsentSettings          []any             `json:"includeConsentSettings,omitzero"`
+	IncludeDestinations             []any             `json:"includeDestinations,omitzero"`
+	IncludeExternalAllowedEventData []any             `json:"includeExternalAllowedEventData,omitzero"`
+	IncludeGlobalDispatchCenters    []any             `json:"includeGlobalDispatchCenters,omitzero"`
+	IncludeMappings                 []any             `json:"includeMappings,omitzero"`
+	IncludeReplaySettings           []any             `json:"includeReplaySettings,omitzero"`
+	IncludeSources                  []any             `json:"includeSources,omitzero"`
+	IncludeTagManagerTags           []any             `json:"includeTagManagerTags,omitzero"`
+	IncludeTagManagerTriggers       []any             `json:"includeTagManagerTriggers,omitzero"`
+	IncludeTagManagerVariables      []any             `json:"includeTagManagerVariables,omitzero"`
 	paramObj
 }
 
