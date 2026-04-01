@@ -84,17 +84,13 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 			G4AnalyticsTrackOnPage:   githubcomwithoursplatformsdkgo.Bool(true),
 			HashingSalt:              githubcomwithoursplatformsdkgo.String("hashingSalt"),
 			HTTPDestinationURL:       githubcomwithoursplatformsdkgo.String("httpDestinationUrl"),
-			LimitedToSourceIDs:       []string{"string"},
+			LimitedToSourceIDs:       []any{map[string]any{}},
 			ManagerGoogleCustomerID:  githubcomwithoursplatformsdkgo.String("managerGoogleCustomerId"),
 			Name:                     githubcomwithoursplatformsdkgo.String("name"),
 			ProjectAPIKey:            githubcomwithoursplatformsdkgo.String("projectAPIKey"),
 			ProjectToken:             githubcomwithoursplatformsdkgo.String("projectToken"),
 			SelectedAccountID:        githubcomwithoursplatformsdkgo.String("selectedAccountId"),
-			Settings: map[string]githubcomwithoursplatformsdkgo.DestinationUpdateParamsSettingUnion{
-				"foo": {
-					OfString: githubcomwithoursplatformsdkgo.String("string"),
-				},
-			},
+			Settings:                 map[string]any{},
 		},
 	)
 	if err != nil {

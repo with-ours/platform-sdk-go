@@ -26,10 +26,8 @@ func TestAllowedEventNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AllowedEvents.New(context.TODO(), githubcomwithoursplatformsdkgo.AllowedEventNewParams{
-		Name: "name",
-		DestinationIDs: githubcomwithoursplatformsdkgo.AllowedEventNewParamsDestinationIDsUnion{
-			OfStringArray: []string{"string"},
-		},
+		Name:           "name",
+		DestinationIDs: []any{map[string]any{}},
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error

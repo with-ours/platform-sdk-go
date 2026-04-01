@@ -89,9 +89,9 @@ func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...op
 }
 
 type ReplaySettingNewResponse struct {
-	IsSuccess      bool                                   `json:"isSuccess" api:"required"`
-	Cause          string                                 `json:"cause" api:"nullable"`
-	ReplaySettings ReplaySettingNewResponseReplaySettings `json:"replaySettings" api:"nullable"`
+	IsSuccess      bool   `json:"isSuccess" api:"required"`
+	Cause          string `json:"cause" api:"nullable"`
+	ReplaySettings any    `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -108,67 +108,12 @@ func (r *ReplaySettingNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReplaySettingNewResponseReplaySettings struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	Name      string `json:"name" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status    string `json:"status" api:"required"`
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Name        respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReplaySettingNewResponseReplaySettings) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingNewResponseReplaySettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReplaySettingGetResponse struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	Name      string `json:"name" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status    ReplaySettingGetResponseStatus `json:"status" api:"required"`
-	UpdatedAt string                         `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Name        respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReplaySettingGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReplaySettingGetResponseStatus string
-
-const (
-	ReplaySettingGetResponseStatusDisabled ReplaySettingGetResponseStatus = "Disabled"
-	ReplaySettingGetResponseStatusEnabled  ReplaySettingGetResponseStatus = "Enabled"
-)
+type ReplaySettingGetResponse = any
 
 type ReplaySettingUpdateResponse struct {
-	IsSuccess      bool                                      `json:"isSuccess" api:"required"`
-	Cause          string                                    `json:"cause" api:"nullable"`
-	ReplaySettings ReplaySettingUpdateResponseReplaySettings `json:"replaySettings" api:"nullable"`
+	IsSuccess      bool   `json:"isSuccess" api:"required"`
+	Cause          string `json:"cause" api:"nullable"`
+	ReplaySettings any    `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -182,31 +127,6 @@ type ReplaySettingUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ReplaySettingUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *ReplaySettingUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReplaySettingUpdateResponseReplaySettings struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	Name      string `json:"name" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status    string `json:"status" api:"required"`
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Name        respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReplaySettingUpdateResponseReplaySettings) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingUpdateResponseReplaySettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -252,9 +172,9 @@ func (r *ReplaySettingListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingDeleteResponse struct {
-	IsSuccess      bool                                      `json:"isSuccess" api:"required"`
-	Cause          string                                    `json:"cause" api:"nullable"`
-	ReplaySettings ReplaySettingDeleteResponseReplaySettings `json:"replaySettings" api:"nullable"`
+	IsSuccess      bool   `json:"isSuccess" api:"required"`
+	Cause          string `json:"cause" api:"nullable"`
+	ReplaySettings any    `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -271,37 +191,11 @@ func (r *ReplaySettingDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReplaySettingDeleteResponseReplaySettings struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	Name      string `json:"name" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status    string `json:"status" api:"required"`
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Name        respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReplaySettingDeleteResponseReplaySettings) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingDeleteResponseReplaySettings) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type ReplaySettingNewParams struct {
-	CustomDomain param.Opt[string] `json:"customDomain,omitzero"`
-	Name         param.Opt[string] `json:"name,omitzero"`
-	// Any of "Disabled", "Enabled".
-	Status           ReplaySettingNewParamsStatus `json:"status,omitzero"`
-	WhitelistDomains []string                     `json:"whitelistDomains,omitzero"`
+	CustomDomain     param.Opt[string] `json:"customDomain,omitzero"`
+	Name             param.Opt[string] `json:"name,omitzero"`
+	Status           param.Opt[string] `json:"status,omitzero"`
+	WhitelistDomains []any             `json:"whitelistDomains,omitzero"`
 	paramObj
 }
 
@@ -313,19 +207,11 @@ func (r *ReplaySettingNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReplaySettingNewParamsStatus string
-
-const (
-	ReplaySettingNewParamsStatusDisabled ReplaySettingNewParamsStatus = "Disabled"
-	ReplaySettingNewParamsStatusEnabled  ReplaySettingNewParamsStatus = "Enabled"
-)
-
 type ReplaySettingUpdateParams struct {
-	CustomDomain param.Opt[string] `json:"customDomain,omitzero"`
-	Name         param.Opt[string] `json:"name,omitzero"`
-	// Any of "Disabled", "Enabled".
-	Status           ReplaySettingUpdateParamsStatus `json:"status,omitzero"`
-	WhitelistDomains []string                        `json:"whitelistDomains,omitzero"`
+	CustomDomain     param.Opt[string] `json:"customDomain,omitzero"`
+	Name             param.Opt[string] `json:"name,omitzero"`
+	Status           param.Opt[string] `json:"status,omitzero"`
+	WhitelistDomains []any             `json:"whitelistDomains,omitzero"`
 	paramObj
 }
 
@@ -336,10 +222,3 @@ func (r ReplaySettingUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *ReplaySettingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ReplaySettingUpdateParamsStatus string
-
-const (
-	ReplaySettingUpdateParamsStatusDisabled ReplaySettingUpdateParamsStatus = "Disabled"
-	ReplaySettingUpdateParamsStatusEnabled  ReplaySettingUpdateParamsStatus = "Enabled"
-)
