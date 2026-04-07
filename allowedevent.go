@@ -165,8 +165,8 @@ func (r *AllowedEventListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventNewParams struct {
-	Name           string                                   `json:"name" api:"required"`
-	DestinationIDs AllowedEventNewParamsDestinationIDsUnion `json:"destinationIds,omitzero"`
+	Name           string `json:"name" api:"required"`
+	DestinationIDs []any  `json:"destinationIds,omitzero"`
 	paramObj
 }
 
@@ -176,20 +176,4 @@ func (r AllowedEventNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *AllowedEventNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type AllowedEventNewParamsDestinationIDsUnion struct {
-	OfStringArray []string          `json:",omitzero,inline"`
-	OfString      param.Opt[string] `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u AllowedEventNewParamsDestinationIDsUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfStringArray, u.OfString)
-}
-func (u *AllowedEventNewParamsDestinationIDsUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
 }
