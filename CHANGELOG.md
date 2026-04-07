@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.0 (2026-04-07)
+
+Full Changelog: [v1.7.0...v1.8.0](https://github.com/with-ours/platform-sdk-go/compare/v1.7.0...v1.8.0)
+
+### Features
+
+* **api:** api update ([429587f](https://github.com/with-ours/platform-sdk-go/commit/429587f6dfc1bb7a690c42bf4314dd5401b282cb))
+
 ## 1.7.0 (2026-04-01)
 
 Full Changelog: [v1.6.0...v1.7.0](https://github.com/with-ours/platform-sdk-go/compare/v1.6.0...v1.7.0)
