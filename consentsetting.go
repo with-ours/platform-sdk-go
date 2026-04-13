@@ -255,6 +255,7 @@ type ConsentSettingUpdateParamsDefault struct {
 	// Any of "opt_in", "opt_out".
 	Mode                     string                                         `json:"mode,omitzero" api:"required"`
 	Translations             []ConsentSettingUpdateParamsDefaultTranslation `json:"translations,omitzero" api:"required"`
+	AutoblockUnknown         param.Opt[bool]                                `json:"autoblockUnknown,omitzero"`
 	AutoShow                 param.Opt[bool]                                `json:"autoShow,omitzero"`
 	AutoShowDismissMode      param.Opt[string]                              `json:"autoShowDismissMode,omitzero"`
 	DisablePageInteraction   param.Opt[bool]                                `json:"disablePageInteraction,omitzero"`
@@ -363,6 +364,7 @@ type ConsentSettingUpdateParamsRegionRule struct {
 	// Any of "opt_in", "opt_out".
 	Mode                     string                                            `json:"mode,omitzero" api:"required"`
 	Translations             []ConsentSettingUpdateParamsRegionRuleTranslation `json:"translations,omitzero" api:"required"`
+	AutoblockUnknown         param.Opt[bool]                                   `json:"autoblockUnknown,omitzero"`
 	AutoShow                 param.Opt[bool]                                   `json:"autoShow,omitzero"`
 	AutoShowDismissMode      param.Opt[string]                                 `json:"autoShowDismissMode,omitzero"`
 	DisablePageInteraction   param.Opt[bool]                                   `json:"disablePageInteraction,omitzero"`
