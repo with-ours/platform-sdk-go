@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.1 (2026-04-18)
+
+Full Changelog: [v1.8.0...v1.8.1](https://github.com/with-ours/platform-sdk-go/compare/v1.8.0...v1.8.1)
+
+### Chores
+
+* **tests:** bump steady to v0.22.1 ([3b7fb5b](https://github.com/with-ours/platform-sdk-go/commit/3b7fb5b5a49421d4166cfd87ec2f5cf77453ca2a))
+
 ## 1.8.0 (2026-04-07)
 
 Full Changelog: [v1.7.0...v1.8.0](https://github.com/with-ours/platform-sdk-go/compare/v1.7.0...v1.8.0)
