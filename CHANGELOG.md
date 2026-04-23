@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.2 (2026-04-23)
+
+Full Changelog: [v1.8.1...v1.8.2](https://github.com/with-ours/platform-sdk-go/compare/v1.8.1...v1.8.2)
+
+### Chores
+
+* **internal:** more robust bootstrap script ([c4a69cd](https://github.com/with-ours/platform-sdk-go/commit/c4a69cdb4fb9ae64e8499b85a3356b81f59058d4))
+
 ## 1.8.1 (2026-04-18)
 
 Full Changelog: [v1.8.0...v1.8.1](https://github.com/with-ours/platform-sdk-go/compare/v1.8.0...v1.8.1)
