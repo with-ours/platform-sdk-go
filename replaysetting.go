@@ -151,17 +151,21 @@ type ReplaySettingListResponseEntity struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	Name      string `json:"name" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status    string `json:"status" api:"required"`
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	Status           string `json:"status" api:"required"`
+	CustomDomain     string `json:"customDomain" api:"nullable"`
+	UpdatedAt        string `json:"updatedAt" api:"nullable"`
+	WhitelistDomains []any  `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Name        respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		Name             respjson.Field
+		Status           respjson.Field
+		CustomDomain     respjson.Field
+		UpdatedAt        respjson.Field
+		WhitelistDomains respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 

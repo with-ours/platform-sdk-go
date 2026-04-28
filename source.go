@@ -359,17 +359,35 @@ type SourceListResponseEntity struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type string `json:"type" api:"required"`
-	Name string `json:"name" api:"nullable"`
+	Type                  string  `json:"type" api:"required"`
+	BotControlMode        string  `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64 `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool    `json:"excludeRequestContext" api:"nullable"`
+	Name                  string  `json:"name" api:"nullable"`
+	ProbabilisticIdentity any     `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string  `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string  `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string  `json:"selectedAccountId" api:"nullable"`
+	WhitelistDomains      []any   `json:"whitelistDomains" api:"nullable"`
+	WhitelistIPs          []any   `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		Name        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		Status                respjson.Field
+		Type                  respjson.Field
+		BotControlMode        respjson.Field
+		BotScoreThreshold     respjson.Field
+		ExcludeRequestContext respjson.Field
+		Name                  respjson.Field
+		ProbabilisticIdentity respjson.Field
+		ProjectAPIKey         respjson.Field
+		RedirectURL           respjson.Field
+		SelectedAccountID     respjson.Field
+		WhitelistDomains      respjson.Field
+		WhitelistIPs          respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
 	} `json:"-"`
 }
 
