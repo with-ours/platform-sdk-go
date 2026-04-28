@@ -159,19 +159,23 @@ func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type GlobalDispatchCenterListResponseEntity struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	IsEnabled bool   `json:"isEnabled" api:"required"`
-	Kind      string `json:"kind" api:"required"`
-	Name      string `json:"name" api:"nullable"`
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	ID         string `json:"id" api:"required"`
+	CreatedAt  string `json:"createdAt" api:"required"`
+	IsEnabled  bool   `json:"isEnabled" api:"required"`
+	Kind       string `json:"kind" api:"required"`
+	Categories []any  `json:"categories" api:"nullable"`
+	Name       string `json:"name" api:"nullable"`
+	Notes      string `json:"notes" api:"nullable"`
+	UpdatedAt  string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
 		IsEnabled   respjson.Field
 		Kind        respjson.Field
+		Categories  respjson.Field
 		Name        respjson.Field
+		Notes       respjson.Field
 		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
