@@ -94,19 +94,20 @@ type DestinationNewResponse struct {
 	// Any of "Disabled", "Enabled".
 	Status DestinationNewResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
+	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
+	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
+	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
 	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
 	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
-	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
-	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
+	// "ZoomInfo".
 	Type      DestinationNewResponseType `json:"type" api:"required"`
 	Name      string                     `json:"name" api:"nullable"`
 	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
@@ -145,10 +146,12 @@ const (
 	DestinationNewResponseTypeAwss3                        DestinationNewResponseType = "AWSS3"
 	DestinationNewResponseTypeAwssns                       DestinationNewResponseType = "AWSSNS"
 	DestinationNewResponseTypeActiveCampaignAPI            DestinationNewResponseType = "ActiveCampaignApi"
+	DestinationNewResponseTypeAdmitad                      DestinationNewResponseType = "Admitad"
 	DestinationNewResponseTypeAmazonDsp                    DestinationNewResponseType = "AmazonDSP"
 	DestinationNewResponseTypeAmplitude                    DestinationNewResponseType = "Amplitude"
 	DestinationNewResponseTypeAppLovin                     DestinationNewResponseType = "AppLovin"
 	DestinationNewResponseTypeArtsAI                       DestinationNewResponseType = "ArtsAI"
+	DestinationNewResponseTypeAttentive                    DestinationNewResponseType = "Attentive"
 	DestinationNewResponseTypeAudiohook                    DestinationNewResponseType = "Audiohook"
 	DestinationNewResponseTypeAzureBlob                    DestinationNewResponseType = "AzureBlob"
 	DestinationNewResponseTypeBasisPostback                DestinationNewResponseType = "BasisPostback"
@@ -188,7 +191,9 @@ const (
 	DestinationNewResponseTypeOursSyntheticData            DestinationNewResponseType = "OursSyntheticData"
 	DestinationNewResponseTypePartnerize                   DestinationNewResponseType = "Partnerize"
 	DestinationNewResponseTypePinterest                    DestinationNewResponseType = "Pinterest"
+	DestinationNewResponseTypePlausible                    DestinationNewResponseType = "Plausible"
 	DestinationNewResponseTypePodscribe                    DestinationNewResponseType = "Podscribe"
+	DestinationNewResponseTypePostHog                      DestinationNewResponseType = "PostHog"
 	DestinationNewResponseTypeQuantcastCapi                DestinationNewResponseType = "QuantcastCAPI"
 	DestinationNewResponseTypeQuoraAds                     DestinationNewResponseType = "QuoraAds"
 	DestinationNewResponseTypeReddit                       DestinationNewResponseType = "Reddit"
@@ -214,32 +219,59 @@ type DestinationGetResponse struct {
 	// Any of "Disabled", "Enabled".
 	Status DestinationGetResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
+	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
+	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
+	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
 	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
 	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
-	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
-	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
-	Type      DestinationGetResponseType `json:"type" api:"required"`
-	Name      string                     `json:"name" api:"nullable"`
-	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
+	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
+	// "ZoomInfo".
+	Type                     DestinationGetResponseType `json:"type" api:"required"`
+	FacebookConversionAPIKey string                     `json:"facebookConversionAPIKey" api:"nullable"`
+	FacebookPixelID          string                     `json:"facebookPixelId" api:"nullable"`
+	G4AnalyticsAPIKey        string                     `json:"g4AnalyticsApiKey" api:"nullable"`
+	G4AnalyticsMeasurementID string                     `json:"g4AnalyticsMeasurementId" api:"nullable"`
+	G4AnalyticsTrackOnPage   bool                       `json:"g4AnalyticsTrackOnPage" api:"nullable"`
+	HashingSalt              string                     `json:"hashingSalt" api:"nullable"`
+	HTTPDestinationURL       string                     `json:"httpDestinationUrl" api:"nullable"`
+	LimitedToSourceIDs       []any                      `json:"limitedToSourceIds" api:"nullable"`
+	ManagerGoogleCustomerID  string                     `json:"managerGoogleCustomerId" api:"nullable"`
+	Name                     string                     `json:"name" api:"nullable"`
+	ProjectAPIKey            string                     `json:"projectAPIKey" api:"nullable"`
+	ProjectToken             string                     `json:"projectToken" api:"nullable"`
+	SelectedAccountID        string                     `json:"selectedAccountId" api:"nullable"`
+	Settings                 any                        `json:"settings" api:"nullable"`
+	UpdatedAt                string                     `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		Name        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Status                   respjson.Field
+		Type                     respjson.Field
+		FacebookConversionAPIKey respjson.Field
+		FacebookPixelID          respjson.Field
+		G4AnalyticsAPIKey        respjson.Field
+		G4AnalyticsMeasurementID respjson.Field
+		G4AnalyticsTrackOnPage   respjson.Field
+		HashingSalt              respjson.Field
+		HTTPDestinationURL       respjson.Field
+		LimitedToSourceIDs       respjson.Field
+		ManagerGoogleCustomerID  respjson.Field
+		Name                     respjson.Field
+		ProjectAPIKey            respjson.Field
+		ProjectToken             respjson.Field
+		SelectedAccountID        respjson.Field
+		Settings                 respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
 	} `json:"-"`
 }
 
@@ -265,10 +297,12 @@ const (
 	DestinationGetResponseTypeAwss3                        DestinationGetResponseType = "AWSS3"
 	DestinationGetResponseTypeAwssns                       DestinationGetResponseType = "AWSSNS"
 	DestinationGetResponseTypeActiveCampaignAPI            DestinationGetResponseType = "ActiveCampaignApi"
+	DestinationGetResponseTypeAdmitad                      DestinationGetResponseType = "Admitad"
 	DestinationGetResponseTypeAmazonDsp                    DestinationGetResponseType = "AmazonDSP"
 	DestinationGetResponseTypeAmplitude                    DestinationGetResponseType = "Amplitude"
 	DestinationGetResponseTypeAppLovin                     DestinationGetResponseType = "AppLovin"
 	DestinationGetResponseTypeArtsAI                       DestinationGetResponseType = "ArtsAI"
+	DestinationGetResponseTypeAttentive                    DestinationGetResponseType = "Attentive"
 	DestinationGetResponseTypeAudiohook                    DestinationGetResponseType = "Audiohook"
 	DestinationGetResponseTypeAzureBlob                    DestinationGetResponseType = "AzureBlob"
 	DestinationGetResponseTypeBasisPostback                DestinationGetResponseType = "BasisPostback"
@@ -308,7 +342,9 @@ const (
 	DestinationGetResponseTypeOursSyntheticData            DestinationGetResponseType = "OursSyntheticData"
 	DestinationGetResponseTypePartnerize                   DestinationGetResponseType = "Partnerize"
 	DestinationGetResponseTypePinterest                    DestinationGetResponseType = "Pinterest"
+	DestinationGetResponseTypePlausible                    DestinationGetResponseType = "Plausible"
 	DestinationGetResponseTypePodscribe                    DestinationGetResponseType = "Podscribe"
+	DestinationGetResponseTypePostHog                      DestinationGetResponseType = "PostHog"
 	DestinationGetResponseTypeQuantcastCapi                DestinationGetResponseType = "QuantcastCAPI"
 	DestinationGetResponseTypeQuoraAds                     DestinationGetResponseType = "QuoraAds"
 	DestinationGetResponseTypeReddit                       DestinationGetResponseType = "Reddit"
@@ -334,19 +370,20 @@ type DestinationUpdateResponse struct {
 	// Any of "Disabled", "Enabled".
 	Status DestinationUpdateResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
+	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
+	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
+	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
 	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
 	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
-	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
-	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
+	// "ZoomInfo".
 	Type      DestinationUpdateResponseType `json:"type" api:"required"`
 	Name      string                        `json:"name" api:"nullable"`
 	UpdatedAt string                        `json:"updatedAt" api:"nullable"`
@@ -385,10 +422,12 @@ const (
 	DestinationUpdateResponseTypeAwss3                        DestinationUpdateResponseType = "AWSS3"
 	DestinationUpdateResponseTypeAwssns                       DestinationUpdateResponseType = "AWSSNS"
 	DestinationUpdateResponseTypeActiveCampaignAPI            DestinationUpdateResponseType = "ActiveCampaignApi"
+	DestinationUpdateResponseTypeAdmitad                      DestinationUpdateResponseType = "Admitad"
 	DestinationUpdateResponseTypeAmazonDsp                    DestinationUpdateResponseType = "AmazonDSP"
 	DestinationUpdateResponseTypeAmplitude                    DestinationUpdateResponseType = "Amplitude"
 	DestinationUpdateResponseTypeAppLovin                     DestinationUpdateResponseType = "AppLovin"
 	DestinationUpdateResponseTypeArtsAI                       DestinationUpdateResponseType = "ArtsAI"
+	DestinationUpdateResponseTypeAttentive                    DestinationUpdateResponseType = "Attentive"
 	DestinationUpdateResponseTypeAudiohook                    DestinationUpdateResponseType = "Audiohook"
 	DestinationUpdateResponseTypeAzureBlob                    DestinationUpdateResponseType = "AzureBlob"
 	DestinationUpdateResponseTypeBasisPostback                DestinationUpdateResponseType = "BasisPostback"
@@ -428,7 +467,9 @@ const (
 	DestinationUpdateResponseTypeOursSyntheticData            DestinationUpdateResponseType = "OursSyntheticData"
 	DestinationUpdateResponseTypePartnerize                   DestinationUpdateResponseType = "Partnerize"
 	DestinationUpdateResponseTypePinterest                    DestinationUpdateResponseType = "Pinterest"
+	DestinationUpdateResponseTypePlausible                    DestinationUpdateResponseType = "Plausible"
 	DestinationUpdateResponseTypePodscribe                    DestinationUpdateResponseType = "Podscribe"
+	DestinationUpdateResponseTypePostHog                      DestinationUpdateResponseType = "PostHog"
 	DestinationUpdateResponseTypeQuantcastCapi                DestinationUpdateResponseType = "QuantcastCAPI"
 	DestinationUpdateResponseTypeQuoraAds                     DestinationUpdateResponseType = "QuoraAds"
 	DestinationUpdateResponseTypeReddit                       DestinationUpdateResponseType = "Reddit"
@@ -470,32 +511,59 @@ type DestinationListResponseEntity struct {
 	// Any of "Disabled", "Enabled".
 	Status string `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
+	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
+	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
+	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
 	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
 	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
-	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
-	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
-	Type      string `json:"type" api:"required"`
-	Name      string `json:"name" api:"nullable"`
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
+	// "ZoomInfo".
+	Type                     string `json:"type" api:"required"`
+	FacebookConversionAPIKey string `json:"facebookConversionAPIKey" api:"nullable"`
+	FacebookPixelID          string `json:"facebookPixelId" api:"nullable"`
+	G4AnalyticsAPIKey        string `json:"g4AnalyticsApiKey" api:"nullable"`
+	G4AnalyticsMeasurementID string `json:"g4AnalyticsMeasurementId" api:"nullable"`
+	G4AnalyticsTrackOnPage   bool   `json:"g4AnalyticsTrackOnPage" api:"nullable"`
+	HashingSalt              string `json:"hashingSalt" api:"nullable"`
+	HTTPDestinationURL       string `json:"httpDestinationUrl" api:"nullable"`
+	LimitedToSourceIDs       []any  `json:"limitedToSourceIds" api:"nullable"`
+	ManagerGoogleCustomerID  string `json:"managerGoogleCustomerId" api:"nullable"`
+	Name                     string `json:"name" api:"nullable"`
+	ProjectAPIKey            string `json:"projectAPIKey" api:"nullable"`
+	ProjectToken             string `json:"projectToken" api:"nullable"`
+	SelectedAccountID        string `json:"selectedAccountId" api:"nullable"`
+	Settings                 any    `json:"settings" api:"nullable"`
+	UpdatedAt                string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		Name        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Status                   respjson.Field
+		Type                     respjson.Field
+		FacebookConversionAPIKey respjson.Field
+		FacebookPixelID          respjson.Field
+		G4AnalyticsAPIKey        respjson.Field
+		G4AnalyticsMeasurementID respjson.Field
+		G4AnalyticsTrackOnPage   respjson.Field
+		HashingSalt              respjson.Field
+		HTTPDestinationURL       respjson.Field
+		LimitedToSourceIDs       respjson.Field
+		ManagerGoogleCustomerID  respjson.Field
+		Name                     respjson.Field
+		ProjectAPIKey            respjson.Field
+		ProjectToken             respjson.Field
+		SelectedAccountID        respjson.Field
+		Settings                 respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
 	} `json:"-"`
 }
 
@@ -507,19 +575,20 @@ func (r *DestinationListResponseEntity) UnmarshalJSON(data []byte) error {
 
 type DestinationNewParams struct {
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
+	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
+	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
+	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
 	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
 	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Podscribe",
-	// "QuantcastCAPI", "QuoraAds", "Reddit", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok", "VWO", "Viant",
-	// "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
+	// "ZoomInfo".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	paramObj
@@ -542,10 +611,12 @@ const (
 	DestinationNewParamsTypeAwss3                        DestinationNewParamsType = "AWSS3"
 	DestinationNewParamsTypeAwssns                       DestinationNewParamsType = "AWSSNS"
 	DestinationNewParamsTypeActiveCampaignAPI            DestinationNewParamsType = "ActiveCampaignApi"
+	DestinationNewParamsTypeAdmitad                      DestinationNewParamsType = "Admitad"
 	DestinationNewParamsTypeAmazonDsp                    DestinationNewParamsType = "AmazonDSP"
 	DestinationNewParamsTypeAmplitude                    DestinationNewParamsType = "Amplitude"
 	DestinationNewParamsTypeAppLovin                     DestinationNewParamsType = "AppLovin"
 	DestinationNewParamsTypeArtsAI                       DestinationNewParamsType = "ArtsAI"
+	DestinationNewParamsTypeAttentive                    DestinationNewParamsType = "Attentive"
 	DestinationNewParamsTypeAudiohook                    DestinationNewParamsType = "Audiohook"
 	DestinationNewParamsTypeAzureBlob                    DestinationNewParamsType = "AzureBlob"
 	DestinationNewParamsTypeBasisPostback                DestinationNewParamsType = "BasisPostback"
@@ -585,7 +656,9 @@ const (
 	DestinationNewParamsTypeOursSyntheticData            DestinationNewParamsType = "OursSyntheticData"
 	DestinationNewParamsTypePartnerize                   DestinationNewParamsType = "Partnerize"
 	DestinationNewParamsTypePinterest                    DestinationNewParamsType = "Pinterest"
+	DestinationNewParamsTypePlausible                    DestinationNewParamsType = "Plausible"
 	DestinationNewParamsTypePodscribe                    DestinationNewParamsType = "Podscribe"
+	DestinationNewParamsTypePostHog                      DestinationNewParamsType = "PostHog"
 	DestinationNewParamsTypeQuantcastCapi                DestinationNewParamsType = "QuantcastCAPI"
 	DestinationNewParamsTypeQuoraAds                     DestinationNewParamsType = "QuoraAds"
 	DestinationNewParamsTypeReddit                       DestinationNewParamsType = "Reddit"

@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.9.0 (2026-04-29)
+
+Full Changelog: [v1.8.2...v1.9.0](https://github.com/with-ours/platform-sdk-go/compare/v1.8.2...v1.9.0)
+
+### Features
+
+* **api:** api update ([cba53c5](https://github.com/with-ours/platform-sdk-go/commit/cba53c5ec17ac30fd6dc6d189392721e14bd0613))
+* **api:** api update ([c376993](https://github.com/with-ours/platform-sdk-go/commit/c37699380ce31f901d55205336508af8c802b649))
+* **go:** add default http client with timeout ([11ff120](https://github.com/with-ours/platform-sdk-go/commit/11ff1203db37a6b4eb2e4337acb12c15ca7fd7c2))
+* support setting headers via env ([0a55cf3](https://github.com/with-ours/platform-sdk-go/commit/0a55cf36473cdbe3926e15121da9fd1de985f92c))
+
 ## 1.8.2 (2026-04-23)
 
 Full Changelog: [v1.8.1...v1.8.2](https://github.com/with-ours/platform-sdk-go/compare/v1.8.1...v1.8.2)
