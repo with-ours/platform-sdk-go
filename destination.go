@@ -104,7 +104,7 @@ type DestinationNewResponse struct {
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
 	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
 	// "ZoomInfo".
@@ -197,6 +197,7 @@ const (
 	DestinationNewResponseTypeQuantcastCapi                DestinationNewResponseType = "QuantcastCAPI"
 	DestinationNewResponseTypeQuoraAds                     DestinationNewResponseType = "QuoraAds"
 	DestinationNewResponseTypeReddit                       DestinationNewResponseType = "Reddit"
+	DestinationNewResponseTypeRokuCapi                     DestinationNewResponseType = "RokuCAPI"
 	DestinationNewResponseTypeSnapchatAdsCapi              DestinationNewResponseType = "SnapchatAdsCapi"
 	DestinationNewResponseTypeSpotify                      DestinationNewResponseType = "Spotify"
 	DestinationNewResponseTypeStackAdaptAPI                DestinationNewResponseType = "StackAdaptAPI"
@@ -229,7 +230,7 @@ type DestinationGetResponse struct {
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
 	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
 	// "ZoomInfo".
@@ -348,6 +349,7 @@ const (
 	DestinationGetResponseTypeQuantcastCapi                DestinationGetResponseType = "QuantcastCAPI"
 	DestinationGetResponseTypeQuoraAds                     DestinationGetResponseType = "QuoraAds"
 	DestinationGetResponseTypeReddit                       DestinationGetResponseType = "Reddit"
+	DestinationGetResponseTypeRokuCapi                     DestinationGetResponseType = "RokuCAPI"
 	DestinationGetResponseTypeSnapchatAdsCapi              DestinationGetResponseType = "SnapchatAdsCapi"
 	DestinationGetResponseTypeSpotify                      DestinationGetResponseType = "Spotify"
 	DestinationGetResponseTypeStackAdaptAPI                DestinationGetResponseType = "StackAdaptAPI"
@@ -380,7 +382,7 @@ type DestinationUpdateResponse struct {
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
 	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
 	// "ZoomInfo".
@@ -473,6 +475,7 @@ const (
 	DestinationUpdateResponseTypeQuantcastCapi                DestinationUpdateResponseType = "QuantcastCAPI"
 	DestinationUpdateResponseTypeQuoraAds                     DestinationUpdateResponseType = "QuoraAds"
 	DestinationUpdateResponseTypeReddit                       DestinationUpdateResponseType = "Reddit"
+	DestinationUpdateResponseTypeRokuCapi                     DestinationUpdateResponseType = "RokuCAPI"
 	DestinationUpdateResponseTypeSnapchatAdsCapi              DestinationUpdateResponseType = "SnapchatAdsCapi"
 	DestinationUpdateResponseTypeSpotify                      DestinationUpdateResponseType = "Spotify"
 	DestinationUpdateResponseTypeStackAdaptAPI                DestinationUpdateResponseType = "StackAdaptAPI"
@@ -521,7 +524,7 @@ type DestinationListResponseEntity struct {
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
 	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
 	// "ZoomInfo".
@@ -585,7 +588,7 @@ type DestinationNewParams struct {
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
 	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
 	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
 	// "ZoomInfo".
@@ -662,6 +665,7 @@ const (
 	DestinationNewParamsTypeQuantcastCapi                DestinationNewParamsType = "QuantcastCAPI"
 	DestinationNewParamsTypeQuoraAds                     DestinationNewParamsType = "QuoraAds"
 	DestinationNewParamsTypeReddit                       DestinationNewParamsType = "Reddit"
+	DestinationNewParamsTypeRokuCapi                     DestinationNewParamsType = "RokuCAPI"
 	DestinationNewParamsTypeSnapchatAdsCapi              DestinationNewParamsType = "SnapchatAdsCapi"
 	DestinationNewParamsTypeSpotify                      DestinationNewParamsType = "Spotify"
 	DestinationNewParamsTypeStackAdaptAPI                DestinationNewParamsType = "StackAdaptAPI"
