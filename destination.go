@@ -242,7 +242,7 @@ type DestinationGetResponse struct {
 	G4AnalyticsTrackOnPage   bool                       `json:"g4AnalyticsTrackOnPage" api:"nullable"`
 	HashingSalt              string                     `json:"hashingSalt" api:"nullable"`
 	HTTPDestinationURL       string                     `json:"httpDestinationUrl" api:"nullable"`
-	LimitedToSourceIDs       []any                      `json:"limitedToSourceIds" api:"nullable"`
+	LimitedToSourceIDs       []string                   `json:"limitedToSourceIds" api:"nullable"`
 	ManagerGoogleCustomerID  string                     `json:"managerGoogleCustomerId" api:"nullable"`
 	Name                     string                     `json:"name" api:"nullable"`
 	ProjectAPIKey            string                     `json:"projectAPIKey" api:"nullable"`
@@ -528,22 +528,22 @@ type DestinationListResponseEntity struct {
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
 	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
 	// "ZoomInfo".
-	Type                     string `json:"type" api:"required"`
-	FacebookConversionAPIKey string `json:"facebookConversionAPIKey" api:"nullable"`
-	FacebookPixelID          string `json:"facebookPixelId" api:"nullable"`
-	G4AnalyticsAPIKey        string `json:"g4AnalyticsApiKey" api:"nullable"`
-	G4AnalyticsMeasurementID string `json:"g4AnalyticsMeasurementId" api:"nullable"`
-	G4AnalyticsTrackOnPage   bool   `json:"g4AnalyticsTrackOnPage" api:"nullable"`
-	HashingSalt              string `json:"hashingSalt" api:"nullable"`
-	HTTPDestinationURL       string `json:"httpDestinationUrl" api:"nullable"`
-	LimitedToSourceIDs       []any  `json:"limitedToSourceIds" api:"nullable"`
-	ManagerGoogleCustomerID  string `json:"managerGoogleCustomerId" api:"nullable"`
-	Name                     string `json:"name" api:"nullable"`
-	ProjectAPIKey            string `json:"projectAPIKey" api:"nullable"`
-	ProjectToken             string `json:"projectToken" api:"nullable"`
-	SelectedAccountID        string `json:"selectedAccountId" api:"nullable"`
-	Settings                 any    `json:"settings" api:"nullable"`
-	UpdatedAt                string `json:"updatedAt" api:"nullable"`
+	Type                     string   `json:"type" api:"required"`
+	FacebookConversionAPIKey string   `json:"facebookConversionAPIKey" api:"nullable"`
+	FacebookPixelID          string   `json:"facebookPixelId" api:"nullable"`
+	G4AnalyticsAPIKey        string   `json:"g4AnalyticsApiKey" api:"nullable"`
+	G4AnalyticsMeasurementID string   `json:"g4AnalyticsMeasurementId" api:"nullable"`
+	G4AnalyticsTrackOnPage   bool     `json:"g4AnalyticsTrackOnPage" api:"nullable"`
+	HashingSalt              string   `json:"hashingSalt" api:"nullable"`
+	HTTPDestinationURL       string   `json:"httpDestinationUrl" api:"nullable"`
+	LimitedToSourceIDs       []string `json:"limitedToSourceIds" api:"nullable"`
+	ManagerGoogleCustomerID  string   `json:"managerGoogleCustomerId" api:"nullable"`
+	Name                     string   `json:"name" api:"nullable"`
+	ProjectAPIKey            string   `json:"projectAPIKey" api:"nullable"`
+	ProjectToken             string   `json:"projectToken" api:"nullable"`
+	SelectedAccountID        string   `json:"selectedAccountId" api:"nullable"`
+	Settings                 any      `json:"settings" api:"nullable"`
+	UpdatedAt                string   `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                       respjson.Field
@@ -697,7 +697,7 @@ type DestinationUpdateParams struct {
 	ProjectAPIKey            param.Opt[string]             `json:"projectAPIKey,omitzero"`
 	ProjectToken             param.Opt[string]             `json:"projectToken,omitzero"`
 	SelectedAccountID        param.Opt[string]             `json:"selectedAccountId,omitzero"`
-	LimitedToSourceIDs       []any                         `json:"limitedToSourceIds,omitzero"`
+	LimitedToSourceIDs       []string                      `json:"limitedToSourceIds,omitzero"`
 	Settings                 any                           `json:"settings,omitzero"`
 	paramObj
 }

@@ -165,8 +165,8 @@ func (r *AllowedEventListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type AllowedEventNewParams struct {
-	Name           string `json:"name" api:"required"`
-	DestinationIDs []any  `json:"destinationIds,omitzero"`
+	Name           string   `json:"name" api:"required"`
+	DestinationIDs []string `json:"destinationIds,omitzero"`
 	paramObj
 }
 

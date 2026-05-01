@@ -184,8 +184,8 @@ type SourceGetResponse struct {
 	ProjectAPIKey         string                `json:"projectAPIKey" api:"nullable"`
 	RedirectURL           string                `json:"redirectUrl" api:"nullable"`
 	SelectedAccountID     string                `json:"selectedAccountId" api:"nullable"`
-	WhitelistDomains      []any                 `json:"whitelistDomains" api:"nullable"`
-	WhitelistIPs          []any                 `json:"whitelistIps" api:"nullable"`
+	WhitelistDomains      []string              `json:"whitelistDomains" api:"nullable"`
+	WhitelistIPs          []string              `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -359,17 +359,17 @@ type SourceListResponseEntity struct {
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type                  string  `json:"type" api:"required"`
-	BotControlMode        string  `json:"botControlMode" api:"nullable"`
-	BotScoreThreshold     float64 `json:"botScoreThreshold" api:"nullable"`
-	ExcludeRequestContext bool    `json:"excludeRequestContext" api:"nullable"`
-	Name                  string  `json:"name" api:"nullable"`
-	ProbabilisticIdentity any     `json:"probabilisticIdentity" api:"nullable"`
-	ProjectAPIKey         string  `json:"projectAPIKey" api:"nullable"`
-	RedirectURL           string  `json:"redirectUrl" api:"nullable"`
-	SelectedAccountID     string  `json:"selectedAccountId" api:"nullable"`
-	WhitelistDomains      []any   `json:"whitelistDomains" api:"nullable"`
-	WhitelistIPs          []any   `json:"whitelistIps" api:"nullable"`
+	Type                  string   `json:"type" api:"required"`
+	BotControlMode        string   `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64  `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool     `json:"excludeRequestContext" api:"nullable"`
+	Name                  string   `json:"name" api:"nullable"`
+	ProbabilisticIdentity any      `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string   `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string   `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string   `json:"selectedAccountId" api:"nullable"`
+	WhitelistDomains      []string `json:"whitelistDomains" api:"nullable"`
+	WhitelistIPs          []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -465,8 +465,8 @@ type SourceUpdateParams struct {
 	RedirectURL           param.Opt[string]        `json:"redirectUrl,omitzero"`
 	SelectedAccountID     param.Opt[string]        `json:"selectedAccountId,omitzero"`
 	ProbabilisticIdentity any                      `json:"probabilisticIdentity,omitzero"`
-	WhitelistDomains      []any                    `json:"whitelistDomains,omitzero"`
-	WhitelistIPs          []any                    `json:"whitelistIps,omitzero"`
+	WhitelistDomains      []string                 `json:"whitelistDomains,omitzero"`
+	WhitelistIPs          []string                 `json:"whitelistIps,omitzero"`
 	paramObj
 }
 
