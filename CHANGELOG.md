@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.1 (2026-05-01)
+
+Full Changelog: [v1.10.0...v1.10.1](https://github.com/with-ours/platform-sdk-go/compare/v1.10.0...v1.10.1)
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([d056ba6](https://github.com/with-ours/platform-sdk-go/commit/d056ba6026c6aa953a21e31382e57f7b7dcbd2a7))
+
 ## 1.10.0 (2026-04-29)
 
 Full Changelog: [v1.9.0...v1.10.0](https://github.com/with-ours/platform-sdk-go/compare/v1.9.0...v1.10.0)
