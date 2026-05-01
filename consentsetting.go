@@ -108,7 +108,353 @@ func (r *ConsentSettingNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingGetResponse = any
+type ConsentSettingGetResponse struct {
+	ID         string                              `json:"id" api:"required"`
+	Categories []ConsentSettingGetResponseCategory `json:"categories" api:"required"`
+	CreatedAt  string                              `json:"createdAt" api:"required"`
+	Default    ConsentSettingGetResponseDefault    `json:"default" api:"required"`
+	Kind       string                              `json:"kind" api:"required"`
+	Name       string                              `json:"name" api:"required"`
+	Regions    []ConsentSettingGetResponseRegion   `json:"regions" api:"required"`
+	Services   []ConsentSettingGetResponseService  `json:"services" api:"required"`
+	// Any of "Disabled", "Enabled".
+	Status                 ConsentSettingGetResponseStatus `json:"status" api:"required"`
+	ConsentCookieName      string                          `json:"consentCookieName" api:"nullable"`
+	CustomDomain           string                          `json:"customDomain" api:"nullable"`
+	Revision               float64                         `json:"revision" api:"nullable"`
+	SkipBlockingClassNames []string                        `json:"skipBlockingClassNames" api:"nullable"`
+	UpdatedAt              string                          `json:"updatedAt" api:"nullable"`
+	WebSDKToken            string                          `json:"webSDKToken" api:"nullable"`
+	WhitelistDomains       []string                        `json:"whitelistDomains" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		Categories             respjson.Field
+		CreatedAt              respjson.Field
+		Default                respjson.Field
+		Kind                   respjson.Field
+		Name                   respjson.Field
+		Regions                respjson.Field
+		Services               respjson.Field
+		Status                 respjson.Field
+		ConsentCookieName      respjson.Field
+		CustomDomain           respjson.Field
+		Revision               respjson.Field
+		SkipBlockingClassNames respjson.Field
+		UpdatedAt              respjson.Field
+		WebSDKToken            respjson.Field
+		WhitelistDomains       respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseCategory struct {
+	Label    string `json:"label" api:"required"`
+	Priority int64  `json:"priority" api:"required"`
+	Value    string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Label       respjson.Field
+		Priority    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseCategory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseDefault struct {
+	Categories []ConsentSettingGetResponseDefaultCategory `json:"categories" api:"required"`
+	Language   string                                     `json:"language" api:"required"`
+	// Any of "opt_in", "opt_out".
+	Mode                     string                                        `json:"mode" api:"required"`
+	Translations             []ConsentSettingGetResponseDefaultTranslation `json:"translations" api:"required"`
+	AutoblockUnknown         bool                                          `json:"autoblockUnknown" api:"nullable"`
+	AutoShow                 bool                                          `json:"autoShow" api:"nullable"`
+	AutoShowDismissConfig    any                                           `json:"autoShowDismissConfig" api:"nullable"`
+	AutoShowDismissMode      string                                        `json:"autoShowDismissMode" api:"nullable"`
+	DisablePageInteraction   bool                                          `json:"disablePageInteraction" api:"nullable"`
+	GuiOptions               any                                           `json:"guiOptions" api:"nullable"`
+	HideFromBots             bool                                          `json:"hideFromBots" api:"nullable"`
+	ShowVendorsInPreferences bool                                          `json:"showVendorsInPreferences" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Categories               respjson.Field
+		Language                 respjson.Field
+		Mode                     respjson.Field
+		Translations             respjson.Field
+		AutoblockUnknown         respjson.Field
+		AutoShow                 respjson.Field
+		AutoShowDismissConfig    respjson.Field
+		AutoShowDismissMode      respjson.Field
+		DisablePageInteraction   respjson.Field
+		GuiOptions               respjson.Field
+		HideFromBots             respjson.Field
+		ShowVendorsInPreferences respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseDefault) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseDefault) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseDefaultCategory struct {
+	Key   string                                        `json:"key" api:"required"`
+	Value ConsentSettingGetResponseDefaultCategoryValue `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseDefaultCategory) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseDefaultCategory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseDefaultCategoryValue struct {
+	Enabled          bool `json:"enabled" api:"required"`
+	AutoDisableOnGpc bool `json:"autoDisableOnGPC" api:"nullable"`
+	ReadOnly         bool `json:"readOnly" api:"nullable"`
+	ReloadPage       bool `json:"reloadPage" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled          respjson.Field
+		AutoDisableOnGpc respjson.Field
+		ReadOnly         respjson.Field
+		ReloadPage       respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseDefaultCategoryValue) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseDefaultCategoryValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseDefaultTranslation struct {
+	Language string                                           `json:"language" api:"required"`
+	Value    ConsentSettingGetResponseDefaultTranslationValue `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Language    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseDefaultTranslation) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseDefaultTranslation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseDefaultTranslationValue struct {
+	ConsentModal     any `json:"consentModal" api:"nullable"`
+	PreferencesModal any `json:"preferencesModal" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConsentModal     respjson.Field
+		PreferencesModal respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseDefaultTranslationValue) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseDefaultTranslationValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseRegion struct {
+	RegionCode        string                              `json:"regionCode" api:"required"`
+	Rule              ConsentSettingGetResponseRegionRule `json:"rule" api:"required"`
+	AdditionalRegions []string                            `json:"additionalRegions" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RegionCode        respjson.Field
+		Rule              respjson.Field
+		AdditionalRegions respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseRegion) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseRegion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseRegionRule struct {
+	Categories []ConsentSettingGetResponseRegionRuleCategory `json:"categories" api:"required"`
+	Language   string                                        `json:"language" api:"required"`
+	// Any of "opt_in", "opt_out".
+	Mode                     string                                           `json:"mode" api:"required"`
+	Translations             []ConsentSettingGetResponseRegionRuleTranslation `json:"translations" api:"required"`
+	AutoblockUnknown         bool                                             `json:"autoblockUnknown" api:"nullable"`
+	AutoShow                 bool                                             `json:"autoShow" api:"nullable"`
+	AutoShowDismissConfig    any                                              `json:"autoShowDismissConfig" api:"nullable"`
+	AutoShowDismissMode      string                                           `json:"autoShowDismissMode" api:"nullable"`
+	DisablePageInteraction   bool                                             `json:"disablePageInteraction" api:"nullable"`
+	GuiOptions               any                                              `json:"guiOptions" api:"nullable"`
+	HideFromBots             bool                                             `json:"hideFromBots" api:"nullable"`
+	ShowVendorsInPreferences bool                                             `json:"showVendorsInPreferences" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Categories               respjson.Field
+		Language                 respjson.Field
+		Mode                     respjson.Field
+		Translations             respjson.Field
+		AutoblockUnknown         respjson.Field
+		AutoShow                 respjson.Field
+		AutoShowDismissConfig    respjson.Field
+		AutoShowDismissMode      respjson.Field
+		DisablePageInteraction   respjson.Field
+		GuiOptions               respjson.Field
+		HideFromBots             respjson.Field
+		ShowVendorsInPreferences respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseRegionRule) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseRegionRule) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseRegionRuleCategory struct {
+	Key   string                                           `json:"key" api:"required"`
+	Value ConsentSettingGetResponseRegionRuleCategoryValue `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseRegionRuleCategory) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseRegionRuleCategory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseRegionRuleCategoryValue struct {
+	Enabled          bool `json:"enabled" api:"required"`
+	AutoDisableOnGpc bool `json:"autoDisableOnGPC" api:"nullable"`
+	ReadOnly         bool `json:"readOnly" api:"nullable"`
+	ReloadPage       bool `json:"reloadPage" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled          respjson.Field
+		AutoDisableOnGpc respjson.Field
+		ReadOnly         respjson.Field
+		ReloadPage       respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseRegionRuleCategoryValue) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseRegionRuleCategoryValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseRegionRuleTranslation struct {
+	Language string                                              `json:"language" api:"required"`
+	Value    ConsentSettingGetResponseRegionRuleTranslationValue `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Language    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseRegionRuleTranslation) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseRegionRuleTranslation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseRegionRuleTranslationValue struct {
+	ConsentModal     any `json:"consentModal" api:"nullable"`
+	PreferencesModal any `json:"preferencesModal" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConsentModal     respjson.Field
+		PreferencesModal respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseRegionRuleTranslationValue) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseRegionRuleTranslationValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseService struct {
+	InternalNotes        string   `json:"internalNotes" api:"required"`
+	Label                string   `json:"label" api:"required"`
+	AdditionalCategories []string `json:"additionalCategories" api:"nullable"`
+	Category             string   `json:"category" api:"nullable"`
+	DomainPatterns       []string `json:"domainPatterns" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InternalNotes        respjson.Field
+		Label                respjson.Field
+		AdditionalCategories respjson.Field
+		Category             respjson.Field
+		DomainPatterns       respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingGetResponseService) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingGetResponseService) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingGetResponseStatus string
+
+const (
+	ConsentSettingGetResponseStatusDisabled ConsentSettingGetResponseStatus = "Disabled"
+	ConsentSettingGetResponseStatusEnabled  ConsentSettingGetResponseStatus = "Enabled"
+)
 
 type ConsentSettingUpdateResponse struct {
 	IsSuccess       bool   `json:"isSuccess" api:"required"`
@@ -156,14 +502,14 @@ type ConsentSettingListResponseEntity struct {
 	Regions    []ConsentSettingListResponseEntityRegion   `json:"regions" api:"required"`
 	Services   []ConsentSettingListResponseEntityService  `json:"services" api:"required"`
 	// Any of "Disabled", "Enabled".
-	Status                 string  `json:"status" api:"required"`
-	ConsentCookieName      string  `json:"consentCookieName" api:"nullable"`
-	CustomDomain           string  `json:"customDomain" api:"nullable"`
-	Revision               float64 `json:"revision" api:"nullable"`
-	SkipBlockingClassNames []any   `json:"skipBlockingClassNames" api:"nullable"`
-	UpdatedAt              string  `json:"updatedAt" api:"nullable"`
-	WebSDKToken            string  `json:"webSDKToken" api:"nullable"`
-	WhitelistDomains       []any   `json:"whitelistDomains" api:"nullable"`
+	Status                 string   `json:"status" api:"required"`
+	ConsentCookieName      string   `json:"consentCookieName" api:"nullable"`
+	CustomDomain           string   `json:"customDomain" api:"nullable"`
+	Revision               float64  `json:"revision" api:"nullable"`
+	SkipBlockingClassNames []string `json:"skipBlockingClassNames" api:"nullable"`
+	UpdatedAt              string   `json:"updatedAt" api:"nullable"`
+	WebSDKToken            string   `json:"webSDKToken" api:"nullable"`
+	WhitelistDomains       []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                     respjson.Field
@@ -331,7 +677,7 @@ func (r *ConsentSettingListResponseEntityDefaultTranslationValue) UnmarshalJSON(
 type ConsentSettingListResponseEntityRegion struct {
 	RegionCode        string                                     `json:"regionCode" api:"required"`
 	Rule              ConsentSettingListResponseEntityRegionRule `json:"rule" api:"required"`
-	AdditionalRegions []any                                      `json:"additionalRegions" api:"nullable"`
+	AdditionalRegions []string                                   `json:"additionalRegions" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
@@ -466,11 +812,11 @@ func (r *ConsentSettingListResponseEntityRegionRuleTranslationValue) UnmarshalJS
 }
 
 type ConsentSettingListResponseEntityService struct {
-	InternalNotes        string `json:"internalNotes" api:"required"`
-	Label                string `json:"label" api:"required"`
-	AdditionalCategories []any  `json:"additionalCategories" api:"nullable"`
-	Category             string `json:"category" api:"nullable"`
-	DomainPatterns       []any  `json:"domainPatterns" api:"nullable"`
+	InternalNotes        string   `json:"internalNotes" api:"required"`
+	Label                string   `json:"label" api:"required"`
+	AdditionalCategories []string `json:"additionalCategories" api:"nullable"`
+	Category             string   `json:"category" api:"nullable"`
+	DomainPatterns       []string `json:"domainPatterns" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		InternalNotes        respjson.Field
@@ -535,8 +881,8 @@ type ConsentSettingUpdateParams struct {
 	CustomDomain           param.Opt[string]                `json:"customDomain,omitzero"`
 	Revision               param.Opt[float64]               `json:"revision,omitzero"`
 	WebSDKToken            param.Opt[string]                `json:"webSDKToken,omitzero"`
-	SkipBlockingClassNames []any                            `json:"skipBlockingClassNames,omitzero"`
-	WhitelistDomains       []any                            `json:"whitelistDomains,omitzero"`
+	SkipBlockingClassNames []string                         `json:"skipBlockingClassNames,omitzero"`
+	WhitelistDomains       []string                         `json:"whitelistDomains,omitzero"`
 	paramObj
 }
 
@@ -661,7 +1007,7 @@ func (r *ConsentSettingUpdateParamsDefaultTranslationValue) UnmarshalJSON(data [
 type ConsentSettingUpdateParamsRegion struct {
 	RegionCode        string                               `json:"regionCode" api:"required"`
 	Rule              ConsentSettingUpdateParamsRegionRule `json:"rule,omitzero" api:"required"`
-	AdditionalRegions []any                                `json:"additionalRegions,omitzero"`
+	AdditionalRegions []string                             `json:"additionalRegions,omitzero"`
 	paramObj
 }
 
@@ -771,8 +1117,8 @@ type ConsentSettingUpdateParamsService struct {
 	InternalNotes        string            `json:"internalNotes" api:"required"`
 	Label                string            `json:"label" api:"required"`
 	Category             param.Opt[string] `json:"category,omitzero"`
-	AdditionalCategories []any             `json:"additionalCategories,omitzero"`
-	DomainPatterns       []any             `json:"domainPatterns,omitzero"`
+	AdditionalCategories []string          `json:"additionalCategories,omitzero"`
+	DomainPatterns       []string          `json:"domainPatterns,omitzero"`
 	paramObj
 }
 

@@ -29,7 +29,7 @@ func TestReplaySettingNewWithOptionalParams(t *testing.T) {
 		CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
 		Name:             githubcomwithoursplatformsdkgo.String("name"),
 		Status:           githubcomwithoursplatformsdkgo.String("status"),
-		WhitelistDomains: []any{map[string]any{}},
+		WhitelistDomains: []string{"string"},
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
@@ -81,7 +81,7 @@ func TestReplaySettingUpdateWithOptionalParams(t *testing.T) {
 			CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
 			Name:             githubcomwithoursplatformsdkgo.String("name"),
 			Status:           githubcomwithoursplatformsdkgo.String("status"),
-			WhitelistDomains: []any{map[string]any{}},
+			WhitelistDomains: []string{"string"},
 		},
 	)
 	if err != nil {

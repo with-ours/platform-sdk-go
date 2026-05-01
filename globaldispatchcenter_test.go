@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestGlobalDispatchCenterNew(t *testing.T) {
+func TestGlobalDispatchCenterNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,11 @@ func TestGlobalDispatchCenterNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.New(context.TODO())
+	_, err := client.GlobalDispatchCenters.New(context.TODO(), githubcomwithoursplatformsdkgo.GlobalDispatchCenterNewParams{
+		IsEnabled: githubcomwithoursplatformsdkgo.Bool(true),
+		Name:      githubcomwithoursplatformsdkgo.String("name"),
+		Notes:     githubcomwithoursplatformsdkgo.String("notes"),
+	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
@@ -73,10 +77,16 @@ func TestGlobalDispatchCenterUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		githubcomwithoursplatformsdkgo.GlobalDispatchCenterUpdateParams{
-			Categories: []any{map[string]any{}},
-			IsEnabled:  githubcomwithoursplatformsdkgo.Bool(true),
-			Name:       githubcomwithoursplatformsdkgo.String("name"),
-			Notes:      githubcomwithoursplatformsdkgo.String("notes"),
+			Categories: []githubcomwithoursplatformsdkgo.GlobalDispatchCenterUpdateParamsCategory{{
+				Description:    githubcomwithoursplatformsdkgo.String("description"),
+				DestinationIDs: []string{"string"},
+				Logic:          map[string]any{},
+				Name:           githubcomwithoursplatformsdkgo.String("name"),
+				Priority:       githubcomwithoursplatformsdkgo.Float(0),
+			}},
+			IsEnabled: githubcomwithoursplatformsdkgo.Bool(true),
+			Name:      githubcomwithoursplatformsdkgo.String("name"),
+			Notes:     githubcomwithoursplatformsdkgo.String("notes"),
 		},
 	)
 	if err != nil {

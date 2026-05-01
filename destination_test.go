@@ -84,7 +84,7 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 			G4AnalyticsTrackOnPage:   githubcomwithoursplatformsdkgo.Bool(true),
 			HashingSalt:              githubcomwithoursplatformsdkgo.String("hashingSalt"),
 			HTTPDestinationURL:       githubcomwithoursplatformsdkgo.String("httpDestinationUrl"),
-			LimitedToSourceIDs:       []any{map[string]any{}},
+			LimitedToSourceIDs:       []string{"string"},
 			ManagerGoogleCustomerID:  githubcomwithoursplatformsdkgo.String("managerGoogleCustomerId"),
 			Name:                     githubcomwithoursplatformsdkgo.String("name"),
 			ProjectAPIKey:            githubcomwithoursplatformsdkgo.String("projectAPIKey"),
