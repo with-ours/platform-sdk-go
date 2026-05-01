@@ -27,7 +27,7 @@ func TestAllowedEventNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AllowedEvents.New(context.TODO(), githubcomwithoursplatformsdkgo.AllowedEventNewParams{
 		Name:           "name",
-		DestinationIDs: []any{map[string]any{}},
+		DestinationIDs: []string{"string"},
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
