@@ -36,7 +36,9 @@ func NewReplaySettingService(opts ...option.RequestOption) (r ReplaySettingServi
 	return
 }
 
-// Create a new replay setting. Requires scope: replaySettings:create
+// Create the replay configuration for this account. Each account is limited to one
+// replay configuration — calls made when one already exists return HTTP 409 with
+// the reason in the response `error` field. Requires scope: replaySettings:create
 func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewParams, opts ...option.RequestOption) (res *ReplaySettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
@@ -44,7 +46,8 @@ func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewPar
 	return res, err
 }
 
-// Find a single replay setting by ID. Requires scope: replaySettings:find
+// Fetch a single replay configuration by ID, including its whitelisted domains and
+// custom domain. Requires scope: replaySettings:find
 func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -56,7 +59,10 @@ func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Update a replay setting. Requires scope: replaySettings:update
+// Update one or more fields on an existing replay configuration. Only the fields
+// you send are changed; omitted fields keep their current value. Note that
+// `whitelistDomains` is replaced wholesale (not merged with the existing list).
+// Requires scope: replaySettings:update
 func (r *ReplaySettingService) Update(ctx context.Context, id string, body ReplaySettingUpdateParams, opts ...option.RequestOption) (res *ReplaySettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -68,7 +74,9 @@ func (r *ReplaySettingService) Update(ctx context.Context, id string, body Repla
 	return res, err
 }
 
-// List all replay settings. Requires scope: replaySettings:list
+// List the replay configurations on this account. Replay settings control which
+// domains may capture session replays and where the capture script is hosted.
+// Requires scope: replaySettings:list
 func (r *ReplaySettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ReplaySettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
@@ -76,7 +84,8 @@ func (r *ReplaySettingService) List(ctx context.Context, opts ...option.RequestO
 	return res, err
 }
 
-// Delete a replay setting. Requires scope: replaySettings:delete
+// Delete the replay configuration. Capture stops immediately for all whitelisted
+// domains. Requires scope: replaySettings:delete
 func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -109,14 +118,28 @@ func (r *ReplaySettingNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingGetResponse struct {
-	ID        string `json:"id" api:"required"`
+	// Stable identifier (UUID) for this replay configuration.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when this configuration was created.
 	CreatedAt string `json:"createdAt" api:"required"`
-	Name      string `json:"name" api:"required"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name string `json:"name" api:"required"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
 	// Any of "Disabled", "Enabled".
-	Status           ReplaySettingGetResponseStatus `json:"status" api:"required"`
-	CustomDomain     string                         `json:"customDomain" api:"nullable"`
-	UpdatedAt        string                         `json:"updatedAt" api:"nullable"`
-	WhitelistDomains []string                       `json:"whitelistDomains" api:"nullable"`
+	Status ReplaySettingGetResponseStatus `json:"status" api:"required"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain string `json:"customDomain" api:"nullable"`
+	// ISO-8601 timestamp of the most recent update, or null if never updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
+	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -137,6 +160,9 @@ func (r *ReplaySettingGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Whether session replay capture is currently active. Set to "Enabled" to start
+// capturing replays from whitelisted domains, or "Disabled" to pause capture
+// without losing the configuration.
 type ReplaySettingGetResponseStatus string
 
 const (
@@ -181,13 +207,27 @@ func (r *ReplaySettingListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingListResponseEntity struct {
-	ID        string `json:"id" api:"required"`
+	// Stable identifier (UUID) for this replay configuration.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when this configuration was created.
 	CreatedAt string `json:"createdAt" api:"required"`
-	Name      string `json:"name" api:"required"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name string `json:"name" api:"required"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
 	// Any of "Disabled", "Enabled".
-	Status           string   `json:"status" api:"required"`
-	CustomDomain     string   `json:"customDomain" api:"nullable"`
-	UpdatedAt        string   `json:"updatedAt" api:"nullable"`
+	Status string `json:"status" api:"required"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain string `json:"customDomain" api:"nullable"`
+	// ISO-8601 timestamp of the most recent update, or null if never updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -230,10 +270,22 @@ func (r *ReplaySettingDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type ReplaySettingNewParams struct {
-	CustomDomain     param.Opt[string] `json:"customDomain,omitzero"`
-	Name             param.Opt[string] `json:"name,omitzero"`
-	Status           param.Opt[string] `json:"status,omitzero"`
-	WhitelistDomains []string          `json:"whitelistDomains,omitzero"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain param.Opt[string] `json:"customDomain,omitzero"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
+	// Any of "Disabled", "Enabled".
+	Status ReplaySettingNewParamsStatus `json:"status,omitzero"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
+	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }
 
@@ -245,11 +297,33 @@ func (r *ReplaySettingNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Whether session replay capture is currently active. Set to "Enabled" to start
+// capturing replays from whitelisted domains, or "Disabled" to pause capture
+// without losing the configuration.
+type ReplaySettingNewParamsStatus string
+
+const (
+	ReplaySettingNewParamsStatusDisabled ReplaySettingNewParamsStatus = "Disabled"
+	ReplaySettingNewParamsStatusEnabled  ReplaySettingNewParamsStatus = "Enabled"
+)
+
 type ReplaySettingUpdateParams struct {
-	CustomDomain     param.Opt[string] `json:"customDomain,omitzero"`
-	Name             param.Opt[string] `json:"name,omitzero"`
-	Status           param.Opt[string] `json:"status,omitzero"`
-	WhitelistDomains []string          `json:"whitelistDomains,omitzero"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain param.Opt[string] `json:"customDomain,omitzero"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
+	// Any of "Disabled", "Enabled".
+	Status ReplaySettingUpdateParamsStatus `json:"status,omitzero"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
+	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }
 
@@ -260,3 +334,13 @@ func (r ReplaySettingUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *ReplaySettingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Whether session replay capture is currently active. Set to "Enabled" to start
+// capturing replays from whitelisted domains, or "Disabled" to pause capture
+// without losing the configuration.
+type ReplaySettingUpdateParamsStatus string
+
+const (
+	ReplaySettingUpdateParamsStatusDisabled ReplaySettingUpdateParamsStatus = "Disabled"
+	ReplaySettingUpdateParamsStatusEnabled  ReplaySettingUpdateParamsStatus = "Enabled"
+)

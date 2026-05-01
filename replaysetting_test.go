@@ -28,7 +28,7 @@ func TestReplaySettingNewWithOptionalParams(t *testing.T) {
 	_, err := client.ReplaySettings.New(context.TODO(), githubcomwithoursplatformsdkgo.ReplaySettingNewParams{
 		CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
 		Name:             githubcomwithoursplatformsdkgo.String("name"),
-		Status:           githubcomwithoursplatformsdkgo.String("status"),
+		Status:           githubcomwithoursplatformsdkgo.ReplaySettingNewParamsStatusDisabled,
 		WhitelistDomains: []string{"string"},
 	})
 	if err != nil {
@@ -80,7 +80,7 @@ func TestReplaySettingUpdateWithOptionalParams(t *testing.T) {
 		githubcomwithoursplatformsdkgo.ReplaySettingUpdateParams{
 			CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
 			Name:             githubcomwithoursplatformsdkgo.String("name"),
-			Status:           githubcomwithoursplatformsdkgo.String("status"),
+			Status:           githubcomwithoursplatformsdkgo.ReplaySettingUpdateParamsStatusDisabled,
 			WhitelistDomains: []string{"string"},
 		},
 	)
