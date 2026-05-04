@@ -100,7 +100,7 @@ func TestVersionUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVersionList(t *testing.T) {
+func TestVersionListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,7 +112,13 @@ func TestVersionList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Versions.List(context.TODO())
+	_, err := client.Versions.List(context.TODO(), githubcomwithoursplatformsdkgo.VersionListParams{
+		Cursor:        githubcomwithoursplatformsdkgo.String("cursor"),
+		IsPublished:   githubcomwithoursplatformsdkgo.VersionListParamsIsPublishedTrue,
+		Limit:         githubcomwithoursplatformsdkgo.Int(25),
+		NameContains:  githubcomwithoursplatformsdkgo.String("nameContains"),
+		NotesContains: githubcomwithoursplatformsdkgo.String("notesContains"),
+	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {

@@ -56,7 +56,8 @@ func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Update a destination. Requires scope: destination:update
+// Partially update a destination. Only the fields you send are changed. Requires
+// scope: destination:update
 func (r *DestinationService) Update(ctx context.Context, id string, body DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
