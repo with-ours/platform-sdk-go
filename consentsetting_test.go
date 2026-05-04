@@ -78,6 +78,8 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 				Priority: 0,
 				Value:    "value",
 			}},
+			ConsentCookieName: githubcomwithoursplatformsdkgo.String("consentCookieName"),
+			CustomDomain:      githubcomwithoursplatformsdkgo.String("customDomain"),
 			Default: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefault{
 				Categories: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultCategory{{
 					Key: "key",
@@ -88,10 +90,10 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 						ReloadPage:       githubcomwithoursplatformsdkgo.Bool(true),
 					},
 				}},
-				Language: "language",
+				Language: "en",
 				Mode:     "opt_in",
 				Translations: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultTranslation{{
-					Language: "language",
+					Language: "en",
 					Value: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultTranslationValue{
 						ConsentModal:     map[string]any{},
 						PreferencesModal: map[string]any{},
@@ -106,9 +108,9 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 				HideFromBots:             githubcomwithoursplatformsdkgo.Bool(true),
 				ShowVendorsInPreferences: githubcomwithoursplatformsdkgo.Bool(true),
 			},
-			Name: "name",
+			Name: githubcomwithoursplatformsdkgo.String("name"),
 			Regions: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegion{{
-				RegionCode: "regionCode",
+				RegionCode: "US-CA",
 				Rule: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRule{
 					Categories: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleCategory{{
 						Key: "key",
@@ -119,10 +121,10 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 							ReloadPage:       githubcomwithoursplatformsdkgo.Bool(true),
 						},
 					}},
-					Language: "language",
+					Language: "en",
 					Mode:     "opt_in",
 					Translations: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleTranslation{{
-						Language: "language",
+						Language: "en",
 						Value: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleTranslationValue{
 							ConsentModal:     map[string]any{},
 							PreferencesModal: map[string]any{},
@@ -139,6 +141,7 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 				},
 				AdditionalRegions: []string{"string"},
 			}},
+			Revision: githubcomwithoursplatformsdkgo.Float(0),
 			Services: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsService{{
 				InternalNotes:        "internalNotes",
 				Label:                "label",
@@ -146,11 +149,8 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 				Category:             githubcomwithoursplatformsdkgo.String("category"),
 				DomainPatterns:       []string{"string"},
 			}},
-			Status:                 githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsStatusDisabled,
-			ConsentCookieName:      githubcomwithoursplatformsdkgo.String("consentCookieName"),
-			CustomDomain:           githubcomwithoursplatformsdkgo.String("customDomain"),
-			Revision:               githubcomwithoursplatformsdkgo.Float(0),
 			SkipBlockingClassNames: []string{"string"},
+			Status:                 githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsStatusDisabled,
 			WebSDKToken:            githubcomwithoursplatformsdkgo.String("webSDKToken"),
 			WhitelistDomains:       []string{"string"},
 		},

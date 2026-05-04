@@ -56,7 +56,8 @@ func (r *SourceService) Get(ctx context.Context, id string, opts ...option.Reque
 	return res, err
 }
 
-// Update a source. Requires scope: source:update
+// Partially update a source. Only the fields you send are changed. Requires scope:
+// source:update
 func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdateParams, opts ...option.RequestOption) (res *SourceUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
