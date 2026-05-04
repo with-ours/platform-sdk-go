@@ -11,6 +11,7 @@ import (
 	"slices"
 
 	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
 	"github.com/with-ours/platform-sdk-go/packages/param"
@@ -36,7 +37,12 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 	return
 }
 
-// Create a new version. Requires scope: version:publish
+// Publish the current draft (i.e. all unpublished entity changes) as a new
+// version. Returns the full Version on success. Returns HTTP 409 with the reason
+// in the response `error` field when there are no draft changes to publish, when
+// another publish is already in flight, or when the action otherwise conflicts
+// with current state. To re-publish an existing version, use POST
+// /rest/v1/versions/{id}/publish instead. Requires scope: version:publish
 func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ...option.RequestOption) (res *VersionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
@@ -56,7 +62,8 @@ func (r *VersionService) Get(ctx context.Context, id string, opts ...option.Requ
 	return res, err
 }
 
-// Update a version. Requires scope: version:update
+// Partially update a version. Only the fields you send are changed. Requires
+// scope: version:update
 func (r *VersionService) Update(ctx context.Context, id string, body VersionUpdateParams, opts ...option.RequestOption) (res *VersionUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -68,23 +75,39 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 	return res, err
 }
 
-// List all versions. Requires scope: version:list
-func (r *VersionService) List(ctx context.Context, opts ...option.RequestOption) (res *[]VersionListResponse, err error) {
+// List versions for this account, newest first. Supports cursor pagination and
+// filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
+// with AND semantics. Requires scope: version:list
+func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *VersionListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
 type VersionNewResponse struct {
-	Success bool   `json:"success" api:"required"`
-	Error   string `json:"error" api:"nullable"`
+	ID            string  `json:"id" api:"required"`
+	CreatedAt     string  `json:"createdAt" api:"required"`
+	IsPublished   bool    `json:"isPublished" api:"required"`
+	VersionNumber float64 `json:"versionNumber" api:"required"`
+	Name          string  `json:"name" api:"nullable"`
+	Notes         string  `json:"notes" api:"nullable"`
+	// When this version was most recently published. NOT cleared when a newer version
+	// is published — `publishedAt` reflects the most recent successful publish of this
+	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
+	// determine the current live version.
+	PublishedAt string `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Success     respjson.Field
-		Error       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		IsPublished   respjson.Field
+		VersionNumber respjson.Field
+		Name          respjson.Field
+		Notes         respjson.Field
+		PublishedAt   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -101,7 +124,11 @@ type VersionGetResponse struct {
 	VersionNumber float64 `json:"versionNumber" api:"required"`
 	Name          string  `json:"name" api:"nullable"`
 	Notes         string  `json:"notes" api:"nullable"`
-	PublishedAt   string  `json:"publishedAt" api:"nullable"`
+	// When this version was most recently published. NOT cleared when a newer version
+	// is published — `publishedAt` reflects the most recent successful publish of this
+	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
+	// determine the current live version.
+	PublishedAt string `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -129,7 +156,11 @@ type VersionUpdateResponse struct {
 	VersionNumber float64 `json:"versionNumber" api:"required"`
 	Name          string  `json:"name" api:"nullable"`
 	Notes         string  `json:"notes" api:"nullable"`
-	PublishedAt   string  `json:"publishedAt" api:"nullable"`
+	// When this version was most recently published. NOT cleared when a newer version
+	// is published — `publishedAt` reflects the most recent successful publish of this
+	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
+	// determine the current live version.
+	PublishedAt string `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -151,12 +182,34 @@ func (r *VersionUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VersionListResponse struct {
+	Entities   []VersionListResponseEntity   `json:"entities" api:"required"`
+	Pagination VersionListResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Pagination  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionListResponseEntity struct {
 	ID            string  `json:"id" api:"required"`
 	CreatedAt     string  `json:"createdAt" api:"required"`
 	IsPublished   bool    `json:"isPublished" api:"required"`
 	VersionNumber float64 `json:"versionNumber" api:"required"`
 	Name          string  `json:"name" api:"nullable"`
-	PublishedAt   string  `json:"publishedAt" api:"nullable"`
+	// When this version was most recently published. NOT cleared when a newer version
+	// is published — `publishedAt` reflects the most recent successful publish of this
+	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
+	// determine the current live version.
+	PublishedAt string `json:"publishedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -171,8 +224,26 @@ type VersionListResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
+func (r VersionListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionListResponsePagination struct {
+	HasMore    bool   `json:"hasMore" api:"required"`
+	NextCursor string `json:"nextCursor" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionListResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponsePagination) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -214,3 +285,37 @@ func (r VersionUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *VersionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type VersionListParams struct {
+	// Maximum number of versions to return. Defaults to 25; values below 1 are clamped
+	// to 1 and values above 100 are clamped to 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Case-insensitive substring match on the version name.
+	NameContains param.Opt[string] `query:"nameContains,omitzero" json:"-"`
+	// Case-insensitive substring match on the version notes.
+	NotesContains param.Opt[string] `query:"notesContains,omitzero" json:"-"`
+	// Filter to only published or unpublished versions.
+	//
+	// Any of "true", "false".
+	IsPublished VersionListParamsIsPublished `query:"isPublished,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VersionListParams]'s query parameters as `url.Values`.
+func (r VersionListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter to only published or unpublished versions.
+type VersionListParamsIsPublished string
+
+const (
+	VersionListParamsIsPublishedTrue  VersionListParamsIsPublished = "true"
+	VersionListParamsIsPublishedFalse VersionListParamsIsPublished = "false"
+)

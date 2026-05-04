@@ -56,7 +56,8 @@ func (r *GlobalDispatchCenterService) Get(ctx context.Context, id string, opts .
 	return res, err
 }
 
-// Update a global dispatch center. Requires scope: globalDispatch:update
+// Partially update a global dispatch center. Only the fields you send are changed.
+// Requires scope: globalDispatch:update
 func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, body GlobalDispatchCenterUpdateParams, opts ...option.RequestOption) (res *GlobalDispatchCenterUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -97,8 +98,12 @@ type GlobalDispatchCenterNewResponse struct {
 	IsEnabled bool `json:"isEnabled" api:"required"`
 	// Discriminator for the entity type. Always "globalDispatchCenter".
 	Kind string `json:"kind" api:"required"`
+	// Routing categories in priority order (1..N).
+	Categories []GlobalDispatchCenterNewResponseCategory `json:"categories" api:"nullable"`
 	// Human-readable name shown in the dashboard.
 	Name string `json:"name" api:"nullable"`
+	// Free-form notes for this center.
+	Notes string `json:"notes" api:"nullable"`
 	// ISO 8601 timestamp of the last write. Equal to createdAt on a freshly created
 	// center; advances on every PATCH.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
@@ -108,7 +113,9 @@ type GlobalDispatchCenterNewResponse struct {
 		CreatedAt   respjson.Field
 		IsEnabled   respjson.Field
 		Kind        respjson.Field
+		Categories  respjson.Field
 		Name        respjson.Field
+		Notes       respjson.Field
 		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -118,6 +125,36 @@ type GlobalDispatchCenterNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GlobalDispatchCenterNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *GlobalDispatchCenterNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterNewResponseCategory struct {
+	// Display name for the category.
+	Name string `json:"name" api:"required"`
+	// 1-indexed sort position. Always equals (sorted index + 1) — see PATCH for
+	// details.
+	Priority int64 `json:"priority" api:"required"`
+	// Optional human-readable description.
+	Description string `json:"description" api:"nullable"`
+	// Destinations that receive events matching this category.
+	DestinationIDs []string `json:"destinationIds" api:"nullable"`
+	// Optional condition tree gating which events match this category.
+	Logic any `json:"logic" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		Priority       respjson.Field
+		Description    respjson.Field
+		DestinationIDs respjson.Field
+		Logic          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalDispatchCenterNewResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterNewResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -199,8 +236,12 @@ type GlobalDispatchCenterUpdateResponse struct {
 	IsEnabled bool `json:"isEnabled" api:"required"`
 	// Discriminator for the entity type. Always "globalDispatchCenter".
 	Kind string `json:"kind" api:"required"`
+	// Routing categories in priority order (1..N).
+	Categories []GlobalDispatchCenterUpdateResponseCategory `json:"categories" api:"nullable"`
 	// Human-readable name shown in the dashboard.
 	Name string `json:"name" api:"nullable"`
+	// Free-form notes for this center.
+	Notes string `json:"notes" api:"nullable"`
 	// ISO 8601 timestamp of the last write. Equal to createdAt on a freshly created
 	// center; advances on every PATCH.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
@@ -210,7 +251,9 @@ type GlobalDispatchCenterUpdateResponse struct {
 		CreatedAt   respjson.Field
 		IsEnabled   respjson.Field
 		Kind        respjson.Field
+		Categories  respjson.Field
 		Name        respjson.Field
+		Notes       respjson.Field
 		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -220,6 +263,36 @@ type GlobalDispatchCenterUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GlobalDispatchCenterUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterUpdateResponseCategory struct {
+	// Display name for the category.
+	Name string `json:"name" api:"required"`
+	// 1-indexed sort position. Always equals (sorted index + 1) — see PATCH for
+	// details.
+	Priority int64 `json:"priority" api:"required"`
+	// Optional human-readable description.
+	Description string `json:"description" api:"nullable"`
+	// Destinations that receive events matching this category.
+	DestinationIDs []string `json:"destinationIds" api:"nullable"`
+	// Optional condition tree gating which events match this category.
+	Logic any `json:"logic" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		Priority       respjson.Field
+		Description    respjson.Field
+		DestinationIDs respjson.Field
+		Logic          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalDispatchCenterUpdateResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterUpdateResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
