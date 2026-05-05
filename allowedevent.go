@@ -36,6 +36,14 @@ func NewAllowedEventService(opts ...option.RequestOption) (r AllowedEventService
 	return
 }
 
+// List all allowed events. Requires scope: allowedEvent:list
+func (r *AllowedEventService) List(ctx context.Context, opts ...option.RequestOption) (res *AllowedEventListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/allowed-events"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Create a new allowed event. Requires scope: allowedEvent:create
 func (r *AllowedEventService) New(ctx context.Context, body AllowedEventNewParams, opts ...option.RequestOption) (res *AllowedEventNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -56,15 +64,7 @@ func (r *AllowedEventService) Get(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// List all allowed events. Requires scope: allowedEvent:list
-func (r *AllowedEventService) List(ctx context.Context, opts ...option.RequestOption) (res *AllowedEventListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/allowed-events"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
-}
-
-// Delete a allowed event. Requires scope: allowedEvent:delete
+// Delete an allowed event. Requires scope: allowedEvent:delete
 func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -74,6 +74,46 @@ func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...opt
 	path := fmt.Sprintf("rest/v1/allowed-events/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+type AllowedEventListResponse struct {
+	Entities []AllowedEventListResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AllowedEventListResponse) RawJSON() string { return r.JSON.raw }
+func (r *AllowedEventListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AllowedEventListResponseEntity struct {
+	ID             string   `json:"id" api:"required"`
+	CreatedAt      string   `json:"createdAt" api:"required"`
+	DestinationIDs []string `json:"destinationIds" api:"required"`
+	Name           string   `json:"name" api:"required"`
+	UpdatedAt      string   `json:"updatedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AllowedEventListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *AllowedEventListResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type AllowedEventNewResponse struct {
@@ -121,46 +161,6 @@ type AllowedEventGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r AllowedEventGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AllowedEventGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AllowedEventListResponse struct {
-	Entities []AllowedEventListResponseEntity `json:"entities" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AllowedEventListResponse) RawJSON() string { return r.JSON.raw }
-func (r *AllowedEventListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AllowedEventListResponseEntity struct {
-	ID             string   `json:"id" api:"required"`
-	CreatedAt      string   `json:"createdAt" api:"required"`
-	DestinationIDs []string `json:"destinationIds" api:"required"`
-	Name           string   `json:"name" api:"required"`
-	UpdatedAt      string   `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID             respjson.Field
-		CreatedAt      respjson.Field
-		DestinationIDs respjson.Field
-		Name           respjson.Field
-		UpdatedAt      respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AllowedEventListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *AllowedEventListResponseEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

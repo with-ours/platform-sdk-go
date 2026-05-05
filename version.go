@@ -37,6 +37,16 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 	return
 }
 
+// List versions for this account, newest first. Supports cursor pagination and
+// filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
+// with AND semantics. Requires scope: version:list
+func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *VersionListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/versions"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Publish the current draft (i.e. all unpublished entity changes) as a new
 // version. Returns the full Version on success. Returns HTTP 409 with the reason
 // in the response `error` field when there are no draft changes to publish, when
@@ -75,14 +85,115 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 	return res, err
 }
 
-// List versions for this account, newest first. Supports cursor pagination and
-// filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
-// with AND semantics. Requires scope: version:list
-func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *VersionListResponse, err error) {
+// Re-publish an existing (previously created) version by ID. Use this to roll back
+// to an older snapshot. Returns 409 if the version is already published, was
+// created more than 45 days ago, or another publish is already in flight. To
+// create-and-publish from current draft state, use POST /rest/v1/versions instead.
+// Requires scope: version:publish
+func (r *VersionService) Publish(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionPublishResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/versions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/versions/%s/publish", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
+}
+
+// Retrieve the full JSON snapshot captured by a version — every entity
+// (destinations, sources, mappings, consent settings, etc.) as it existed when
+// this version was published. Sensitive fields (API keys, tokens, secrets) are
+// redacted. Useful for IaC export, audit, and backup workflows. Requires scope:
+// version:find
+func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionSnapshotResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/versions/%s/snapshot", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Compare the current draft (all unpublished entity changes) against the latest
+// published version. Returns added/removed/modified entities grouped by
+// collection, plus a total `count`. Use this to preview what would be included in
+// a `POST /rest/v1/versions` call. The path segment `draft` is a literal — there
+// is no version with that ID; it identifies the comparison target. Requires scope:
+// version:find
+func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("rest/v1/versions/%v/diff", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+type VersionListResponse struct {
+	Entities   []VersionListResponseEntity   `json:"entities" api:"required"`
+	Pagination VersionListResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Pagination  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionListResponseEntity struct {
+	ID            string  `json:"id" api:"required"`
+	CreatedAt     string  `json:"createdAt" api:"required"`
+	IsPublished   bool    `json:"isPublished" api:"required"`
+	VersionNumber float64 `json:"versionNumber" api:"required"`
+	Name          string  `json:"name" api:"nullable"`
+	// When this version was most recently published. NOT cleared when a newer version
+	// is published — `publishedAt` reflects the most recent successful publish of this
+	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
+	// determine the current live version.
+	PublishedAt string `json:"publishedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		IsPublished   respjson.Field
+		VersionNumber respjson.Field
+		Name          respjson.Field
+		PublishedAt   respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionListResponsePagination struct {
+	HasMore    bool   `json:"hasMore" api:"required"`
+	NextCursor string `json:"nextCursor" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionListResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponsePagination) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type VersionNewResponse struct {
@@ -181,30 +292,13 @@ func (r *VersionUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VersionListResponse struct {
-	Entities   []VersionListResponseEntity   `json:"entities" api:"required"`
-	Pagination VersionListResponsePagination `json:"pagination" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		Pagination  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VersionListResponseEntity struct {
+type VersionPublishResponse struct {
 	ID            string  `json:"id" api:"required"`
 	CreatedAt     string  `json:"createdAt" api:"required"`
 	IsPublished   bool    `json:"isPublished" api:"required"`
 	VersionNumber float64 `json:"versionNumber" api:"required"`
 	Name          string  `json:"name" api:"nullable"`
+	Notes         string  `json:"notes" api:"nullable"`
 	// When this version was most recently published. NOT cleared when a newer version
 	// is published — `publishedAt` reflects the most recent successful publish of this
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
@@ -217,6 +311,7 @@ type VersionListResponseEntity struct {
 		IsPublished   respjson.Field
 		VersionNumber respjson.Field
 		Name          respjson.Field
+		Notes         respjson.Field
 		PublishedAt   respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
@@ -224,28 +319,2201 @@ type VersionListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VersionListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r VersionPublishResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionPublishResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VersionListResponsePagination struct {
-	HasMore    bool   `json:"hasMore" api:"required"`
-	NextCursor string `json:"nextCursor" api:"nullable"`
+type VersionSnapshotResponse struct {
+	ID string `json:"id" api:"required"`
+	// The full entity snapshot captured by this version. Keys are entity collection
+	// names (destinations, sources, allowedEvents, mappings, consentSettings,
+	// replaySettings, globalDispatchCenters, etc.) and values are arrays of the
+	// entities as they existed at publish time. Sensitive fields (API keys, tokens,
+	// secrets) are redacted. Returns null when the version snapshot has been pruned.
+	JsonContent   map[string]any `json:"jsonContent" api:"required"`
+	VersionNumber float64        `json:"versionNumber" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		HasMore     respjson.Field
-		NextCursor  respjson.Field
+		ID            respjson.Field
+		JsonContent   respjson.Field
+		VersionNumber respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionSnapshotResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionSnapshotResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponse struct {
+	// Total number of differences across all entity collections. Equals the sum of
+	// `added + removed + modified` across every collection in `differences`.
+	Count       float64                        `json:"count" api:"required"`
+	Differences VersionDiffResponseDifferences `json:"differences" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Count       respjson.Field
+		Differences respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r VersionListResponsePagination) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponsePagination) UnmarshalJSON(data []byte) error {
+func (r VersionDiffResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type VersionDiffResponseDifferences struct {
+	AllowedEvents            VersionDiffResponseDifferencesAllowedEvents            `json:"allowedEvents" api:"required"`
+	ConsentSettings          VersionDiffResponseDifferencesConsentSettings          `json:"consentSettings" api:"required"`
+	DataGovernanceEvents     VersionDiffResponseDifferencesDataGovernanceEvents     `json:"dataGovernanceEvents" api:"required"`
+	DataGovernanceRules      VersionDiffResponseDifferencesDataGovernanceRules      `json:"dataGovernanceRules" api:"required"`
+	Destinations             VersionDiffResponseDifferencesDestinations             `json:"destinations" api:"required"`
+	Experiments              VersionDiffResponseDifferencesExperiments              `json:"experiments" api:"required"`
+	ExperimentSettings       VersionDiffResponseDifferencesExperimentSettings       `json:"experimentSettings" api:"required"`
+	ExperimentVariants       VersionDiffResponseDifferencesExperimentVariants       `json:"experimentVariants" api:"required"`
+	ExternalAllowedEventData VersionDiffResponseDifferencesExternalAllowedEventData `json:"externalAllowedEventData" api:"required"`
+	GlobalDispatchCenters    VersionDiffResponseDifferencesGlobalDispatchCenters    `json:"globalDispatchCenters" api:"required"`
+	Mappings                 VersionDiffResponseDifferencesMappings                 `json:"mappings" api:"required"`
+	ReplaySettings           VersionDiffResponseDifferencesReplaySettings           `json:"replaySettings" api:"required"`
+	Sources                  VersionDiffResponseDifferencesSources                  `json:"sources" api:"required"`
+	TagManagerTags           VersionDiffResponseDifferencesTagManagerTags           `json:"tagManagerTags" api:"required"`
+	TagManagerTriggers       VersionDiffResponseDifferencesTagManagerTriggers       `json:"tagManagerTriggers" api:"required"`
+	TagManagerVariables      VersionDiffResponseDifferencesTagManagerVariables      `json:"tagManagerVariables" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AllowedEvents            respjson.Field
+		ConsentSettings          respjson.Field
+		DataGovernanceEvents     respjson.Field
+		DataGovernanceRules      respjson.Field
+		Destinations             respjson.Field
+		Experiments              respjson.Field
+		ExperimentSettings       respjson.Field
+		ExperimentVariants       respjson.Field
+		ExternalAllowedEventData respjson.Field
+		GlobalDispatchCenters    respjson.Field
+		Mappings                 respjson.Field
+		ReplaySettings           respjson.Field
+		Sources                  respjson.Field
+		TagManagerTags           respjson.Field
+		TagManagerTriggers       respjson.Field
+		TagManagerVariables      respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferences) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferences) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesAllowedEvents struct {
+	Added    []VersionDiffResponseDifferencesAllowedEventsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesAllowedEventsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesAllowedEventsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesAllowedEvents) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesAllowedEvents) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesAllowedEventsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesAllowedEventsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesAllowedEventsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesAllowedEventsModified struct {
+	New VersionDiffResponseDifferencesAllowedEventsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesAllowedEventsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesAllowedEventsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesAllowedEventsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesAllowedEventsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesAllowedEventsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesAllowedEventsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesAllowedEventsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesAllowedEventsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesAllowedEventsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesAllowedEventsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesAllowedEventsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesAllowedEventsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesConsentSettings struct {
+	Added    []VersionDiffResponseDifferencesConsentSettingsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesConsentSettingsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesConsentSettingsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesConsentSettings) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesConsentSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesConsentSettingsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesConsentSettingsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesConsentSettingsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesConsentSettingsModified struct {
+	New VersionDiffResponseDifferencesConsentSettingsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesConsentSettingsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesConsentSettingsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesConsentSettingsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesConsentSettingsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesConsentSettingsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesConsentSettingsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesConsentSettingsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesConsentSettingsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesConsentSettingsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesConsentSettingsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesConsentSettingsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesConsentSettingsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceEvents struct {
+	Added    []VersionDiffResponseDifferencesDataGovernanceEventsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesDataGovernanceEventsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesDataGovernanceEventsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceEvents) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDataGovernanceEvents) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceEventsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceEventsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDataGovernanceEventsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceEventsModified struct {
+	New VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceEventsModified) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceEventsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceEventsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceEventsRemoved) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceEventsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceRules struct {
+	Added    []VersionDiffResponseDifferencesDataGovernanceRulesAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesDataGovernanceRulesModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesDataGovernanceRulesRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceRules) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDataGovernanceRules) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceRulesAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceRulesAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDataGovernanceRulesAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceRulesModified struct {
+	New VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceRulesModified) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceRulesModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDataGovernanceRulesRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDataGovernanceRulesRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDataGovernanceRulesRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDestinations struct {
+	Added    []VersionDiffResponseDifferencesDestinationsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesDestinationsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesDestinationsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDestinations) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDestinations) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDestinationsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDestinationsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDestinationsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDestinationsModified struct {
+	New VersionDiffResponseDifferencesDestinationsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesDestinationsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDestinationsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDestinationsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDestinationsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDestinationsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDestinationsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDestinationsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDestinationsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDestinationsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesDestinationsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesDestinationsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesDestinationsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperiments struct {
+	Added    []VersionDiffResponseDifferencesExperimentsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesExperimentsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesExperimentsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperiments) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperiments) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentsModified struct {
+	New VersionDiffResponseDifferencesExperimentsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesExperimentsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentSettings struct {
+	Added    []VersionDiffResponseDifferencesExperimentSettingsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesExperimentSettingsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesExperimentSettingsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentSettings) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentSettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentSettingsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentSettingsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentSettingsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentSettingsModified struct {
+	New VersionDiffResponseDifferencesExperimentSettingsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesExperimentSettingsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentSettingsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentSettingsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentSettingsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentSettingsModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExperimentSettingsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentSettingsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentSettingsModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExperimentSettingsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentSettingsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentSettingsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentSettingsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentVariants struct {
+	Added    []VersionDiffResponseDifferencesExperimentVariantsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesExperimentVariantsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesExperimentVariantsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentVariants) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentVariants) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentVariantsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentVariantsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentVariantsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentVariantsModified struct {
+	New VersionDiffResponseDifferencesExperimentVariantsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesExperimentVariantsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentVariantsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentVariantsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentVariantsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentVariantsModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExperimentVariantsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentVariantsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentVariantsModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExperimentVariantsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExperimentVariantsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExperimentVariantsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExperimentVariantsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExternalAllowedEventData struct {
+	Added    []VersionDiffResponseDifferencesExternalAllowedEventDataAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesExternalAllowedEventDataModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesExternalAllowedEventDataRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExternalAllowedEventData) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesExternalAllowedEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExternalAllowedEventDataAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExternalAllowedEventDataAdded) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExternalAllowedEventDataAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExternalAllowedEventDataModified struct {
+	New VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExternalAllowedEventDataModified) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExternalAllowedEventDataModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesExternalAllowedEventDataRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesExternalAllowedEventDataRemoved) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesExternalAllowedEventDataRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesGlobalDispatchCenters struct {
+	Added    []VersionDiffResponseDifferencesGlobalDispatchCentersAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesGlobalDispatchCentersModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesGlobalDispatchCentersRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesGlobalDispatchCenters) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesGlobalDispatchCenters) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesGlobalDispatchCentersAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesGlobalDispatchCentersAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesGlobalDispatchCentersAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesGlobalDispatchCentersModified struct {
+	New VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesGlobalDispatchCentersModified) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesGlobalDispatchCentersModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesGlobalDispatchCentersRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesGlobalDispatchCentersRemoved) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesGlobalDispatchCentersRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesMappings struct {
+	Added    []VersionDiffResponseDifferencesMappingsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesMappingsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesMappingsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesMappings) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesMappings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesMappingsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesMappingsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesMappingsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesMappingsModified struct {
+	New VersionDiffResponseDifferencesMappingsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesMappingsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesMappingsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesMappingsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesMappingsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesMappingsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesMappingsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesMappingsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesMappingsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesMappingsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesMappingsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesMappingsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesMappingsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesReplaySettings struct {
+	Added    []VersionDiffResponseDifferencesReplaySettingsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesReplaySettingsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesReplaySettingsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesReplaySettings) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesReplaySettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesReplaySettingsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesReplaySettingsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesReplaySettingsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesReplaySettingsModified struct {
+	New VersionDiffResponseDifferencesReplaySettingsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesReplaySettingsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesReplaySettingsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesReplaySettingsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesReplaySettingsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesReplaySettingsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesReplaySettingsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesReplaySettingsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesReplaySettingsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesReplaySettingsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesReplaySettingsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesReplaySettingsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesReplaySettingsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesSources struct {
+	Added    []VersionDiffResponseDifferencesSourcesAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesSourcesModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesSourcesRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesSources) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesSources) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesSourcesAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesSourcesAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesSourcesAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesSourcesModified struct {
+	New VersionDiffResponseDifferencesSourcesModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesSourcesModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesSourcesModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesSourcesModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesSourcesModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesSourcesModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesSourcesModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesSourcesModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesSourcesModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesSourcesModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesSourcesRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesSourcesRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesSourcesRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTags struct {
+	Added    []VersionDiffResponseDifferencesTagManagerTagsAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesTagManagerTagsModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesTagManagerTagsRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTags) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTags) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTagsAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTagsAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTagsAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTagsModified struct {
+	New VersionDiffResponseDifferencesTagManagerTagsModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesTagManagerTagsModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTagsModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTagsModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTagsModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTagsModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTagsModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTagsModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTagsModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTagsModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTagsRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTagsRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTagsRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTriggers struct {
+	Added    []VersionDiffResponseDifferencesTagManagerTriggersAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesTagManagerTriggersModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesTagManagerTriggersRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTriggers) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTriggers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTriggersAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTriggersAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTriggersAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTriggersModified struct {
+	New VersionDiffResponseDifferencesTagManagerTriggersModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesTagManagerTriggersModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTriggersModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTriggersModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTriggersModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTriggersModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesTagManagerTriggersModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTriggersModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTriggersModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesTagManagerTriggersModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerTriggersRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerTriggersRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerTriggersRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerVariables struct {
+	Added    []VersionDiffResponseDifferencesTagManagerVariablesAdded    `json:"added" api:"required"`
+	Modified []VersionDiffResponseDifferencesTagManagerVariablesModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesTagManagerVariablesRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerVariables) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerVariables) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerVariablesAdded struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerVariablesAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerVariablesAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerVariablesModified struct {
+	New VersionDiffResponseDifferencesTagManagerVariablesModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesTagManagerVariablesModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerVariablesModified) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesTagManagerVariablesModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerVariablesModifiedNew struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerVariablesModifiedNew) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesTagManagerVariablesModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerVariablesModifiedOld struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerVariablesModifiedOld) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *VersionDiffResponseDifferencesTagManagerVariablesModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagerVariablesRemoved struct {
+	ID           string `json:"id" api:"required"`
+	Name         string `json:"name" api:"nullable"`
+	Summary      string `json:"summary" api:"nullable"`
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagerVariablesRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagerVariablesRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionListParams struct {
+	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
+	// 1 and values above 100 are clamped to 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Case-insensitive substring match on the version name.
+	NameContains param.Opt[string] `query:"nameContains,omitzero" json:"-"`
+	// Case-insensitive substring match on the version notes.
+	NotesContains param.Opt[string] `query:"notesContains,omitzero" json:"-"`
+	// Filter to only published or unpublished versions.
+	//
+	// Any of "true", "false".
+	IsPublished VersionListParamsIsPublished `query:"isPublished,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VersionListParams]'s query parameters as `url.Values`.
+func (r VersionListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter to only published or unpublished versions.
+type VersionListParamsIsPublished string
+
+const (
+	VersionListParamsIsPublishedTrue  VersionListParamsIsPublished = "true"
+	VersionListParamsIsPublishedFalse VersionListParamsIsPublished = "false"
+)
 
 type VersionNewParams struct {
 	Name                            param.Opt[string] `json:"name,omitzero"`
@@ -286,36 +2554,8 @@ func (r *VersionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VersionListParams struct {
-	// Maximum number of versions to return. Defaults to 25; values below 1 are clamped
-	// to 1 and values above 100 are clamped to 100.
-	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
-	// not decode or modify it. Malformed cursors return 400 Bad Request.
-	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Case-insensitive substring match on the version name.
-	NameContains param.Opt[string] `query:"nameContains,omitzero" json:"-"`
-	// Case-insensitive substring match on the version notes.
-	NotesContains param.Opt[string] `query:"notesContains,omitzero" json:"-"`
-	// Filter to only published or unpublished versions.
-	//
-	// Any of "true", "false".
-	IsPublished VersionListParamsIsPublished `query:"isPublished,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [VersionListParams]'s query parameters as `url.Values`.
-func (r VersionListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Filter to only published or unpublished versions.
-type VersionListParamsIsPublished string
+type VersionDiffParamsID string
 
 const (
-	VersionListParamsIsPublishedTrue  VersionListParamsIsPublished = "true"
-	VersionListParamsIsPublishedFalse VersionListParamsIsPublished = "false"
+	VersionDiffParamsIDDraft VersionDiffParamsID = "draft"
 )

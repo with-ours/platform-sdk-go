@@ -13,6 +13,31 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
+func TestGlobalDispatchCenterListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := githubcomwithoursplatformsdkgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.GlobalDispatchCenters.List(context.TODO(), githubcomwithoursplatformsdkgo.GlobalDispatchCenterListParams{
+		Cursor: githubcomwithoursplatformsdkgo.String("cursor"),
+		Limit:  githubcomwithoursplatformsdkgo.Int(25),
+	})
+	if err != nil {
+		var apierr *githubcomwithoursplatformsdkgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestGlobalDispatchCenterNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -89,28 +114,6 @@ func TestGlobalDispatchCenterUpdateWithOptionalParams(t *testing.T) {
 			Notes:     githubcomwithoursplatformsdkgo.String("notes"),
 		},
 	)
-	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestGlobalDispatchCenterList(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.GlobalDispatchCenters.List(context.TODO())
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
