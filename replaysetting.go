@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -41,11 +42,29 @@ func NewReplaySettingService(opts ...option.RequestOption) (r ReplaySettingServi
 // `limit` and `cursor`. Replay settings control which domains may capture session
 // replays and where the capture script is hosted. Requires scope:
 // replaySettings:list
-func (r *ReplaySettingService) List(ctx context.Context, query ReplaySettingListParams, opts ...option.RequestOption) (res *ReplaySettingListResponse, err error) {
+func (r *ReplaySettingService) List(ctx context.Context, query ReplaySettingListParams, opts ...option.RequestOption) (res *pagination.Cursor[ReplaySettingListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/replay-settings"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List the replay configurations on this account. Supports cursor pagination via
+// `limit` and `cursor`. Replay settings control which domains may capture session
+// replays and where the capture script is hosted. Requires scope:
+// replaySettings:list
+func (r *ReplaySettingService) ListAutoPaging(ctx context.Context, query ReplaySettingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ReplaySettingListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create the replay configuration for this account. Each account is limited to one
@@ -100,24 +119,6 @@ func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...op
 }
 
 type ReplaySettingListResponse struct {
-	Entities   []ReplaySettingListResponseEntity   `json:"entities" api:"required"`
-	Pagination ReplaySettingListResponsePagination `json:"pagination" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		Pagination  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReplaySettingListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReplaySettingListResponseEntity struct {
 	// Stable identifier (UUID) for this replay configuration.
 	ID string `json:"id" api:"required"`
 	// ISO-8601 timestamp when this configuration was created.
@@ -130,7 +131,7 @@ type ReplaySettingListResponseEntity struct {
 	// without losing the configuration.
 	//
 	// Any of "Disabled", "Enabled".
-	Status string `json:"status" api:"required"`
+	Status ReplaySettingListResponseStatus `json:"status" api:"required"`
 	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
 	// to use the default Ours Privacy domain.
 	CustomDomain string `json:"customDomain" api:"nullable"`
@@ -155,28 +156,20 @@ type ReplaySettingListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReplaySettingListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r ReplaySettingListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReplaySettingListResponsePagination struct {
-	HasMore    bool   `json:"hasMore" api:"required"`
-	NextCursor string `json:"nextCursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasMore     respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// Whether session replay capture is currently active. Set to "Enabled" to start
+// capturing replays from whitelisted domains, or "Disabled" to pause capture
+// without losing the configuration.
+type ReplaySettingListResponseStatus string
 
-// Returns the unmodified JSON received from the API
-func (r ReplaySettingListResponsePagination) RawJSON() string { return r.JSON.raw }
-func (r *ReplaySettingListResponsePagination) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	ReplaySettingListResponseStatusDisabled ReplaySettingListResponseStatus = "Disabled"
+	ReplaySettingListResponseStatusEnabled  ReplaySettingListResponseStatus = "Enabled"
+)
 
 type ReplaySettingNewResponse struct {
 	IsSuccess      bool   `json:"isSuccess" api:"required"`

@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -39,11 +40,27 @@ func NewGlobalDispatchCenterService(opts ...option.RequestOption) (r GlobalDispa
 
 // List global dispatch centers for this account. Supports cursor pagination via
 // `limit` and `cursor`. Requires scope: globalDispatch:list
-func (r *GlobalDispatchCenterService) List(ctx context.Context, query GlobalDispatchCenterListParams, opts ...option.RequestOption) (res *GlobalDispatchCenterListResponse, err error) {
+func (r *GlobalDispatchCenterService) List(ctx context.Context, query GlobalDispatchCenterListParams, opts ...option.RequestOption) (res *pagination.Cursor[GlobalDispatchCenterListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/global-dispatch-centers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List global dispatch centers for this account. Supports cursor pagination via
+// `limit` and `cursor`. Requires scope: globalDispatch:list
+func (r *GlobalDispatchCenterService) ListAutoPaging(ctx context.Context, query GlobalDispatchCenterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[GlobalDispatchCenterListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new global dispatch center. Requires scope: globalDispatch:create
@@ -92,24 +109,6 @@ func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opt
 }
 
 type GlobalDispatchCenterListResponse struct {
-	Entities   []GlobalDispatchCenterListResponseEntity   `json:"entities" api:"required"`
-	Pagination GlobalDispatchCenterListResponsePagination `json:"pagination" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		Pagination  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponse) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type GlobalDispatchCenterListResponseEntity struct {
 	// Server-assigned UUID for this dispatch center.
 	ID string `json:"id" api:"required"`
 	// ISO 8601 timestamp when the center was created.
@@ -119,7 +118,7 @@ type GlobalDispatchCenterListResponseEntity struct {
 	// Discriminator for the entity type. Always "globalDispatchCenter".
 	Kind string `json:"kind" api:"required"`
 	// Routing categories in priority order (1..N).
-	Categories []GlobalDispatchCenterListResponseEntityCategory `json:"categories" api:"nullable"`
+	Categories []GlobalDispatchCenterListResponseCategory `json:"categories" api:"nullable"`
 	// Human-readable name shown in the dashboard.
 	Name string `json:"name" api:"nullable"`
 	// Free-form notes for this center.
@@ -143,12 +142,12 @@ type GlobalDispatchCenterListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterListResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type GlobalDispatchCenterListResponseEntityCategory struct {
+type GlobalDispatchCenterListResponseCategory struct {
 	// Display name for the category.
 	Name string `json:"name" api:"required"`
 	// 1-indexed sort position. Always equals (sorted index + 1) — see PATCH for
@@ -173,26 +172,8 @@ type GlobalDispatchCenterListResponseEntityCategory struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponseEntityCategory) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponseEntityCategory) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type GlobalDispatchCenterListResponsePagination struct {
-	HasMore    bool   `json:"hasMore" api:"required"`
-	NextCursor string `json:"nextCursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasMore     respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponsePagination) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponsePagination) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterListResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterListResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
