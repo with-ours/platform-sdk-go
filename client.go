@@ -18,12 +18,16 @@ import (
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options               []option.RequestOption
-	Destinations          DestinationService
-	Sources               SourceService
 	AllowedEvents         AllowedEventService
 	ConsentSettings       ConsentSettingService
+	Destinations          DestinationService
+	ExperimentSettings    ExperimentSettingService
+	ExperimentVariants    ExperimentVariantService
+	Experiments           ExperimentService
 	GlobalDispatchCenters GlobalDispatchCenterService
+	Mappings              MappingService
 	ReplaySettings        ReplaySettingService
+	Sources               SourceService
 	Versions              VersionService
 }
 
@@ -57,12 +61,16 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
-	r.Destinations = NewDestinationService(opts...)
-	r.Sources = NewSourceService(opts...)
 	r.AllowedEvents = NewAllowedEventService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
+	r.Destinations = NewDestinationService(opts...)
+	r.ExperimentSettings = NewExperimentSettingService(opts...)
+	r.ExperimentVariants = NewExperimentVariantService(opts...)
+	r.Experiments = NewExperimentService(opts...)
 	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
+	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
+	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
 
 	return

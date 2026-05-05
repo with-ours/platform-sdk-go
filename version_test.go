@@ -13,6 +13,34 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
+func TestVersionListWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := githubcomwithoursplatformsdkgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Versions.List(context.TODO(), githubcomwithoursplatformsdkgo.VersionListParams{
+		Cursor:        githubcomwithoursplatformsdkgo.String("cursor"),
+		IsPublished:   githubcomwithoursplatformsdkgo.VersionListParamsIsPublishedTrue,
+		Limit:         githubcomwithoursplatformsdkgo.Int(25),
+		NameContains:  githubcomwithoursplatformsdkgo.String("nameContains"),
+		NotesContains: githubcomwithoursplatformsdkgo.String("notesContains"),
+	})
+	if err != nil {
+		var apierr *githubcomwithoursplatformsdkgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestVersionNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -100,7 +128,7 @@ func TestVersionUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVersionListWithOptionalParams(t *testing.T) {
+func TestVersionPublish(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -112,13 +140,51 @@ func TestVersionListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Versions.List(context.TODO(), githubcomwithoursplatformsdkgo.VersionListParams{
-		Cursor:        githubcomwithoursplatformsdkgo.String("cursor"),
-		IsPublished:   githubcomwithoursplatformsdkgo.VersionListParamsIsPublishedTrue,
-		Limit:         githubcomwithoursplatformsdkgo.Int(25),
-		NameContains:  githubcomwithoursplatformsdkgo.String("nameContains"),
-		NotesContains: githubcomwithoursplatformsdkgo.String("notesContains"),
-	})
+	_, err := client.Versions.Publish(context.TODO(), "id")
+	if err != nil {
+		var apierr *githubcomwithoursplatformsdkgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVersionSnapshot(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := githubcomwithoursplatformsdkgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Versions.Snapshot(context.TODO(), "id")
+	if err != nil {
+		var apierr *githubcomwithoursplatformsdkgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVersionDiff(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := githubcomwithoursplatformsdkgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Versions.Diff(context.TODO(), githubcomwithoursplatformsdkgo.VersionDiffParamsIDDraft)
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
