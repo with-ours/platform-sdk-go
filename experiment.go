@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -41,11 +42,29 @@ func NewExperimentService(opts ...option.RequestOption) (r ExperimentService) {
 // `status`, `type`, and free-text `search` matched against experiment id, name,
 // and description. Combine filters with AND semantics. Requires scope:
 // experiment:list
-func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) (res *ExperimentListResponse, err error) {
+func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/experiments"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List experiments for this account. Supports cursor pagination and filtering by
+// `status`, `type`, and free-text `search` matched against experiment id, name,
+// and description. Combine filters with AND semantics. Requires scope:
+// experiment:list
+func (r *ExperimentService) ListAutoPaging(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExperimentListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new experiment. Requires scope: experiment:create
@@ -184,25 +203,6 @@ func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, qu
 }
 
 type ExperimentListResponse struct {
-	// Experiments ordered by most recently updated first, then most recently created.
-	Entities   []ExperimentListResponseEntity   `json:"entities" api:"required"`
-	Pagination ExperimentListResponsePagination `json:"pagination" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		Pagination  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExperimentListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExperimentListResponseEntity struct {
 	// Unique identifier for the experiment.
 	ID string `json:"id" api:"required"`
 	// ISO-8601 timestamp when the experiment was created.
@@ -217,7 +217,7 @@ type ExperimentListResponseEntity struct {
 	// temporarily inactive, and `completed` is permanently stopped.
 	//
 	// Any of "completed", "draft", "paused", "running".
-	Status string `json:"status" api:"required"`
+	Status ExperimentListResponseStatus `json:"status" api:"required"`
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
@@ -229,7 +229,7 @@ type ExperimentListResponseEntity struct {
 	IncludeQueryString bool `json:"includeQueryString" api:"nullable"`
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
-	Metrics ExperimentListResponseEntityMetrics `json:"metrics" api:"nullable"`
+	Metrics ExperimentListResponseMetrics `json:"metrics" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -237,12 +237,12 @@ type ExperimentListResponseEntity struct {
 	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
 	// visitor status, and (server-side) visitor properties. Same shape as the
 	// create/patch input.
-	TargetingRules ExperimentListResponseEntityTargetingRules `json:"targetingRules" api:"nullable"`
+	TargetingRules ExperimentListResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
 	// `personalization` is always-on targeting.
 	//
 	// Any of "ab", "multivariate", "personalization".
-	Type string `json:"type" api:"nullable"`
+	Type ExperimentListResponseType `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// Variant ID persisted as the winner when the experiment was stopped. Set via
@@ -271,18 +271,29 @@ type ExperimentListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r ExperimentListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+// temporarily inactive, and `completed` is permanently stopped.
+type ExperimentListResponseStatus string
+
+const (
+	ExperimentListResponseStatusCompleted ExperimentListResponseStatus = "completed"
+	ExperimentListResponseStatusDraft     ExperimentListResponseStatus = "draft"
+	ExperimentListResponseStatusPaused    ExperimentListResponseStatus = "paused"
+	ExperimentListResponseStatusRunning   ExperimentListResponseStatus = "running"
+)
+
 // Configured success metrics. The read shape mirrors the write shape — `metrics`
 // from a GET response can be PATCHed back without modification.
-type ExperimentListResponseEntityMetrics struct {
+type ExperimentListResponseMetrics struct {
 	// Primary success metric used in the results report.
 	Primary any `json:"primary" api:"nullable"`
 	// Optional secondary metrics tracked alongside the primary goal.
-	Secondary []ExperimentListResponseEntityMetricsSecondary `json:"secondary" api:"nullable"`
+	Secondary []ExperimentListResponseMetricsSecondary `json:"secondary" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Primary     respjson.Field
@@ -293,12 +304,12 @@ type ExperimentListResponseEntityMetrics struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentListResponseEntityMetrics) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponseEntityMetrics) UnmarshalJSON(data []byte) error {
+func (r ExperimentListResponseMetrics) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExperimentListResponseEntityMetricsSecondary struct {
+type ExperimentListResponseMetricsSecondary struct {
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
@@ -314,15 +325,15 @@ type ExperimentListResponseEntityMetricsSecondary struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentListResponseEntityMetricsSecondary) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponseEntityMetricsSecondary) UnmarshalJSON(data []byte) error {
+func (r ExperimentListResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
 // visitor status, and (server-side) visitor properties. Same shape as the
 // create/patch input.
-type ExperimentListResponseEntityTargetingRules struct {
+type ExperimentListResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
 	// the field) matches all URLs — equivalent to `["**"]`.
@@ -331,7 +342,7 @@ type ExperimentListResponseEntityTargetingRules struct {
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
-	QueryParams []ExperimentListResponseEntityTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
+	QueryParams []ExperimentListResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
 	// Optional visitor-property matching rules. These are passed through as JSON for
 	// experimentation targeting.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
@@ -351,12 +362,12 @@ type ExperimentListResponseEntityTargetingRules struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentListResponseEntityTargetingRules) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponseEntityTargetingRules) UnmarshalJSON(data []byte) error {
+func (r ExperimentListResponseTargetingRules) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseTargetingRules) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExperimentListResponseEntityTargetingRulesQueryParam struct {
+type ExperimentListResponseTargetingRulesQueryParam struct {
 	// Query string key to inspect on the current page URL.
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
@@ -377,28 +388,20 @@ type ExperimentListResponseEntityTargetingRulesQueryParam struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentListResponseEntityTargetingRulesQueryParam) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponseEntityTargetingRulesQueryParam) UnmarshalJSON(data []byte) error {
+func (r ExperimentListResponseTargetingRulesQueryParam) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseTargetingRulesQueryParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExperimentListResponsePagination struct {
-	HasMore    bool   `json:"hasMore" api:"required"`
-	NextCursor string `json:"nextCursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasMore     respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+// `personalization` is always-on targeting.
+type ExperimentListResponseType string
 
-// Returns the unmodified JSON received from the API
-func (r ExperimentListResponsePagination) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentListResponsePagination) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	ExperimentListResponseTypeAb              ExperimentListResponseType = "ab"
+	ExperimentListResponseTypeMultivariate    ExperimentListResponseType = "multivariate"
+	ExperimentListResponseTypePersonalization ExperimentListResponseType = "personalization"
+)
 
 type ExperimentNewResponse struct {
 	// Unique identifier for the experiment.

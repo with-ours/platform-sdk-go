@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -40,11 +41,28 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 // List versions for this account, newest first. Supports cursor pagination and
 // filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
 // with AND semantics. Requires scope: version:list
-func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *VersionListResponse, err error) {
+func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *pagination.Cursor[VersionListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/versions"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List versions for this account, newest first. Supports cursor pagination and
+// filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
+// with AND semantics. Requires scope: version:list
+func (r *VersionService) ListAutoPaging(ctx context.Context, query VersionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[VersionListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Publish the current draft (i.e. all unpublished entity changes) as a new
@@ -131,24 +149,6 @@ func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, opts 
 }
 
 type VersionListResponse struct {
-	Entities   []VersionListResponseEntity   `json:"entities" api:"required"`
-	Pagination VersionListResponsePagination `json:"pagination" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		Pagination  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VersionListResponseEntity struct {
 	ID            string  `json:"id" api:"required"`
 	CreatedAt     string  `json:"createdAt" api:"required"`
 	IsPublished   bool    `json:"isPublished" api:"required"`
@@ -173,26 +173,8 @@ type VersionListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r VersionListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponseEntity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VersionListResponsePagination struct {
-	HasMore    bool   `json:"hasMore" api:"required"`
-	NextCursor string `json:"nextCursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		HasMore     respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VersionListResponsePagination) RawJSON() string { return r.JSON.raw }
-func (r *VersionListResponsePagination) UnmarshalJSON(data []byte) error {
+func (r VersionListResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
