@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/with-ours/platform-sdk-go@v1.12.0'
+go get -u 'github.com/with-ours/platform-sdk-go@v1.13.0'
 ```
 
 <!-- x-release-please-end -->
@@ -284,8 +284,33 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
+```go
+iter := client.Experiments.ListAutoPaging(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentListParams{})
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	experimentListResponse := iter.Current()
+	fmt.Printf("%+v\n", experimentListResponse)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
+
+```go
+page, err := client.Experiments.List(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentListParams{})
+for page != nil {
+	for _, experiment := range page.Entities {
+		fmt.Printf("%+v\n", experiment)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
 
 ### Errors
 

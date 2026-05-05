@@ -11,8 +11,10 @@ import (
 	"slices"
 
 	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -36,6 +38,31 @@ func NewGlobalDispatchCenterService(opts ...option.RequestOption) (r GlobalDispa
 	return
 }
 
+// List global dispatch centers for this account. Supports cursor pagination via
+// `limit` and `cursor`. Requires scope: globalDispatch:list
+func (r *GlobalDispatchCenterService) List(ctx context.Context, query GlobalDispatchCenterListParams, opts ...option.RequestOption) (res *pagination.Cursor[GlobalDispatchCenterListResponse], err error) {
+	var raw *http.Response
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
+	path := "rest/v1/global-dispatch-centers"
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List global dispatch centers for this account. Supports cursor pagination via
+// `limit` and `cursor`. Requires scope: globalDispatch:list
+func (r *GlobalDispatchCenterService) ListAutoPaging(ctx context.Context, query GlobalDispatchCenterListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[GlobalDispatchCenterListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
+}
+
 // Create a new global dispatch center. Requires scope: globalDispatch:create
 func (r *GlobalDispatchCenterService) New(ctx context.Context, body GlobalDispatchCenterNewParams, opts ...option.RequestOption) (res *GlobalDispatchCenterNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -56,7 +83,8 @@ func (r *GlobalDispatchCenterService) Get(ctx context.Context, id string, opts .
 	return res, err
 }
 
-// Update a global dispatch center. Requires scope: globalDispatch:update
+// Partially update a global dispatch center. Only the fields you send are changed.
+// Requires scope: globalDispatch:update
 func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, body GlobalDispatchCenterUpdateParams, opts ...option.RequestOption) (res *GlobalDispatchCenterUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -65,14 +93,6 @@ func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, bod
 	}
 	path := fmt.Sprintf("rest/v1/global-dispatch-centers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return res, err
-}
-
-// List all global dispatch centers. Requires scope: globalDispatch:list
-func (r *GlobalDispatchCenterService) List(ctx context.Context, opts ...option.RequestOption) (res *GlobalDispatchCenterListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/global-dispatch-centers"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -88,7 +108,7 @@ func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opt
 	return res, err
 }
 
-type GlobalDispatchCenterNewResponse struct {
+type GlobalDispatchCenterListResponse struct {
 	// Server-assigned UUID for this dispatch center.
 	ID string `json:"id" api:"required"`
 	// ISO 8601 timestamp when the center was created.
@@ -97,8 +117,12 @@ type GlobalDispatchCenterNewResponse struct {
 	IsEnabled bool `json:"isEnabled" api:"required"`
 	// Discriminator for the entity type. Always "globalDispatchCenter".
 	Kind string `json:"kind" api:"required"`
+	// Routing categories in priority order (1..N).
+	Categories []GlobalDispatchCenterListResponseCategory `json:"categories" api:"nullable"`
 	// Human-readable name shown in the dashboard.
 	Name string `json:"name" api:"nullable"`
+	// Free-form notes for this center.
+	Notes string `json:"notes" api:"nullable"`
 	// ISO 8601 timestamp of the last write. Equal to createdAt on a freshly created
 	// center; advances on every PATCH.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
@@ -108,7 +132,78 @@ type GlobalDispatchCenterNewResponse struct {
 		CreatedAt   respjson.Field
 		IsEnabled   respjson.Field
 		Kind        respjson.Field
+		Categories  respjson.Field
 		Name        respjson.Field
+		Notes       respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalDispatchCenterListResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterListResponseCategory struct {
+	// Display name for the category.
+	Name string `json:"name" api:"required"`
+	// 1-indexed sort position. Always equals (sorted index + 1) — see PATCH for
+	// details.
+	Priority int64 `json:"priority" api:"required"`
+	// Optional human-readable description.
+	Description string `json:"description" api:"nullable"`
+	// Destinations that receive events matching this category.
+	DestinationIDs []string `json:"destinationIds" api:"nullable"`
+	// Optional condition tree gating which events match this category.
+	Logic any `json:"logic" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		Priority       respjson.Field
+		Description    respjson.Field
+		DestinationIDs respjson.Field
+		Logic          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalDispatchCenterListResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterListResponseCategory) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterNewResponse struct {
+	// Server-assigned UUID for this dispatch center.
+	ID string `json:"id" api:"required"`
+	// ISO 8601 timestamp when the center was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// When false, the dispatch center is configured but does not route events.
+	IsEnabled bool `json:"isEnabled" api:"required"`
+	// Discriminator for the entity type. Always "globalDispatchCenter".
+	Kind string `json:"kind" api:"required"`
+	// Routing categories in priority order (1..N).
+	Categories []GlobalDispatchCenterNewResponseCategory `json:"categories" api:"nullable"`
+	// Human-readable name shown in the dashboard.
+	Name string `json:"name" api:"nullable"`
+	// Free-form notes for this center.
+	Notes string `json:"notes" api:"nullable"`
+	// ISO 8601 timestamp of the last write. Equal to createdAt on a freshly created
+	// center; advances on every PATCH.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		CreatedAt   respjson.Field
+		IsEnabled   respjson.Field
+		Kind        respjson.Field
+		Categories  respjson.Field
+		Name        respjson.Field
+		Notes       respjson.Field
 		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -118,6 +213,36 @@ type GlobalDispatchCenterNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r GlobalDispatchCenterNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *GlobalDispatchCenterNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterNewResponseCategory struct {
+	// Display name for the category.
+	Name string `json:"name" api:"required"`
+	// 1-indexed sort position. Always equals (sorted index + 1) — see PATCH for
+	// details.
+	Priority int64 `json:"priority" api:"required"`
+	// Optional human-readable description.
+	Description string `json:"description" api:"nullable"`
+	// Destinations that receive events matching this category.
+	DestinationIDs []string `json:"destinationIds" api:"nullable"`
+	// Optional condition tree gating which events match this category.
+	Logic any `json:"logic" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name           respjson.Field
+		Priority       respjson.Field
+		Description    respjson.Field
+		DestinationIDs respjson.Field
+		Logic          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r GlobalDispatchCenterNewResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterNewResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -199,57 +324,8 @@ type GlobalDispatchCenterUpdateResponse struct {
 	IsEnabled bool `json:"isEnabled" api:"required"`
 	// Discriminator for the entity type. Always "globalDispatchCenter".
 	Kind string `json:"kind" api:"required"`
-	// Human-readable name shown in the dashboard.
-	Name string `json:"name" api:"nullable"`
-	// ISO 8601 timestamp of the last write. Equal to createdAt on a freshly created
-	// center; advances on every PATCH.
-	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		IsEnabled   respjson.Field
-		Kind        respjson.Field
-		Name        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterUpdateResponse) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type GlobalDispatchCenterListResponse struct {
-	Entities []GlobalDispatchCenterListResponseEntity `json:"entities" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponse) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type GlobalDispatchCenterListResponseEntity struct {
-	// Server-assigned UUID for this dispatch center.
-	ID string `json:"id" api:"required"`
-	// ISO 8601 timestamp when the center was created.
-	CreatedAt string `json:"createdAt" api:"required"`
-	// When false, the dispatch center is configured but does not route events.
-	IsEnabled bool `json:"isEnabled" api:"required"`
-	// Discriminator for the entity type. Always "globalDispatchCenter".
-	Kind string `json:"kind" api:"required"`
 	// Routing categories in priority order (1..N).
-	Categories []GlobalDispatchCenterListResponseEntityCategory `json:"categories" api:"nullable"`
+	Categories []GlobalDispatchCenterUpdateResponseCategory `json:"categories" api:"nullable"`
 	// Human-readable name shown in the dashboard.
 	Name string `json:"name" api:"nullable"`
 	// Free-form notes for this center.
@@ -273,12 +349,12 @@ type GlobalDispatchCenterListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type GlobalDispatchCenterListResponseEntityCategory struct {
+type GlobalDispatchCenterUpdateResponseCategory struct {
 	// Display name for the category.
 	Name string `json:"name" api:"required"`
 	// 1-indexed sort position. Always equals (sorted index + 1) — see PATCH for
@@ -303,8 +379,8 @@ type GlobalDispatchCenterListResponseEntityCategory struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r GlobalDispatchCenterListResponseEntityCategory) RawJSON() string { return r.JSON.raw }
-func (r *GlobalDispatchCenterListResponseEntityCategory) UnmarshalJSON(data []byte) error {
+func (r GlobalDispatchCenterUpdateResponseCategory) RawJSON() string { return r.JSON.raw }
+func (r *GlobalDispatchCenterUpdateResponseCategory) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -326,6 +402,25 @@ type GlobalDispatchCenterDeleteResponse struct {
 func (r GlobalDispatchCenterDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *GlobalDispatchCenterDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type GlobalDispatchCenterListParams struct {
+	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
+	// 1 and values above 100 are clamped to 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [GlobalDispatchCenterListParams]'s query parameters as
+// `url.Values`.
+func (r GlobalDispatchCenterListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type GlobalDispatchCenterNewParams struct {

@@ -36,6 +36,14 @@ func NewDestinationService(opts ...option.RequestOption) (r DestinationService) 
 	return
 }
 
+// List all destinations. Requires scope: destination:list
+func (r *DestinationService) List(ctx context.Context, opts ...option.RequestOption) (res *DestinationListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/destinations"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Create a new destination. Requires scope: destination:create
 func (r *DestinationService) New(ctx context.Context, body DestinationNewParams, opts ...option.RequestOption) (res *DestinationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -56,7 +64,8 @@ func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.
 	return res, err
 }
 
-// Update a destination. Requires scope: destination:update
+// Partially update a destination. Only the fields you send are changed. Requires
+// scope: destination:update
 func (r *DestinationService) Update(ctx context.Context, id string, body DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -65,14 +74,6 @@ func (r *DestinationService) Update(ctx context.Context, id string, body Destina
 	}
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return res, err
-}
-
-// List all destinations. Requires scope: destination:list
-func (r *DestinationService) List(ctx context.Context, opts ...option.RequestOption) (res *DestinationListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/destinations"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -86,6 +87,90 @@ func (r *DestinationService) Delete(ctx context.Context, id string, opts ...opti
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+type DestinationListResponse struct {
+	Entities []DestinationListResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationListResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationListResponseEntity struct {
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Any of "Disabled", "Enabled".
+	Status string `json:"status" api:"required"`
+	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
+	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
+	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
+	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
+	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
+	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
+	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
+	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
+	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
+	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
+	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
+	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
+	// "ZoomInfo".
+	Type                     string   `json:"type" api:"required"`
+	FacebookConversionAPIKey string   `json:"facebookConversionAPIKey" api:"nullable"`
+	FacebookPixelID          string   `json:"facebookPixelId" api:"nullable"`
+	G4AnalyticsAPIKey        string   `json:"g4AnalyticsApiKey" api:"nullable"`
+	G4AnalyticsMeasurementID string   `json:"g4AnalyticsMeasurementId" api:"nullable"`
+	G4AnalyticsTrackOnPage   bool     `json:"g4AnalyticsTrackOnPage" api:"nullable"`
+	HashingSalt              string   `json:"hashingSalt" api:"nullable"`
+	HTTPDestinationURL       string   `json:"httpDestinationUrl" api:"nullable"`
+	LimitedToSourceIDs       []string `json:"limitedToSourceIds" api:"nullable"`
+	ManagerGoogleCustomerID  string   `json:"managerGoogleCustomerId" api:"nullable"`
+	Name                     string   `json:"name" api:"nullable"`
+	ProjectAPIKey            string   `json:"projectAPIKey" api:"nullable"`
+	ProjectToken             string   `json:"projectToken" api:"nullable"`
+	SelectedAccountID        string   `json:"selectedAccountId" api:"nullable"`
+	Settings                 any      `json:"settings" api:"nullable"`
+	UpdatedAt                string   `json:"updatedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                       respjson.Field
+		CreatedAt                respjson.Field
+		Status                   respjson.Field
+		Type                     respjson.Field
+		FacebookConversionAPIKey respjson.Field
+		FacebookPixelID          respjson.Field
+		G4AnalyticsAPIKey        respjson.Field
+		G4AnalyticsMeasurementID respjson.Field
+		G4AnalyticsTrackOnPage   respjson.Field
+		HashingSalt              respjson.Field
+		HTTPDestinationURL       respjson.Field
+		LimitedToSourceIDs       respjson.Field
+		ManagerGoogleCustomerID  respjson.Field
+		Name                     respjson.Field
+		ProjectAPIKey            respjson.Field
+		ProjectToken             respjson.Field
+		SelectedAccountID        respjson.Field
+		Settings                 respjson.Field
+		UpdatedAt                respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *DestinationListResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type DestinationNewResponse struct {
@@ -491,90 +576,6 @@ const (
 	DestinationUpdateResponseTypeZendesk                      DestinationUpdateResponseType = "Zendesk"
 	DestinationUpdateResponseTypeZoomInfo                     DestinationUpdateResponseType = "ZoomInfo"
 )
-
-type DestinationListResponse struct {
-	Entities []DestinationListResponseEntity `json:"entities" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DestinationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *DestinationListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type DestinationListResponseEntity struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status string `json:"status" api:"required"`
-	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BingAds", "BingAdsWeb",
-	// "Braze", "ConvertABTestingEvent", "Customerio", "DomoWarehouse", "Facebook",
-	// "FloodlightSGTM", "FullContact", "G4Analytics", "GA4MeasurementProtocol",
-	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
-	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
-	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
-	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OursSyntheticData", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI",
-	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TheTradeDesk", "TikTok", "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk",
-	// "ZoomInfo".
-	Type                     string   `json:"type" api:"required"`
-	FacebookConversionAPIKey string   `json:"facebookConversionAPIKey" api:"nullable"`
-	FacebookPixelID          string   `json:"facebookPixelId" api:"nullable"`
-	G4AnalyticsAPIKey        string   `json:"g4AnalyticsApiKey" api:"nullable"`
-	G4AnalyticsMeasurementID string   `json:"g4AnalyticsMeasurementId" api:"nullable"`
-	G4AnalyticsTrackOnPage   bool     `json:"g4AnalyticsTrackOnPage" api:"nullable"`
-	HashingSalt              string   `json:"hashingSalt" api:"nullable"`
-	HTTPDestinationURL       string   `json:"httpDestinationUrl" api:"nullable"`
-	LimitedToSourceIDs       []string `json:"limitedToSourceIds" api:"nullable"`
-	ManagerGoogleCustomerID  string   `json:"managerGoogleCustomerId" api:"nullable"`
-	Name                     string   `json:"name" api:"nullable"`
-	ProjectAPIKey            string   `json:"projectAPIKey" api:"nullable"`
-	ProjectToken             string   `json:"projectToken" api:"nullable"`
-	SelectedAccountID        string   `json:"selectedAccountId" api:"nullable"`
-	Settings                 any      `json:"settings" api:"nullable"`
-	UpdatedAt                string   `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                       respjson.Field
-		CreatedAt                respjson.Field
-		Status                   respjson.Field
-		Type                     respjson.Field
-		FacebookConversionAPIKey respjson.Field
-		FacebookPixelID          respjson.Field
-		G4AnalyticsAPIKey        respjson.Field
-		G4AnalyticsMeasurementID respjson.Field
-		G4AnalyticsTrackOnPage   respjson.Field
-		HashingSalt              respjson.Field
-		HTTPDestinationURL       respjson.Field
-		LimitedToSourceIDs       respjson.Field
-		ManagerGoogleCustomerID  respjson.Field
-		Name                     respjson.Field
-		ProjectAPIKey            respjson.Field
-		ProjectToken             respjson.Field
-		SelectedAccountID        respjson.Field
-		Settings                 respjson.Field
-		UpdatedAt                respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r DestinationListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *DestinationListResponseEntity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type DestinationNewParams struct {
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",

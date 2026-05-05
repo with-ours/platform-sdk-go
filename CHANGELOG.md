@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.13.0 (2026-05-05)
+
+Full Changelog: [v1.12.0...v1.13.0](https://github.com/with-ours/platform-sdk-go/compare/v1.12.0...v1.13.0)
+
+### Features
+
+* **api:** api update ([0eacba4](https://github.com/with-ours/platform-sdk-go/commit/0eacba4794c24e46a4137719699fd89136a85732))
+* **api:** manual updates ([8b022ce](https://github.com/with-ours/platform-sdk-go/commit/8b022ce265b49a2c2fe7ec694df97e0d64fd94e3))
+* **api:** manual updates ([0e83aa0](https://github.com/with-ours/platform-sdk-go/commit/0e83aa020482bcb97a362a0a84a6ba696c9c04a4))
+* **api:** manual updates ([93431fd](https://github.com/with-ours/platform-sdk-go/commit/93431fda9e991162ed6a39f61dcb9b6b4d05c105))
+
+
+### Chores
+
+* configure new SDK language ([178aa36](https://github.com/with-ours/platform-sdk-go/commit/178aa36f539d901fbc58ecb8b5fe012b00faa426))
+
 ## 1.12.0 (2026-05-01)
 
 Full Changelog: [v1.11.0...v1.12.0](https://github.com/with-ours/platform-sdk-go/compare/v1.11.0...v1.12.0)

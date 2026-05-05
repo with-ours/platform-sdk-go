@@ -36,6 +36,14 @@ func NewSourceService(opts ...option.RequestOption) (r SourceService) {
 	return
 }
 
+// List all sources. Requires scope: source:list
+func (r *SourceService) List(ctx context.Context, opts ...option.RequestOption) (res *SourceListResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/sources"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Create a new source. Requires scope: source:create
 func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...option.RequestOption) (res *SourceNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -56,7 +64,8 @@ func (r *SourceService) Get(ctx context.Context, id string, opts ...option.Reque
 	return res, err
 }
 
-// Update a source. Requires scope: source:update
+// Partially update a source. Only the fields you send are changed. Requires scope:
+// source:update
 func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdateParams, opts ...option.RequestOption) (res *SourceUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -65,14 +74,6 @@ func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdate
 	}
 	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return res, err
-}
-
-// List all sources. Requires scope: source:list
-func (r *SourceService) List(ctx context.Context, opts ...option.RequestOption) (res *SourceListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/sources"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -86,6 +87,88 @@ func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.Re
 	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+// Fetch install tokens and snippets for a source. Requires scope: source:view
+func (r *SourceService) Tokens(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceTokensResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/sources/%s/tokens", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+type SourceListResponse struct {
+	Entities []SourceListResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceListResponse) RawJSON() string { return r.JSON.raw }
+func (r *SourceListResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SourceListResponseEntity struct {
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Any of "Disabled", "Enabled".
+	Status string `json:"status" api:"required"`
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
+	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
+	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
+	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
+	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
+	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	Type                  string  `json:"type" api:"required"`
+	BotControlMode        string  `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64 `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool    `json:"excludeRequestContext" api:"nullable"`
+	Name                  string  `json:"name" api:"nullable"`
+	ProbabilisticIdentity any     `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string  `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string  `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string  `json:"selectedAccountId" api:"nullable"`
+	// Optional domain allowlist for source event ingestion. When set, only requests
+	// from these domains are accepted for this source. This is separate from
+	// experimentation settings `whitelistDomains`, which gates experiment SDK
+	// delivery.
+	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
+	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		CreatedAt             respjson.Field
+		Status                respjson.Field
+		Type                  respjson.Field
+		BotControlMode        respjson.Field
+		BotScoreThreshold     respjson.Field
+		ExcludeRequestContext respjson.Field
+		Name                  respjson.Field
+		ProbabilisticIdentity respjson.Field
+		ProjectAPIKey         respjson.Field
+		RedirectURL           respjson.Field
+		SelectedAccountID     respjson.Field
+		WhitelistDomains      respjson.Field
+		WhitelistIPs          respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceListResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *SourceListResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type SourceNewResponse struct {
@@ -184,8 +267,12 @@ type SourceGetResponse struct {
 	ProjectAPIKey         string                `json:"projectAPIKey" api:"nullable"`
 	RedirectURL           string                `json:"redirectUrl" api:"nullable"`
 	SelectedAccountID     string                `json:"selectedAccountId" api:"nullable"`
-	WhitelistDomains      []string              `json:"whitelistDomains" api:"nullable"`
-	WhitelistIPs          []string              `json:"whitelistIps" api:"nullable"`
+	// Optional domain allowlist for source event ingestion. When set, only requests
+	// from these domains are accepted for this source. This is separate from
+	// experimentation settings `whitelistDomains`, which gates experiment SDK
+	// delivery.
+	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
+	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -331,69 +418,31 @@ const (
 	SourceUpdateResponseTypeIOsNativeAPI        SourceUpdateResponseType = "iOSNativeApi"
 )
 
-type SourceListResponse struct {
-	Entities []SourceListResponseEntity `json:"entities" api:"required"`
+type SourceTokensResponse struct {
+	// Install token for the source.
+	Token string `json:"token" api:"required"`
+	// Ready-to-paste install snippet for the production token, including linked
+	// runtime tokens for supported modules.
+	InstallScript string `json:"installScript" api:"required"`
+	// Ready-to-paste install snippet for the test token, suitable for validation
+	// before a live install.
+	TestInstallScript string `json:"testInstallScript" api:"required"`
+	// Test-mode token derived from `token`.
+	TestToken string `json:"testToken" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Token             respjson.Field
+		InstallScript     respjson.Field
+		TestInstallScript respjson.Field
+		TestToken         respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r SourceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SourceListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SourceListResponseEntity struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status string `json:"status" api:"required"`
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
-	Type                  string   `json:"type" api:"required"`
-	BotControlMode        string   `json:"botControlMode" api:"nullable"`
-	BotScoreThreshold     float64  `json:"botScoreThreshold" api:"nullable"`
-	ExcludeRequestContext bool     `json:"excludeRequestContext" api:"nullable"`
-	Name                  string   `json:"name" api:"nullable"`
-	ProbabilisticIdentity any      `json:"probabilisticIdentity" api:"nullable"`
-	ProjectAPIKey         string   `json:"projectAPIKey" api:"nullable"`
-	RedirectURL           string   `json:"redirectUrl" api:"nullable"`
-	SelectedAccountID     string   `json:"selectedAccountId" api:"nullable"`
-	WhitelistDomains      []string `json:"whitelistDomains" api:"nullable"`
-	WhitelistIPs          []string `json:"whitelistIps" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                    respjson.Field
-		CreatedAt             respjson.Field
-		Status                respjson.Field
-		Type                  respjson.Field
-		BotControlMode        respjson.Field
-		BotScoreThreshold     respjson.Field
-		ExcludeRequestContext respjson.Field
-		Name                  respjson.Field
-		ProbabilisticIdentity respjson.Field
-		ProjectAPIKey         respjson.Field
-		RedirectURL           respjson.Field
-		SelectedAccountID     respjson.Field
-		WhitelistDomains      respjson.Field
-		WhitelistIPs          respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SourceListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *SourceListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r SourceTokensResponse) RawJSON() string { return r.JSON.raw }
+func (r *SourceTokensResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
