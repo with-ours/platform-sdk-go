@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestReplaySettingListWithOptionalParams(t *testing.T) {
+func TestMappingList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,9 +25,8 @@ func TestReplaySettingListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.List(context.TODO(), githubcomwithoursplatformsdkgo.ReplaySettingListParams{
-		Cursor: githubcomwithoursplatformsdkgo.String("cursor"),
-		Limit:  githubcomwithoursplatformsdkgo.Int(25),
+	_, err := client.Mappings.List(context.TODO(), githubcomwithoursplatformsdkgo.MappingListParams{
+		EntityID: "00000000-0000-0000-0000-000000000000",
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
@@ -38,7 +37,7 @@ func TestReplaySettingListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestReplaySettingNewWithOptionalParams(t *testing.T) {
+func TestMappingNew(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,11 +49,9 @@ func TestReplaySettingNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.New(context.TODO(), githubcomwithoursplatformsdkgo.ReplaySettingNewParams{
-		CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
-		Name:             githubcomwithoursplatformsdkgo.String("name"),
-		Status:           githubcomwithoursplatformsdkgo.ReplaySettingNewParamsStatusDisabled,
-		WhitelistDomains: []string{"string"},
+	_, err := client.Mappings.New(context.TODO(), githubcomwithoursplatformsdkgo.MappingNewParams{
+		AllowedEventID: "allowedEventId",
+		DestinationID:  "destinationId",
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
@@ -65,7 +62,7 @@ func TestReplaySettingNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestReplaySettingGet(t *testing.T) {
+func TestMappingGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -77,7 +74,7 @@ func TestReplaySettingGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.Get(context.TODO(), "id")
+	_, err := client.Mappings.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
@@ -87,7 +84,7 @@ func TestReplaySettingGet(t *testing.T) {
 	}
 }
 
-func TestReplaySettingUpdateWithOptionalParams(t *testing.T) {
+func TestMappingUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -99,14 +96,17 @@ func TestReplaySettingUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.Update(
+	_, err := client.Mappings.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.ReplaySettingUpdateParams{
-			CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
-			Name:             githubcomwithoursplatformsdkgo.String("name"),
-			Status:           githubcomwithoursplatformsdkgo.ReplaySettingUpdateParamsStatusDisabled,
-			WhitelistDomains: []string{"string"},
+		githubcomwithoursplatformsdkgo.MappingUpdateParams{
+			Logic: map[string]any{},
+			Mappings: []githubcomwithoursplatformsdkgo.MappingUpdateParamsMapping{{
+				Map:          "map",
+				Property:     "property",
+				Modification: githubcomwithoursplatformsdkgo.String("modification"),
+			}},
+			Name: githubcomwithoursplatformsdkgo.String("name"),
 		},
 	)
 	if err != nil {
@@ -118,7 +118,7 @@ func TestReplaySettingUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestReplaySettingDelete(t *testing.T) {
+func TestMappingDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -130,7 +130,7 @@ func TestReplaySettingDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.Delete(context.TODO(), "id")
+	_, err := client.Mappings.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {
