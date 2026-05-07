@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -37,12 +38,33 @@ func NewMappingService(opts ...option.RequestOption) (r MappingService) {
 	return
 }
 
-// List all mappings for an entity. Requires scope: mapping:list
-func (r *MappingService) List(ctx context.Context, query MappingListParams, opts ...option.RequestOption) (res *[]MappingListResponse, err error) {
+// List mappings for an entity (a source or destination). Requires the `entityId`
+// query parameter. Supports cursor pagination via `limit` and `cursor`. Sorted by
+// `priority` ascending, then by `id` for deterministic pagination. Requires scope:
+// mapping:list
+func (r *MappingService) List(ctx context.Context, query MappingListParams, opts ...option.RequestOption) (res *pagination.Cursor[MappingListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/mappings"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List mappings for an entity (a source or destination). Requires the `entityId`
+// query parameter. Supports cursor pagination via `limit` and `cursor`. Sorted by
+// `priority` ascending, then by `id` for deterministic pagination. Requires scope:
+// mapping:list
+func (r *MappingService) ListAutoPaging(ctx context.Context, query MappingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[MappingListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new mapping. Requires scope: mapping:create
@@ -317,6 +339,13 @@ func (r *MappingUpdateResponseMapping) UnmarshalJSON(data []byte) error {
 type MappingListParams struct {
 	// Filter mappings by their parent entity id (for example an allowed event id).
 	EntityID string `query:"entityId" api:"required" json:"-"`
+	// Maximum number of mappings to return. Defaults to 1000; values below 1 are
+	// clamped to 1 and values above 1000 are clamped to 1000. Most accounts can fetch
+	// the full list in one request.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }
 

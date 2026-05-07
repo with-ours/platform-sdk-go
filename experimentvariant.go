@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -38,13 +39,32 @@ func NewExperimentVariantService(opts ...option.RequestOption) (r ExperimentVari
 }
 
 // List variants for a specific parent experiment. Requires the `experimentId`
-// query parameter — variants are always scoped to a single experiment. Requires
-// scope: experiment:find
-func (r *ExperimentVariantService) List(ctx context.Context, query ExperimentVariantListParams, opts ...option.RequestOption) (res *ExperimentVariantListResponse, err error) {
+// query parameter — variants are always scoped to a single experiment. Supports
+// cursor pagination via `limit` and `cursor`; SDK runtimes that need the full set
+// in one request can pass `?limit=100`. Requires scope: experiment:find
+func (r *ExperimentVariantService) List(ctx context.Context, query ExperimentVariantListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentVariantListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/experiment-variants"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List variants for a specific parent experiment. Requires the `experimentId`
+// query parameter — variants are always scoped to a single experiment. Supports
+// cursor pagination via `limit` and `cursor`; SDK runtimes that need the full set
+// in one request can pass `?limit=100`. Requires scope: experiment:find
+func (r *ExperimentVariantService) ListAutoPaging(ctx context.Context, query ExperimentVariantListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExperimentVariantListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new experiment variant. Requires scope: experiment:update
@@ -93,26 +113,6 @@ func (r *ExperimentVariantService) Delete(ctx context.Context, id string, opts .
 }
 
 type ExperimentVariantListResponse struct {
-	// All variants on the parent experiment, including the auto-generated control.
-	// Returns an empty list when the experiment does not exist or is not visible to
-	// the caller. Variants per experiment are capped at 200; this list is not
-	// paginated because the SDK runtime always needs the full set to drive bucketing.
-	Entities []ExperimentVariantListResponseEntity `json:"entities" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ExperimentVariantListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentVariantListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ExperimentVariantListResponseEntity struct {
 	// Unique identifier for this experiment variant.
 	ID string `json:"id" api:"required"`
 	// Parent experiment ID this variant belongs to.
@@ -125,7 +125,7 @@ type ExperimentVariantListResponseEntity struct {
 	// experiment.
 	Weight int64 `json:"weight" api:"required"`
 	// Ordered list of declarative DOM mutations applied when this variant is assigned.
-	DomModifications []ExperimentVariantListResponseEntityDomModification `json:"domModifications" api:"nullable"`
+	DomModifications []ExperimentVariantListResponseDomModification `json:"domModifications" api:"nullable"`
 	// Target URL for redirect variants. Use either a site-relative path such as
 	// `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
 	// rejected. Omit for DOM modification variants.
@@ -149,12 +149,12 @@ type ExperimentVariantListResponseEntity struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentVariantListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentVariantListResponseEntity) UnmarshalJSON(data []byte) error {
+func (r ExperimentVariantListResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExperimentVariantListResponseEntityDomModification struct {
+type ExperimentVariantListResponseDomModification struct {
 	// Mutation to apply when the selector matches. Use `redirectUrl` instead of DOM
 	// modifications for redirect variants.
 	//
@@ -176,7 +176,7 @@ type ExperimentVariantListResponseEntityDomModification struct {
 	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
 	// may also send this field instead of a JSON-stringified `value` on write — see
 	// `domModificationInputSchema`.
-	Styles []ExperimentVariantListResponseEntityDomModificationStyle `json:"styles" api:"nullable"`
+	Styles []ExperimentVariantListResponseDomModificationStyle `json:"styles" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Action      respjson.Field
@@ -190,12 +190,12 @@ type ExperimentVariantListResponseEntityDomModification struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentVariantListResponseEntityDomModification) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentVariantListResponseEntityDomModification) UnmarshalJSON(data []byte) error {
+func (r ExperimentVariantListResponseDomModification) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantListResponseDomModification) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ExperimentVariantListResponseEntityDomModificationStyle struct {
+type ExperimentVariantListResponseDomModificationStyle struct {
 	// CSS property name in camelCase or kebab-case.
 	Property string `json:"property" api:"required"`
 	// CSS value to assign to the property.
@@ -210,8 +210,8 @@ type ExperimentVariantListResponseEntityDomModificationStyle struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ExperimentVariantListResponseEntityDomModificationStyle) RawJSON() string { return r.JSON.raw }
-func (r *ExperimentVariantListResponseEntityDomModificationStyle) UnmarshalJSON(data []byte) error {
+func (r ExperimentVariantListResponseDomModificationStyle) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantListResponseDomModificationStyle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -630,6 +630,13 @@ func (r *ExperimentVariantDeleteResponseDomModificationStyle) UnmarshalJSON(data
 type ExperimentVariantListParams struct {
 	// Required. List variants belonging to this parent experiment.
 	ExperimentID string `query:"experimentId" api:"required" json:"-"`
+	// Maximum number of variants to return. Defaults to 200; values below 1 are
+	// clamped to 1 and values above 200 are clamped to 200. Variants per experiment
+	// are capped at 200 server-side, so a single request returns the full set.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	paramObj
 }
 

@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestMappingList(t *testing.T) {
+func TestMappingListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,8 @@ func TestMappingList(t *testing.T) {
 	)
 	_, err := client.Mappings.List(context.TODO(), githubcomwithoursplatformsdkgo.MappingListParams{
 		EntityID: "00000000-0000-0000-0000-000000000000",
+		Cursor:   githubcomwithoursplatformsdkgo.String("cursor"),
+		Limit:    githubcomwithoursplatformsdkgo.Int(1000),
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
