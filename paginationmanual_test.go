@@ -24,12 +24,14 @@ func TestManualPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	page, err := client.Experiments.List(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentListParams{})
+	page, err := client.ExperimentVariants.List(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentVariantListParams{
+		ExperimentID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
+	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	for _, experiment := range page.Entities {
-		t.Logf("%+v\n", experiment.ID)
+	for _, experimentVariant := range page.Entities {
+		t.Logf("%+v\n", experimentVariant.ID)
 	}
 	// The mock server isn't going to give us real pagination
 	page, err = page.GetNextPage()
@@ -37,8 +39,8 @@ func TestManualPagination(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 	if page != nil {
-		for _, experiment := range page.Entities {
-			t.Logf("%+v\n", experiment.ID)
+		for _, experimentVariant := range page.Entities {
+			t.Logf("%+v\n", experimentVariant.ID)
 		}
 	}
 }

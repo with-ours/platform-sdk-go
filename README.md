@@ -285,11 +285,13 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Experiments.ListAutoPaging(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentListParams{})
+iter := client.ExperimentVariants.ListAutoPaging(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentVariantListParams{
+	ExperimentID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
+})
 // Automatically fetches more pages as needed.
 for iter.Next() {
-	experimentListResponse := iter.Current()
-	fmt.Printf("%+v\n", experimentListResponse)
+	experimentVariantListResponse := iter.Current()
+	fmt.Printf("%+v\n", experimentVariantListResponse)
 }
 if err := iter.Err(); err != nil {
 	panic(err.Error())
@@ -300,10 +302,12 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Experiments.List(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentListParams{})
+page, err := client.ExperimentVariants.List(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentVariantListParams{
+	ExperimentID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
+})
 for page != nil {
-	for _, experiment := range page.Entities {
-		fmt.Printf("%+v\n", experiment)
+	for _, experimentVariant := range page.Entities {
+		fmt.Printf("%+v\n", experimentVariant)
 	}
 	page, err = page.GetNextPage()
 }
