@@ -56,7 +56,12 @@ func TestVersionNewWithOptionalParams(t *testing.T) {
 	_, err := client.Versions.New(context.TODO(), githubcomwithoursplatformsdkgo.VersionNewParams{
 		IncludeAllowedEvents:            []string{"string"},
 		IncludeConsentSettings:          []string{"string"},
+		IncludeDataGovernanceEvents:     []string{"string"},
+		IncludeDataGovernanceRules:      []string{"string"},
 		IncludeDestinations:             []string{"string"},
+		IncludeExperiments:              []string{"string"},
+		IncludeExperimentSettings:       []string{"string"},
+		IncludeExperimentVariants:       []string{"string"},
 		IncludeExternalAllowedEventData: []string{"string"},
 		IncludeGlobalDispatchCenters:    []string{"string"},
 		IncludeMappings:                 []string{"string"},
@@ -172,7 +177,7 @@ func TestVersionSnapshot(t *testing.T) {
 	}
 }
 
-func TestVersionDiff(t *testing.T) {
+func TestVersionDiffWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -184,7 +189,13 @@ func TestVersionDiff(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Versions.Diff(context.TODO(), githubcomwithoursplatformsdkgo.VersionDiffParamsIDDraft)
+	_, err := client.Versions.Diff(
+		context.TODO(),
+		githubcomwithoursplatformsdkgo.VersionDiffParamsIDDraft,
+		githubcomwithoursplatformsdkgo.VersionDiffParams{
+			Against: githubcomwithoursplatformsdkgo.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		},
+	)
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
 		if errors.As(err, &apierr) {

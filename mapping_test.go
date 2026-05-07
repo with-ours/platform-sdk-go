@@ -102,11 +102,20 @@ func TestMappingUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		githubcomwithoursplatformsdkgo.MappingUpdateParams{
-			Logic: map[string]any{},
+			Logic: githubcomwithoursplatformsdkgo.MappingUpdateParamsLogic{
+				And: []any{map[string]any{}},
+				Condition: githubcomwithoursplatformsdkgo.MappingUpdateParamsLogicCondition{
+					Operator: "Is",
+					Property: "property",
+					Value:    "value",
+				},
+				Not: map[string]any{},
+				Or:  []any{map[string]any{}},
+			},
 			Mappings: []githubcomwithoursplatformsdkgo.MappingUpdateParamsMapping{{
 				Map:          "map",
 				Property:     "property",
-				Modification: githubcomwithoursplatformsdkgo.String("modification"),
+				Modification: "CamelCase",
 			}},
 			Name: githubcomwithoursplatformsdkgo.String("name"),
 		},

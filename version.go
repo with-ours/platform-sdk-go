@@ -135,16 +135,23 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
-// Compare the current draft (all unpublished entity changes) against the latest
-// published version. Returns added/removed/modified entities grouped by
-// collection, plus a total `count`. Use this to preview what would be included in
-// a `POST /rest/v1/versions` call. The path segment `draft` is a literal — there
-// is no version with that ID; it identifies the comparison target. Requires scope:
-// version:find
-func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
+// Compare two versions of the account configuration. Returns
+// added/removed/modified entities grouped by collection, plus a total `count`.
+//
+//   - `GET /rest/v1/versions/draft/diff` — compare the current draft (all
+//     unpublished entity changes) against the latest published version. Use this to
+//     preview what would be included in a `POST /rest/v1/versions` call. (`draft` is
+//     a literal path segment — there is no version with that ID; it identifies the
+//     comparison target.)
+//   - `GET /rest/v1/versions/{id}/diff` — compare that specific version against the
+//     latest published version.
+//   - `GET /rest/v1/versions/{id}/diff?against={otherId}` — compare two specific
+//     versions. `otherId` may also be `draft` to diff a published snapshot against
+//     the live draft state. Requires scope: version:find
+func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query VersionDiffParams, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/diff", id)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -154,6 +161,7 @@ type VersionListResponse struct {
 	IsPublished   bool    `json:"isPublished" api:"required"`
 	VersionNumber float64 `json:"versionNumber" api:"required"`
 	Name          string  `json:"name" api:"nullable"`
+	Notes         string  `json:"notes" api:"nullable"`
 	// When this version was most recently published. NOT cleared when a newer version
 	// is published — `publishedAt` reflects the most recent successful publish of this
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
@@ -166,6 +174,7 @@ type VersionListResponse struct {
 		IsPublished   respjson.Field
 		VersionNumber respjson.Field
 		Name          respjson.Field
+		Notes         respjson.Field
 		PublishedAt   respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
@@ -398,7 +407,10 @@ func (r *VersionDiffResponseDifferences) UnmarshalJSON(data []byte) error {
 }
 
 type VersionDiffResponseDifferencesAllowedEvents struct {
-	Added    []VersionDiffResponseDifferencesAllowedEventsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesAllowedEventsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesAllowedEventsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesAllowedEventsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -418,9 +430,20 @@ func (r *VersionDiffResponseDifferencesAllowedEvents) UnmarshalJSON(data []byte)
 }
 
 type VersionDiffResponseDifferencesAllowedEventsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -458,9 +481,20 @@ func (r *VersionDiffResponseDifferencesAllowedEventsModified) UnmarshalJSON(data
 }
 
 type VersionDiffResponseDifferencesAllowedEventsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -480,9 +514,20 @@ func (r *VersionDiffResponseDifferencesAllowedEventsModifiedNew) UnmarshalJSON(d
 }
 
 type VersionDiffResponseDifferencesAllowedEventsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -502,9 +547,20 @@ func (r *VersionDiffResponseDifferencesAllowedEventsModifiedOld) UnmarshalJSON(d
 }
 
 type VersionDiffResponseDifferencesAllowedEventsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -524,7 +580,10 @@ func (r *VersionDiffResponseDifferencesAllowedEventsRemoved) UnmarshalJSON(data 
 }
 
 type VersionDiffResponseDifferencesConsentSettings struct {
-	Added    []VersionDiffResponseDifferencesConsentSettingsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesConsentSettingsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesConsentSettingsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesConsentSettingsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -544,9 +603,20 @@ func (r *VersionDiffResponseDifferencesConsentSettings) UnmarshalJSON(data []byt
 }
 
 type VersionDiffResponseDifferencesConsentSettingsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -584,9 +654,20 @@ func (r *VersionDiffResponseDifferencesConsentSettingsModified) UnmarshalJSON(da
 }
 
 type VersionDiffResponseDifferencesConsentSettingsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -606,9 +687,20 @@ func (r *VersionDiffResponseDifferencesConsentSettingsModifiedNew) UnmarshalJSON
 }
 
 type VersionDiffResponseDifferencesConsentSettingsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -628,9 +720,20 @@ func (r *VersionDiffResponseDifferencesConsentSettingsModifiedOld) UnmarshalJSON
 }
 
 type VersionDiffResponseDifferencesConsentSettingsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -650,7 +753,10 @@ func (r *VersionDiffResponseDifferencesConsentSettingsRemoved) UnmarshalJSON(dat
 }
 
 type VersionDiffResponseDifferencesDataGovernanceEvents struct {
-	Added    []VersionDiffResponseDifferencesDataGovernanceEventsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesDataGovernanceEventsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesDataGovernanceEventsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesDataGovernanceEventsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -670,9 +776,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceEvents) UnmarshalJSON(data 
 }
 
 type VersionDiffResponseDifferencesDataGovernanceEventsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -712,9 +829,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceEventsModified) UnmarshalJS
 }
 
 type VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -736,9 +864,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew) Unmarsha
 }
 
 type VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -760,9 +899,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld) Unmarsha
 }
 
 type VersionDiffResponseDifferencesDataGovernanceEventsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -784,7 +934,10 @@ func (r *VersionDiffResponseDifferencesDataGovernanceEventsRemoved) UnmarshalJSO
 }
 
 type VersionDiffResponseDifferencesDataGovernanceRules struct {
-	Added    []VersionDiffResponseDifferencesDataGovernanceRulesAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesDataGovernanceRulesAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesDataGovernanceRulesModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesDataGovernanceRulesRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -804,9 +957,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceRules) UnmarshalJSON(data [
 }
 
 type VersionDiffResponseDifferencesDataGovernanceRulesAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -846,9 +1010,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceRulesModified) UnmarshalJSO
 }
 
 type VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -870,9 +1045,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew) Unmarshal
 }
 
 type VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -894,9 +1080,20 @@ func (r *VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld) Unmarshal
 }
 
 type VersionDiffResponseDifferencesDataGovernanceRulesRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -916,7 +1113,10 @@ func (r *VersionDiffResponseDifferencesDataGovernanceRulesRemoved) UnmarshalJSON
 }
 
 type VersionDiffResponseDifferencesDestinations struct {
-	Added    []VersionDiffResponseDifferencesDestinationsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesDestinationsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesDestinationsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesDestinationsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -936,9 +1136,20 @@ func (r *VersionDiffResponseDifferencesDestinations) UnmarshalJSON(data []byte) 
 }
 
 type VersionDiffResponseDifferencesDestinationsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -976,9 +1187,20 @@ func (r *VersionDiffResponseDifferencesDestinationsModified) UnmarshalJSON(data 
 }
 
 type VersionDiffResponseDifferencesDestinationsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -998,9 +1220,20 @@ func (r *VersionDiffResponseDifferencesDestinationsModifiedNew) UnmarshalJSON(da
 }
 
 type VersionDiffResponseDifferencesDestinationsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1020,9 +1253,20 @@ func (r *VersionDiffResponseDifferencesDestinationsModifiedOld) UnmarshalJSON(da
 }
 
 type VersionDiffResponseDifferencesDestinationsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1042,7 +1286,10 @@ func (r *VersionDiffResponseDifferencesDestinationsRemoved) UnmarshalJSON(data [
 }
 
 type VersionDiffResponseDifferencesExperiments struct {
-	Added    []VersionDiffResponseDifferencesExperimentsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesExperimentsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesExperimentsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesExperimentsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1062,9 +1309,20 @@ func (r *VersionDiffResponseDifferencesExperiments) UnmarshalJSON(data []byte) e
 }
 
 type VersionDiffResponseDifferencesExperimentsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1102,9 +1360,20 @@ func (r *VersionDiffResponseDifferencesExperimentsModified) UnmarshalJSON(data [
 }
 
 type VersionDiffResponseDifferencesExperimentsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1124,9 +1393,20 @@ func (r *VersionDiffResponseDifferencesExperimentsModifiedNew) UnmarshalJSON(dat
 }
 
 type VersionDiffResponseDifferencesExperimentsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1146,9 +1426,20 @@ func (r *VersionDiffResponseDifferencesExperimentsModifiedOld) UnmarshalJSON(dat
 }
 
 type VersionDiffResponseDifferencesExperimentsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1168,7 +1459,10 @@ func (r *VersionDiffResponseDifferencesExperimentsRemoved) UnmarshalJSON(data []
 }
 
 type VersionDiffResponseDifferencesExperimentSettings struct {
-	Added    []VersionDiffResponseDifferencesExperimentSettingsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesExperimentSettingsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesExperimentSettingsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesExperimentSettingsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1188,9 +1482,20 @@ func (r *VersionDiffResponseDifferencesExperimentSettings) UnmarshalJSON(data []
 }
 
 type VersionDiffResponseDifferencesExperimentSettingsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1228,9 +1533,20 @@ func (r *VersionDiffResponseDifferencesExperimentSettingsModified) UnmarshalJSON
 }
 
 type VersionDiffResponseDifferencesExperimentSettingsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1252,9 +1568,20 @@ func (r *VersionDiffResponseDifferencesExperimentSettingsModifiedNew) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesExperimentSettingsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1276,9 +1603,20 @@ func (r *VersionDiffResponseDifferencesExperimentSettingsModifiedOld) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesExperimentSettingsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1298,7 +1636,10 @@ func (r *VersionDiffResponseDifferencesExperimentSettingsRemoved) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesExperimentVariants struct {
-	Added    []VersionDiffResponseDifferencesExperimentVariantsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesExperimentVariantsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesExperimentVariantsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesExperimentVariantsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1318,9 +1659,20 @@ func (r *VersionDiffResponseDifferencesExperimentVariants) UnmarshalJSON(data []
 }
 
 type VersionDiffResponseDifferencesExperimentVariantsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1358,9 +1710,20 @@ func (r *VersionDiffResponseDifferencesExperimentVariantsModified) UnmarshalJSON
 }
 
 type VersionDiffResponseDifferencesExperimentVariantsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1382,9 +1745,20 @@ func (r *VersionDiffResponseDifferencesExperimentVariantsModifiedNew) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesExperimentVariantsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1406,9 +1780,20 @@ func (r *VersionDiffResponseDifferencesExperimentVariantsModifiedOld) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesExperimentVariantsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1428,7 +1813,10 @@ func (r *VersionDiffResponseDifferencesExperimentVariantsRemoved) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesExternalAllowedEventData struct {
-	Added    []VersionDiffResponseDifferencesExternalAllowedEventDataAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesExternalAllowedEventDataAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesExternalAllowedEventDataModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesExternalAllowedEventDataRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1448,9 +1836,20 @@ func (r *VersionDiffResponseDifferencesExternalAllowedEventData) UnmarshalJSON(d
 }
 
 type VersionDiffResponseDifferencesExternalAllowedEventDataAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1492,9 +1891,20 @@ func (r *VersionDiffResponseDifferencesExternalAllowedEventDataModified) Unmarsh
 }
 
 type VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1516,9 +1926,20 @@ func (r *VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew) Unma
 }
 
 type VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1540,9 +1961,20 @@ func (r *VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld) Unma
 }
 
 type VersionDiffResponseDifferencesExternalAllowedEventDataRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1564,7 +1996,10 @@ func (r *VersionDiffResponseDifferencesExternalAllowedEventDataRemoved) Unmarsha
 }
 
 type VersionDiffResponseDifferencesGlobalDispatchCenters struct {
-	Added    []VersionDiffResponseDifferencesGlobalDispatchCentersAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesGlobalDispatchCentersAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesGlobalDispatchCentersModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesGlobalDispatchCentersRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1584,9 +2019,20 @@ func (r *VersionDiffResponseDifferencesGlobalDispatchCenters) UnmarshalJSON(data
 }
 
 type VersionDiffResponseDifferencesGlobalDispatchCentersAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1626,9 +2072,20 @@ func (r *VersionDiffResponseDifferencesGlobalDispatchCentersModified) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1650,9 +2107,20 @@ func (r *VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew) Unmarsh
 }
 
 type VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1674,9 +2142,20 @@ func (r *VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld) Unmarsh
 }
 
 type VersionDiffResponseDifferencesGlobalDispatchCentersRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1698,7 +2177,10 @@ func (r *VersionDiffResponseDifferencesGlobalDispatchCentersRemoved) UnmarshalJS
 }
 
 type VersionDiffResponseDifferencesMappings struct {
-	Added    []VersionDiffResponseDifferencesMappingsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesMappingsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesMappingsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesMappingsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1718,9 +2200,20 @@ func (r *VersionDiffResponseDifferencesMappings) UnmarshalJSON(data []byte) erro
 }
 
 type VersionDiffResponseDifferencesMappingsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1758,9 +2251,20 @@ func (r *VersionDiffResponseDifferencesMappingsModified) UnmarshalJSON(data []by
 }
 
 type VersionDiffResponseDifferencesMappingsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1780,9 +2284,20 @@ func (r *VersionDiffResponseDifferencesMappingsModifiedNew) UnmarshalJSON(data [
 }
 
 type VersionDiffResponseDifferencesMappingsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1802,9 +2317,20 @@ func (r *VersionDiffResponseDifferencesMappingsModifiedOld) UnmarshalJSON(data [
 }
 
 type VersionDiffResponseDifferencesMappingsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1824,7 +2350,10 @@ func (r *VersionDiffResponseDifferencesMappingsRemoved) UnmarshalJSON(data []byt
 }
 
 type VersionDiffResponseDifferencesReplaySettings struct {
-	Added    []VersionDiffResponseDifferencesReplaySettingsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesReplaySettingsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesReplaySettingsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesReplaySettingsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1844,9 +2373,20 @@ func (r *VersionDiffResponseDifferencesReplaySettings) UnmarshalJSON(data []byte
 }
 
 type VersionDiffResponseDifferencesReplaySettingsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1884,9 +2424,20 @@ func (r *VersionDiffResponseDifferencesReplaySettingsModified) UnmarshalJSON(dat
 }
 
 type VersionDiffResponseDifferencesReplaySettingsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1906,9 +2457,20 @@ func (r *VersionDiffResponseDifferencesReplaySettingsModifiedNew) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesReplaySettingsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1928,9 +2490,20 @@ func (r *VersionDiffResponseDifferencesReplaySettingsModifiedOld) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesReplaySettingsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1950,7 +2523,10 @@ func (r *VersionDiffResponseDifferencesReplaySettingsRemoved) UnmarshalJSON(data
 }
 
 type VersionDiffResponseDifferencesSources struct {
-	Added    []VersionDiffResponseDifferencesSourcesAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesSourcesAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesSourcesModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesSourcesRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1970,9 +2546,20 @@ func (r *VersionDiffResponseDifferencesSources) UnmarshalJSON(data []byte) error
 }
 
 type VersionDiffResponseDifferencesSourcesAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2010,9 +2597,20 @@ func (r *VersionDiffResponseDifferencesSourcesModified) UnmarshalJSON(data []byt
 }
 
 type VersionDiffResponseDifferencesSourcesModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2032,9 +2630,20 @@ func (r *VersionDiffResponseDifferencesSourcesModifiedNew) UnmarshalJSON(data []
 }
 
 type VersionDiffResponseDifferencesSourcesModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2054,9 +2663,20 @@ func (r *VersionDiffResponseDifferencesSourcesModifiedOld) UnmarshalJSON(data []
 }
 
 type VersionDiffResponseDifferencesSourcesRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2076,7 +2696,10 @@ func (r *VersionDiffResponseDifferencesSourcesRemoved) UnmarshalJSON(data []byte
 }
 
 type VersionDiffResponseDifferencesTagManagerTags struct {
-	Added    []VersionDiffResponseDifferencesTagManagerTagsAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesTagManagerTagsAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesTagManagerTagsModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesTagManagerTagsRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2096,9 +2719,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTags) UnmarshalJSON(data []byte
 }
 
 type VersionDiffResponseDifferencesTagManagerTagsAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2136,9 +2770,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTagsModified) UnmarshalJSON(dat
 }
 
 type VersionDiffResponseDifferencesTagManagerTagsModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2158,9 +2803,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTagsModifiedNew) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesTagManagerTagsModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2180,9 +2836,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTagsModifiedOld) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesTagManagerTagsRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2202,7 +2869,10 @@ func (r *VersionDiffResponseDifferencesTagManagerTagsRemoved) UnmarshalJSON(data
 }
 
 type VersionDiffResponseDifferencesTagManagerTriggers struct {
-	Added    []VersionDiffResponseDifferencesTagManagerTriggersAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesTagManagerTriggersAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesTagManagerTriggersModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesTagManagerTriggersRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2222,9 +2892,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTriggers) UnmarshalJSON(data []
 }
 
 type VersionDiffResponseDifferencesTagManagerTriggersAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2262,9 +2943,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTriggersModified) UnmarshalJSON
 }
 
 type VersionDiffResponseDifferencesTagManagerTriggersModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2286,9 +2978,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTriggersModifiedNew) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesTagManagerTriggersModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2310,9 +3013,20 @@ func (r *VersionDiffResponseDifferencesTagManagerTriggersModifiedOld) UnmarshalJ
 }
 
 type VersionDiffResponseDifferencesTagManagerTriggersRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2332,7 +3046,10 @@ func (r *VersionDiffResponseDifferencesTagManagerTriggersRemoved) UnmarshalJSON(
 }
 
 type VersionDiffResponseDifferencesTagManagerVariables struct {
-	Added    []VersionDiffResponseDifferencesTagManagerVariablesAdded    `json:"added" api:"required"`
+	Added []VersionDiffResponseDifferencesTagManagerVariablesAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
 	Modified []VersionDiffResponseDifferencesTagManagerVariablesModified `json:"modified" api:"required"`
 	Removed  []VersionDiffResponseDifferencesTagManagerVariablesRemoved  `json:"removed" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2352,9 +3069,20 @@ func (r *VersionDiffResponseDifferencesTagManagerVariables) UnmarshalJSON(data [
 }
 
 type VersionDiffResponseDifferencesTagManagerVariablesAdded struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2394,9 +3122,20 @@ func (r *VersionDiffResponseDifferencesTagManagerVariablesModified) UnmarshalJSO
 }
 
 type VersionDiffResponseDifferencesTagManagerVariablesModifiedNew struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2418,9 +3157,20 @@ func (r *VersionDiffResponseDifferencesTagManagerVariablesModifiedNew) Unmarshal
 }
 
 type VersionDiffResponseDifferencesTagManagerVariablesModifiedOld struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2442,9 +3192,20 @@ func (r *VersionDiffResponseDifferencesTagManagerVariablesModifiedOld) Unmarshal
 }
 
 type VersionDiffResponseDifferencesTagManagerVariablesRemoved struct {
-	ID           string `json:"id" api:"required"`
-	Name         string `json:"name" api:"nullable"`
-	Summary      string `json:"summary" api:"nullable"`
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2498,19 +3259,56 @@ const (
 )
 
 type VersionNewParams struct {
-	Name                            param.Opt[string] `json:"name,omitzero"`
-	Notes                           param.Opt[string] `json:"notes,omitzero"`
-	IncludeAllowedEvents            []string          `json:"includeAllowedEvents,omitzero"`
-	IncludeConsentSettings          []string          `json:"includeConsentSettings,omitzero"`
-	IncludeDestinations             []string          `json:"includeDestinations,omitzero"`
-	IncludeExternalAllowedEventData []string          `json:"includeExternalAllowedEventData,omitzero"`
-	IncludeGlobalDispatchCenters    []string          `json:"includeGlobalDispatchCenters,omitzero"`
-	IncludeMappings                 []string          `json:"includeMappings,omitzero"`
-	IncludeReplaySettings           []string          `json:"includeReplaySettings,omitzero"`
-	IncludeSources                  []string          `json:"includeSources,omitzero"`
-	IncludeTagManagerTags           []string          `json:"includeTagManagerTags,omitzero"`
-	IncludeTagManagerTriggers       []string          `json:"includeTagManagerTriggers,omitzero"`
-	IncludeTagManagerVariables      []string          `json:"includeTagManagerVariables,omitzero"`
+	Name  param.Opt[string] `json:"name,omitzero"`
+	Notes param.Opt[string] `json:"notes,omitzero"`
+	// Cherry-pick: allowed event ids (slug-like strings) to include from the draft.
+	// Omit or send `[]` to include all draft changes in this collection.
+	IncludeAllowedEvents []string `json:"includeAllowedEvents,omitzero"`
+	// Cherry-pick: consent settings ids to include from the draft. Omit or send `[]`
+	// to include all draft changes in this collection.
+	IncludeConsentSettings []string `json:"includeConsentSettings,omitzero"`
+	// Cherry-pick: data governance event UUIDs to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeDataGovernanceEvents []string `json:"includeDataGovernanceEvents,omitzero"`
+	// Cherry-pick: data governance rule UUIDs to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeDataGovernanceRules []string `json:"includeDataGovernanceRules,omitzero"`
+	// Cherry-pick: destination UUIDs to include from the draft. Omit or send `[]` to
+	// include all draft changes in this collection.
+	IncludeDestinations []string `json:"includeDestinations,omitzero"`
+	// Cherry-pick: experiment UUIDs to include from the draft. Omit or send `[]` to
+	// include all draft changes in this collection.
+	IncludeExperiments []string `json:"includeExperiments,omitzero"`
+	// Cherry-pick: experiment settings UUIDs to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeExperimentSettings []string `json:"includeExperimentSettings,omitzero"`
+	// Cherry-pick: experiment variant UUIDs to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeExperimentVariants []string `json:"includeExperimentVariants,omitzero"`
+	// Cherry-pick: external allowed event data ids to include from the draft. Omit or
+	// send `[]` to include all draft changes in this collection.
+	IncludeExternalAllowedEventData []string `json:"includeExternalAllowedEventData,omitzero"`
+	// Cherry-pick: global dispatch center ids to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeGlobalDispatchCenters []string `json:"includeGlobalDispatchCenters,omitzero"`
+	// Cherry-pick: mapping ids to include from the draft. Omit or send `[]` to include
+	// all draft changes in this collection.
+	IncludeMappings []string `json:"includeMappings,omitzero"`
+	// Cherry-pick: replay settings ids to include from the draft. Omit or send `[]` to
+	// include all draft changes in this collection.
+	IncludeReplaySettings []string `json:"includeReplaySettings,omitzero"`
+	// Cherry-pick: source UUIDs to include from the draft. Omit or send `[]` to
+	// include all draft changes in this collection.
+	IncludeSources []string `json:"includeSources,omitzero"`
+	// Cherry-pick: tag manager tag UUIDs to include from the draft. Omit or send `[]`
+	// to include all draft changes in this collection.
+	IncludeTagManagerTags []string `json:"includeTagManagerTags,omitzero"`
+	// Cherry-pick: tag manager trigger UUIDs to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeTagManagerTriggers []string `json:"includeTagManagerTriggers,omitzero"`
+	// Cherry-pick: tag manager variable UUIDs to include from the draft. Omit or send
+	// `[]` to include all draft changes in this collection.
+	IncludeTagManagerVariables []string `json:"includeTagManagerVariables,omitzero"`
 	paramObj
 }
 
@@ -2534,6 +3332,21 @@ func (r VersionUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *VersionUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffParams struct {
+	// Baseline version id to compare the path version against. Omit for the latest
+	// published version. Pass a version UUID to compute a version-vs-version diff.
+	Against param.Opt[string] `query:"against,omitzero" format:"uuid" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VersionDiffParams]'s query parameters as `url.Values`.
+func (r VersionDiffParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type VersionDiffParamsID string
