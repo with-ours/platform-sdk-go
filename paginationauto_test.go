@@ -24,11 +24,13 @@ func TestAutoPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	iter := client.Experiments.ListAutoPaging(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentListParams{})
+	iter := client.ExperimentVariants.ListAutoPaging(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentVariantListParams{
+		ExperimentID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
+	})
 	// The mock server isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
-		experiment := iter.Current()
-		t.Logf("%+v\n", experiment.ID)
+		experimentVariant := iter.Current()
+		t.Logf("%+v\n", experimentVariant.ID)
 	}
 	if err := iter.Err(); err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
