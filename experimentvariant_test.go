@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestExperimentVariantList(t *testing.T) {
+func TestExperimentVariantListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,6 +27,8 @@ func TestExperimentVariantList(t *testing.T) {
 	)
 	_, err := client.ExperimentVariants.List(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentVariantListParams{
 		ExperimentID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
+		Cursor:       githubcomwithoursplatformsdkgo.String("cursor"),
+		Limit:        githubcomwithoursplatformsdkgo.Int(200),
 	})
 	if err != nil {
 		var apierr *githubcomwithoursplatformsdkgo.Error
