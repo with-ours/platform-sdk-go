@@ -149,8 +149,14 @@ func (r *MappingListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingListResponseMapping struct {
-	Map          string `json:"map" api:"required"`
-	Property     string `json:"property" api:"required"`
+	Map      string `json:"map" api:"required"`
+	Property string `json:"property" api:"required"`
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
 	Modification string `json:"modification" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -205,8 +211,14 @@ func (r *MappingNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingNewResponseMapping struct {
-	Map          string `json:"map" api:"required"`
-	Property     string `json:"property" api:"required"`
+	Map      string `json:"map" api:"required"`
+	Property string `json:"property" api:"required"`
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
 	Modification string `json:"modification" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -261,8 +273,14 @@ func (r *MappingGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingGetResponseMapping struct {
-	Map          string `json:"map" api:"required"`
-	Property     string `json:"property" api:"required"`
+	Map      string `json:"map" api:"required"`
+	Property string `json:"property" api:"required"`
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
 	Modification string `json:"modification" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -317,8 +335,14 @@ func (r *MappingUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingUpdateResponseMapping struct {
-	Map          string `json:"map" api:"required"`
-	Property     string `json:"property" api:"required"`
+	Map      string `json:"map" api:"required"`
+	Property string `json:"property" api:"required"`
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
 	Modification string `json:"modification" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -337,7 +361,8 @@ func (r *MappingUpdateResponseMapping) UnmarshalJSON(data []byte) error {
 }
 
 type MappingListParams struct {
-	// Filter mappings by their parent entity id (for example an allowed event id).
+	// Filter mappings by their parent entity id. Must be a destination id or source
+	// id.
 	EntityID string `query:"entityId" api:"required" json:"-"`
 	// Maximum number of mappings to return. Defaults to 1000; values below 1 are
 	// clamped to 1 and values above 1000 are clamped to 1000. Most accounts can fetch
@@ -372,8 +397,13 @@ func (r *MappingNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type MappingUpdateParams struct {
-	Name     param.Opt[string]            `json:"name,omitzero"`
-	Logic    any                          `json:"logic,omitzero"`
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Condition tree gating when this mapping fires. A node is either a leaf
+	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
+	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
+	Logic    MappingUpdateParamsLogic     `json:"logic,omitzero"`
 	Mappings []MappingUpdateParamsMapping `json:"mappings,omitzero"`
 	paramObj
 }
@@ -386,11 +416,69 @@ func (r *MappingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Condition tree gating when this mapping fires. A node is either a leaf
+// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
+// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
+type MappingUpdateParamsLogic struct {
+	// All child nodes must match. Each child is a `MappingLogic` node.
+	And []any `json:"AND,omitzero"`
+	// Any child node must match. Each child is a `MappingLogic` node.
+	Or        []any                             `json:"OR,omitzero"`
+	Condition MappingUpdateParamsLogicCondition `json:"condition,omitzero"`
+	// Negates a single child `MappingLogic` node.
+	Not any `json:"NOT,omitzero"`
+	paramObj
+}
+
+func (r MappingUpdateParamsLogic) MarshalJSON() (data []byte, err error) {
+	type shadow MappingUpdateParamsLogic
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MappingUpdateParamsLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Operator, Property, Value are required.
+type MappingUpdateParamsLogicCondition struct {
+	// Any of "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith",
+	// "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined",
+	// "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual",
+	// "IsIn", "IsNotIn", "IsFoundIn", "IsNotFoundIn", "IsTrue", "IsFalse", "IsBefore",
+	// "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex",
+	// "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase".
+	Operator string `json:"operator,omitzero" api:"required"`
+	Property string `json:"property" api:"required"`
+	Value    string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r MappingUpdateParamsLogicCondition) MarshalJSON() (data []byte, err error) {
+	type shadow MappingUpdateParamsLogicCondition
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MappingUpdateParamsLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MappingUpdateParamsLogicCondition](
+		"operator", "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith", "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined", "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual", "IsIn", "IsNotIn", "IsFoundIn", "IsNotFoundIn", "IsTrue", "IsFalse", "IsBefore", "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex", "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase",
+	)
+}
+
 // The properties Map, Property are required.
 type MappingUpdateParamsMapping struct {
-	Map          string            `json:"map" api:"required"`
-	Property     string            `json:"property" api:"required"`
-	Modification param.Opt[string] `json:"modification,omitzero"`
+	Map      string `json:"map" api:"required"`
+	Property string `json:"property" api:"required"`
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
+	Modification string `json:"modification,omitzero"`
 	paramObj
 }
 
@@ -400,4 +488,10 @@ func (r MappingUpdateParamsMapping) MarshalJSON() (data []byte, err error) {
 }
 func (r *MappingUpdateParamsMapping) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MappingUpdateParamsMapping](
+		"modification", "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs", "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash", "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender", "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone", "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null", "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase",
+	)
 }
