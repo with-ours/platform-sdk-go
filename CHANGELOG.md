@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.15.1 (2026-05-08)
+
+Full Changelog: [v1.15.0...v1.15.1](https://github.com/with-ours/platform-sdk-go/compare/v1.15.0...v1.15.1)
+
+### Bug Fixes
+
+* **go:** avoid panic when http.DefaultTransport is wrapped ([2e808e8](https://github.com/with-ours/platform-sdk-go/commit/2e808e8130c92b0918bba34e4da2db354cdf617b))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([9426c89](https://github.com/with-ours/platform-sdk-go/commit/9426c8911584d85f31198357f9b4d470b85b590a))
+
 ## 1.15.0 (2026-05-07)
 
 Full Changelog: [v1.14.0...v1.15.0](https://github.com/with-ours/platform-sdk-go/compare/v1.14.0...v1.15.0)
