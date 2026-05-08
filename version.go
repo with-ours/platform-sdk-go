@@ -65,12 +65,22 @@ func (r *VersionService) ListAutoPaging(ctx context.Context, query VersionListPa
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
-// Publish the current draft (i.e. all unpublished entity changes) as a new
-// version. Returns the full Version on success. Returns HTTP 409 with the reason
-// in the response `error` field when there are no draft changes to publish, when
-// another publish is already in flight, or when the action otherwise conflicts
-// with current state. To re-publish an existing version, use POST
-// /rest/v1/versions/{id}/publish instead. Requires scope: version:publish
+// Publish the current draft of non-experiment entities (destinations, mappings,
+// experiment settings, governance rules, etc.) as a new version. Newly created or
+// modified DRAFT experiments and experiment variants are NOT shipped here — call
+// `POST /rest/v1/experiments/{id}/start` instead, which atomically publishes the
+// experiment and its variants by default (`publishAfterStart: true`). Returns the
+// full Version on success. Returns HTTP 409 with the reason in the response
+// `error` field when there are no draft changes to publish, when another publish
+// is already in flight, or when the action otherwise conflicts with current state.
+// To re-publish an existing version, use POST /rest/v1/versions/{id}/publish
+// instead.
+//
+// Supports cherry-picking via the `include*` body fields. Each `include*` field is
+// an entity-id allowlist for one collection — omit (or send `[]`) to include every
+// draft change in that collection, or send a non-empty array to whitelist only
+// those ids. Unlisted collections inherit wholesale from the latest published
+// version. Requires scope: version:publish
 func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ...option.RequestOption) (res *VersionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
@@ -138,8 +148,14 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 // Compare two versions of the account configuration. Returns
 // added/removed/modified entities grouped by collection, plus a total `count`.
 //
-//   - `GET /rest/v1/versions/draft/diff` — compare the current draft (all
-//     unpublished entity changes) against the latest published version. Use this to
+// Draft experiments and experiment variants do NOT appear in any diff — only
+// experiments that are already running (or paused/completed) snapshot into
+// versions. Use the experiment lifecycle endpoints (`/start`, `/stop`, etc.) to
+// ship experiment changes; use these diff endpoints only for non-experiment
+// entities (destinations, mappings, experiment settings, governance rules, etc.).
+//
+//   - `GET /rest/v1/versions/draft/diff` — compare the current draft of
+//     non-experiment entities against the latest published version. Use this to
 //     preview what would be included in a `POST /rest/v1/versions` call. (`draft` is
 //     a literal path segment — there is no version with that ID; it identifies the
 //     comparison target.)

@@ -672,8 +672,14 @@ type ExperimentVariantNewParams struct {
 	// Required for DOM modification variants. Omit for redirect variants. Each entry
 	// is `{selector, action, value}`.
 	DomModifications []ExperimentVariantNewParamsDomModification `json:"domModifications,omitzero"`
-	// Variant type to create. Use `redirect` for redirect tests or `dom_modifications`
-	// for on-page changes.
+	// Variant delivery mechanism. `dom_modifications` mutates the current page
+	// in-place at SDK runtime — use it for copy/style/image/HTML changes that keep
+	// visitors on the same URL (headline copy tests, button color, hero image swap).
+	// `redirect` routes the visitor to a different URL entirely — use it for
+	// landing-page A/B tests, alternate pricing pages, or any test where the _page
+	// itself_ is the variable. They are not interchangeable: a redirect variant cannot
+	// also tweak DOM, and a dom_modifications variant cannot send the visitor
+	// elsewhere.
 	//
 	// Any of "dom_modifications", "redirect".
 	VariantType ExperimentVariantNewParamsVariantType `json:"variantType,omitzero"`
@@ -695,7 +701,14 @@ type ExperimentVariantNewParamsDomModification struct {
 	// Any of "customCss", "customJs", "insertAfter", "insertBefore", "remove",
 	// "setAttribute", "setHtml", "setImage", "setStyle", "setText".
 	Action string `json:"action,omitzero" api:"required"`
-	// CSS selector used to find the element to modify on the page at runtime.
+	// CSS selector for the element to modify at runtime. PREFER specific selectors
+	// that match exactly one element: an `id` (`#hero-headline`), a stable `data-*`
+	// attribute (`[data-testid="hero-headline"]`), or a unique class/structural chain
+	// (`section.hero > h1.headline`). AVOID bare tag selectors like `h1`, `button`, or
+	// `img` — modern pages usually contain several, and the runtime applies the
+	// mutation to ONLY THE FIRST match, which silently picks the wrong element. If you
+	// only have a tag name, scope it with the nearest unique ancestor (e.g. `main h1`,
+	// `header nav a:first-of-type`).
 	Selector string `json:"selector" api:"required"`
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
@@ -743,8 +756,14 @@ func (r *ExperimentVariantNewParamsDomModificationStyle) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Variant type to create. Use `redirect` for redirect tests or `dom_modifications`
-// for on-page changes.
+// Variant delivery mechanism. `dom_modifications` mutates the current page
+// in-place at SDK runtime — use it for copy/style/image/HTML changes that keep
+// visitors on the same URL (headline copy tests, button color, hero image swap).
+// `redirect` routes the visitor to a different URL entirely — use it for
+// landing-page A/B tests, alternate pricing pages, or any test where the _page
+// itself_ is the variable. They are not interchangeable: a redirect variant cannot
+// also tweak DOM, and a dom_modifications variant cannot send the visitor
+// elsewhere.
 type ExperimentVariantNewParamsVariantType string
 
 const (
@@ -769,9 +788,10 @@ type ExperimentVariantUpdateParams struct {
 	// Updated declarative DOM mutations. Sending this field replaces the prior list —
 	// partial-array merging is not supported.
 	DomModifications []ExperimentVariantUpdateParamsDomModification `json:"domModifications,omitzero"`
-	// Updated variant type — `redirect` or `dom_modifications`. Changing this also
-	// requires updating the matching payload field (`redirectUrl` or
-	// `domModifications`).
+	// Updated variant delivery mechanism. `dom_modifications` mutates the current page
+	// in-place; `redirect` sends the visitor to a different URL — pick based on
+	// whether the _page_ or the _content_ is the variable. Changing this also requires
+	// updating the matching payload field (`redirectUrl` or `domModifications`).
 	//
 	// Any of "dom_modifications", "redirect".
 	VariantType ExperimentVariantUpdateParamsVariantType `json:"variantType,omitzero"`
@@ -793,7 +813,14 @@ type ExperimentVariantUpdateParamsDomModification struct {
 	// Any of "customCss", "customJs", "insertAfter", "insertBefore", "remove",
 	// "setAttribute", "setHtml", "setImage", "setStyle", "setText".
 	Action string `json:"action,omitzero" api:"required"`
-	// CSS selector used to find the element to modify on the page at runtime.
+	// CSS selector for the element to modify at runtime. PREFER specific selectors
+	// that match exactly one element: an `id` (`#hero-headline`), a stable `data-*`
+	// attribute (`[data-testid="hero-headline"]`), or a unique class/structural chain
+	// (`section.hero > h1.headline`). AVOID bare tag selectors like `h1`, `button`, or
+	// `img` — modern pages usually contain several, and the runtime applies the
+	// mutation to ONLY THE FIRST match, which silently picks the wrong element. If you
+	// only have a tag name, scope it with the nearest unique ancestor (e.g. `main h1`,
+	// `header nav a:first-of-type`).
 	Selector string `json:"selector" api:"required"`
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
@@ -841,9 +868,10 @@ func (r *ExperimentVariantUpdateParamsDomModificationStyle) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Updated variant type — `redirect` or `dom_modifications`. Changing this also
-// requires updating the matching payload field (`redirectUrl` or
-// `domModifications`).
+// Updated variant delivery mechanism. `dom_modifications` mutates the current page
+// in-place; `redirect` sends the visitor to a different URL — pick based on
+// whether the _page_ or the _content_ is the variable. Changing this also requires
+// updating the matching payload field (`redirectUrl` or `domModifications`).
 type ExperimentVariantUpdateParamsVariantType string
 
 const (
