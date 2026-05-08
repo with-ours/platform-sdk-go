@@ -116,8 +116,13 @@ func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Start an experiment. The request body is optional — send `{}` to use defaults.
-// Requires scope: experiment:start
+// Start an experiment. By default also publishes the experiment and its variants
+// atomically as a new version, making them live for end users — this is the
+// canonical publish path for experiment changes. They do NOT flow through
+// `POST /rest/v1/versions`. Pass `{ "publishAfterStart": false }` only if a
+// separate publish is desired (e.g. bundling with non-experiment edits via a
+// manual `POST /rest/v1/versions` afterwards). The request body is optional — send
+// `{}` to use defaults. Requires scope: experiment:start
 func (r *ExperimentService) Start(ctx context.Context, id string, body ExperimentStartParams, opts ...option.RequestOption) (res *ExperimentStartResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -198,6 +203,23 @@ func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, qu
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/results-time-series", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// List session replays for sessions in which the `$experiment_impression` event
+// fired for this experiment. Each row is one session with the variant the visitor
+// was assigned for that impression. Sessions are ordered newest first by session
+// start. Filter to one variant with `variant_id`. Cursor pagination via `limit`
+// (1–100, default 25) and `cursor`; malformed cursors return 400. Requires scope:
+// experiment:find
+func (r *ExperimentService) SessionReplays(ctx context.Context, id string, query ExperimentSessionReplaysParams, opts ...option.RequestOption) (res *ExperimentSessionReplaysResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/experiments/%s/session-replays", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -336,7 +358,12 @@ func (r *ExperimentListResponseMetricsSecondary) UnmarshalJSON(data []byte) erro
 type ExperimentListResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -645,7 +672,12 @@ func (r *ExperimentNewResponseMetricsSecondary) UnmarshalJSON(data []byte) error
 type ExperimentNewResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -954,7 +986,12 @@ func (r *ExperimentGetResponseMetricsSecondary) UnmarshalJSON(data []byte) error
 type ExperimentGetResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -1155,7 +1192,12 @@ func (r *ExperimentUpdateResponseMetricsSecondary) UnmarshalJSON(data []byte) er
 type ExperimentUpdateResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -1372,7 +1414,12 @@ func (r *ExperimentStartResponseExperimentMetricsSecondary) UnmarshalJSON(data [
 type ExperimentStartResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -1590,7 +1637,12 @@ func (r *ExperimentStopResponseExperimentMetricsSecondary) UnmarshalJSON(data []
 type ExperimentStopResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -1806,7 +1858,12 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondary) UnmarshalJSON(data [
 type ExperimentPauseResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -2024,7 +2081,12 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondary) UnmarshalJSON(data 
 type ExperimentResumeResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID string `json:"audienceId" api:"nullable"`
@@ -2208,6 +2270,87 @@ func (r *ExperimentResultsTimeSeriesResponseDayVariant) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ExperimentSessionReplaysResponse struct {
+	// Sessions in which a `$experiment_impression` event for this experiment was
+	// recorded, ordered newest first by session start time.
+	Entities   []ExperimentSessionReplaysResponseEntity   `json:"entities" api:"required"`
+	Pagination ExperimentSessionReplaysResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Pagination  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentSessionReplaysResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentSessionReplaysResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentSessionReplaysResponseEntity struct {
+	// Time between the first and last events recorded for this session, in whole
+	// seconds.
+	DurationSeconds int64 `json:"durationSeconds" api:"required"`
+	// Number of distinct page paths visited during this session.
+	PageCount int64 `json:"pageCount" api:"required"`
+	// Deep link to the in-app replay viewer for this session. Requires an
+	// authenticated session in the Ours Privacy app for an account that owns this
+	// experiment — not embeddable in customer-facing emails.
+	ReplayURL string `json:"replayUrl" api:"required"`
+	// Session identifier (`dp_sid`). Combine with `visitorId` and the `YYYY-MM-DD`
+	// date of `startTime` to deep-link to a replay outside of the response
+	// `replayUrl`.
+	SessionID string `json:"sessionId" api:"required"`
+	// ISO-8601 timestamp of the first event recorded in this session. Sessions are
+	// ordered newest first by this field.
+	StartTime string `json:"startTime" api:"required"`
+	// Human-readable name of the variant the visitor was assigned for the recorded
+	// impression. May be empty if the variant has been deleted since the impression
+	// fired.
+	VariantName string `json:"variantName" api:"required"`
+	// Visitor identifier whose session is recorded here.
+	VisitorID string `json:"visitorId" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DurationSeconds respjson.Field
+		PageCount       respjson.Field
+		ReplayURL       respjson.Field
+		SessionID       respjson.Field
+		StartTime       respjson.Field
+		VariantName     respjson.Field
+		VisitorID       respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentSessionReplaysResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentSessionReplaysResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentSessionReplaysResponsePagination struct {
+	HasMore    bool   `json:"hasMore" api:"required"`
+	NextCursor string `json:"nextCursor" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentSessionReplaysResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentSessionReplaysResponsePagination) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ExperimentListParams struct {
 	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
 	// 1 and values above 100 are clamped to 100.
@@ -2358,7 +2501,12 @@ func (r *ExperimentNewParamsMetricsSecondary) UnmarshalJSON(data []byte) error {
 type ExperimentNewParamsTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns,omitzero" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID param.Opt[string] `json:"audienceId,omitzero"`
@@ -2512,7 +2660,12 @@ func (r *ExperimentUpdateParamsMetricsSecondary) UnmarshalJSON(data []byte) erro
 type ExperimentUpdateParamsTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Up to
 	// 200 patterns; each pattern up to 2000 characters. An empty array (or omitting
-	// the field) matches all URLs — equivalent to `["**"]`.
+	// the field) matches all URLs — equivalent to `['**']`. The host(s) targeted here
+	// must also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
 	URLPatterns []string `json:"urlPatterns,omitzero" api:"required"`
 	// Optional audience identifier used for server-side eligibility filtering.
 	AudienceID param.Opt[string] `json:"audienceId,omitzero"`
@@ -2565,10 +2718,13 @@ func init() {
 }
 
 type ExperimentStartParams struct {
-	// When true (default on the REST surface), publish the current draft version
-	// immediately after starting the experiment. Any other unpublished changes in the
-	// same account version are included in that publish. Pass `false` explicitly to
-	// stage the change without publishing; the response will report `pending_publish`.
+	// When true (the default), atomically publish the experiment and its variants as a
+	// new version after starting — this is the canonical publish path for experiment
+	// changes. Any other unpublished non-experiment changes (destinations, mappings,
+	// settings, etc.) currently in draft are included in the same publish. Pass
+	// `false` explicitly to stage the change without publishing; the response will
+	// report `pending_publish` and a separate `POST /rest/v1/versions` call is then
+	// required.
 	PublishAfterStart param.Opt[bool] `json:"publishAfterStart,omitzero"`
 	paramObj
 }
@@ -2664,6 +2820,28 @@ type ExperimentResultsTimeSeriesParams struct {
 // URLQuery serializes [ExperimentResultsTimeSeriesParams]'s query parameters as
 // `url.Values`.
 func (r ExperimentResultsTimeSeriesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type ExperimentSessionReplaysParams struct {
+	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
+	// 1 and values above 100 are clamped to 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Optional filter to a single variant ID. Returns sessions for all variants when
+	// omitted.
+	VariantID param.Opt[string] `query:"variant_id,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ExperimentSessionReplaysParams]'s query parameters as
+// `url.Values`.
+func (r ExperimentSessionReplaysParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

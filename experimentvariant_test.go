@@ -57,7 +57,7 @@ func TestExperimentVariantNewWithOptionalParams(t *testing.T) {
 		Weight:       50,
 		DomModifications: []githubcomwithoursplatformsdkgo.ExperimentVariantNewParamsDomModification{{
 			Action:    "customCss",
-			Selector:  "h1.hero-title",
+			Selector:  "#hero-headline",
 			Attribute: map[string]any{},
 			Styles: []githubcomwithoursplatformsdkgo.ExperimentVariantNewParamsDomModificationStyle{{
 				Property: "background-color",
@@ -118,7 +118,7 @@ func TestExperimentVariantUpdateWithOptionalParams(t *testing.T) {
 		githubcomwithoursplatformsdkgo.ExperimentVariantUpdateParams{
 			DomModifications: []githubcomwithoursplatformsdkgo.ExperimentVariantUpdateParamsDomModification{{
 				Action:    "customCss",
-				Selector:  "h1.hero-title",
+				Selector:  "#hero-headline",
 				Attribute: map[string]any{},
 				Styles: []githubcomwithoursplatformsdkgo.ExperimentVariantUpdateParamsDomModificationStyle{{
 					Property: "background-color",

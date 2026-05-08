@@ -130,9 +130,11 @@ type ExperimentSettingListResponseEntity struct {
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
 	UpdatedAt       string `json:"updatedAt" api:"nullable"`
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates source event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -173,9 +175,11 @@ type ExperimentSettingNewResponse struct {
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
 	UpdatedAt       string `json:"updatedAt" api:"nullable"`
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates source event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -216,9 +220,11 @@ type ExperimentSettingGetResponse struct {
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
 	UpdatedAt       string `json:"updatedAt" api:"nullable"`
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates source event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -259,9 +265,11 @@ type ExperimentSettingUpdateResponse struct {
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
 	UpdatedAt       string `json:"updatedAt" api:"nullable"`
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates source event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -302,9 +310,11 @@ type ExperimentSettingDeleteResponse struct {
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
 	UpdatedAt       string `json:"updatedAt" api:"nullable"`
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates source event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -336,9 +346,11 @@ type ExperimentSettingNewParams struct {
 	// Human-readable name for this experimentation configuration. Defaults to
 	// `Experiment Settings` when omitted on create.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates CDP event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }
@@ -358,9 +370,11 @@ type ExperimentSettingUpdateParams struct {
 	// Human-readable name for this experimentation configuration. Defaults to
 	// `Experiment Settings` when omitted on create.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Optional domain allowlist for experiment SDK delivery. When set, experiments
-	// using this settings record are only served on these domains. This is separate
-	// from source `whitelistDomains`, which gates CDP event ingestion.
+	// Limits which domains can load your experiments. When set, experiments using this
+	// settings record are only served on these domains; the SDK refuses to load
+	// anywhere else and your experiments never run on those hosts. Separate from
+	// source `whitelistDomains`, which limits which domains can send events to the
+	// CDP.
 	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }
