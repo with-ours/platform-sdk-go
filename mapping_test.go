@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,17 +21,17 @@ func TestMappingListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Mappings.List(context.TODO(), githubcomwithoursplatformsdkgo.MappingListParams{
+	_, err := client.Mappings.List(context.TODO(), oursprivacy.MappingListParams{
 		EntityID: "00000000-0000-0000-0000-000000000000",
-		Cursor:   githubcomwithoursplatformsdkgo.String("cursor"),
-		Limit:    githubcomwithoursplatformsdkgo.Int(1000),
+		Cursor:   oursprivacy.String("cursor"),
+		Limit:    oursprivacy.Int(1000),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -47,16 +47,16 @@ func TestMappingNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Mappings.New(context.TODO(), githubcomwithoursplatformsdkgo.MappingNewParams{
+	_, err := client.Mappings.New(context.TODO(), oursprivacy.MappingNewParams{
 		AllowedEventID: "allowedEventId",
 		DestinationID:  "destinationId",
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -72,13 +72,13 @@ func TestMappingGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Mappings.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -94,17 +94,17 @@ func TestMappingUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Mappings.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.MappingUpdateParams{
-			Logic: githubcomwithoursplatformsdkgo.MappingUpdateParamsLogic{
+		oursprivacy.MappingUpdateParams{
+			Logic: oursprivacy.MappingUpdateParamsLogic{
 				And: []any{map[string]any{}},
-				Condition: githubcomwithoursplatformsdkgo.MappingUpdateParamsLogicCondition{
+				Condition: oursprivacy.MappingUpdateParamsLogicCondition{
 					Operator: "Is",
 					Property: "property",
 					Value:    "value",
@@ -112,16 +112,16 @@ func TestMappingUpdateWithOptionalParams(t *testing.T) {
 				Not: map[string]any{},
 				Or:  []any{map[string]any{}},
 			},
-			Mappings: []githubcomwithoursplatformsdkgo.MappingUpdateParamsMapping{{
+			Mappings: []oursprivacy.MappingUpdateParamsMapping{{
 				Map:          "map",
 				Property:     "property",
 				Modification: "CamelCase",
 			}},
-			Name: githubcomwithoursplatformsdkgo.String("name"),
+			Name: oursprivacy.String("name"),
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -137,13 +137,13 @@ func TestMappingDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Mappings.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

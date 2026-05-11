@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -20,11 +20,11 @@ func TestAutoPagination(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	iter := client.ExperimentVariants.ListAutoPaging(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentVariantListParams{
+	iter := client.ExperimentVariants.ListAutoPaging(context.TODO(), oursprivacy.ExperimentVariantListParams{
 		ExperimentID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
 	})
 	// The mock server isn't going to give us real pagination

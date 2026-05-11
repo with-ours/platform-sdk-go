@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,13 +21,13 @@ func TestConsentSettingList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ConsentSettings.List(context.TODO())
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -43,13 +43,13 @@ func TestConsentSettingNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ConsentSettings.New(context.TODO())
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -65,13 +65,13 @@ func TestConsentSettingGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ConsentSettings.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -87,98 +87,98 @@ func TestConsentSettingReplaceWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ConsentSettings.Replace(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.ConsentSettingReplaceParams{
-			Categories: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsCategory{{
+		oursprivacy.ConsentSettingReplaceParams{
+			Categories: []oursprivacy.ConsentSettingReplaceParamsCategory{{
 				Label:    "label",
 				Priority: 0,
 				Value:    "value",
 			}},
-			Default: githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsDefault{
-				Categories: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsDefaultCategory{{
+			Default: oursprivacy.ConsentSettingReplaceParamsDefault{
+				Categories: []oursprivacy.ConsentSettingReplaceParamsDefaultCategory{{
 					Key: "key",
-					Value: githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsDefaultCategoryValue{
+					Value: oursprivacy.ConsentSettingReplaceParamsDefaultCategoryValue{
 						Enabled:          true,
-						AutoDisableOnGpc: githubcomwithoursplatformsdkgo.Bool(true),
-						ReadOnly:         githubcomwithoursplatformsdkgo.Bool(true),
-						ReloadPage:       githubcomwithoursplatformsdkgo.Bool(true),
+						AutoDisableOnGpc: oursprivacy.Bool(true),
+						ReadOnly:         oursprivacy.Bool(true),
+						ReloadPage:       oursprivacy.Bool(true),
 					},
 				}},
 				Language: "en",
 				Mode:     "opt_in",
-				Translations: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsDefaultTranslation{{
+				Translations: []oursprivacy.ConsentSettingReplaceParamsDefaultTranslation{{
 					Language: "en",
-					Value: githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsDefaultTranslationValue{
+					Value: oursprivacy.ConsentSettingReplaceParamsDefaultTranslationValue{
 						ConsentModal:     map[string]any{},
 						PreferencesModal: map[string]any{},
 					},
 				}},
-				AutoblockUnknown:         githubcomwithoursplatformsdkgo.Bool(true),
-				AutoShow:                 githubcomwithoursplatformsdkgo.Bool(true),
+				AutoblockUnknown:         oursprivacy.Bool(true),
+				AutoShow:                 oursprivacy.Bool(true),
 				AutoShowDismissConfig:    map[string]any{},
-				AutoShowDismissMode:      githubcomwithoursplatformsdkgo.String("autoShowDismissMode"),
-				DisablePageInteraction:   githubcomwithoursplatformsdkgo.Bool(true),
+				AutoShowDismissMode:      oursprivacy.String("autoShowDismissMode"),
+				DisablePageInteraction:   oursprivacy.Bool(true),
 				GuiOptions:               map[string]any{},
-				HideFromBots:             githubcomwithoursplatformsdkgo.Bool(true),
-				ShowVendorsInPreferences: githubcomwithoursplatformsdkgo.Bool(true),
+				HideFromBots:             oursprivacy.Bool(true),
+				ShowVendorsInPreferences: oursprivacy.Bool(true),
 			},
 			Name: "name",
-			Regions: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsRegion{{
+			Regions: []oursprivacy.ConsentSettingReplaceParamsRegion{{
 				RegionCode: "US-CA",
-				Rule: githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsRegionRule{
-					Categories: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsRegionRuleCategory{{
+				Rule: oursprivacy.ConsentSettingReplaceParamsRegionRule{
+					Categories: []oursprivacy.ConsentSettingReplaceParamsRegionRuleCategory{{
 						Key: "key",
-						Value: githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsRegionRuleCategoryValue{
+						Value: oursprivacy.ConsentSettingReplaceParamsRegionRuleCategoryValue{
 							Enabled:          true,
-							AutoDisableOnGpc: githubcomwithoursplatformsdkgo.Bool(true),
-							ReadOnly:         githubcomwithoursplatformsdkgo.Bool(true),
-							ReloadPage:       githubcomwithoursplatformsdkgo.Bool(true),
+							AutoDisableOnGpc: oursprivacy.Bool(true),
+							ReadOnly:         oursprivacy.Bool(true),
+							ReloadPage:       oursprivacy.Bool(true),
 						},
 					}},
 					Language: "en",
 					Mode:     "opt_in",
-					Translations: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsRegionRuleTranslation{{
+					Translations: []oursprivacy.ConsentSettingReplaceParamsRegionRuleTranslation{{
 						Language: "en",
-						Value: githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsRegionRuleTranslationValue{
+						Value: oursprivacy.ConsentSettingReplaceParamsRegionRuleTranslationValue{
 							ConsentModal:     map[string]any{},
 							PreferencesModal: map[string]any{},
 						},
 					}},
-					AutoblockUnknown:         githubcomwithoursplatformsdkgo.Bool(true),
-					AutoShow:                 githubcomwithoursplatformsdkgo.Bool(true),
+					AutoblockUnknown:         oursprivacy.Bool(true),
+					AutoShow:                 oursprivacy.Bool(true),
 					AutoShowDismissConfig:    map[string]any{},
-					AutoShowDismissMode:      githubcomwithoursplatformsdkgo.String("autoShowDismissMode"),
-					DisablePageInteraction:   githubcomwithoursplatformsdkgo.Bool(true),
+					AutoShowDismissMode:      oursprivacy.String("autoShowDismissMode"),
+					DisablePageInteraction:   oursprivacy.Bool(true),
 					GuiOptions:               map[string]any{},
-					HideFromBots:             githubcomwithoursplatformsdkgo.Bool(true),
-					ShowVendorsInPreferences: githubcomwithoursplatformsdkgo.Bool(true),
+					HideFromBots:             oursprivacy.Bool(true),
+					ShowVendorsInPreferences: oursprivacy.Bool(true),
 				},
 				AdditionalRegions: []string{"string"},
 			}},
-			Services: []githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsService{{
+			Services: []oursprivacy.ConsentSettingReplaceParamsService{{
 				InternalNotes:        "internalNotes",
 				Label:                "label",
 				AdditionalCategories: []string{"string"},
-				Category:             githubcomwithoursplatformsdkgo.String("category"),
+				Category:             oursprivacy.String("category"),
 				DomainPatterns:       []string{"string"},
 			}},
-			Status:                 githubcomwithoursplatformsdkgo.ConsentSettingReplaceParamsStatusDisabled,
-			ConsentCookieName:      githubcomwithoursplatformsdkgo.String("consentCookieName"),
-			CustomDomain:           githubcomwithoursplatformsdkgo.String("customDomain"),
-			Revision:               githubcomwithoursplatformsdkgo.Float(0),
+			Status:                 oursprivacy.ConsentSettingReplaceParamsStatusDisabled,
+			ConsentCookieName:      oursprivacy.String("consentCookieName"),
+			CustomDomain:           oursprivacy.String("customDomain"),
+			Revision:               oursprivacy.Float(0),
 			SkipBlockingClassNames: []string{"string"},
-			WebSDKToken:            githubcomwithoursplatformsdkgo.String("webSDKToken"),
+			WebSDKToken:            oursprivacy.String("webSDKToken"),
 			WhitelistDomains:       []string{"string"},
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -194,98 +194,98 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ConsentSettings.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.ConsentSettingUpdateParams{
-			Categories: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsCategory{{
+		oursprivacy.ConsentSettingUpdateParams{
+			Categories: []oursprivacy.ConsentSettingUpdateParamsCategory{{
 				Label:    "label",
 				Priority: 0,
 				Value:    "value",
 			}},
-			ConsentCookieName: githubcomwithoursplatformsdkgo.String("consentCookieName"),
-			CustomDomain:      githubcomwithoursplatformsdkgo.String("customDomain"),
-			Default: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefault{
-				Categories: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultCategory{{
+			ConsentCookieName: oursprivacy.String("consentCookieName"),
+			CustomDomain:      oursprivacy.String("customDomain"),
+			Default: oursprivacy.ConsentSettingUpdateParamsDefault{
+				Categories: []oursprivacy.ConsentSettingUpdateParamsDefaultCategory{{
 					Key: "key",
-					Value: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultCategoryValue{
+					Value: oursprivacy.ConsentSettingUpdateParamsDefaultCategoryValue{
 						Enabled:          true,
-						AutoDisableOnGpc: githubcomwithoursplatformsdkgo.Bool(true),
-						ReadOnly:         githubcomwithoursplatformsdkgo.Bool(true),
-						ReloadPage:       githubcomwithoursplatformsdkgo.Bool(true),
+						AutoDisableOnGpc: oursprivacy.Bool(true),
+						ReadOnly:         oursprivacy.Bool(true),
+						ReloadPage:       oursprivacy.Bool(true),
 					},
 				}},
 				Language: "en",
 				Mode:     "opt_in",
-				Translations: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultTranslation{{
+				Translations: []oursprivacy.ConsentSettingUpdateParamsDefaultTranslation{{
 					Language: "en",
-					Value: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsDefaultTranslationValue{
+					Value: oursprivacy.ConsentSettingUpdateParamsDefaultTranslationValue{
 						ConsentModal:     map[string]any{},
 						PreferencesModal: map[string]any{},
 					},
 				}},
-				AutoblockUnknown:         githubcomwithoursplatformsdkgo.Bool(true),
-				AutoShow:                 githubcomwithoursplatformsdkgo.Bool(true),
+				AutoblockUnknown:         oursprivacy.Bool(true),
+				AutoShow:                 oursprivacy.Bool(true),
 				AutoShowDismissConfig:    map[string]any{},
-				AutoShowDismissMode:      githubcomwithoursplatformsdkgo.String("autoShowDismissMode"),
-				DisablePageInteraction:   githubcomwithoursplatformsdkgo.Bool(true),
+				AutoShowDismissMode:      oursprivacy.String("autoShowDismissMode"),
+				DisablePageInteraction:   oursprivacy.Bool(true),
 				GuiOptions:               map[string]any{},
-				HideFromBots:             githubcomwithoursplatformsdkgo.Bool(true),
-				ShowVendorsInPreferences: githubcomwithoursplatformsdkgo.Bool(true),
+				HideFromBots:             oursprivacy.Bool(true),
+				ShowVendorsInPreferences: oursprivacy.Bool(true),
 			},
-			Name: githubcomwithoursplatformsdkgo.String("name"),
-			Regions: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegion{{
+			Name: oursprivacy.String("name"),
+			Regions: []oursprivacy.ConsentSettingUpdateParamsRegion{{
 				RegionCode: "US-CA",
-				Rule: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRule{
-					Categories: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleCategory{{
+				Rule: oursprivacy.ConsentSettingUpdateParamsRegionRule{
+					Categories: []oursprivacy.ConsentSettingUpdateParamsRegionRuleCategory{{
 						Key: "key",
-						Value: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleCategoryValue{
+						Value: oursprivacy.ConsentSettingUpdateParamsRegionRuleCategoryValue{
 							Enabled:          true,
-							AutoDisableOnGpc: githubcomwithoursplatformsdkgo.Bool(true),
-							ReadOnly:         githubcomwithoursplatformsdkgo.Bool(true),
-							ReloadPage:       githubcomwithoursplatformsdkgo.Bool(true),
+							AutoDisableOnGpc: oursprivacy.Bool(true),
+							ReadOnly:         oursprivacy.Bool(true),
+							ReloadPage:       oursprivacy.Bool(true),
 						},
 					}},
 					Language: "en",
 					Mode:     "opt_in",
-					Translations: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleTranslation{{
+					Translations: []oursprivacy.ConsentSettingUpdateParamsRegionRuleTranslation{{
 						Language: "en",
-						Value: githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsRegionRuleTranslationValue{
+						Value: oursprivacy.ConsentSettingUpdateParamsRegionRuleTranslationValue{
 							ConsentModal:     map[string]any{},
 							PreferencesModal: map[string]any{},
 						},
 					}},
-					AutoblockUnknown:         githubcomwithoursplatformsdkgo.Bool(true),
-					AutoShow:                 githubcomwithoursplatformsdkgo.Bool(true),
+					AutoblockUnknown:         oursprivacy.Bool(true),
+					AutoShow:                 oursprivacy.Bool(true),
 					AutoShowDismissConfig:    map[string]any{},
-					AutoShowDismissMode:      githubcomwithoursplatformsdkgo.String("autoShowDismissMode"),
-					DisablePageInteraction:   githubcomwithoursplatformsdkgo.Bool(true),
+					AutoShowDismissMode:      oursprivacy.String("autoShowDismissMode"),
+					DisablePageInteraction:   oursprivacy.Bool(true),
 					GuiOptions:               map[string]any{},
-					HideFromBots:             githubcomwithoursplatformsdkgo.Bool(true),
-					ShowVendorsInPreferences: githubcomwithoursplatformsdkgo.Bool(true),
+					HideFromBots:             oursprivacy.Bool(true),
+					ShowVendorsInPreferences: oursprivacy.Bool(true),
 				},
 				AdditionalRegions: []string{"string"},
 			}},
-			Revision: githubcomwithoursplatformsdkgo.Float(0),
-			Services: []githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsService{{
+			Revision: oursprivacy.Float(0),
+			Services: []oursprivacy.ConsentSettingUpdateParamsService{{
 				InternalNotes:        "internalNotes",
 				Label:                "label",
 				AdditionalCategories: []string{"string"},
-				Category:             githubcomwithoursplatformsdkgo.String("category"),
+				Category:             oursprivacy.String("category"),
 				DomainPatterns:       []string{"string"},
 			}},
 			SkipBlockingClassNames: []string{"string"},
-			Status:                 githubcomwithoursplatformsdkgo.ConsentSettingUpdateParamsStatusDisabled,
-			WebSDKToken:            githubcomwithoursplatformsdkgo.String("webSDKToken"),
+			Status:                 oursprivacy.ConsentSettingUpdateParamsStatusDisabled,
+			WebSDKToken:            oursprivacy.String("webSDKToken"),
 			WhitelistDomains:       []string{"string"},
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -301,13 +301,13 @@ func TestConsentSettingDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ConsentSettings.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
