@@ -137,6 +137,16 @@ Methods:
 
 # HeatmapPages
 
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageListResponse">HeatmapPageListResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageSummaryResponse">HeatmapPageSummaryResponse</a>
+
+Methods:
+
+- <code title="get /rest/v1/heatmap-pages">client.HeatmapPages.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageListParams">HeatmapPageListParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/packages/pagination#Cursor">Cursor</a>[<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageListResponse">HeatmapPageListResponse</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /rest/v1/heatmap-pages/summary">client.HeatmapPages.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageService.Summary">Summary</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageSummaryParams">HeatmapPageSummaryParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#HeatmapPageSummaryResponse">HeatmapPageSummaryResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Mappings
 
 Response Types:
