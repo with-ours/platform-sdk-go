@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,19 +21,19 @@ func TestVersionListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Versions.List(context.TODO(), githubcomwithoursplatformsdkgo.VersionListParams{
-		Cursor:        githubcomwithoursplatformsdkgo.String("cursor"),
-		IsPublished:   githubcomwithoursplatformsdkgo.VersionListParamsIsPublishedTrue,
-		Limit:         githubcomwithoursplatformsdkgo.Int(25),
-		NameContains:  githubcomwithoursplatformsdkgo.String("nameContains"),
-		NotesContains: githubcomwithoursplatformsdkgo.String("notesContains"),
+	_, err := client.Versions.List(context.TODO(), oursprivacy.VersionListParams{
+		Cursor:        oursprivacy.String("cursor"),
+		IsPublished:   oursprivacy.VersionListParamsIsPublishedTrue,
+		Limit:         oursprivacy.Int(25),
+		NameContains:  oursprivacy.String("nameContains"),
+		NotesContains: oursprivacy.String("notesContains"),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -49,11 +49,11 @@ func TestVersionNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Versions.New(context.TODO(), githubcomwithoursplatformsdkgo.VersionNewParams{
+	_, err := client.Versions.New(context.TODO(), oursprivacy.VersionNewParams{
 		IncludeAllowedEvents:            []string{"string"},
 		IncludeConsentSettings:          []string{"string"},
 		IncludeDataGovernanceEvents:     []string{"string"},
@@ -70,11 +70,11 @@ func TestVersionNewWithOptionalParams(t *testing.T) {
 		IncludeTagManagerTags:           []string{"string"},
 		IncludeTagManagerTriggers:       []string{"string"},
 		IncludeTagManagerVariables:      []string{"string"},
-		Name:                            githubcomwithoursplatformsdkgo.String("name"),
-		Notes:                           githubcomwithoursplatformsdkgo.String("notes"),
+		Name:                            oursprivacy.String("name"),
+		Notes:                           oursprivacy.String("notes"),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -90,13 +90,13 @@ func TestVersionGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Versions.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -112,20 +112,20 @@ func TestVersionUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Versions.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.VersionUpdateParams{
-			Name:  githubcomwithoursplatformsdkgo.String("name"),
-			Notes: githubcomwithoursplatformsdkgo.String("notes"),
+		oursprivacy.VersionUpdateParams{
+			Name:  oursprivacy.String("name"),
+			Notes: oursprivacy.String("notes"),
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -141,13 +141,13 @@ func TestVersionPublish(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Versions.Publish(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -163,13 +163,13 @@ func TestVersionSnapshot(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Versions.Snapshot(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -185,19 +185,19 @@ func TestVersionDiffWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Versions.Diff(
 		context.TODO(),
-		githubcomwithoursplatformsdkgo.VersionDiffParamsIDDraft,
-		githubcomwithoursplatformsdkgo.VersionDiffParams{
-			Against: githubcomwithoursplatformsdkgo.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		oursprivacy.VersionDiffParamsIDDraft,
+		oursprivacy.VersionDiffParams{
+			Against: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

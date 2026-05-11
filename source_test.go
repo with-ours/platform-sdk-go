@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,13 +21,13 @@ func TestSourceList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Sources.List(context.TODO())
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -43,16 +43,16 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.New(context.TODO(), githubcomwithoursplatformsdkgo.SourceNewParams{
-		Type: githubcomwithoursplatformsdkgo.SourceNewParamsTypeAlchemerWebhook,
-		Name: githubcomwithoursplatformsdkgo.String("name"),
+	_, err := client.Sources.New(context.TODO(), oursprivacy.SourceNewParams{
+		Type: oursprivacy.SourceNewParamsTypeAlchemerWebhook,
+		Name: oursprivacy.String("name"),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -68,13 +68,13 @@ func TestSourceGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Sources.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -90,29 +90,29 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Sources.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.SourceUpdateParams{
-			Status:                githubcomwithoursplatformsdkgo.SourceUpdateParamsStatusDisabled,
-			BotControlMode:        githubcomwithoursplatformsdkgo.String("botControlMode"),
-			BotScoreThreshold:     githubcomwithoursplatformsdkgo.Float(0),
-			ExcludeRequestContext: githubcomwithoursplatformsdkgo.Bool(true),
-			Name:                  githubcomwithoursplatformsdkgo.String("name"),
+		oursprivacy.SourceUpdateParams{
+			Status:                oursprivacy.SourceUpdateParamsStatusDisabled,
+			BotControlMode:        oursprivacy.String("botControlMode"),
+			BotScoreThreshold:     oursprivacy.Float(0),
+			ExcludeRequestContext: oursprivacy.Bool(true),
+			Name:                  oursprivacy.String("name"),
 			ProbabilisticIdentity: map[string]any{},
-			ProjectAPIKey:         githubcomwithoursplatformsdkgo.String("projectAPIKey"),
-			RedirectURL:           githubcomwithoursplatformsdkgo.String("redirectUrl"),
-			SelectedAccountID:     githubcomwithoursplatformsdkgo.String("selectedAccountId"),
+			ProjectAPIKey:         oursprivacy.String("projectAPIKey"),
+			RedirectURL:           oursprivacy.String("redirectUrl"),
+			SelectedAccountID:     oursprivacy.String("selectedAccountId"),
 			WhitelistDomains:      []string{"string"},
 			WhitelistIPs:          []string{"string"},
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -128,13 +128,13 @@ func TestSourceDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Sources.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -150,13 +150,13 @@ func TestSourceTokens(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Sources.Tokens(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

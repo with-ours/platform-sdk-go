@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,13 +21,13 @@ func TestExperimentSettingList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ExperimentSettings.List(context.TODO())
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -43,17 +43,17 @@ func TestExperimentSettingNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ExperimentSettings.New(context.TODO(), githubcomwithoursplatformsdkgo.ExperimentSettingNewParams{
-		CookieName:       githubcomwithoursplatformsdkgo.String("_cord_exp"),
-		Name:             githubcomwithoursplatformsdkgo.String("Default Web Experiment Settings"),
+	_, err := client.ExperimentSettings.New(context.TODO(), oursprivacy.ExperimentSettingNewParams{
+		CookieName:       oursprivacy.String("_cord_exp"),
+		Name:             oursprivacy.String("Default Web Experiment Settings"),
 		WhitelistDomains: []string{"www.example.com", "staging.example.com"},
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -69,13 +69,13 @@ func TestExperimentSettingGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ExperimentSettings.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -91,21 +91,21 @@ func TestExperimentSettingUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ExperimentSettings.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.ExperimentSettingUpdateParams{
-			CookieName:       githubcomwithoursplatformsdkgo.String("_cord_exp"),
-			Name:             githubcomwithoursplatformsdkgo.String("Default Web Experiment Settings"),
+		oursprivacy.ExperimentSettingUpdateParams{
+			CookieName:       oursprivacy.String("_cord_exp"),
+			Name:             oursprivacy.String("Default Web Experiment Settings"),
 			WhitelistDomains: []string{"www.example.com", "staging.example.com"},
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -121,13 +121,13 @@ func TestExperimentSettingDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ExperimentSettings.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

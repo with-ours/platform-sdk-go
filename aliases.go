@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo
+package oursprivacy
 
 import (
 	"github.com/with-ours/platform-sdk-go/internal/apierror"
