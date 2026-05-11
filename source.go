@@ -138,10 +138,9 @@ type SourceListResponseEntity struct {
 	ProjectAPIKey         string  `json:"projectAPIKey" api:"nullable"`
 	RedirectURL           string  `json:"redirectUrl" api:"nullable"`
 	SelectedAccountID     string  `json:"selectedAccountId" api:"nullable"`
-	// Optional domain allowlist for source event ingestion. When set, only requests
-	// from these domains are accepted for this source. This is separate from
-	// experimentation settings `whitelistDomains`, which gates experiment SDK
-	// delivery.
+	// Limits which domains can send events to the CDP. When set, only requests from
+	// these domains are accepted for this source. Separate from experiment settings
+	// `whitelistDomains`, which limits which domains can load your experiments.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -267,10 +266,9 @@ type SourceGetResponse struct {
 	ProjectAPIKey         string                `json:"projectAPIKey" api:"nullable"`
 	RedirectURL           string                `json:"redirectUrl" api:"nullable"`
 	SelectedAccountID     string                `json:"selectedAccountId" api:"nullable"`
-	// Optional domain allowlist for source event ingestion. When set, only requests
-	// from these domains are accepted for this source. This is separate from
-	// experimentation settings `whitelistDomains`, which gates experiment SDK
-	// delivery.
+	// Limits which domains can send events to the CDP. When set, only requests from
+	// these domains are accepted for this source. Separate from experiment settings
+	// `whitelistDomains`, which limits which domains can load your experiments.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
