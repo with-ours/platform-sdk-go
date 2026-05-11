@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,13 +21,13 @@ func TestAllowedEventList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AllowedEvents.List(context.TODO())
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -43,16 +43,16 @@ func TestAllowedEventNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AllowedEvents.New(context.TODO(), githubcomwithoursplatformsdkgo.AllowedEventNewParams{
+	_, err := client.AllowedEvents.New(context.TODO(), oursprivacy.AllowedEventNewParams{
 		Name:           "name",
 		DestinationIDs: []string{"string"},
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -68,13 +68,13 @@ func TestAllowedEventGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AllowedEvents.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -90,13 +90,13 @@ func TestAllowedEventDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AllowedEvents.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
