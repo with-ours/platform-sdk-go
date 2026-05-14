@@ -239,6 +239,10 @@ Methods:
 - <code title="get /rest/v1/versions/{id}/snapshot">client.Versions.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#VersionService.Snapshot">Snapshot</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#VersionSnapshotResponse">VersionSnapshotResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /rest/v1/versions/{id}/diff">client.Versions.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#VersionService.Diff">Diff</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id VersionDiffParamsID, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#VersionDiffParams">VersionDiffParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#VersionDiffResponse">VersionDiffResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# WebScannerRules
+
+# WebScanners
+
 # DestinationTypes
 
 Response Types:
