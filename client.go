@@ -31,6 +31,7 @@ type Client struct {
 	Sources               SourceService
 	Versions              VersionService
 	DestinationTypes      DestinationTypeService
+	Locations             LocationService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -76,6 +77,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
 	r.DestinationTypes = NewDestinationTypeService(opts...)
+	r.Locations = NewLocationService(opts...)
 
 	return
 }
