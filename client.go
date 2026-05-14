@@ -31,6 +31,8 @@ type Client struct {
 	ReplaySettings        ReplaySettingService
 	Sources               SourceService
 	Versions              VersionService
+	WebScannerRules       WebScannerRuleService
+	WebScanners           WebScannerService
 	DestinationTypes      DestinationTypeService
 }
 
@@ -77,6 +79,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
+	r.WebScannerRules = NewWebScannerRuleService(opts...)
+	r.WebScanners = NewWebScannerService(opts...)
 	r.DestinationTypes = NewDestinationTypeService(opts...)
 
 	return
