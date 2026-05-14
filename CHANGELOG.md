@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.17.0 (2026-05-14)
+
+Full Changelog: [v1.16.0...v1.17.0](https://github.com/with-ours/platform-sdk-go/compare/v1.16.0...v1.17.0)
+
+### Features
+
+* **api:** api update ([734033e](https://github.com/with-ours/platform-sdk-go/commit/734033effb79e4822e7cce4ca3d9763b89928e26))
+* **api:** api update ([0c817d7](https://github.com/with-ours/platform-sdk-go/commit/0c817d7d34e8dbf8d9b1000f03e4bbf1e4d7ccd6))
+* **api:** manual updates ([e7cc6e2](https://github.com/with-ours/platform-sdk-go/commit/e7cc6e28b165047eab8a836a2417621726603158))
+* **client:** optimize json encoder for internal types ([680f3d2](https://github.com/with-ours/platform-sdk-go/commit/680f3d21bfd28542c0579b11f42ccd9ea97878e5))
+
 ## 1.16.0 (2026-05-08)
 
 Full Changelog: [v1.15.1...v1.16.0](https://github.com/with-ours/platform-sdk-go/compare/v1.15.1...v1.16.0)
