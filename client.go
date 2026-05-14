@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo
+package oursprivacy
 
 import (
 	"context"
@@ -25,10 +25,12 @@ type Client struct {
 	ExperimentVariants    ExperimentVariantService
 	Experiments           ExperimentService
 	GlobalDispatchCenters GlobalDispatchCenterService
+	HeatmapPages          HeatmapPageService
 	Mappings              MappingService
 	ReplaySettings        ReplaySettingService
 	Sources               SourceService
 	Versions              VersionService
+	DestinationTypes      DestinationTypeService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -68,10 +70,12 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.ExperimentVariants = NewExperimentVariantService(opts...)
 	r.Experiments = NewExperimentService(opts...)
 	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
+	r.HeatmapPages = NewHeatmapPageService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
+	r.DestinationTypes = NewDestinationTypeService(opts...)
 
 	return
 }

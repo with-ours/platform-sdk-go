@@ -1,4 +1,4 @@
-package githubcomwithoursplatformsdkgo
+package oursprivacy
 
 import (
 	"github.com/with-ours/platform-sdk-go/packages/param"

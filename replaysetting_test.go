@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,16 +21,16 @@ func TestReplaySettingListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.List(context.TODO(), githubcomwithoursplatformsdkgo.ReplaySettingListParams{
-		Cursor: githubcomwithoursplatformsdkgo.String("cursor"),
-		Limit:  githubcomwithoursplatformsdkgo.Int(25),
+	_, err := client.ReplaySettings.List(context.TODO(), oursprivacy.ReplaySettingListParams{
+		Cursor: oursprivacy.String("cursor"),
+		Limit:  oursprivacy.Int(25),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -46,18 +46,18 @@ func TestReplaySettingNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ReplaySettings.New(context.TODO(), githubcomwithoursplatformsdkgo.ReplaySettingNewParams{
-		CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
-		Name:             githubcomwithoursplatformsdkgo.String("name"),
-		Status:           githubcomwithoursplatformsdkgo.ReplaySettingNewParamsStatusDisabled,
+	_, err := client.ReplaySettings.New(context.TODO(), oursprivacy.ReplaySettingNewParams{
+		CustomDomain:     oursprivacy.String("customDomain"),
+		Name:             oursprivacy.String("name"),
+		Status:           oursprivacy.ReplaySettingNewParamsStatusDisabled,
 		WhitelistDomains: []string{"string"},
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -73,13 +73,13 @@ func TestReplaySettingGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ReplaySettings.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -95,22 +95,22 @@ func TestReplaySettingUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ReplaySettings.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.ReplaySettingUpdateParams{
-			CustomDomain:     githubcomwithoursplatformsdkgo.String("customDomain"),
-			Name:             githubcomwithoursplatformsdkgo.String("name"),
-			Status:           githubcomwithoursplatformsdkgo.ReplaySettingUpdateParamsStatusDisabled,
+		oursprivacy.ReplaySettingUpdateParams{
+			CustomDomain:     oursprivacy.String("customDomain"),
+			Name:             oursprivacy.String("name"),
+			Status:           oursprivacy.ReplaySettingUpdateParamsStatusDisabled,
 			WhitelistDomains: []string{"string"},
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -126,13 +126,13 @@ func TestReplaySettingDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ReplaySettings.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,16 +21,16 @@ func TestGlobalDispatchCenterListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.List(context.TODO(), githubcomwithoursplatformsdkgo.GlobalDispatchCenterListParams{
-		Cursor: githubcomwithoursplatformsdkgo.String("cursor"),
-		Limit:  githubcomwithoursplatformsdkgo.Int(25),
+	_, err := client.GlobalDispatchCenters.List(context.TODO(), oursprivacy.GlobalDispatchCenterListParams{
+		Cursor: oursprivacy.String("cursor"),
+		Limit:  oursprivacy.Int(25),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -46,17 +46,17 @@ func TestGlobalDispatchCenterNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.New(context.TODO(), githubcomwithoursplatformsdkgo.GlobalDispatchCenterNewParams{
-		IsEnabled: githubcomwithoursplatformsdkgo.Bool(true),
-		Name:      githubcomwithoursplatformsdkgo.String("name"),
-		Notes:     githubcomwithoursplatformsdkgo.String("notes"),
+	_, err := client.GlobalDispatchCenters.New(context.TODO(), oursprivacy.GlobalDispatchCenterNewParams{
+		IsEnabled: oursprivacy.Bool(true),
+		Name:      oursprivacy.String("name"),
+		Notes:     oursprivacy.String("notes"),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -72,13 +72,13 @@ func TestGlobalDispatchCenterGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalDispatchCenters.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -94,28 +94,28 @@ func TestGlobalDispatchCenterUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalDispatchCenters.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.GlobalDispatchCenterUpdateParams{
-			Categories: []githubcomwithoursplatformsdkgo.GlobalDispatchCenterUpdateParamsCategory{{
-				Description:    githubcomwithoursplatformsdkgo.String("description"),
+		oursprivacy.GlobalDispatchCenterUpdateParams{
+			Categories: []oursprivacy.GlobalDispatchCenterUpdateParamsCategory{{
+				Description:    oursprivacy.String("description"),
 				DestinationIDs: []string{"string"},
 				Logic:          map[string]any{},
-				Name:           githubcomwithoursplatformsdkgo.String("name"),
-				Priority:       githubcomwithoursplatformsdkgo.Float(0),
+				Name:           oursprivacy.String("name"),
+				Priority:       oursprivacy.Float(0),
 			}},
-			IsEnabled: githubcomwithoursplatformsdkgo.Bool(true),
-			Name:      githubcomwithoursplatformsdkgo.String("name"),
-			Notes:     githubcomwithoursplatformsdkgo.String("notes"),
+			IsEnabled: oursprivacy.Bool(true),
+			Name:      oursprivacy.String("name"),
+			Notes:     oursprivacy.String("notes"),
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -131,13 +131,13 @@ func TestGlobalDispatchCenterDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.GlobalDispatchCenters.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

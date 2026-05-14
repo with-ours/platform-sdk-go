@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomwithoursplatformsdkgo_test
+package oursprivacy_test
 
 import (
 	"context"
@@ -21,13 +21,13 @@ func TestDestinationList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Destinations.List(context.TODO())
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -43,16 +43,16 @@ func TestDestinationNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Destinations.New(context.TODO(), githubcomwithoursplatformsdkgo.DestinationNewParams{
-		Type: githubcomwithoursplatformsdkgo.DestinationNewParamsTypeAwsEventBridge,
-		Name: githubcomwithoursplatformsdkgo.String("name"),
+	_, err := client.Destinations.New(context.TODO(), oursprivacy.DestinationNewParams{
+		Type: oursprivacy.DestinationNewParamsTypeAwsEventBridge,
+		Name: oursprivacy.String("name"),
 	})
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -68,13 +68,13 @@ func TestDestinationGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Destinations.Get(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -90,33 +90,34 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Destinations.Update(
 		context.TODO(),
 		"id",
-		githubcomwithoursplatformsdkgo.DestinationUpdateParams{
-			Status:                   githubcomwithoursplatformsdkgo.DestinationUpdateParamsStatusDisabled,
-			FacebookConversionAPIKey: githubcomwithoursplatformsdkgo.String("facebookConversionAPIKey"),
-			FacebookPixelID:          githubcomwithoursplatformsdkgo.String("facebookPixelId"),
-			G4AnalyticsAPIKey:        githubcomwithoursplatformsdkgo.String("g4AnalyticsApiKey"),
-			G4AnalyticsMeasurementID: githubcomwithoursplatformsdkgo.String("g4AnalyticsMeasurementId"),
-			G4AnalyticsTrackOnPage:   githubcomwithoursplatformsdkgo.Bool(true),
-			HashingSalt:              githubcomwithoursplatformsdkgo.String("hashingSalt"),
-			HTTPDestinationURL:       githubcomwithoursplatformsdkgo.String("httpDestinationUrl"),
+		oursprivacy.DestinationUpdateParams{
+			SettingsStrategy:         oursprivacy.DestinationUpdateParamsSettingsStrategyMerge,
+			FacebookConversionAPIKey: oursprivacy.String("facebookConversionAPIKey"),
+			FacebookPixelID:          oursprivacy.String("facebookPixelId"),
+			G4AnalyticsAPIKey:        oursprivacy.String("g4AnalyticsApiKey"),
+			G4AnalyticsMeasurementID: oursprivacy.String("g4AnalyticsMeasurementId"),
+			G4AnalyticsTrackOnPage:   oursprivacy.Bool(true),
+			HashingSalt:              oursprivacy.String("hashingSalt"),
+			HTTPDestinationURL:       oursprivacy.String("httpDestinationUrl"),
 			LimitedToSourceIDs:       []string{"string"},
-			ManagerGoogleCustomerID:  githubcomwithoursplatformsdkgo.String("managerGoogleCustomerId"),
-			Name:                     githubcomwithoursplatformsdkgo.String("name"),
-			ProjectAPIKey:            githubcomwithoursplatformsdkgo.String("projectAPIKey"),
-			ProjectToken:             githubcomwithoursplatformsdkgo.String("projectToken"),
-			SelectedAccountID:        githubcomwithoursplatformsdkgo.String("selectedAccountId"),
+			ManagerGoogleCustomerID:  oursprivacy.String("managerGoogleCustomerId"),
+			Name:                     oursprivacy.String("name"),
+			ProjectAPIKey:            oursprivacy.String("projectAPIKey"),
+			ProjectToken:             oursprivacy.String("projectToken"),
+			SelectedAccountID:        oursprivacy.String("selectedAccountId"),
 			Settings:                 map[string]any{},
+			Status:                   oursprivacy.DestinationUpdateParamsStatusDisabled,
 		},
 	)
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -132,13 +133,13 @@ func TestDestinationDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomwithoursplatformsdkgo.NewClient(
+	client := oursprivacy.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Destinations.Delete(context.TODO(), "id")
 	if err != nil {
-		var apierr *githubcomwithoursplatformsdkgo.Error
+		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
