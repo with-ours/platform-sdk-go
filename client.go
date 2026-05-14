@@ -30,6 +30,7 @@ type Client struct {
 	ReplaySettings        ReplaySettingService
 	Sources               SourceService
 	Versions              VersionService
+	DestinationTypes      DestinationTypeService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -74,6 +75,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
+	r.DestinationTypes = NewDestinationTypeService(opts...)
 
 	return
 }

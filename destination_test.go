@@ -98,7 +98,7 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.DestinationUpdateParams{
-			Status:                   oursprivacy.DestinationUpdateParamsStatusDisabled,
+			SettingsStrategy:         oursprivacy.DestinationUpdateParamsSettingsStrategyMerge,
 			FacebookConversionAPIKey: oursprivacy.String("facebookConversionAPIKey"),
 			FacebookPixelID:          oursprivacy.String("facebookPixelId"),
 			G4AnalyticsAPIKey:        oursprivacy.String("g4AnalyticsApiKey"),
@@ -113,6 +113,7 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 			ProjectToken:             oursprivacy.String("projectToken"),
 			SelectedAccountID:        oursprivacy.String("selectedAccountId"),
 			Settings:                 map[string]any{},
+			Status:                   oursprivacy.DestinationUpdateParamsStatusDisabled,
 		},
 	)
 	if err != nil {
