@@ -74,12 +74,12 @@ func (r *DestinationTypeListResponse) UnmarshalJSON(data []byte) error {
 
 type DestinationTypeListResponseEntity struct {
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -342,12 +342,12 @@ func (r *DestinationTypeListResponseEntitySettingObject5) UnmarshalJSON(data []b
 
 type DestinationTypeGetResponse struct {
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -390,6 +390,7 @@ const (
 	DestinationTypeGetResponseIDAwssns                       DestinationTypeGetResponseID = "AWSSNS"
 	DestinationTypeGetResponseIDActiveCampaignAPI            DestinationTypeGetResponseID = "ActiveCampaignApi"
 	DestinationTypeGetResponseIDAdmitad                      DestinationTypeGetResponseID = "Admitad"
+	DestinationTypeGetResponseIDAdobeAnalytics               DestinationTypeGetResponseID = "AdobeAnalytics"
 	DestinationTypeGetResponseIDAmazonDsp                    DestinationTypeGetResponseID = "AmazonDSP"
 	DestinationTypeGetResponseIDAmplitude                    DestinationTypeGetResponseID = "Amplitude"
 	DestinationTypeGetResponseIDAppLovin                     DestinationTypeGetResponseID = "AppLovin"
@@ -704,6 +705,7 @@ const (
 	DestinationTypeGetParamsIDAwssns                       DestinationTypeGetParamsID = "AWSSNS"
 	DestinationTypeGetParamsIDActiveCampaignAPI            DestinationTypeGetParamsID = "ActiveCampaignApi"
 	DestinationTypeGetParamsIDAdmitad                      DestinationTypeGetParamsID = "Admitad"
+	DestinationTypeGetParamsIDAdobeAnalytics               DestinationTypeGetParamsID = "AdobeAnalytics"
 	DestinationTypeGetParamsIDAmazonDsp                    DestinationTypeGetParamsID = "AmazonDSP"
 	DestinationTypeGetParamsIDAmplitude                    DestinationTypeGetParamsID = "Amplitude"
 	DestinationTypeGetParamsIDAppLovin                     DestinationTypeGetParamsID = "AppLovin"
