@@ -33,6 +33,18 @@ Methods:
 - <code title="patch /rest/v1/consent-settings/{id}">client.ConsentSettings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingUpdateParams">ConsentSettingUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingUpdateResponse">ConsentSettingUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /rest/v1/consent-settings/{id}">client.ConsentSettings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingDeleteResponse">ConsentSettingDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# DestinationTypes
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeListResponse">DestinationTypeListResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeGetResponse">DestinationTypeGetResponse</a>
+
+Methods:
+
+- <code title="get /rest/v1/destination-types">client.DestinationTypes.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeListResponse">DestinationTypeListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /rest/v1/destination-types/{id}">client.DestinationTypes.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeGetParamsID">DestinationTypeGetParamsID</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeGetResponse">DestinationTypeGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Destinations
 
 Response Types:
@@ -242,15 +254,3 @@ Methods:
 # WebScannerRules
 
 # WebScanners
-
-# DestinationTypes
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeListResponse">DestinationTypeListResponse</a>
-- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeGetResponse">DestinationTypeGetResponse</a>
-
-Methods:
-
-- <code title="get /rest/v1/destination-types">client.DestinationTypes.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeListResponse">DestinationTypeListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /rest/v1/destination-types/{id}">client.DestinationTypes.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeGetParamsID">DestinationTypeGetParamsID</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DestinationTypeGetResponse">DestinationTypeGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
