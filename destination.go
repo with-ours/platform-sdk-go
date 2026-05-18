@@ -14,6 +14,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/packages/param"
 	"github.com/with-ours/platform-sdk-go/packages/respjson"
 )
@@ -38,11 +39,26 @@ func NewDestinationService(opts ...option.RequestOption) (r DestinationService) 
 }
 
 // List all destinations. Requires scope: destination:list
-func (r *DestinationService) List(ctx context.Context, opts ...option.RequestOption) (res *DestinationListResponse, err error) {
+func (r *DestinationService) List(ctx context.Context, query DestinationListParams, opts ...option.RequestOption) (res *pagination.Cursor[DestinationListResponse], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/destinations"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return res, err
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// List all destinations. Requires scope: destination:list
+func (r *DestinationService) ListAutoPaging(ctx context.Context, query DestinationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DestinationListResponse] {
+	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new destination. Requires scope: destination:create
@@ -66,18 +82,17 @@ func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.
 }
 
 // Partially update a destination. Only the fields you send are changed; omitted
-// fields are unchanged. The `settings` object is deep-merged into the existing
-// settings by default — keys you omit keep their current value. Pass
-// `?settings_strategy=replace` to wipe and replace the settings blob entirely.
-// Requires scope: destination:update
-func (r *DestinationService) Update(ctx context.Context, id string, params DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
+// fields are unchanged. The `settings` object is patch-only: omitted keys keep
+// their current value, and send `null` to clear a specific setting. Requires
+// scope: destination:update
+func (r *DestinationService) Update(ctx context.Context, id string, body DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
 
@@ -94,12 +109,47 @@ func (r *DestinationService) Delete(ctx context.Context, id string, opts ...opti
 }
 
 type DestinationListResponse struct {
-	Entities []DestinationListResponseEntity `json:"entities" api:"required"`
+	ID        string `json:"id" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Any of "Disabled", "Enabled".
+	Status DestinationListResponseStatus `json:"status" api:"required"`
+	// Destination type. Read responses may include warehouse or cloud-storage types
+	// that are not creatable through POST /rest/v1/destinations.
+	//
+	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
+	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
+	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
+	// "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel", "NextdoorAds",
+	// "OursSyntheticData", "Partnerize", "Pinterest", "Plausible", "Podscribe",
+	// "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi",
+	// "Spotify", "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok",
+	// "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	Type               DestinationListResponseType `json:"type" api:"required"`
+	HashingSalt        string                      `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                    `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                      `json:"name" api:"nullable"`
+	Settings           any                         `json:"settings" api:"nullable"`
+	UpdatedAt          string                      `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Status             respjson.Field
+		Type               respjson.Field
+		HashingSalt        respjson.Field
+		LimitedToSourceIDs respjson.Field
+		Name               respjson.Field
+		Settings           respjson.Field
+		UpdatedAt          respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -109,79 +159,103 @@ func (r *DestinationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DestinationListResponseEntity struct {
-	ID        string `json:"id" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Disabled", "Enabled".
-	Status string `json:"status" api:"required"`
-	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
-	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
-	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
-	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
-	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
-	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
-	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
-	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
-	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
-	// "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel", "NextdoorAds",
-	// "OursSyntheticData", "Partnerize", "Pinterest", "Plausible", "Podscribe",
-	// "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi",
-	// "Spotify", "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok",
-	// "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
-	Type                     string   `json:"type" api:"required"`
-	FacebookConversionAPIKey string   `json:"facebookConversionAPIKey" api:"nullable"`
-	FacebookPixelID          string   `json:"facebookPixelId" api:"nullable"`
-	G4AnalyticsAPIKey        string   `json:"g4AnalyticsApiKey" api:"nullable"`
-	G4AnalyticsMeasurementID string   `json:"g4AnalyticsMeasurementId" api:"nullable"`
-	G4AnalyticsTrackOnPage   bool     `json:"g4AnalyticsTrackOnPage" api:"nullable"`
-	HashingSalt              string   `json:"hashingSalt" api:"nullable"`
-	HTTPDestinationURL       string   `json:"httpDestinationUrl" api:"nullable"`
-	LimitedToSourceIDs       []string `json:"limitedToSourceIds" api:"nullable"`
-	ManagerGoogleCustomerID  string   `json:"managerGoogleCustomerId" api:"nullable"`
-	Name                     string   `json:"name" api:"nullable"`
-	ProjectAPIKey            string   `json:"projectAPIKey" api:"nullable"`
-	ProjectToken             string   `json:"projectToken" api:"nullable"`
-	SelectedAccountID        string   `json:"selectedAccountId" api:"nullable"`
-	Settings                 any      `json:"settings" api:"nullable"`
-	UpdatedAt                string   `json:"updatedAt" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                       respjson.Field
-		CreatedAt                respjson.Field
-		Status                   respjson.Field
-		Type                     respjson.Field
-		FacebookConversionAPIKey respjson.Field
-		FacebookPixelID          respjson.Field
-		G4AnalyticsAPIKey        respjson.Field
-		G4AnalyticsMeasurementID respjson.Field
-		G4AnalyticsTrackOnPage   respjson.Field
-		HashingSalt              respjson.Field
-		HTTPDestinationURL       respjson.Field
-		LimitedToSourceIDs       respjson.Field
-		ManagerGoogleCustomerID  respjson.Field
-		Name                     respjson.Field
-		ProjectAPIKey            respjson.Field
-		ProjectToken             respjson.Field
-		SelectedAccountID        respjson.Field
-		Settings                 respjson.Field
-		UpdatedAt                respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
-	} `json:"-"`
-}
+type DestinationListResponseStatus string
 
-// Returns the unmodified JSON received from the API
-func (r DestinationListResponseEntity) RawJSON() string { return r.JSON.raw }
-func (r *DestinationListResponseEntity) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	DestinationListResponseStatusDisabled DestinationListResponseStatus = "Disabled"
+	DestinationListResponseStatusEnabled  DestinationListResponseStatus = "Enabled"
+)
+
+// Destination type. Read responses may include warehouse or cloud-storage types
+// that are not creatable through POST /rest/v1/destinations.
+type DestinationListResponseType string
+
+const (
+	DestinationListResponseTypeAwsEventBridge               DestinationListResponseType = "AWSEventBridge"
+	DestinationListResponseTypeAwsKinesis                   DestinationListResponseType = "AWSKinesis"
+	DestinationListResponseTypeAwsLambda                    DestinationListResponseType = "AWSLambda"
+	DestinationListResponseTypeAwss3                        DestinationListResponseType = "AWSS3"
+	DestinationListResponseTypeAwssns                       DestinationListResponseType = "AWSSNS"
+	DestinationListResponseTypeActiveCampaignAPI            DestinationListResponseType = "ActiveCampaignApi"
+	DestinationListResponseTypeAdmitad                      DestinationListResponseType = "Admitad"
+	DestinationListResponseTypeAdobeAnalytics               DestinationListResponseType = "AdobeAnalytics"
+	DestinationListResponseTypeAmazonDsp                    DestinationListResponseType = "AmazonDSP"
+	DestinationListResponseTypeAmplitude                    DestinationListResponseType = "Amplitude"
+	DestinationListResponseTypeAppLovin                     DestinationListResponseType = "AppLovin"
+	DestinationListResponseTypeArtsAI                       DestinationListResponseType = "ArtsAI"
+	DestinationListResponseTypeAttentive                    DestinationListResponseType = "Attentive"
+	DestinationListResponseTypeAudiohook                    DestinationListResponseType = "Audiohook"
+	DestinationListResponseTypeAzureBlob                    DestinationListResponseType = "AzureBlob"
+	DestinationListResponseTypeBasisPostback                DestinationListResponseType = "BasisPostback"
+	DestinationListResponseTypeBeeswaxPostback              DestinationListResponseType = "BeeswaxPostback"
+	DestinationListResponseTypeBingAds                      DestinationListResponseType = "BingAds"
+	DestinationListResponseTypeBingAdsWeb                   DestinationListResponseType = "BingAdsWeb"
+	DestinationListResponseTypeBraze                        DestinationListResponseType = "Braze"
+	DestinationListResponseTypeConvertAbTestingEvent        DestinationListResponseType = "ConvertABTestingEvent"
+	DestinationListResponseTypeCustomerio                   DestinationListResponseType = "Customerio"
+	DestinationListResponseTypeDomoWarehouse                DestinationListResponseType = "DomoWarehouse"
+	DestinationListResponseTypeEverflow                     DestinationListResponseType = "Everflow"
+	DestinationListResponseTypeFacebook                     DestinationListResponseType = "Facebook"
+	DestinationListResponseTypeFloodlightSgtm               DestinationListResponseType = "FloodlightSGTM"
+	DestinationListResponseTypeFullContact                  DestinationListResponseType = "FullContact"
+	DestinationListResponseTypeG4Analytics                  DestinationListResponseType = "G4Analytics"
+	DestinationListResponseTypeGa4MeasurementProtocol       DestinationListResponseType = "GA4MeasurementProtocol"
+	DestinationListResponseTypeGa4ServerProxy               DestinationListResponseType = "GA4ServerProxy"
+	DestinationListResponseTypeGoogle                       DestinationListResponseType = "Google"
+	DestinationListResponseTypeGoogleAds360                 DestinationListResponseType = "GoogleAds360"
+	DestinationListResponseTypeGoogleAdsServerContainer     DestinationListResponseType = "GoogleAdsServerContainer"
+	DestinationListResponseTypeGoogleBigQuery               DestinationListResponseType = "GoogleBigQuery"
+	DestinationListResponseTypeGoogleBigQueryWarehouse      DestinationListResponseType = "GoogleBigQueryWarehouse"
+	DestinationListResponseTypeGoogleDataManagerEventIngest DestinationListResponseType = "GoogleDataManagerEventIngest"
+	DestinationListResponseTypeGooglePubSub                 DestinationListResponseType = "GooglePubSub"
+	DestinationListResponseTypeGoogleStorage                DestinationListResponseType = "GoogleStorage"
+	DestinationListResponseTypeHTTPCustomRequest            DestinationListResponseType = "HTTPCustomRequest"
+	DestinationListResponseTypeHTTPDestination              DestinationListResponseType = "HTTPDestination"
+	DestinationListResponseTypeHubspot                      DestinationListResponseType = "Hubspot"
+	DestinationListResponseTypeIHeartMediaMagellan          DestinationListResponseType = "IHeartMediaMagellan"
+	DestinationListResponseTypeImpact                       DestinationListResponseType = "Impact"
+	DestinationListResponseTypeIterable                     DestinationListResponseType = "Iterable"
+	DestinationListResponseTypeKlaviyo                      DestinationListResponseType = "Klaviyo"
+	DestinationListResponseTypeLinkedInAdsCapi              DestinationListResponseType = "LinkedInAdsCAPI"
+	DestinationListResponseTypeLiveIntent                   DestinationListResponseType = "LiveIntent"
+	DestinationListResponseTypeLiveRampWarehouse            DestinationListResponseType = "LiveRampWarehouse"
+	DestinationListResponseTypeMailchimp                    DestinationListResponseType = "Mailchimp"
+	DestinationListResponseTypeMixpanel                     DestinationListResponseType = "Mixpanel"
+	DestinationListResponseTypeNextdoorAds                  DestinationListResponseType = "NextdoorAds"
+	DestinationListResponseTypeOursSyntheticData            DestinationListResponseType = "OursSyntheticData"
+	DestinationListResponseTypePartnerize                   DestinationListResponseType = "Partnerize"
+	DestinationListResponseTypePinterest                    DestinationListResponseType = "Pinterest"
+	DestinationListResponseTypePlausible                    DestinationListResponseType = "Plausible"
+	DestinationListResponseTypePodscribe                    DestinationListResponseType = "Podscribe"
+	DestinationListResponseTypePostHog                      DestinationListResponseType = "PostHog"
+	DestinationListResponseTypeQuantcastCapi                DestinationListResponseType = "QuantcastCAPI"
+	DestinationListResponseTypeQuoraAds                     DestinationListResponseType = "QuoraAds"
+	DestinationListResponseTypeReddit                       DestinationListResponseType = "Reddit"
+	DestinationListResponseTypeRokuCapi                     DestinationListResponseType = "RokuCAPI"
+	DestinationListResponseTypeSnapchatAdsCapi              DestinationListResponseType = "SnapchatAdsCapi"
+	DestinationListResponseTypeSpotify                      DestinationListResponseType = "Spotify"
+	DestinationListResponseTypeStackAdaptAPI                DestinationListResponseType = "StackAdaptAPI"
+	DestinationListResponseTypeTaboola                      DestinationListResponseType = "Taboola"
+	DestinationListResponseTypeTatari                       DestinationListResponseType = "Tatari"
+	DestinationListResponseTypeTheTradeDesk                 DestinationListResponseType = "TheTradeDesk"
+	DestinationListResponseTypeTikTok                       DestinationListResponseType = "TikTok"
+	DestinationListResponseTypeVwo                          DestinationListResponseType = "VWO"
+	DestinationListResponseTypeViant                        DestinationListResponseType = "Viant"
+	DestinationListResponseTypeVibe                         DestinationListResponseType = "Vibe"
+	DestinationListResponseTypeWoopra                       DestinationListResponseType = "Woopra"
+	DestinationListResponseTypeXAds                         DestinationListResponseType = "XAds"
+	DestinationListResponseTypeZendesk                      DestinationListResponseType = "Zendesk"
+	DestinationListResponseTypeZoomInfo                     DestinationListResponseType = "ZoomInfo"
+)
 
 type DestinationNewResponse struct {
 	ID        string `json:"id" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status DestinationNewResponseStatus `json:"status" api:"required"`
+	// Destination type. Read responses may include warehouse or cloud-storage types
+	// that are not creatable through POST /rest/v1/destinations.
+	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
@@ -197,19 +271,25 @@ type DestinationNewResponse struct {
 	// "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi",
 	// "Spotify", "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok",
 	// "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
-	Type      DestinationNewResponseType `json:"type" api:"required"`
-	Name      string                     `json:"name" api:"nullable"`
-	UpdatedAt string                     `json:"updatedAt" api:"nullable"`
+	Type               DestinationNewResponseType `json:"type" api:"required"`
+	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                     `json:"name" api:"nullable"`
+	Settings           any                        `json:"settings" api:"nullable"`
+	UpdatedAt          string                     `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		Name        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Status             respjson.Field
+		Type               respjson.Field
+		HashingSalt        respjson.Field
+		LimitedToSourceIDs respjson.Field
+		Name               respjson.Field
+		Settings           respjson.Field
+		UpdatedAt          respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -226,6 +306,8 @@ const (
 	DestinationNewResponseStatusEnabled  DestinationNewResponseStatus = "Enabled"
 )
 
+// Destination type. Read responses may include warehouse or cloud-storage types
+// that are not creatable through POST /rest/v1/destinations.
 type DestinationNewResponseType string
 
 const (
@@ -311,6 +393,9 @@ type DestinationGetResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status DestinationGetResponseStatus `json:"status" api:"required"`
+	// Destination type. Read responses may include warehouse or cloud-storage types
+	// that are not creatable through POST /rest/v1/destinations.
+	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
@@ -326,45 +411,25 @@ type DestinationGetResponse struct {
 	// "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi",
 	// "Spotify", "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok",
 	// "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
-	Type                     DestinationGetResponseType `json:"type" api:"required"`
-	FacebookConversionAPIKey string                     `json:"facebookConversionAPIKey" api:"nullable"`
-	FacebookPixelID          string                     `json:"facebookPixelId" api:"nullable"`
-	G4AnalyticsAPIKey        string                     `json:"g4AnalyticsApiKey" api:"nullable"`
-	G4AnalyticsMeasurementID string                     `json:"g4AnalyticsMeasurementId" api:"nullable"`
-	G4AnalyticsTrackOnPage   bool                       `json:"g4AnalyticsTrackOnPage" api:"nullable"`
-	HashingSalt              string                     `json:"hashingSalt" api:"nullable"`
-	HTTPDestinationURL       string                     `json:"httpDestinationUrl" api:"nullable"`
-	LimitedToSourceIDs       []string                   `json:"limitedToSourceIds" api:"nullable"`
-	ManagerGoogleCustomerID  string                     `json:"managerGoogleCustomerId" api:"nullable"`
-	Name                     string                     `json:"name" api:"nullable"`
-	ProjectAPIKey            string                     `json:"projectAPIKey" api:"nullable"`
-	ProjectToken             string                     `json:"projectToken" api:"nullable"`
-	SelectedAccountID        string                     `json:"selectedAccountId" api:"nullable"`
-	Settings                 any                        `json:"settings" api:"nullable"`
-	UpdatedAt                string                     `json:"updatedAt" api:"nullable"`
+	Type               DestinationGetResponseType `json:"type" api:"required"`
+	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                     `json:"name" api:"nullable"`
+	Settings           any                        `json:"settings" api:"nullable"`
+	UpdatedAt          string                     `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                       respjson.Field
-		CreatedAt                respjson.Field
-		Status                   respjson.Field
-		Type                     respjson.Field
-		FacebookConversionAPIKey respjson.Field
-		FacebookPixelID          respjson.Field
-		G4AnalyticsAPIKey        respjson.Field
-		G4AnalyticsMeasurementID respjson.Field
-		G4AnalyticsTrackOnPage   respjson.Field
-		HashingSalt              respjson.Field
-		HTTPDestinationURL       respjson.Field
-		LimitedToSourceIDs       respjson.Field
-		ManagerGoogleCustomerID  respjson.Field
-		Name                     respjson.Field
-		ProjectAPIKey            respjson.Field
-		ProjectToken             respjson.Field
-		SelectedAccountID        respjson.Field
-		Settings                 respjson.Field
-		UpdatedAt                respjson.Field
-		ExtraFields              map[string]respjson.Field
-		raw                      string
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Status             respjson.Field
+		Type               respjson.Field
+		HashingSalt        respjson.Field
+		LimitedToSourceIDs respjson.Field
+		Name               respjson.Field
+		Settings           respjson.Field
+		UpdatedAt          respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -381,6 +446,8 @@ const (
 	DestinationGetResponseStatusEnabled  DestinationGetResponseStatus = "Enabled"
 )
 
+// Destination type. Read responses may include warehouse or cloud-storage types
+// that are not creatable through POST /rest/v1/destinations.
 type DestinationGetResponseType string
 
 const (
@@ -466,6 +533,9 @@ type DestinationUpdateResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status DestinationUpdateResponseStatus `json:"status" api:"required"`
+	// Destination type. Read responses may include warehouse or cloud-storage types
+	// that are not creatable through POST /rest/v1/destinations.
+	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
@@ -481,19 +551,25 @@ type DestinationUpdateResponse struct {
 	// "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi",
 	// "Spotify", "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok",
 	// "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
-	Type      DestinationUpdateResponseType `json:"type" api:"required"`
-	Name      string                        `json:"name" api:"nullable"`
-	UpdatedAt string                        `json:"updatedAt" api:"nullable"`
+	Type               DestinationUpdateResponseType `json:"type" api:"required"`
+	HashingSalt        string                        `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                      `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                        `json:"name" api:"nullable"`
+	Settings           any                           `json:"settings" api:"nullable"`
+	UpdatedAt          string                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		Name        respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Status             respjson.Field
+		Type               respjson.Field
+		HashingSalt        respjson.Field
+		LimitedToSourceIDs respjson.Field
+		Name               respjson.Field
+		Settings           respjson.Field
+		UpdatedAt          respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -510,6 +586,8 @@ const (
 	DestinationUpdateResponseStatusEnabled  DestinationUpdateResponseStatus = "Enabled"
 )
 
+// Destination type. Read responses may include warehouse or cloud-storage types
+// that are not creatable through POST /rest/v1/destinations.
 type DestinationUpdateResponseType string
 
 const (
@@ -590,7 +668,19 @@ const (
 	DestinationUpdateResponseTypeZoomInfo                     DestinationUpdateResponseType = "ZoomInfo"
 )
 
-type DestinationNewParams struct {
+type DestinationListParams struct {
+	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
+	// 1 and values above 100 are clamped to 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Filter destinations by status.
+	//
+	// Any of "Disabled", "Enabled".
+	Status DestinationListParamsStatus `query:"status,omitzero" json:"-"`
+	// Filter destinations by destination type.
+	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
@@ -606,8 +696,130 @@ type DestinationNewParams struct {
 	// "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi",
 	// "Spotify", "StackAdaptAPI", "Taboola", "Tatari", "TheTradeDesk", "TikTok",
 	// "VWO", "Viant", "Vibe", "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [DestinationListParams]'s query parameters as `url.Values`.
+func (r DestinationListParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Filter destinations by status.
+type DestinationListParamsStatus string
+
+const (
+	DestinationListParamsStatusDisabled DestinationListParamsStatus = "Disabled"
+	DestinationListParamsStatusEnabled  DestinationListParamsStatus = "Enabled"
+)
+
+// Filter destinations by destination type.
+type DestinationListParamsType string
+
+const (
+	DestinationListParamsTypeAwsEventBridge               DestinationListParamsType = "AWSEventBridge"
+	DestinationListParamsTypeAwsKinesis                   DestinationListParamsType = "AWSKinesis"
+	DestinationListParamsTypeAwsLambda                    DestinationListParamsType = "AWSLambda"
+	DestinationListParamsTypeAwss3                        DestinationListParamsType = "AWSS3"
+	DestinationListParamsTypeAwssns                       DestinationListParamsType = "AWSSNS"
+	DestinationListParamsTypeActiveCampaignAPI            DestinationListParamsType = "ActiveCampaignApi"
+	DestinationListParamsTypeAdmitad                      DestinationListParamsType = "Admitad"
+	DestinationListParamsTypeAdobeAnalytics               DestinationListParamsType = "AdobeAnalytics"
+	DestinationListParamsTypeAmazonDsp                    DestinationListParamsType = "AmazonDSP"
+	DestinationListParamsTypeAmplitude                    DestinationListParamsType = "Amplitude"
+	DestinationListParamsTypeAppLovin                     DestinationListParamsType = "AppLovin"
+	DestinationListParamsTypeArtsAI                       DestinationListParamsType = "ArtsAI"
+	DestinationListParamsTypeAttentive                    DestinationListParamsType = "Attentive"
+	DestinationListParamsTypeAudiohook                    DestinationListParamsType = "Audiohook"
+	DestinationListParamsTypeAzureBlob                    DestinationListParamsType = "AzureBlob"
+	DestinationListParamsTypeBasisPostback                DestinationListParamsType = "BasisPostback"
+	DestinationListParamsTypeBeeswaxPostback              DestinationListParamsType = "BeeswaxPostback"
+	DestinationListParamsTypeBingAds                      DestinationListParamsType = "BingAds"
+	DestinationListParamsTypeBingAdsWeb                   DestinationListParamsType = "BingAdsWeb"
+	DestinationListParamsTypeBraze                        DestinationListParamsType = "Braze"
+	DestinationListParamsTypeConvertAbTestingEvent        DestinationListParamsType = "ConvertABTestingEvent"
+	DestinationListParamsTypeCustomerio                   DestinationListParamsType = "Customerio"
+	DestinationListParamsTypeDomoWarehouse                DestinationListParamsType = "DomoWarehouse"
+	DestinationListParamsTypeEverflow                     DestinationListParamsType = "Everflow"
+	DestinationListParamsTypeFacebook                     DestinationListParamsType = "Facebook"
+	DestinationListParamsTypeFloodlightSgtm               DestinationListParamsType = "FloodlightSGTM"
+	DestinationListParamsTypeFullContact                  DestinationListParamsType = "FullContact"
+	DestinationListParamsTypeG4Analytics                  DestinationListParamsType = "G4Analytics"
+	DestinationListParamsTypeGa4MeasurementProtocol       DestinationListParamsType = "GA4MeasurementProtocol"
+	DestinationListParamsTypeGa4ServerProxy               DestinationListParamsType = "GA4ServerProxy"
+	DestinationListParamsTypeGoogle                       DestinationListParamsType = "Google"
+	DestinationListParamsTypeGoogleAds360                 DestinationListParamsType = "GoogleAds360"
+	DestinationListParamsTypeGoogleAdsServerContainer     DestinationListParamsType = "GoogleAdsServerContainer"
+	DestinationListParamsTypeGoogleBigQuery               DestinationListParamsType = "GoogleBigQuery"
+	DestinationListParamsTypeGoogleBigQueryWarehouse      DestinationListParamsType = "GoogleBigQueryWarehouse"
+	DestinationListParamsTypeGoogleDataManagerEventIngest DestinationListParamsType = "GoogleDataManagerEventIngest"
+	DestinationListParamsTypeGooglePubSub                 DestinationListParamsType = "GooglePubSub"
+	DestinationListParamsTypeGoogleStorage                DestinationListParamsType = "GoogleStorage"
+	DestinationListParamsTypeHTTPCustomRequest            DestinationListParamsType = "HTTPCustomRequest"
+	DestinationListParamsTypeHTTPDestination              DestinationListParamsType = "HTTPDestination"
+	DestinationListParamsTypeHubspot                      DestinationListParamsType = "Hubspot"
+	DestinationListParamsTypeIHeartMediaMagellan          DestinationListParamsType = "IHeartMediaMagellan"
+	DestinationListParamsTypeImpact                       DestinationListParamsType = "Impact"
+	DestinationListParamsTypeIterable                     DestinationListParamsType = "Iterable"
+	DestinationListParamsTypeKlaviyo                      DestinationListParamsType = "Klaviyo"
+	DestinationListParamsTypeLinkedInAdsCapi              DestinationListParamsType = "LinkedInAdsCAPI"
+	DestinationListParamsTypeLiveIntent                   DestinationListParamsType = "LiveIntent"
+	DestinationListParamsTypeLiveRampWarehouse            DestinationListParamsType = "LiveRampWarehouse"
+	DestinationListParamsTypeMailchimp                    DestinationListParamsType = "Mailchimp"
+	DestinationListParamsTypeMixpanel                     DestinationListParamsType = "Mixpanel"
+	DestinationListParamsTypeNextdoorAds                  DestinationListParamsType = "NextdoorAds"
+	DestinationListParamsTypeOursSyntheticData            DestinationListParamsType = "OursSyntheticData"
+	DestinationListParamsTypePartnerize                   DestinationListParamsType = "Partnerize"
+	DestinationListParamsTypePinterest                    DestinationListParamsType = "Pinterest"
+	DestinationListParamsTypePlausible                    DestinationListParamsType = "Plausible"
+	DestinationListParamsTypePodscribe                    DestinationListParamsType = "Podscribe"
+	DestinationListParamsTypePostHog                      DestinationListParamsType = "PostHog"
+	DestinationListParamsTypeQuantcastCapi                DestinationListParamsType = "QuantcastCAPI"
+	DestinationListParamsTypeQuoraAds                     DestinationListParamsType = "QuoraAds"
+	DestinationListParamsTypeReddit                       DestinationListParamsType = "Reddit"
+	DestinationListParamsTypeRokuCapi                     DestinationListParamsType = "RokuCAPI"
+	DestinationListParamsTypeSnapchatAdsCapi              DestinationListParamsType = "SnapchatAdsCapi"
+	DestinationListParamsTypeSpotify                      DestinationListParamsType = "Spotify"
+	DestinationListParamsTypeStackAdaptAPI                DestinationListParamsType = "StackAdaptAPI"
+	DestinationListParamsTypeTaboola                      DestinationListParamsType = "Taboola"
+	DestinationListParamsTypeTatari                       DestinationListParamsType = "Tatari"
+	DestinationListParamsTypeTheTradeDesk                 DestinationListParamsType = "TheTradeDesk"
+	DestinationListParamsTypeTikTok                       DestinationListParamsType = "TikTok"
+	DestinationListParamsTypeVwo                          DestinationListParamsType = "VWO"
+	DestinationListParamsTypeViant                        DestinationListParamsType = "Viant"
+	DestinationListParamsTypeVibe                         DestinationListParamsType = "Vibe"
+	DestinationListParamsTypeWoopra                       DestinationListParamsType = "Woopra"
+	DestinationListParamsTypeXAds                         DestinationListParamsType = "XAds"
+	DestinationListParamsTypeZendesk                      DestinationListParamsType = "Zendesk"
+	DestinationListParamsTypeZoomInfo                     DestinationListParamsType = "ZoomInfo"
+)
+
+type DestinationNewParams struct {
+	// Event-dispatch destination type to create. Warehouse and cloud-storage
+	// destination types may appear on read responses but are not creatable through
+	// POST.
+	//
+	// Any of "Audiohook", "BasisPostback", "OursSyntheticData", "FullContact",
+	// "ZoomInfo", "TheTradeDesk", "Braze", "LiveIntent", "ConvertABTestingEvent",
+	// "Customerio", "BingAds", "BingAdsWeb", "HTTPDestination", "Woopra",
+	// "HTTPCustomRequest", "Google", "GoogleAdsServerContainer", "G4Analytics",
+	// "GA4ServerProxy", "GA4MeasurementProtocol", "GoogleAds360", "Facebook",
+	// "Mixpanel", "Amplitude", "TikTok", "Reddit", "Podscribe", "Pinterest",
+	// "Mailchimp", "AWSKinesis", "AWSLambda", "GooglePubSub", "LinkedInAdsCAPI",
+	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds",
+	// "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari", "Viant", "Impact",
+	// "Spotify", "Taboola", "AmazonDSP", "AppLovin", "IHeartMediaMagellan", "Vibe",
+	// "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
+	// "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive", "Admitad", "Plausible",
+	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
+	// Per-type configuration keys and values. Call GET /rest/v1/destination-types/{id}
+	// to get the valid keys for your destination type.
+	Settings any `json:"settings,omitzero"`
 	paramObj
 }
 
@@ -619,105 +831,89 @@ func (r *DestinationNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Event-dispatch destination type to create. Warehouse and cloud-storage
+// destination types may appear on read responses but are not creatable through
+// POST.
 type DestinationNewParamsType string
 
 const (
-	DestinationNewParamsTypeAwsEventBridge               DestinationNewParamsType = "AWSEventBridge"
-	DestinationNewParamsTypeAwsKinesis                   DestinationNewParamsType = "AWSKinesis"
-	DestinationNewParamsTypeAwsLambda                    DestinationNewParamsType = "AWSLambda"
-	DestinationNewParamsTypeAwss3                        DestinationNewParamsType = "AWSS3"
-	DestinationNewParamsTypeAwssns                       DestinationNewParamsType = "AWSSNS"
-	DestinationNewParamsTypeActiveCampaignAPI            DestinationNewParamsType = "ActiveCampaignApi"
-	DestinationNewParamsTypeAdmitad                      DestinationNewParamsType = "Admitad"
-	DestinationNewParamsTypeAdobeAnalytics               DestinationNewParamsType = "AdobeAnalytics"
-	DestinationNewParamsTypeAmazonDsp                    DestinationNewParamsType = "AmazonDSP"
-	DestinationNewParamsTypeAmplitude                    DestinationNewParamsType = "Amplitude"
-	DestinationNewParamsTypeAppLovin                     DestinationNewParamsType = "AppLovin"
-	DestinationNewParamsTypeArtsAI                       DestinationNewParamsType = "ArtsAI"
-	DestinationNewParamsTypeAttentive                    DestinationNewParamsType = "Attentive"
 	DestinationNewParamsTypeAudiohook                    DestinationNewParamsType = "Audiohook"
-	DestinationNewParamsTypeAzureBlob                    DestinationNewParamsType = "AzureBlob"
 	DestinationNewParamsTypeBasisPostback                DestinationNewParamsType = "BasisPostback"
-	DestinationNewParamsTypeBeeswaxPostback              DestinationNewParamsType = "BeeswaxPostback"
-	DestinationNewParamsTypeBingAds                      DestinationNewParamsType = "BingAds"
-	DestinationNewParamsTypeBingAdsWeb                   DestinationNewParamsType = "BingAdsWeb"
+	DestinationNewParamsTypeOursSyntheticData            DestinationNewParamsType = "OursSyntheticData"
+	DestinationNewParamsTypeFullContact                  DestinationNewParamsType = "FullContact"
+	DestinationNewParamsTypeZoomInfo                     DestinationNewParamsType = "ZoomInfo"
+	DestinationNewParamsTypeTheTradeDesk                 DestinationNewParamsType = "TheTradeDesk"
 	DestinationNewParamsTypeBraze                        DestinationNewParamsType = "Braze"
+	DestinationNewParamsTypeLiveIntent                   DestinationNewParamsType = "LiveIntent"
 	DestinationNewParamsTypeConvertAbTestingEvent        DestinationNewParamsType = "ConvertABTestingEvent"
 	DestinationNewParamsTypeCustomerio                   DestinationNewParamsType = "Customerio"
-	DestinationNewParamsTypeDomoWarehouse                DestinationNewParamsType = "DomoWarehouse"
-	DestinationNewParamsTypeEverflow                     DestinationNewParamsType = "Everflow"
-	DestinationNewParamsTypeFacebook                     DestinationNewParamsType = "Facebook"
-	DestinationNewParamsTypeFloodlightSgtm               DestinationNewParamsType = "FloodlightSGTM"
-	DestinationNewParamsTypeFullContact                  DestinationNewParamsType = "FullContact"
-	DestinationNewParamsTypeG4Analytics                  DestinationNewParamsType = "G4Analytics"
-	DestinationNewParamsTypeGa4MeasurementProtocol       DestinationNewParamsType = "GA4MeasurementProtocol"
-	DestinationNewParamsTypeGa4ServerProxy               DestinationNewParamsType = "GA4ServerProxy"
-	DestinationNewParamsTypeGoogle                       DestinationNewParamsType = "Google"
-	DestinationNewParamsTypeGoogleAds360                 DestinationNewParamsType = "GoogleAds360"
-	DestinationNewParamsTypeGoogleAdsServerContainer     DestinationNewParamsType = "GoogleAdsServerContainer"
-	DestinationNewParamsTypeGoogleBigQuery               DestinationNewParamsType = "GoogleBigQuery"
-	DestinationNewParamsTypeGoogleBigQueryWarehouse      DestinationNewParamsType = "GoogleBigQueryWarehouse"
-	DestinationNewParamsTypeGoogleDataManagerEventIngest DestinationNewParamsType = "GoogleDataManagerEventIngest"
-	DestinationNewParamsTypeGooglePubSub                 DestinationNewParamsType = "GooglePubSub"
-	DestinationNewParamsTypeGoogleStorage                DestinationNewParamsType = "GoogleStorage"
-	DestinationNewParamsTypeHTTPCustomRequest            DestinationNewParamsType = "HTTPCustomRequest"
+	DestinationNewParamsTypeBingAds                      DestinationNewParamsType = "BingAds"
+	DestinationNewParamsTypeBingAdsWeb                   DestinationNewParamsType = "BingAdsWeb"
 	DestinationNewParamsTypeHTTPDestination              DestinationNewParamsType = "HTTPDestination"
-	DestinationNewParamsTypeHubspot                      DestinationNewParamsType = "Hubspot"
-	DestinationNewParamsTypeIHeartMediaMagellan          DestinationNewParamsType = "IHeartMediaMagellan"
-	DestinationNewParamsTypeImpact                       DestinationNewParamsType = "Impact"
-	DestinationNewParamsTypeIterable                     DestinationNewParamsType = "Iterable"
-	DestinationNewParamsTypeKlaviyo                      DestinationNewParamsType = "Klaviyo"
-	DestinationNewParamsTypeLinkedInAdsCapi              DestinationNewParamsType = "LinkedInAdsCAPI"
-	DestinationNewParamsTypeLiveIntent                   DestinationNewParamsType = "LiveIntent"
-	DestinationNewParamsTypeLiveRampWarehouse            DestinationNewParamsType = "LiveRampWarehouse"
-	DestinationNewParamsTypeMailchimp                    DestinationNewParamsType = "Mailchimp"
-	DestinationNewParamsTypeMixpanel                     DestinationNewParamsType = "Mixpanel"
-	DestinationNewParamsTypeNextdoorAds                  DestinationNewParamsType = "NextdoorAds"
-	DestinationNewParamsTypeOursSyntheticData            DestinationNewParamsType = "OursSyntheticData"
-	DestinationNewParamsTypePartnerize                   DestinationNewParamsType = "Partnerize"
-	DestinationNewParamsTypePinterest                    DestinationNewParamsType = "Pinterest"
-	DestinationNewParamsTypePlausible                    DestinationNewParamsType = "Plausible"
-	DestinationNewParamsTypePodscribe                    DestinationNewParamsType = "Podscribe"
-	DestinationNewParamsTypePostHog                      DestinationNewParamsType = "PostHog"
-	DestinationNewParamsTypeQuantcastCapi                DestinationNewParamsType = "QuantcastCAPI"
-	DestinationNewParamsTypeQuoraAds                     DestinationNewParamsType = "QuoraAds"
-	DestinationNewParamsTypeReddit                       DestinationNewParamsType = "Reddit"
-	DestinationNewParamsTypeRokuCapi                     DestinationNewParamsType = "RokuCAPI"
-	DestinationNewParamsTypeSnapchatAdsCapi              DestinationNewParamsType = "SnapchatAdsCapi"
-	DestinationNewParamsTypeSpotify                      DestinationNewParamsType = "Spotify"
-	DestinationNewParamsTypeStackAdaptAPI                DestinationNewParamsType = "StackAdaptAPI"
-	DestinationNewParamsTypeTaboola                      DestinationNewParamsType = "Taboola"
-	DestinationNewParamsTypeTatari                       DestinationNewParamsType = "Tatari"
-	DestinationNewParamsTypeTheTradeDesk                 DestinationNewParamsType = "TheTradeDesk"
-	DestinationNewParamsTypeTikTok                       DestinationNewParamsType = "TikTok"
-	DestinationNewParamsTypeVwo                          DestinationNewParamsType = "VWO"
-	DestinationNewParamsTypeViant                        DestinationNewParamsType = "Viant"
-	DestinationNewParamsTypeVibe                         DestinationNewParamsType = "Vibe"
 	DestinationNewParamsTypeWoopra                       DestinationNewParamsType = "Woopra"
+	DestinationNewParamsTypeHTTPCustomRequest            DestinationNewParamsType = "HTTPCustomRequest"
+	DestinationNewParamsTypeGoogle                       DestinationNewParamsType = "Google"
+	DestinationNewParamsTypeGoogleAdsServerContainer     DestinationNewParamsType = "GoogleAdsServerContainer"
+	DestinationNewParamsTypeG4Analytics                  DestinationNewParamsType = "G4Analytics"
+	DestinationNewParamsTypeGa4ServerProxy               DestinationNewParamsType = "GA4ServerProxy"
+	DestinationNewParamsTypeGa4MeasurementProtocol       DestinationNewParamsType = "GA4MeasurementProtocol"
+	DestinationNewParamsTypeGoogleAds360                 DestinationNewParamsType = "GoogleAds360"
+	DestinationNewParamsTypeFacebook                     DestinationNewParamsType = "Facebook"
+	DestinationNewParamsTypeMixpanel                     DestinationNewParamsType = "Mixpanel"
+	DestinationNewParamsTypeAmplitude                    DestinationNewParamsType = "Amplitude"
+	DestinationNewParamsTypeTikTok                       DestinationNewParamsType = "TikTok"
+	DestinationNewParamsTypeReddit                       DestinationNewParamsType = "Reddit"
+	DestinationNewParamsTypePodscribe                    DestinationNewParamsType = "Podscribe"
+	DestinationNewParamsTypePinterest                    DestinationNewParamsType = "Pinterest"
+	DestinationNewParamsTypeMailchimp                    DestinationNewParamsType = "Mailchimp"
+	DestinationNewParamsTypeAwsKinesis                   DestinationNewParamsType = "AWSKinesis"
+	DestinationNewParamsTypeAwsLambda                    DestinationNewParamsType = "AWSLambda"
+	DestinationNewParamsTypeGooglePubSub                 DestinationNewParamsType = "GooglePubSub"
+	DestinationNewParamsTypeLinkedInAdsCapi              DestinationNewParamsType = "LinkedInAdsCAPI"
+	DestinationNewParamsTypeActiveCampaignAPI            DestinationNewParamsType = "ActiveCampaignApi"
+	DestinationNewParamsTypeStackAdaptAPI                DestinationNewParamsType = "StackAdaptAPI"
+	DestinationNewParamsTypeHubspot                      DestinationNewParamsType = "Hubspot"
+	DestinationNewParamsTypeKlaviyo                      DestinationNewParamsType = "Klaviyo"
 	DestinationNewParamsTypeXAds                         DestinationNewParamsType = "XAds"
+	DestinationNewParamsTypeQuoraAds                     DestinationNewParamsType = "QuoraAds"
+	DestinationNewParamsTypeSnapchatAdsCapi              DestinationNewParamsType = "SnapchatAdsCapi"
+	DestinationNewParamsTypePartnerize                   DestinationNewParamsType = "Partnerize"
+	DestinationNewParamsTypeNextdoorAds                  DestinationNewParamsType = "NextdoorAds"
+	DestinationNewParamsTypeTatari                       DestinationNewParamsType = "Tatari"
+	DestinationNewParamsTypeViant                        DestinationNewParamsType = "Viant"
+	DestinationNewParamsTypeImpact                       DestinationNewParamsType = "Impact"
+	DestinationNewParamsTypeSpotify                      DestinationNewParamsType = "Spotify"
+	DestinationNewParamsTypeTaboola                      DestinationNewParamsType = "Taboola"
+	DestinationNewParamsTypeAmazonDsp                    DestinationNewParamsType = "AmazonDSP"
+	DestinationNewParamsTypeAppLovin                     DestinationNewParamsType = "AppLovin"
+	DestinationNewParamsTypeIHeartMediaMagellan          DestinationNewParamsType = "IHeartMediaMagellan"
+	DestinationNewParamsTypeVibe                         DestinationNewParamsType = "Vibe"
+	DestinationNewParamsTypeGoogleDataManagerEventIngest DestinationNewParamsType = "GoogleDataManagerEventIngest"
 	DestinationNewParamsTypeZendesk                      DestinationNewParamsType = "Zendesk"
-	DestinationNewParamsTypeZoomInfo                     DestinationNewParamsType = "ZoomInfo"
+	DestinationNewParamsTypeIterable                     DestinationNewParamsType = "Iterable"
+	DestinationNewParamsTypeArtsAI                       DestinationNewParamsType = "ArtsAI"
+	DestinationNewParamsTypeQuantcastCapi                DestinationNewParamsType = "QuantcastCAPI"
+	DestinationNewParamsTypeFloodlightSgtm               DestinationNewParamsType = "FloodlightSGTM"
+	DestinationNewParamsTypeVwo                          DestinationNewParamsType = "VWO"
+	DestinationNewParamsTypeAttentive                    DestinationNewParamsType = "Attentive"
+	DestinationNewParamsTypeAdmitad                      DestinationNewParamsType = "Admitad"
+	DestinationNewParamsTypePlausible                    DestinationNewParamsType = "Plausible"
+	DestinationNewParamsTypePostHog                      DestinationNewParamsType = "PostHog"
+	DestinationNewParamsTypeRokuCapi                     DestinationNewParamsType = "RokuCAPI"
+	DestinationNewParamsTypeEverflow                     DestinationNewParamsType = "Everflow"
+	DestinationNewParamsTypeBeeswaxPostback              DestinationNewParamsType = "BeeswaxPostback"
+	DestinationNewParamsTypeAdobeAnalytics               DestinationNewParamsType = "AdobeAnalytics"
 )
 
 type DestinationUpdateParams struct {
-	FacebookConversionAPIKey param.Opt[string] `json:"facebookConversionAPIKey,omitzero"`
-	FacebookPixelID          param.Opt[string] `json:"facebookPixelId,omitzero"`
-	G4AnalyticsAPIKey        param.Opt[string] `json:"g4AnalyticsApiKey,omitzero"`
-	G4AnalyticsMeasurementID param.Opt[string] `json:"g4AnalyticsMeasurementId,omitzero"`
-	G4AnalyticsTrackOnPage   param.Opt[bool]   `json:"g4AnalyticsTrackOnPage,omitzero"`
-	HashingSalt              param.Opt[string] `json:"hashingSalt,omitzero"`
-	HTTPDestinationURL       param.Opt[string] `json:"httpDestinationUrl,omitzero"`
-	ManagerGoogleCustomerID  param.Opt[string] `json:"managerGoogleCustomerId,omitzero"`
-	Name                     param.Opt[string] `json:"name,omitzero"`
-	ProjectAPIKey            param.Opt[string] `json:"projectAPIKey,omitzero"`
-	ProjectToken             param.Opt[string] `json:"projectToken,omitzero"`
-	SelectedAccountID        param.Opt[string] `json:"selectedAccountId,omitzero"`
-	LimitedToSourceIDs       []string          `json:"limitedToSourceIds,omitzero"`
-	Settings                 any               `json:"settings,omitzero"`
+	HashingSalt        param.Opt[string] `json:"hashingSalt,omitzero"`
+	Name               param.Opt[string] `json:"name,omitzero"`
+	LimitedToSourceIDs []string          `json:"limitedToSourceIds,omitzero"`
+	// Per-type configuration keys and values. Call GET /rest/v1/destination-types/{id}
+	// to get the valid keys for your destination type.
+	Settings any `json:"settings,omitzero"`
 	// Any of "Disabled", "Enabled".
 	Status DestinationUpdateParamsStatus `json:"status,omitzero"`
-	// Any of "merge", "replace".
-	SettingsStrategy DestinationUpdateParamsSettingsStrategy `query:"settings_strategy,omitzero" json:"-"`
 	paramObj
 }
 
@@ -728,22 +924,6 @@ func (r DestinationUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *DestinationUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// URLQuery serializes [DestinationUpdateParams]'s query parameters as
-// `url.Values`.
-func (r DestinationUpdateParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type DestinationUpdateParamsSettingsStrategy string
-
-const (
-	DestinationUpdateParamsSettingsStrategyMerge   DestinationUpdateParamsSettingsStrategy = "merge"
-	DestinationUpdateParamsSettingsStrategyReplace DestinationUpdateParamsSettingsStrategy = "replace"
-)
 
 type DestinationUpdateParamsStatus string
 
