@@ -47,7 +47,7 @@ func TestDestinationTypeGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.DestinationTypes.Get(context.TODO(), oursprivacy.DestinationTypeGetParamsIDAwsEventBridge)
+	_, err := client.DestinationTypes.Get(context.TODO(), "x")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
