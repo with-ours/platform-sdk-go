@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.18.0 (2026-05-15)
+
+Full Changelog: [v1.17.0...v1.18.0](https://github.com/with-ours/platform-sdk-go/compare/v1.17.0...v1.18.0)
+
+### Features
+
+* **api:** api update ([6076eb5](https://github.com/with-ours/platform-sdk-go/commit/6076eb51ed2f64901dd7375f9837845256bc8b39))
+* **api:** api update ([cc9ca6f](https://github.com/with-ours/platform-sdk-go/commit/cc9ca6f1b959c8c8be64b7531f1adfa27ceed766))
+* **api:** locations resource declaration ([407b507](https://github.com/with-ours/platform-sdk-go/commit/407b50772a0b15660a253cd3d01eed8454a9c830))
+* **api:** manual updates ([dfffc35](https://github.com/with-ours/platform-sdk-go/commit/dfffc3513966ffcafc4c5c224a8792756fdebd3a))
+* **api:** web scanners rest ([1619f29](https://github.com/with-ours/platform-sdk-go/commit/1619f2906d9c9f51ebdf7dd1840cd9879b5ba716))
+
 ## 1.17.0 (2026-05-14)
 
 Full Changelog: [v1.16.0...v1.17.0](https://github.com/with-ours/platform-sdk-go/compare/v1.16.0...v1.17.0)

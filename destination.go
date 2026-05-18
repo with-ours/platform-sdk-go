@@ -115,12 +115,12 @@ type DestinationListResponseEntity struct {
 	// Any of "Disabled", "Enabled".
 	Status string `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -183,12 +183,12 @@ type DestinationNewResponse struct {
 	// Any of "Disabled", "Enabled".
 	Status DestinationNewResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -236,6 +236,7 @@ const (
 	DestinationNewResponseTypeAwssns                       DestinationNewResponseType = "AWSSNS"
 	DestinationNewResponseTypeActiveCampaignAPI            DestinationNewResponseType = "ActiveCampaignApi"
 	DestinationNewResponseTypeAdmitad                      DestinationNewResponseType = "Admitad"
+	DestinationNewResponseTypeAdobeAnalytics               DestinationNewResponseType = "AdobeAnalytics"
 	DestinationNewResponseTypeAmazonDsp                    DestinationNewResponseType = "AmazonDSP"
 	DestinationNewResponseTypeAmplitude                    DestinationNewResponseType = "Amplitude"
 	DestinationNewResponseTypeAppLovin                     DestinationNewResponseType = "AppLovin"
@@ -311,12 +312,12 @@ type DestinationGetResponse struct {
 	// Any of "Disabled", "Enabled".
 	Status DestinationGetResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -390,6 +391,7 @@ const (
 	DestinationGetResponseTypeAwssns                       DestinationGetResponseType = "AWSSNS"
 	DestinationGetResponseTypeActiveCampaignAPI            DestinationGetResponseType = "ActiveCampaignApi"
 	DestinationGetResponseTypeAdmitad                      DestinationGetResponseType = "Admitad"
+	DestinationGetResponseTypeAdobeAnalytics               DestinationGetResponseType = "AdobeAnalytics"
 	DestinationGetResponseTypeAmazonDsp                    DestinationGetResponseType = "AmazonDSP"
 	DestinationGetResponseTypeAmplitude                    DestinationGetResponseType = "Amplitude"
 	DestinationGetResponseTypeAppLovin                     DestinationGetResponseType = "AppLovin"
@@ -465,12 +467,12 @@ type DestinationUpdateResponse struct {
 	// Any of "Disabled", "Enabled".
 	Status DestinationUpdateResponseStatus `json:"status" api:"required"`
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -518,6 +520,7 @@ const (
 	DestinationUpdateResponseTypeAwssns                       DestinationUpdateResponseType = "AWSSNS"
 	DestinationUpdateResponseTypeActiveCampaignAPI            DestinationUpdateResponseType = "ActiveCampaignApi"
 	DestinationUpdateResponseTypeAdmitad                      DestinationUpdateResponseType = "Admitad"
+	DestinationUpdateResponseTypeAdobeAnalytics               DestinationUpdateResponseType = "AdobeAnalytics"
 	DestinationUpdateResponseTypeAmazonDsp                    DestinationUpdateResponseType = "AmazonDSP"
 	DestinationUpdateResponseTypeAmplitude                    DestinationUpdateResponseType = "Amplitude"
 	DestinationUpdateResponseTypeAppLovin                     DestinationUpdateResponseType = "AppLovin"
@@ -589,12 +592,12 @@ const (
 
 type DestinationNewParams struct {
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI",
-	// "Attentive", "Audiohook", "AzureBlob", "BasisPostback", "BeeswaxPostback",
-	// "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent", "Customerio",
-	// "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM", "FullContact",
-	// "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy", "Google",
-	// "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
+	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
+	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
+	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "Braze", "ConvertABTestingEvent",
+	// "Customerio", "DomoWarehouse", "Everflow", "Facebook", "FloodlightSGTM",
+	// "FullContact", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
+	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleBigQuery",
 	// "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest", "GooglePubSub",
 	// "GoogleStorage", "HTTPCustomRequest", "HTTPDestination", "Hubspot",
 	// "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo", "LinkedInAdsCAPI",
@@ -626,6 +629,7 @@ const (
 	DestinationNewParamsTypeAwssns                       DestinationNewParamsType = "AWSSNS"
 	DestinationNewParamsTypeActiveCampaignAPI            DestinationNewParamsType = "ActiveCampaignApi"
 	DestinationNewParamsTypeAdmitad                      DestinationNewParamsType = "Admitad"
+	DestinationNewParamsTypeAdobeAnalytics               DestinationNewParamsType = "AdobeAnalytics"
 	DestinationNewParamsTypeAmazonDsp                    DestinationNewParamsType = "AmazonDSP"
 	DestinationNewParamsTypeAmplitude                    DestinationNewParamsType = "Amplitude"
 	DestinationNewParamsTypeAppLovin                     DestinationNewParamsType = "AppLovin"

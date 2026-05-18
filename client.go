@@ -20,17 +20,20 @@ type Client struct {
 	Options               []option.RequestOption
 	AllowedEvents         AllowedEventService
 	ConsentSettings       ConsentSettingService
+	DestinationTypes      DestinationTypeService
 	Destinations          DestinationService
 	ExperimentSettings    ExperimentSettingService
 	ExperimentVariants    ExperimentVariantService
 	Experiments           ExperimentService
 	GlobalDispatchCenters GlobalDispatchCenterService
 	HeatmapPages          HeatmapPageService
+	Locations             LocationService
 	Mappings              MappingService
 	ReplaySettings        ReplaySettingService
 	Sources               SourceService
 	Versions              VersionService
-	DestinationTypes      DestinationTypeService
+	WebScannerRules       WebScannerRuleService
+	WebScanners           WebScannerService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -65,17 +68,20 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.AllowedEvents = NewAllowedEventService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
+	r.DestinationTypes = NewDestinationTypeService(opts...)
 	r.Destinations = NewDestinationService(opts...)
 	r.ExperimentSettings = NewExperimentSettingService(opts...)
 	r.ExperimentVariants = NewExperimentVariantService(opts...)
 	r.Experiments = NewExperimentService(opts...)
 	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
 	r.HeatmapPages = NewHeatmapPageService(opts...)
+	r.Locations = NewLocationService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
-	r.DestinationTypes = NewDestinationTypeService(opts...)
+	r.WebScannerRules = NewWebScannerRuleService(opts...)
+	r.WebScanners = NewWebScannerService(opts...)
 
 	return
 }
