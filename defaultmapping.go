@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDefaultMappingService] method instead.
 type DefaultMappingService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewDefaultMappingService generates a new service that applies the given options
@@ -32,7 +32,7 @@ type DefaultMappingService struct {
 // there is one), and before any request-specific options.
 func NewDefaultMappingService(opts ...option.RequestOption) (r DefaultMappingService) {
 	r = DefaultMappingService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -42,7 +42,7 @@ func NewDefaultMappingService(opts ...option.RequestOption) (r DefaultMappingSer
 // the hydrated would-be row for a specific destination. Requires scope:
 // mapping:list
 func (r *DefaultMappingService) List(ctx context.Context, opts ...option.RequestOption) (res *DefaultMappingListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/default-mappings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -53,7 +53,7 @@ func (r *DefaultMappingService) List(ctx context.Context, opts ...option.Request
 // callers do not need to handle a 404-vs-200 branch). Each destination has at most
 // one default mapping. Requires scope: mapping:find
 func (r *DefaultMappingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DefaultMappingGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -68,7 +68,7 @@ func (r *DefaultMappingService) Get(ctx context.Context, id string, opts ...opti
 // custom `logic`; the field is not accepted on this endpoint. Requires scope:
 // mapping:update
 func (r *DefaultMappingService) Replace(ctx context.Context, id string, body DefaultMappingReplaceParams, opts ...option.RequestOption) (res *DefaultMappingReplaceResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewExperimentVariantService] method instead.
 type ExperimentVariantService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewExperimentVariantService generates a new service that applies the given
@@ -34,7 +34,7 @@ type ExperimentVariantService struct {
 // options (if there is one), and before any request-specific options.
 func NewExperimentVariantService(opts ...option.RequestOption) (r ExperimentVariantService) {
 	r = ExperimentVariantService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -44,7 +44,7 @@ func NewExperimentVariantService(opts ...option.RequestOption) (r ExperimentVari
 // in one request can pass `?limit=100`. Requires scope: experiment:find
 func (r *ExperimentVariantService) List(ctx context.Context, query ExperimentVariantListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentVariantListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/experiment-variants"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -69,7 +69,7 @@ func (r *ExperimentVariantService) ListAutoPaging(ctx context.Context, query Exp
 
 // Create a new experiment variant. Requires scope: experiment:update
 func (r *ExperimentVariantService) New(ctx context.Context, body ExperimentVariantNewParams, opts ...option.RequestOption) (res *ExperimentVariantNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiment-variants"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -77,7 +77,7 @@ func (r *ExperimentVariantService) New(ctx context.Context, body ExperimentVaria
 
 // Find a single experiment variant by ID. Requires scope: experiment:find
 func (r *ExperimentVariantService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentVariantGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -90,7 +90,7 @@ func (r *ExperimentVariantService) Get(ctx context.Context, id string, opts ...o
 // Partially update an experiment variant. Only the fields you send are changed.
 // Requires scope: experiment:update
 func (r *ExperimentVariantService) Update(ctx context.Context, id string, body ExperimentVariantUpdateParams, opts ...option.RequestOption) (res *ExperimentVariantUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -102,7 +102,7 @@ func (r *ExperimentVariantService) Update(ctx context.Context, id string, body E
 
 // Delete an experiment variant. Requires scope: experiment:update
 func (r *ExperimentVariantService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentVariantDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
