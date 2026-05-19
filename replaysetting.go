@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewReplaySettingService] method instead.
 type ReplaySettingService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewReplaySettingService generates a new service that applies the given options
@@ -34,7 +34,7 @@ type ReplaySettingService struct {
 // there is one), and before any request-specific options.
 func NewReplaySettingService(opts ...option.RequestOption) (r ReplaySettingService) {
 	r = ReplaySettingService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -44,7 +44,7 @@ func NewReplaySettingService(opts ...option.RequestOption) (r ReplaySettingServi
 // replaySettings:list
 func (r *ReplaySettingService) List(ctx context.Context, query ReplaySettingListParams, opts ...option.RequestOption) (res *pagination.Cursor[ReplaySettingListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/replay-settings"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -71,7 +71,7 @@ func (r *ReplaySettingService) ListAutoPaging(ctx context.Context, query ReplayS
 // replay configuration — calls made when one already exists return HTTP 409 with
 // the reason in the response `error` field. Requires scope: replaySettings:create
 func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewParams, opts ...option.RequestOption) (res *ReplaySettingNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -80,7 +80,7 @@ func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewPar
 // Fetch a single replay configuration by ID, including its whitelisted domains and
 // custom domain. Requires scope: replaySettings:find
 func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -95,7 +95,7 @@ func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...optio
 // `whitelistDomains` is replaced wholesale (not merged with the existing list).
 // Requires scope: replaySettings:update
 func (r *ReplaySettingService) Update(ctx context.Context, id string, body ReplaySettingUpdateParams, opts ...option.RequestOption) (res *ReplaySettingUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -108,7 +108,7 @@ func (r *ReplaySettingService) Update(ctx context.Context, id string, body Repla
 // Delete the replay configuration. Capture stops immediately for all whitelisted
 // domains. Requires scope: replaySettings:delete
 func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

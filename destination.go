@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDestinationService] method instead.
 type DestinationService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewDestinationService generates a new service that applies the given options to
@@ -34,14 +34,14 @@ type DestinationService struct {
 // there is one), and before any request-specific options.
 func NewDestinationService(opts ...option.RequestOption) (r DestinationService) {
 	r = DestinationService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
 // List all destinations. Requires scope: destination:list
 func (r *DestinationService) List(ctx context.Context, query DestinationListParams, opts ...option.RequestOption) (res *pagination.Cursor[DestinationListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/destinations"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -63,7 +63,7 @@ func (r *DestinationService) ListAutoPaging(ctx context.Context, query Destinati
 
 // Create a new destination. Requires scope: destination:create
 func (r *DestinationService) New(ctx context.Context, body DestinationNewParams, opts ...option.RequestOption) (res *DestinationNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/destinations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -71,7 +71,7 @@ func (r *DestinationService) New(ctx context.Context, body DestinationNewParams,
 
 // Find a single destination by ID. Requires scope: destination:find
 func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -86,7 +86,7 @@ func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.
 // their current value, and send `null` to clear a specific setting. Requires
 // scope: destination:update
 func (r *DestinationService) Update(ctx context.Context, id string, body DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -98,7 +98,7 @@ func (r *DestinationService) Update(ctx context.Context, id string, body Destina
 
 // Delete a destination. Requires scope: destination:delete
 func (r *DestinationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

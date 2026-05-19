@@ -25,7 +25,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewLocationService] method instead.
 type LocationService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewLocationService generates a new service that applies the given options to
@@ -33,7 +33,7 @@ type LocationService struct {
 // there is one), and before any request-specific options.
 func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 	r = LocationService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -41,7 +41,7 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 // map-count limit (single digits in practice) so the response always fits in a
 // single page. Requires scope: maps:list
 func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption) (res *LocationListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -52,7 +52,7 @@ func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption
 // so callers can immediately request `GET /rest/v1/locations/{id}/embed-code`.
 // Requires scope: maps:create
 func (r *LocationService) New(ctx context.Context, body LocationNewParams, opts ...option.RequestOption) (res *LocationNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/locations"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -63,7 +63,7 @@ func (r *LocationService) New(ctx context.Context, body LocationNewParams, opts 
 // not merged. The map's computed center is recalculated on every PATCH from the
 // latest coordinates. Requires scope: maps:update
 func (r *LocationService) Update(ctx context.Context, id string, body LocationUpdateParams, opts ...option.RequestOption) (res *LocationUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -81,7 +81,7 @@ func (r *LocationService) Update(ctx context.Context, id string, body LocationUp
 // `includeControls`, `includeSEOSchema`); all have sane defaults. Requires scope:
 // maps:find
 func (r *LocationService) EmbedCode(ctx context.Context, id string, query LocationEmbedCodeParams, opts ...option.RequestOption) (res *LocationEmbedCodeResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewConsentSettingService] method instead.
 type ConsentSettingService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewConsentSettingService generates a new service that applies the given options
@@ -32,13 +32,13 @@ type ConsentSettingService struct {
 // there is one), and before any request-specific options.
 func NewConsentSettingService(opts ...option.RequestOption) (r ConsentSettingService) {
 	r = ConsentSettingService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
 // List all consent settings. Requires scope: consentSettings:list
 func (r *ConsentSettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ConsentSettingListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -52,7 +52,7 @@ func (r *ConsentSettingService) List(ctx context.Context, opts ...option.Request
 // server-assigned `id`, default rule, and categories without a follow-up fetch.
 // Requires scope: consentSettings:create
 func (r *ConsentSettingService) New(ctx context.Context, opts ...option.RequestOption) (res *ConsentSettingNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
@@ -60,7 +60,7 @@ func (r *ConsentSettingService) New(ctx context.Context, opts ...option.RequestO
 
 // Find a single consent setting by ID. Requires scope: consentSettings:find
 func (r *ConsentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConsentSettingGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -74,7 +74,7 @@ func (r *ConsentSettingService) Get(ctx context.Context, id string, opts ...opti
 // optional fields are reset. Use PATCH for partial updates. Requires scope:
 // consentSettings:update
 func (r *ConsentSettingService) Replace(ctx context.Context, id string, body ConsentSettingReplaceParams, opts ...option.RequestOption) (res *ConsentSettingReplaceResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -89,7 +89,7 @@ func (r *ConsentSettingService) Replace(ctx context.Context, id string, body Con
 // (services, categories, regions) are replaced wholesale when sent. Requires
 // scope: consentSettings:update
 func (r *ConsentSettingService) Update(ctx context.Context, id string, body ConsentSettingUpdateParams, opts ...option.RequestOption) (res *ConsentSettingUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -101,7 +101,7 @@ func (r *ConsentSettingService) Update(ctx context.Context, id string, body Cons
 
 // Delete a consent setting. Requires scope: consentSettings:delete
 func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ConsentSettingDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

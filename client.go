@@ -17,11 +17,10 @@ import (
 // interacting with the ours-privacy-platform API. You should not instantiate this
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
-	options               []option.RequestOption
+	Options               []option.RequestOption
 	AllowedEvents         AllowedEventService
 	ConsentSettings       ConsentSettingService
 	DefaultMappings       DefaultMappingService
-	DestinationTypes      DestinationTypeService
 	Destinations          DestinationService
 	ExperimentSettings    ExperimentSettingService
 	ExperimentVariants    ExperimentVariantService
@@ -29,13 +28,14 @@ type Client struct {
 	GlobalDispatchCenters GlobalDispatchCenterService
 	HeatmapPages          HeatmapPageService
 	Locations             LocationService
-	MappingTemplates      MappingTemplateService
 	Mappings              MappingService
 	ReplaySettings        ReplaySettingService
 	Sources               SourceService
 	Versions              VersionService
 	WebScannerRules       WebScannerRuleService
 	WebScanners           WebScannerService
+	DestinationTypes      DestinationTypeService
+	MappingTemplates      MappingTemplateService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -66,12 +66,11 @@ func DefaultClientOptions() []option.RequestOption {
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
-	r = Client{options: opts}
+	r = Client{Options: opts}
 
 	r.AllowedEvents = NewAllowedEventService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
 	r.DefaultMappings = NewDefaultMappingService(opts...)
-	r.DestinationTypes = NewDestinationTypeService(opts...)
 	r.Destinations = NewDestinationService(opts...)
 	r.ExperimentSettings = NewExperimentSettingService(opts...)
 	r.ExperimentVariants = NewExperimentVariantService(opts...)
@@ -79,13 +78,14 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
 	r.HeatmapPages = NewHeatmapPageService(opts...)
 	r.Locations = NewLocationService(opts...)
-	r.MappingTemplates = NewMappingTemplateService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
+	r.DestinationTypes = NewDestinationTypeService(opts...)
+	r.MappingTemplates = NewMappingTemplateService(opts...)
 
 	return
 }
@@ -122,7 +122,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 // For even greater flexibility, see [option.WithResponseInto] and
 // [option.WithResponseBodyInto].
 func (r *Client) Execute(ctx context.Context, method string, path string, params any, res any, opts ...option.RequestOption) error {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	return requestconfig.ExecuteNewRequest(ctx, method, path, params, res, opts...)
 }
 
