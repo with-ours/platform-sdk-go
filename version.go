@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewVersionService] method instead.
 type VersionService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewVersionService generates a new service that applies the given options to each
@@ -34,7 +34,7 @@ type VersionService struct {
 // is one), and before any request-specific options.
 func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 	r = VersionService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -43,7 +43,7 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 // with AND semantics. Requires scope: version:list
 func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *pagination.Cursor[VersionListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/versions"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -82,7 +82,7 @@ func (r *VersionService) ListAutoPaging(ctx context.Context, query VersionListPa
 // those ids. Unlisted collections inherit wholesale from the latest published
 // version. Requires scope: version:publish
 func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ...option.RequestOption) (res *VersionNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/versions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -90,7 +90,7 @@ func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ..
 
 // Find a single version by ID. Requires scope: version:find
 func (r *VersionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -103,7 +103,7 @@ func (r *VersionService) Get(ctx context.Context, id string, opts ...option.Requ
 // Partially update a version. Only the fields you send are changed. Requires
 // scope: version:update
 func (r *VersionService) Update(ctx context.Context, id string, body VersionUpdateParams, opts ...option.RequestOption) (res *VersionUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -119,7 +119,7 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 // create-and-publish from current draft state, use POST /rest/v1/versions instead.
 // Requires scope: version:publish
 func (r *VersionService) Publish(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionPublishResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -135,7 +135,7 @@ func (r *VersionService) Publish(ctx context.Context, id string, opts ...option.
 // redacted. Useful for IaC export, audit, and backup workflows. Requires scope:
 // version:find
 func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionSnapshotResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -165,7 +165,7 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 //     versions. `otherId` may also be `draft` to diff a published snapshot against
 //     the live draft state. Requires scope: version:find
 func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query VersionDiffParams, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/diff", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

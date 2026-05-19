@@ -25,7 +25,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewWebScannerRuleService] method instead.
 type WebScannerRuleService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewWebScannerRuleService generates a new service that applies the given options
@@ -33,7 +33,7 @@ type WebScannerRuleService struct {
 // there is one), and before any request-specific options.
 func NewWebScannerRuleService(opts ...option.RequestOption) (r WebScannerRuleService) {
 	r = WebScannerRuleService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -41,7 +41,7 @@ func NewWebScannerRuleService(opts ...option.RequestOption) (r WebScannerRuleSer
 // parameter — rules are always scoped to a parent scanner. Not paginated; the
 // per-scanner rule count is bounded. Requires scope: webScanner:find
 func (r *WebScannerRuleService) List(ctx context.Context, query WebScannerRuleListParams, opts ...option.RequestOption) (res *WebScannerRuleListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/web-scanner-rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
@@ -53,7 +53,7 @@ func (r *WebScannerRuleService) List(ctx context.Context, query WebScannerRuleLi
 // anything; omitted pattern arrays default to `[]`. Requires scope:
 // webScanner:update
 func (r *WebScannerRuleService) New(ctx context.Context, body WebScannerRuleNewParams, opts ...option.RequestOption) (res *WebScannerRuleNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/web-scanner-rules"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -61,7 +61,7 @@ func (r *WebScannerRuleService) New(ctx context.Context, body WebScannerRuleNewP
 
 // Find a single web scanner rule by ID. Requires scope: webScanner:find
 func (r *WebScannerRuleService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerRuleGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -75,7 +75,7 @@ func (r *WebScannerRuleService) Get(ctx context.Context, id string, opts ...opti
 // List-valued fields (`cookiePatterns`, `domainPatterns`, `scriptPatterns`) are
 // replaced wholesale when sent. Requires scope: webScanner:update
 func (r *WebScannerRuleService) Update(ctx context.Context, id string, body WebScannerRuleUpdateParams, opts ...option.RequestOption) (res *WebScannerRuleUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -87,7 +87,7 @@ func (r *WebScannerRuleService) Update(ctx context.Context, id string, body WebS
 
 // Delete a web scanner rule. Requires scope: webScanner:update
 func (r *WebScannerRuleService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerRuleDeleteResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

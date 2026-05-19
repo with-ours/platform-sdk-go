@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMappingService] method instead.
 type MappingService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewMappingService generates a new service that applies the given options to each
@@ -34,7 +34,7 @@ type MappingService struct {
 // is one), and before any request-specific options.
 func NewMappingService(opts ...option.RequestOption) (r MappingService) {
 	r = MappingService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -44,7 +44,7 @@ func NewMappingService(opts ...option.RequestOption) (r MappingService) {
 // mapping:list
 func (r *MappingService) List(ctx context.Context, query MappingListParams, opts ...option.RequestOption) (res *pagination.Cursor[MappingListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/mappings"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -81,7 +81,7 @@ func (r *MappingService) ListAutoPaging(ctx context.Context, query MappingListPa
 // Sending both `allowedEventId` and `templateId` returns 400. Requires scope:
 // mapping:create
 func (r *MappingService) New(ctx context.Context, body MappingNewParams, opts ...option.RequestOption) (res *MappingNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/mappings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -89,7 +89,7 @@ func (r *MappingService) New(ctx context.Context, body MappingNewParams, opts ..
 
 // Find a single mapping by ID. Requires scope: mapping:find
 func (r *MappingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MappingGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -104,7 +104,7 @@ func (r *MappingService) Get(ctx context.Context, id string, opts ...option.Requ
 // `status` on destinations). `mappings[]` is replaced wholesale when sent.
 // Requires scope: mapping:update
 func (r *MappingService) Update(ctx context.Context, id string, body MappingUpdateParams, opts ...option.RequestOption) (res *MappingUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -116,7 +116,7 @@ func (r *MappingService) Update(ctx context.Context, id string, body MappingUpda
 
 // Delete a mapping. Requires scope: mapping:delete
 func (r *MappingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -131,7 +131,7 @@ func (r *MappingService) Delete(ctx context.Context, id string, opts ...option.R
 // All ids must belong to the same parent entity (source or destination); mixing
 // entities returns 400. Requires scope: mapping:update
 func (r *MappingService) Reorder(ctx context.Context, body MappingReorderParams, opts ...option.RequestOption) (res *MappingReorderResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/mappings/reorder"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
