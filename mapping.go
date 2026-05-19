@@ -137,6 +137,55 @@ func (r *MappingService) Reorder(ctx context.Context, body MappingReorderParams,
 	return res, err
 }
 
+// Discover every mapping template available for a destination or source, with full
+// property descriptors inlined. Use the returned `id` as `templateId` when calling
+// `POST /rest/v1/mappings` (template fat-create variant), and use each entry under
+// `mappings[]` to learn the valid `property`, `kind`, `modificationOptions`, and
+// any enforced `options`. The `isDefault: true` entry is the destination's
+// built-in default template (the one stored at `MAPPER#{destinationId}` when
+// configured via `PUT /rest/v1/default-mappings/{destinationId}`). Requires scope:
+// mapping:find
+func (r *MappingService) Templates(ctx context.Context, query MappingTemplatesParams, opts ...option.RequestOption) (res *MappingTemplatesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/mappings/templates"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Lists the platform-provided variables that any mapping `value` can reference
+// (e.g. `event.email`, `event.request_context.ip`, `visitor.id`). Account-agnostic
+// discovery — use these paths as the right-hand side of a mapping field. Requires
+// scope: variables:find-default
+func (r *MappingService) DefaultVariables(ctx context.Context, opts ...option.RequestOption) (res *MappingDefaultVariablesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/mappings/default-variables"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Lists the custom variables observed in this account’s recent event stream (last
+// 14 days). These are dot-paths under `event.event_properties.*` that callers can
+// target in mapping `value` fields. The result is cached for 10 minutes; an empty
+// list means no custom properties have been seen yet for this account. Requires
+// scope: variables:find-custom
+func (r *MappingService) CustomVariables(ctx context.Context, opts ...option.RequestOption) (res *MappingCustomVariablesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/mappings/custom-variables"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
+// Lists every value accepted on a mapping field’s `modification` property, with a
+// human-readable label and one-sentence description. Account-agnostic. Use this
+// alongside `GET /rest/v1/mapping-templates` to render a labelled modification
+// picker without hardcoding the enum. Requires scope: variables:find-default
+func (r *MappingService) Modifications(ctx context.Context, opts ...option.RequestOption) (res *MappingModificationsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/mappings/modifications"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type MappingListResponse struct {
 	ID               string                       `json:"id" api:"required"`
 	IsEnabled        bool                         `json:"isEnabled" api:"required"`
@@ -498,6 +547,287 @@ func (r *MappingReorderResponseEntityMapping) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MappingTemplatesResponse struct {
+	Entities []MappingTemplatesResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingTemplatesResponse) RawJSON() string { return r.JSON.raw }
+func (r *MappingTemplatesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingTemplatesResponseEntity struct {
+	// Template identifier — pass to `POST /rest/v1/mappings` as `templateId`.
+	ID string `json:"id" api:"required"`
+	// True for the destination's built-in default template (the one stored at
+	// `MAPPER#{destinationId}` when configured). Sources only have one template; it is
+	// always default.
+	IsDefault   bool                                    `json:"isDefault" api:"required"`
+	Mappings    []MappingTemplatesResponseEntityMapping `json:"mappings" api:"required"`
+	Name        string                                  `json:"name" api:"required"`
+	Description string                                  `json:"description" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsDefault   respjson.Field
+		Mappings    respjson.Field
+		Name        respjson.Field
+		Description respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingTemplatesResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *MappingTemplatesResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingTemplatesResponseEntityMapping struct {
+	// Long-form description / tooltip for this property.
+	Description string `json:"description" api:"required"`
+	IsPii       bool   `json:"isPII" api:"required"`
+	// Type information for SDK validation (Text, Integer, Email, Url, IP, Object,
+	// KnownObject, Date, DateTime, Array, Boolean, JSON).
+	//
+	// Any of "Array", "Boolean", "Date", "DateTime", "Email", "IP", "Integer", "JSON",
+	// "KnownObject", "Object", "Text", "Url".
+	Kind string `json:"kind" api:"required"`
+	// Human-readable label (e.g. "Email", "Event Name").
+	Label string `json:"label" api:"required"`
+	// The template default source expression, e.g. `{{visitor.email}}`.
+	Map string `json:"map" api:"required"`
+	// The value to send as `mappings[].property` when creating or patching a mapping.
+	Property string `json:"property" api:"required"`
+	Required bool   `json:"required" api:"required"`
+	// The template default modification (hashing / case / URL truncation).
+	//
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
+	Modification string `json:"modification" api:"nullable"`
+	// Suggested modification options for this property. Not a whitelist.
+	//
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
+	ModificationOptions []string `json:"modificationOptions" api:"nullable"`
+	// When set, the ONLY valid `map` values for this property. Typically used for
+	// enum-shaped destinations.
+	Options []MappingTemplatesResponseEntityMappingOption `json:"options" api:"nullable"`
+	// Non-binding suggestions for the `map` value (e.g. common event names a customer
+	// might want to use).
+	SuggestedOptions []MappingTemplatesResponseEntityMappingSuggestedOption `json:"suggestedOptions" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description         respjson.Field
+		IsPii               respjson.Field
+		Kind                respjson.Field
+		Label               respjson.Field
+		Map                 respjson.Field
+		Property            respjson.Field
+		Required            respjson.Field
+		Modification        respjson.Field
+		ModificationOptions respjson.Field
+		Options             respjson.Field
+		SuggestedOptions    respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingTemplatesResponseEntityMapping) RawJSON() string { return r.JSON.raw }
+func (r *MappingTemplatesResponseEntityMapping) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingTemplatesResponseEntityMappingOption struct {
+	Label string `json:"label" api:"required"`
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Label       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingTemplatesResponseEntityMappingOption) RawJSON() string { return r.JSON.raw }
+func (r *MappingTemplatesResponseEntityMappingOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingTemplatesResponseEntityMappingSuggestedOption struct {
+	Label string `json:"label" api:"required"`
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Label       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingTemplatesResponseEntityMappingSuggestedOption) RawJSON() string { return r.JSON.raw }
+func (r *MappingTemplatesResponseEntityMappingSuggestedOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingDefaultVariablesResponse struct {
+	Entities []MappingDefaultVariablesResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingDefaultVariablesResponse) RawJSON() string { return r.JSON.raw }
+func (r *MappingDefaultVariablesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingDefaultVariablesResponseEntity struct {
+	// Sample values observed for this path (empty for unsampled defaults).
+	Examples []string `json:"examples" api:"required"`
+	// Human-readable display name.
+	Name string `json:"name" api:"required"`
+	// Dot-path used in mapping `value` fields (e.g. `event.email`).
+	Path string `json:"path" api:"required"`
+	// Relative popularity rank. Higher means more frequently set across events.
+	Popularity float64 `json:"popularity" api:"required"`
+	// Optional long-form context shown in the variable dictionary drawer.
+	AdvancedInfo string `json:"advancedInfo" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Examples     respjson.Field
+		Name         respjson.Field
+		Path         respjson.Field
+		Popularity   respjson.Field
+		AdvancedInfo respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingDefaultVariablesResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *MappingDefaultVariablesResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingCustomVariablesResponse struct {
+	Entities []MappingCustomVariablesResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingCustomVariablesResponse) RawJSON() string { return r.JSON.raw }
+func (r *MappingCustomVariablesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingCustomVariablesResponseEntity struct {
+	// Sample values observed for this path (empty for unsampled defaults).
+	Examples []string `json:"examples" api:"required"`
+	// Human-readable display name.
+	Name string `json:"name" api:"required"`
+	// Dot-path used in mapping `value` fields (e.g. `event.email`).
+	Path string `json:"path" api:"required"`
+	// Relative popularity rank. Higher means more frequently set across events.
+	Popularity float64 `json:"popularity" api:"required"`
+	// Optional long-form context shown in the variable dictionary drawer.
+	AdvancedInfo string `json:"advancedInfo" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Examples     respjson.Field
+		Name         respjson.Field
+		Path         respjson.Field
+		Popularity   respjson.Field
+		AdvancedInfo respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingCustomVariablesResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *MappingCustomVariablesResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingModificationsResponse struct {
+	Entities []MappingModificationsResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingModificationsResponse) RawJSON() string { return r.JSON.raw }
+func (r *MappingModificationsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingModificationsResponseEntity struct {
+	// One-sentence explanation of what the modification does to the mapped value.
+	Description string `json:"description" api:"required"`
+	// Short human-readable name (suitable for picker labels).
+	Label string `json:"label" api:"required"`
+	// Enum value to send on `modification` fields when authoring a mapping.
+	//
+	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
+	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
+	// "HashMD5", "HashedCountry", "HashedDateOfBirth", "HashedGender",
+	// "HashedNormalized", "HashedNormalizedNoSpecialChars", "HashedPhone",
+	// "HashedState", "HashedZip", "KebabCase", "LowerCase", "None", "Null",
+	// "Redacted", "RegionalIP", "SnakeCase", "StartCase", "UpperCase".
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Description respjson.Field
+		Label       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MappingModificationsResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *MappingModificationsResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MappingListParams struct {
 	// Filter mappings by their parent entity id. Must be a destination id or source
 	// id.
@@ -758,4 +1088,18 @@ func (r MappingReorderParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *MappingReorderParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+type MappingTemplatesParams struct {
+	// Destination or source id. Required.
+	EntityID string `query:"entityId" api:"required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [MappingTemplatesParams]'s query parameters as `url.Values`.
+func (r MappingTemplatesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
