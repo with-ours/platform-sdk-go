@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewWebScannerService] method instead.
 type WebScannerService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewWebScannerService generates a new service that applies the given options to
@@ -32,7 +32,7 @@ type WebScannerService struct {
 // there is one), and before any request-specific options.
 func NewWebScannerService(opts ...option.RequestOption) (r WebScannerService) {
 	r = WebScannerService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -40,7 +40,7 @@ func NewWebScannerService(opts ...option.RequestOption) (r WebScannerService) {
 // number of scanners in practice, so the response always fits in a single page.
 // Requires scope: webScanner:list
 func (r *WebScannerService) List(ctx context.Context, opts ...option.RequestOption) (res *WebScannerListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/web-scanners"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -54,7 +54,7 @@ func (r *WebScannerService) List(ctx context.Context, opts ...option.RequestOpti
 // and may not yet reflect async scan-state changes. Requires scope:
 // webScanner:create
 func (r *WebScannerService) New(ctx context.Context, body WebScannerNewParams, opts ...option.RequestOption) (res *WebScannerNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/web-scanners"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -62,7 +62,7 @@ func (r *WebScannerService) New(ctx context.Context, body WebScannerNewParams, o
 
 // Find a single web scanner by ID. Requires scope: webScanner:find
 func (r *WebScannerService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -79,7 +79,7 @@ func (r *WebScannerService) Get(ctx context.Context, id string, opts ...option.R
 // `POST /rest/v1/web-scanners/{id}/trigger` to start a new scan after edits.
 // Requires scope: webScanner:update
 func (r *WebScannerService) Update(ctx context.Context, id string, body WebScannerUpdateParams, opts ...option.RequestOption) (res *WebScannerUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -92,7 +92,7 @@ func (r *WebScannerService) Update(ctx context.Context, id string, body WebScann
 // Delete a web scanner. Associated suppression rules are deleted in the same
 // operation. Requires scope: webScanner:delete
 func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerDeleteResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -111,7 +111,7 @@ func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...optio
 // request; the reason is in the response `error` field. Requires scope:
 // webScanner:trigger
 func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerTriggerResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
