@@ -22,7 +22,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewMappingTemplateService] method instead.
 type MappingTemplateService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewMappingTemplateService generates a new service that applies the given options
@@ -30,7 +30,7 @@ type MappingTemplateService struct {
 // there is one), and before any request-specific options.
 func NewMappingTemplateService(opts ...option.RequestOption) (r MappingTemplateService) {
 	r = MappingTemplateService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -43,7 +43,7 @@ func NewMappingTemplateService(opts ...option.RequestOption) (r MappingTemplateS
 // configured via `PUT /rest/v1/default-mappings/{destinationId}`). Requires scope:
 // mapping:find
 func (r *MappingTemplateService) List(ctx context.Context, query MappingTemplateListParams, opts ...option.RequestOption) (res *MappingTemplateListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/mapping-templates"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

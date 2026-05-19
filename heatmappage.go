@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewHeatmapPageService] method instead.
 type HeatmapPageService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewHeatmapPageService generates a new service that applies the given options to
@@ -32,7 +32,7 @@ type HeatmapPageService struct {
 // there is one), and before any request-specific options.
 func NewHeatmapPageService(opts ...option.RequestOption) (r HeatmapPageService) {
 	r = HeatmapPageService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -46,7 +46,7 @@ func NewHeatmapPageService(opts ...option.RequestOption) (r HeatmapPageService) 
 // scope: web-analytics:view
 func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) (res *pagination.Cursor[HeatmapPageListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/heatmap-pages"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -84,7 +84,7 @@ func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPa
 // `breakpoint` (weighted to cover multiple viewports) so callers can compare
 // devices. Requires scope: web-analytics:view
 func (r *HeatmapPageService) Summary(ctx context.Context, query HeatmapPageSummaryParams, opts ...option.RequestOption) (res *HeatmapPageSummaryResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/heatmap-pages/summary"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err

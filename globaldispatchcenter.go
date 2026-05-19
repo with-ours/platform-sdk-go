@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewGlobalDispatchCenterService] method instead.
 type GlobalDispatchCenterService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewGlobalDispatchCenterService generates a new service that applies the given
@@ -34,7 +34,7 @@ type GlobalDispatchCenterService struct {
 // options (if there is one), and before any request-specific options.
 func NewGlobalDispatchCenterService(opts ...option.RequestOption) (r GlobalDispatchCenterService) {
 	r = GlobalDispatchCenterService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
@@ -42,7 +42,7 @@ func NewGlobalDispatchCenterService(opts ...option.RequestOption) (r GlobalDispa
 // `limit` and `cursor`. Requires scope: globalDispatch:list
 func (r *GlobalDispatchCenterService) List(ctx context.Context, query GlobalDispatchCenterListParams, opts ...option.RequestOption) (res *pagination.Cursor[GlobalDispatchCenterListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/global-dispatch-centers"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -65,7 +65,7 @@ func (r *GlobalDispatchCenterService) ListAutoPaging(ctx context.Context, query 
 
 // Create a new global dispatch center. Requires scope: globalDispatch:create
 func (r *GlobalDispatchCenterService) New(ctx context.Context, body GlobalDispatchCenterNewParams, opts ...option.RequestOption) (res *GlobalDispatchCenterNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/global-dispatch-centers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -73,7 +73,7 @@ func (r *GlobalDispatchCenterService) New(ctx context.Context, body GlobalDispat
 
 // Find a single global dispatch center by ID. Requires scope: globalDispatch:find
 func (r *GlobalDispatchCenterService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalDispatchCenterGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -86,7 +86,7 @@ func (r *GlobalDispatchCenterService) Get(ctx context.Context, id string, opts .
 // Partially update a global dispatch center. Only the fields you send are changed.
 // Requires scope: globalDispatch:update
 func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, body GlobalDispatchCenterUpdateParams, opts ...option.RequestOption) (res *GlobalDispatchCenterUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -98,7 +98,7 @@ func (r *GlobalDispatchCenterService) Update(ctx context.Context, id string, bod
 
 // Delete a global dispatch center. Requires scope: globalDispatch:delete
 func (r *GlobalDispatchCenterService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *GlobalDispatchCenterDeleteResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

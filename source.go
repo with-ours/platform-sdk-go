@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewSourceService] method instead.
 type SourceService struct {
-	Options []option.RequestOption
+	options []option.RequestOption
 }
 
 // NewSourceService generates a new service that applies the given options to each
@@ -32,13 +32,13 @@ type SourceService struct {
 // is one), and before any request-specific options.
 func NewSourceService(opts ...option.RequestOption) (r SourceService) {
 	r = SourceService{}
-	r.Options = opts
+	r.options = opts
 	return
 }
 
 // List all sources. Requires scope: source:list
 func (r *SourceService) List(ctx context.Context, opts ...option.RequestOption) (res *SourceListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -46,7 +46,7 @@ func (r *SourceService) List(ctx context.Context, opts ...option.RequestOption) 
 
 // Create a new source. Requires scope: source:create
 func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...option.RequestOption) (res *SourceNewResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	path := "rest/v1/sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -54,7 +54,7 @@ func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...o
 
 // Find a single source by ID. Requires scope: source:view
 func (r *SourceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceGetResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -67,7 +67,7 @@ func (r *SourceService) Get(ctx context.Context, id string, opts ...option.Reque
 // Partially update a source. Only the fields you send are changed. Requires scope:
 // source:update
 func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdateParams, opts ...option.RequestOption) (res *SourceUpdateResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -79,7 +79,7 @@ func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdate
 
 // Delete a source. Requires scope: source:delete
 func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -91,7 +91,7 @@ func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.Re
 
 // Fetch install tokens and snippets for a source. Requires scope: source:view
 func (r *SourceService) Tokens(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceTokensResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	opts = slices.Concat(r.options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
