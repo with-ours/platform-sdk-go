@@ -4,6 +4,7 @@ package oursprivacy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -105,6 +106,19 @@ func (r *DestinationService) Delete(ctx context.Context, id string, opts ...opti
 	}
 	path := fmt.Sprintf("rest/v1/destinations/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return res, err
+}
+
+// Lists every destination type the platform supports, with its human-readable
+// label, capability flags (oauth, listsAccounts, supportsRenamedEvents), and the
+// settings descriptor used to configure a destination of that type.
+// Account-agnostic — the response is the same for every API key. Filter
+// client-side to find a specific type (e.g. `Klaviyo`, `Facebook`). Requires
+// scope: destination:list
+func (r *DestinationService) Types(ctx context.Context, opts ...option.RequestOption) (res *DestinationTypesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/destinations/types"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -668,6 +682,297 @@ const (
 	DestinationUpdateResponseTypeZoomInfo                     DestinationUpdateResponseType = "ZoomInfo"
 )
 
+type DestinationTypesResponse struct {
+	Entities []DestinationTypesResponseEntity `json:"entities" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntity struct {
+	// Any of "Audiohook", "BasisPostback", "OursSyntheticData", "FullContact",
+	// "ZoomInfo", "TheTradeDesk", "Braze", "LiveIntent", "ConvertABTestingEvent",
+	// "Customerio", "BingAds", "BingAdsWeb", "HTTPDestination", "Woopra",
+	// "HTTPCustomRequest", "Google", "GoogleAdsServerContainer", "G4Analytics",
+	// "GA4ServerProxy", "GA4MeasurementProtocol", "GoogleAds360", "Facebook",
+	// "Mixpanel", "Amplitude", "TikTok", "Reddit", "Podscribe", "Pinterest",
+	// "Mailchimp", "AWSKinesis", "AWSLambda", "GooglePubSub", "LinkedInAdsCAPI",
+	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds",
+	// "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari", "Viant", "Impact",
+	// "Spotify", "Taboola", "AmazonDSP", "AppLovin", "IHeartMediaMagellan", "Vibe",
+	// "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
+	// "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive", "Admitad", "Plausible",
+	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics".
+	ID           string                                       `json:"id" api:"required"`
+	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
+	Label        string                                       `json:"label" api:"required"`
+	Settings     []DestinationTypesResponseEntitySettingUnion `json:"settings" api:"required"`
+	// Any of "deprecated", "ga".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Capabilities respjson.Field
+		Label        respjson.Field
+		Settings     respjson.Field
+		Status       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntityCapabilities struct {
+	ListsAccounts         bool `json:"listsAccounts" api:"required"`
+	OAuth                 bool `json:"oauth" api:"required"`
+	SupportsRenamedEvents bool `json:"supportsRenamedEvents" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ListsAccounts         respjson.Field
+		OAuth                 respjson.Field
+		SupportsRenamedEvents respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntityCapabilities) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntityCapabilities) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DestinationTypesResponseEntitySettingUnion contains all possible properties and
+// values from [DestinationTypesResponseEntitySettingObject],
+// [DestinationTypesResponseEntitySettingObject2],
+// [DestinationTypesResponseEntitySettingObject3],
+// [DestinationTypesResponseEntitySettingObject4],
+// [DestinationTypesResponseEntitySettingObject5].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type DestinationTypesResponseEntitySettingUnion struct {
+	Key   string `json:"key"`
+	Label string `json:"label"`
+	Type  string `json:"type"`
+	// This field is from variant [DestinationTypesResponseEntitySettingObject2].
+	Options  []DestinationTypesResponseEntitySettingObject2Option `json:"options"`
+	Required bool                                                 `json:"required"`
+	Sublabel string                                               `json:"sublabel"`
+	// This field is from variant [DestinationTypesResponseEntitySettingObject3].
+	DefaultValue bool `json:"defaultValue"`
+	// This field is from variant [DestinationTypesResponseEntitySettingObject5].
+	Placeholder string `json:"placeholder"`
+	JSON        struct {
+		Key          respjson.Field
+		Label        respjson.Field
+		Type         respjson.Field
+		Options      respjson.Field
+		Required     respjson.Field
+		Sublabel     respjson.Field
+		DefaultValue respjson.Field
+		Placeholder  respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+func (u DestinationTypesResponseEntitySettingUnion) AsDestinationTypesResponseEntitySettingObject() (v DestinationTypesResponseEntitySettingObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationTypesResponseEntitySettingUnion) AsDestinationTypesResponseEntitySettingObject2() (v DestinationTypesResponseEntitySettingObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationTypesResponseEntitySettingUnion) AsDestinationTypesResponseEntitySettingObject3() (v DestinationTypesResponseEntitySettingObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationTypesResponseEntitySettingUnion) AsDestinationTypesResponseEntitySettingObject4() (v DestinationTypesResponseEntitySettingObject4) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationTypesResponseEntitySettingUnion) AsDestinationTypesResponseEntitySettingObject5() (v DestinationTypesResponseEntitySettingObject5) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DestinationTypesResponseEntitySettingUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DestinationTypesResponseEntitySettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject struct {
+	Key string `json:"key" api:"required"`
+	// Informational display message only. Do not send this key in POST or PATCH
+	// settings.
+	Label string `json:"label" api:"required"`
+	// Any of "Alert".
+	Type string `json:"type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Label       respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntitySettingObject) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntitySettingObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject2 struct {
+	Key     string                                               `json:"key" api:"required"`
+	Label   string                                               `json:"label" api:"required"`
+	Options []DestinationTypesResponseEntitySettingObject2Option `json:"options" api:"required"`
+	// Any of "Select".
+	Type     string `json:"type" api:"required"`
+	Required bool   `json:"required" api:"nullable"`
+	Sublabel string `json:"sublabel" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Label       respjson.Field
+		Options     respjson.Field
+		Type        respjson.Field
+		Required    respjson.Field
+		Sublabel    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntitySettingObject2) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntitySettingObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject2Option struct {
+	Label string `json:"label" api:"required"`
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Label       respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntitySettingObject2Option) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntitySettingObject2Option) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject3 struct {
+	Key   string `json:"key" api:"required"`
+	Label string `json:"label" api:"required"`
+	// Any of "Switch".
+	Type         string `json:"type" api:"required"`
+	DefaultValue bool   `json:"defaultValue" api:"nullable"`
+	Required     bool   `json:"required" api:"nullable"`
+	Sublabel     string `json:"sublabel" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key          respjson.Field
+		Label        respjson.Field
+		Type         respjson.Field
+		DefaultValue respjson.Field
+		Required     respjson.Field
+		Sublabel     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntitySettingObject3) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntitySettingObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject4 struct {
+	Key   string `json:"key" api:"required"`
+	Label string `json:"label" api:"required"`
+	// Any of "GenericOauth".
+	Type     string `json:"type" api:"required"`
+	Sublabel string `json:"sublabel" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Label       respjson.Field
+		Type        respjson.Field
+		Sublabel    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntitySettingObject4) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntitySettingObject4) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject5 struct {
+	Key         string `json:"key" api:"required"`
+	Label       string `json:"label" api:"required"`
+	Placeholder string `json:"placeholder" api:"required"`
+	// Any of "Text", "Secret".
+	Type     DestinationTypesResponseEntitySettingObject5Type `json:"type" api:"required"`
+	Required bool                                             `json:"required" api:"nullable"`
+	Sublabel string                                           `json:"sublabel" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Label       respjson.Field
+		Placeholder respjson.Field
+		Type        respjson.Field
+		Required    respjson.Field
+		Sublabel    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationTypesResponseEntitySettingObject5) RawJSON() string { return r.JSON.raw }
+func (r *DestinationTypesResponseEntitySettingObject5) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DestinationTypesResponseEntitySettingObject5Type string
+
+const (
+	DestinationTypesResponseEntitySettingObject5TypeText   DestinationTypesResponseEntitySettingObject5Type = "Text"
+	DestinationTypesResponseEntitySettingObject5TypeSecret DestinationTypesResponseEntitySettingObject5Type = "Secret"
+)
+
 type DestinationListParams struct {
 	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
 	// 1 and values above 100 are clamped to 100.
@@ -817,8 +1122,8 @@ type DestinationNewParams struct {
 	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
-	// Per-type configuration keys and values. Call GET /rest/v1/destination-types/{id}
-	// to get the valid keys for your destination type.
+	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
+	// get the valid keys for your destination type.
 	Settings any `json:"settings,omitzero"`
 	paramObj
 }
@@ -909,8 +1214,8 @@ type DestinationUpdateParams struct {
 	HashingSalt        param.Opt[string] `json:"hashingSalt,omitzero"`
 	Name               param.Opt[string] `json:"name,omitzero"`
 	LimitedToSourceIDs []string          `json:"limitedToSourceIds,omitzero"`
-	// Per-type configuration keys and values. Call GET /rest/v1/destination-types/{id}
-	// to get the valid keys for your destination type.
+	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
+	// get the valid keys for your destination type.
 	Settings any `json:"settings,omitzero"`
 	// Any of "Disabled", "Enabled".
 	Status DestinationUpdateParamsStatus `json:"status,omitzero"`
