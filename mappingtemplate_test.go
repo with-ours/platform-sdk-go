@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestDestinationTypeList(t *testing.T) {
+func TestMappingTemplateList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,29 +25,9 @@ func TestDestinationTypeList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.DestinationTypes.List(context.TODO())
-	if err != nil {
-		var apierr *oursprivacy.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDestinationTypeGet(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := oursprivacy.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.DestinationTypes.Get(context.TODO(), "x")
+	_, err := client.MappingTemplates.List(context.TODO(), oursprivacy.MappingTemplateListParams{
+		EntityID: "00000000-0000-0000-0000-000000000000",
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
