@@ -20,6 +20,7 @@ type Client struct {
 	Options               []option.RequestOption
 	AllowedEvents         AllowedEventService
 	ConsentSettings       ConsentSettingService
+	DefaultMappings       DefaultMappingService
 	DestinationTypes      DestinationTypeService
 	Destinations          DestinationService
 	ExperimentSettings    ExperimentSettingService
@@ -28,14 +29,13 @@ type Client struct {
 	GlobalDispatchCenters GlobalDispatchCenterService
 	HeatmapPages          HeatmapPageService
 	Locations             LocationService
+	MappingTemplates      MappingTemplateService
 	Mappings              MappingService
 	ReplaySettings        ReplaySettingService
 	Sources               SourceService
 	Versions              VersionService
 	WebScannerRules       WebScannerRuleService
 	WebScanners           WebScannerService
-	MappingTemplates      MappingTemplateService
-	DefaultMappings       DefaultMappingService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -70,6 +70,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.AllowedEvents = NewAllowedEventService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
+	r.DefaultMappings = NewDefaultMappingService(opts...)
 	r.DestinationTypes = NewDestinationTypeService(opts...)
 	r.Destinations = NewDestinationService(opts...)
 	r.ExperimentSettings = NewExperimentSettingService(opts...)
@@ -78,14 +79,13 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
 	r.HeatmapPages = NewHeatmapPageService(opts...)
 	r.Locations = NewLocationService(opts...)
+	r.MappingTemplates = NewMappingTemplateService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Versions = NewVersionService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
-	r.MappingTemplates = NewMappingTemplateService(opts...)
-	r.DefaultMappings = NewDefaultMappingService(opts...)
 
 	return
 }

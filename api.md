@@ -33,6 +33,20 @@ Methods:
 - <code title="patch /rest/v1/consent-settings/{id}">client.ConsentSettings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingUpdateParams">ConsentSettingUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingUpdateResponse">ConsentSettingUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /rest/v1/consent-settings/{id}">client.ConsentSettings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#ConsentSettingDeleteResponse">ConsentSettingDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# DefaultMappings
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingListResponse">DefaultMappingListResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingGetResponse">DefaultMappingGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingReplaceResponse">DefaultMappingReplaceResponse</a>
+
+Methods:
+
+- <code title="get /rest/v1/default-mappings">client.DefaultMappings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingListResponse">DefaultMappingListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /rest/v1/default-mappings/{id}">client.DefaultMappings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingGetResponse">DefaultMappingGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="put /rest/v1/default-mappings/{id}">client.DefaultMappings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingService.Replace">Replace</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingReplaceParams">DefaultMappingReplaceParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingReplaceResponse">DefaultMappingReplaceResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # DestinationTypes
 
 Response Types:
@@ -175,6 +189,16 @@ Methods:
 - <code title="patch /rest/v1/locations/{id}">client.Locations.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#LocationService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#LocationUpdateParams">LocationUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#LocationUpdateResponse">LocationUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /rest/v1/locations/{id}/embed-code">client.Locations.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#LocationService.EmbedCode">EmbedCode</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#LocationEmbedCodeParams">LocationEmbedCodeParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#LocationEmbedCodeResponse">LocationEmbedCodeResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# MappingTemplates
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateListResponse">MappingTemplateListResponse</a>
+
+Methods:
+
+- <code title="get /rest/v1/mapping-templates">client.MappingTemplates.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateListParams">MappingTemplateListParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateListResponse">MappingTemplateListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Mappings
 
 Response Types:
@@ -290,27 +314,3 @@ Methods:
 - <code title="patch /rest/v1/web-scanners/{id}">client.WebScanners.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerUpdateParams">WebScannerUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerUpdateResponse">WebScannerUpdateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /rest/v1/web-scanners/{id}">client.WebScanners.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerDeleteResponse">WebScannerDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /rest/v1/web-scanners/{id}/trigger">client.WebScanners.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerService.Trigger">Trigger</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#WebScannerTriggerResponse">WebScannerTriggerResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# MappingTemplates
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateListResponse">MappingTemplateListResponse</a>
-
-Methods:
-
-- <code title="get /rest/v1/mapping-templates">client.MappingTemplates.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateListParams">MappingTemplateListParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#MappingTemplateListResponse">MappingTemplateListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-# DefaultMappings
-
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingListResponse">DefaultMappingListResponse</a>
-- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingGetResponse">DefaultMappingGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingReplaceResponse">DefaultMappingReplaceResponse</a>
-
-Methods:
-
-- <code title="get /rest/v1/default-mappings">client.DefaultMappings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingListResponse">DefaultMappingListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /rest/v1/default-mappings/{id}">client.DefaultMappings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingGetResponse">DefaultMappingGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="put /rest/v1/default-mappings/{id}">client.DefaultMappings.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingService.Replace">Replace</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingReplaceParams">DefaultMappingReplaceParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#DefaultMappingReplaceResponse">DefaultMappingReplaceResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
