@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewDestinationTypeService] method instead.
 type DestinationTypeService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewDestinationTypeService generates a new service that applies the given options
@@ -32,7 +32,7 @@ type DestinationTypeService struct {
 // there is one), and before any request-specific options.
 func NewDestinationTypeService(opts ...option.RequestOption) (r DestinationTypeService) {
 	r = DestinationTypeService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -42,7 +42,7 @@ func NewDestinationTypeService(opts ...option.RequestOption) (r DestinationTypeS
 // Account-agnostic — the response is the same for every API key. Requires scope:
 // destination:list
 func (r *DestinationTypeService) List(ctx context.Context, opts ...option.RequestOption) (res *DestinationTypeListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/destination-types"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -52,7 +52,7 @@ func (r *DestinationTypeService) List(ctx context.Context, opts ...option.Reques
 // `Klaviyo`, `Facebook`, `GoogleDataManagerEventIngest`). Returns 404 if the
 // identifier is unknown. Requires scope: destination:list
 func (r *DestinationTypeService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationTypeGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

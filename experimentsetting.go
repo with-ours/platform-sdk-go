@@ -24,7 +24,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewExperimentSettingService] method instead.
 type ExperimentSettingService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewExperimentSettingService generates a new service that applies the given
@@ -32,7 +32,7 @@ type ExperimentSettingService struct {
 // options (if there is one), and before any request-specific options.
 func NewExperimentSettingService(opts ...option.RequestOption) (r ExperimentSettingService) {
 	r = ExperimentSettingService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -40,7 +40,7 @@ func NewExperimentSettingService(opts ...option.RequestOption) (r ExperimentSett
 // `experimentSettingsId` when creating an experiment. Requires scope:
 // experimentSettings:list
 func (r *ExperimentSettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ExperimentSettingListResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiment-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
@@ -49,7 +49,7 @@ func (r *ExperimentSettingService) List(ctx context.Context, opts ...option.Requ
 // Create the account-level experimentation bootstrap record. Most accounts should
 // only ever have one. Requires scope: experimentSettings:create
 func (r *ExperimentSettingService) New(ctx context.Context, body ExperimentSettingNewParams, opts ...option.RequestOption) (res *ExperimentSettingNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiment-settings"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -58,7 +58,7 @@ func (r *ExperimentSettingService) New(ctx context.Context, body ExperimentSetti
 // Find a single experiment settings record by ID. Returns 404 when no record
 // matches the supplied id. Requires scope: experimentSettings:find
 func (r *ExperimentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentSettingGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -71,7 +71,7 @@ func (r *ExperimentSettingService) Get(ctx context.Context, id string, opts ...o
 // Partially update an experiment settings. Only the fields you send are changed.
 // Requires scope: experimentSettings:update
 func (r *ExperimentSettingService) Update(ctx context.Context, id string, body ExperimentSettingUpdateParams, opts ...option.RequestOption) (res *ExperimentSettingUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -85,7 +85,7 @@ func (r *ExperimentSettingService) Update(ctx context.Context, id string, body E
 // experiments, variants, and personalization properties owned by it. Requires
 // scope: experimentSettings:delete
 func (r *ExperimentSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentSettingDeleteResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err

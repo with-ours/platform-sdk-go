@@ -26,7 +26,7 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewExperimentService] method instead.
 type ExperimentService struct {
-	options []option.RequestOption
+	Options []option.RequestOption
 }
 
 // NewExperimentService generates a new service that applies the given options to
@@ -34,7 +34,7 @@ type ExperimentService struct {
 // there is one), and before any request-specific options.
 func NewExperimentService(opts ...option.RequestOption) (r ExperimentService) {
 	r = ExperimentService{}
-	r.options = opts
+	r.Options = opts
 	return
 }
 
@@ -44,7 +44,7 @@ func NewExperimentService(opts ...option.RequestOption) (r ExperimentService) {
 // experiment:list
 func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentListResponse], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "rest/v1/experiments"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -69,7 +69,7 @@ func (r *ExperimentService) ListAutoPaging(ctx context.Context, query Experiment
 
 // Create a new experiment. Requires scope: experiment:create
 func (r *ExperimentService) New(ctx context.Context, body ExperimentNewParams, opts ...option.RequestOption) (res *ExperimentNewResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
@@ -77,7 +77,7 @@ func (r *ExperimentService) New(ctx context.Context, body ExperimentNewParams, o
 
 // Find a single experiment by ID. Requires scope: experiment:find
 func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentGetResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -94,7 +94,7 @@ func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.R
 // (`/start`, `/pause`, `/resume`, `/stop`) to change status. Requires scope:
 // experiment:update
 func (r *ExperimentService) Update(ctx context.Context, id string, body ExperimentUpdateParams, opts ...option.RequestOption) (res *ExperimentUpdateResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -106,7 +106,7 @@ func (r *ExperimentService) Update(ctx context.Context, id string, body Experime
 
 // Delete an experiment. Requires scope: experiment:delete
 func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -124,7 +124,7 @@ func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...optio
 // manual `POST /rest/v1/versions` afterwards). The request body is optional — send
 // `{}` to use defaults. Requires scope: experiment:start
 func (r *ExperimentService) Start(ctx context.Context, id string, body ExperimentStartParams, opts ...option.RequestOption) (res *ExperimentStartResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -137,7 +137,7 @@ func (r *ExperimentService) Start(ctx context.Context, id string, body Experimen
 // Stop an experiment. The request body is optional — send `{}` to stop without
 // recording a winner. Requires scope: experiment:stop
 func (r *ExperimentService) Stop(ctx context.Context, id string, body ExperimentStopParams, opts ...option.RequestOption) (res *ExperimentStopResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -151,7 +151,7 @@ func (r *ExperimentService) Stop(ctx context.Context, id string, body Experiment
 // existing ones; the experiment can later be resumed. The request body is
 // optional. Requires scope: experiment:stop
 func (r *ExperimentService) Pause(ctx context.Context, id string, body ExperimentPauseParams, opts ...option.RequestOption) (res *ExperimentPauseResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -164,7 +164,7 @@ func (r *ExperimentService) Pause(ctx context.Context, id string, body Experimen
 // Resume a previously-paused experiment so new visitors can be assigned again. The
 // request body is optional. Requires scope: experiment:start
 func (r *ExperimentService) Resume(ctx context.Context, id string, body ExperimentResumeParams, opts ...option.RequestOption) (res *ExperimentResumeResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -178,7 +178,7 @@ func (r *ExperimentService) Resume(ctx context.Context, id string, body Experime
 // probability-to-be-best across the experiment runtime window. Requires scope:
 // experiment:find
 func (r *ExperimentService) Results(ctx context.Context, id string, query ExperimentResultsParams, opts ...option.RequestOption) (res *ExperimentResultsResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -197,7 +197,7 @@ func (r *ExperimentService) Results(ctx context.Context, id string, query Experi
 // with no impressions, so an empty `days` array means there was no measured
 // traffic in the window. Requires scope: experiment:find
 func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, query ExperimentResultsTimeSeriesParams, opts ...option.RequestOption) (res *ExperimentResultsTimeSeriesResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
@@ -214,7 +214,7 @@ func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, qu
 // (1–100, default 25) and `cursor`; malformed cursors return 400. Requires scope:
 // experiment:find
 func (r *ExperimentService) SessionReplays(ctx context.Context, id string, query ExperimentSessionReplaysParams, opts ...option.RequestOption) (res *ExperimentSessionReplaysResponse, err error) {
-	opts = slices.Concat(r.options, opts)
+	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
