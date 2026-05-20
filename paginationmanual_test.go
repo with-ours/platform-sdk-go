@@ -24,12 +24,12 @@ func TestManualPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	page, err := client.Destinations.List(context.TODO(), oursprivacy.DestinationListParams{})
+	page, err := client.DataGovernance.List(context.TODO(), oursprivacy.DataGovernanceListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	for _, destination := range page.Entities {
-		t.Logf("%+v\n", destination.ID)
+	for _, dataGovernance := range page.Entities {
+		t.Logf("%+v\n", dataGovernance.ID)
 	}
 	// The mock server isn't going to give us real pagination
 	page, err = page.GetNextPage()
@@ -37,8 +37,8 @@ func TestManualPagination(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 	if page != nil {
-		for _, destination := range page.Entities {
-			t.Logf("%+v\n", destination.ID)
+		for _, dataGovernance := range page.Entities {
+			t.Logf("%+v\n", dataGovernance.ID)
 		}
 	}
 }
