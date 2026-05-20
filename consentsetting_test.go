@@ -314,3 +314,98 @@ func TestConsentSettingDelete(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestConsentSettingAnalyticsWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.ConsentSettings.Analytics(
+		context.TODO(),
+		"id",
+		oursprivacy.ConsentSettingAnalyticsParams{
+			From:                      "2026-04-01",
+			To:                        "2026-04-30",
+			CompareWithPreviousPeriod: oursprivacy.Bool(true),
+			Granularity:               oursprivacy.ConsentSettingAnalyticsParamsGranularityDaily,
+			PagePath:                  oursprivacy.String("/pricing"),
+			Regions:                   oursprivacy.String("California"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConsentSettingPageAnalysisWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.ConsentSettings.PageAnalysis(
+		context.TODO(),
+		"id",
+		oursprivacy.ConsentSettingPageAnalysisParams{
+			From:    "2026-04-01",
+			To:      "2026-04-30",
+			Limit:   oursprivacy.Int(1),
+			Offset:  oursprivacy.Int(0),
+			Regions: oursprivacy.String("California"),
+			Search:  oursprivacy.String("/checkout"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConsentSettingAnalyticsByRegion(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.ConsentSettings.AnalyticsByRegion(
+		context.TODO(),
+		"id",
+		oursprivacy.ConsentSettingAnalyticsByRegionParams{
+			From: "2026-04-01",
+			To:   "2026-04-30",
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
