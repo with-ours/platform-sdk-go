@@ -17,25 +17,24 @@ import (
 // interacting with the ours-privacy-platform API. You should not instantiate this
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options               []option.RequestOption
-	AllowedEvents         AllowedEventService
-	ConsentSettings       ConsentSettingService
-	DefaultMappings       DefaultMappingService
-	Destinations          DestinationService
-	ExperimentSettings    ExperimentSettingService
-	ExperimentVariants    ExperimentVariantService
-	Experiments           ExperimentService
-	GlobalDispatchCenters GlobalDispatchCenterService
-	HeatmapPages          HeatmapPageService
-	Locations             LocationService
-	Mappings              MappingService
-	ReplaySettings        ReplaySettingService
-	Sources               SourceService
-	Versions              VersionService
-	WebScannerRules       WebScannerRuleService
-	WebScanners           WebScannerService
-	ConsentAnalytics      ConsentAnalyticsService
-	DataGovernance        DataGovernanceService
+	Options            []option.RequestOption
+	AllowedEvents      AllowedEventService
+	ConsentAnalytics   ConsentAnalyticsService
+	ConsentSettings    ConsentSettingService
+	DataGovernance     DataGovernanceService
+	DefaultMappings    DefaultMappingService
+	Destinations       DestinationService
+	ExperimentSettings ExperimentSettingService
+	ExperimentVariants ExperimentVariantService
+	Experiments        ExperimentService
+	HeatmapPages       HeatmapPageService
+	Locations          LocationService
+	Mappings           MappingService
+	ReplaySettings     ReplaySettingService
+	Sources            SourceService
+	Versions           VersionService
+	WebScannerRules    WebScannerRuleService
+	WebScanners        WebScannerService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -69,13 +68,14 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r = Client{Options: opts}
 
 	r.AllowedEvents = NewAllowedEventService(opts...)
+	r.ConsentAnalytics = NewConsentAnalyticsService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
+	r.DataGovernance = NewDataGovernanceService(opts...)
 	r.DefaultMappings = NewDefaultMappingService(opts...)
 	r.Destinations = NewDestinationService(opts...)
 	r.ExperimentSettings = NewExperimentSettingService(opts...)
 	r.ExperimentVariants = NewExperimentVariantService(opts...)
 	r.Experiments = NewExperimentService(opts...)
-	r.GlobalDispatchCenters = NewGlobalDispatchCenterService(opts...)
 	r.HeatmapPages = NewHeatmapPageService(opts...)
 	r.Locations = NewLocationService(opts...)
 	r.Mappings = NewMappingService(opts...)
@@ -84,8 +84,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Versions = NewVersionService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
-	r.ConsentAnalytics = NewConsentAnalyticsService(opts...)
-	r.DataGovernance = NewDataGovernanceService(opts...)
 
 	return
 }
