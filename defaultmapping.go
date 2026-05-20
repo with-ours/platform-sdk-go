@@ -102,8 +102,11 @@ type DefaultMappingListResponseEntity struct {
 	IsDefaultMapping bool                                      `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -138,7 +141,15 @@ func (r *DefaultMappingListResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type DefaultMappingListResponseEntityMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -171,8 +182,11 @@ type DefaultMappingGetResponse struct {
 	IsDefaultMapping bool                               `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -207,7 +221,15 @@ func (r *DefaultMappingGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DefaultMappingGetResponseMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -240,8 +262,11 @@ type DefaultMappingReplaceResponse struct {
 	IsDefaultMapping bool                                   `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -276,7 +301,15 @@ func (r *DefaultMappingReplaceResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DefaultMappingReplaceResponseMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -322,7 +355,15 @@ func (r *DefaultMappingReplaceParams) UnmarshalJSON(data []byte) error {
 
 // The properties Map, Property are required.
 type DefaultMappingReplaceParamsMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",

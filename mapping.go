@@ -194,8 +194,11 @@ type MappingListResponse struct {
 	IsDefaultMapping bool                         `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -230,7 +233,15 @@ func (r *MappingListResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingListResponseMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -263,8 +274,11 @@ type MappingNewResponse struct {
 	IsDefaultMapping bool                        `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -299,7 +313,15 @@ func (r *MappingNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingNewResponseMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -332,8 +354,11 @@ type MappingGetResponse struct {
 	IsDefaultMapping bool                        `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -368,7 +393,15 @@ func (r *MappingGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingGetResponseMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -401,8 +434,11 @@ type MappingUpdateResponse struct {
 	IsDefaultMapping bool                           `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -437,7 +473,15 @@ func (r *MappingUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 type MappingUpdateResponseMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -486,8 +530,11 @@ type MappingReorderResponseEntity struct {
 	IsDefaultMapping bool                                  `json:"isDefaultMapping" api:"nullable"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic        any     `json:"logic"`
 	Name         string  `json:"name" api:"nullable"`
@@ -522,7 +569,15 @@ func (r *MappingReorderResponseEntity) UnmarshalJSON(data []byte) error {
 }
 
 type MappingReorderResponseEntityMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -873,8 +928,11 @@ type MappingNewParams struct {
 	TemplateID param.Opt[string] `json:"templateId,omitzero"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic MappingNewParamsLogic `json:"logic,omitzero"`
 	// Template fat-create only. Optional initial property mappings. When omitted the
@@ -894,16 +952,21 @@ func (r *MappingNewParams) UnmarshalJSON(data []byte) error {
 
 // Condition tree gating when this mapping fires. A node is either a leaf
 // `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+// themselves logic nodes, so trees nest arbitrarily.
+//
+// Example leaf:
 // `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+//
 // Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 type MappingNewParamsLogic struct {
-	// All child nodes must match. Each child is a `MappingLogic` node.
+	// All child nodes must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
 	And []any `json:"AND,omitzero"`
-	// Any child node must match. Each child is a `MappingLogic` node.
+	// Any child node must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
 	Or        []any                          `json:"OR,omitzero"`
 	Condition MappingNewParamsLogicCondition `json:"condition,omitzero"`
-	// Negates a single child `MappingLogic` node.
+	// Negates a single child logic node.
 	Not any `json:"NOT,omitzero"`
 	paramObj
 }
@@ -918,6 +981,15 @@ func (r *MappingNewParamsLogic) UnmarshalJSON(data []byte) error {
 
 // The properties Operator, Property, Value are required.
 type MappingNewParamsLogicCondition struct {
+	// Comparison verb in PascalCase. Equality/text: `Is`, `IsNot`, `Contains`,
+	// `DoesNotContain`, `StartsWith`, `EndsWith`. Truthiness/nullability: `IsFalsy`,
+	// `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`, `IsTrue`,
+	// `IsFalse`. Numeric: `IsGreaterThan`, `IsGreaterThanOrEqual`, `IsLessThan`,
+	// `IsLessThanOrEqual`. Set membership: `IsIn`, `IsNotIn`, `IsFoundIn`,
+	// `IsNotFoundIn`. Date: `IsBefore`, `IsAfter`, `IsBetween`, `IsOnOrBefore`,
+	// `IsOnOrAfter`. Regex: `MatchesRegex`, `MatchesRegexIgnoreCase`,
+	// `DoesNotMatchRegex`, `DoesNotMatchRegexIgnoreCase`.
+	//
 	// Any of "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith",
 	// "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined",
 	// "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual",
@@ -925,8 +997,16 @@ type MappingNewParamsLogicCondition struct {
 	// "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex",
 	// "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase".
 	Operator string `json:"operator,omitzero" api:"required"`
+	// Bare dotted path into the event/visitor record. Examples: `$event.event`,
+	// `$event.event_properties.value`, `visitor.consent.marketing`. The leading `$` is
+	// optional and stripped before lookup. Do **not** use `{{...}}` here — that
+	// template syntax is for mapping values (`mappings[].map`), not logic conditions,
+	// and would be compared as a literal string.
 	Property string `json:"property" api:"required"`
-	Value    string `json:"value" api:"required"`
+	// String compared against the resolved property. Operators that take no value
+	// (`IsFalsy`, `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`,
+	// `IsTrue`, `IsFalse`) ignore this field — send `""`.
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -946,7 +1026,15 @@ func init() {
 
 // The properties Map, Property are required.
 type MappingNewParamsMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",
@@ -979,8 +1067,11 @@ type MappingUpdateParams struct {
 	Name      param.Opt[string] `json:"name,omitzero"`
 	// Condition tree gating when this mapping fires. A node is either a leaf
 	// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-	// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+	// themselves logic nodes, so trees nest arbitrarily.
+	//
+	// Example leaf:
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 	Logic    MappingUpdateParamsLogic     `json:"logic,omitzero"`
 	Mappings []MappingUpdateParamsMapping `json:"mappings,omitzero"`
@@ -997,16 +1088,21 @@ func (r *MappingUpdateParams) UnmarshalJSON(data []byte) error {
 
 // Condition tree gating when this mapping fires. A node is either a leaf
 // `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
-// themselves `MappingLogic` nodes, so trees nest arbitrarily. Example leaf:
+// themselves logic nodes, so trees nest arbitrarily.
+//
+// Example leaf:
 // `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+//
 // Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
 type MappingUpdateParamsLogic struct {
-	// All child nodes must match. Each child is a `MappingLogic` node.
+	// All child nodes must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
 	And []any `json:"AND,omitzero"`
-	// Any child node must match. Each child is a `MappingLogic` node.
+	// Any child node must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
 	Or        []any                             `json:"OR,omitzero"`
 	Condition MappingUpdateParamsLogicCondition `json:"condition,omitzero"`
-	// Negates a single child `MappingLogic` node.
+	// Negates a single child logic node.
 	Not any `json:"NOT,omitzero"`
 	paramObj
 }
@@ -1021,6 +1117,15 @@ func (r *MappingUpdateParamsLogic) UnmarshalJSON(data []byte) error {
 
 // The properties Operator, Property, Value are required.
 type MappingUpdateParamsLogicCondition struct {
+	// Comparison verb in PascalCase. Equality/text: `Is`, `IsNot`, `Contains`,
+	// `DoesNotContain`, `StartsWith`, `EndsWith`. Truthiness/nullability: `IsFalsy`,
+	// `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`, `IsTrue`,
+	// `IsFalse`. Numeric: `IsGreaterThan`, `IsGreaterThanOrEqual`, `IsLessThan`,
+	// `IsLessThanOrEqual`. Set membership: `IsIn`, `IsNotIn`, `IsFoundIn`,
+	// `IsNotFoundIn`. Date: `IsBefore`, `IsAfter`, `IsBetween`, `IsOnOrBefore`,
+	// `IsOnOrAfter`. Regex: `MatchesRegex`, `MatchesRegexIgnoreCase`,
+	// `DoesNotMatchRegex`, `DoesNotMatchRegexIgnoreCase`.
+	//
 	// Any of "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith",
 	// "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined",
 	// "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual",
@@ -1028,8 +1133,16 @@ type MappingUpdateParamsLogicCondition struct {
 	// "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex",
 	// "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase".
 	Operator string `json:"operator,omitzero" api:"required"`
+	// Bare dotted path into the event/visitor record. Examples: `$event.event`,
+	// `$event.event_properties.value`, `visitor.consent.marketing`. The leading `$` is
+	// optional and stripped before lookup. Do **not** use `{{...}}` here — that
+	// template syntax is for mapping values (`mappings[].map`), not logic conditions,
+	// and would be compared as a literal string.
 	Property string `json:"property" api:"required"`
-	Value    string `json:"value" api:"required"`
+	// String compared against the resolved property. Operators that take no value
+	// (`IsFalsy`, `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`,
+	// `IsTrue`, `IsFalse`) ignore this field — send `""`.
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
@@ -1049,7 +1162,15 @@ func init() {
 
 // The properties Map, Property are required.
 type MappingUpdateParamsMapping struct {
-	Map      string `json:"map" api:"required"`
+	// Source expression sent to the destination for this `property`. Use `{{...}}`
+	// template syntax to substitute values from the event/visitor record:
+	// `{{event.event}}`, `{{event.event_properties.value}}`, `{{visitor.email}}`. Bare
+	// strings (no `{{}}`) are sent verbatim. Note: `{{...}}` template syntax belongs
+	// HERE, NOT in `logic.condition.property` — logic conditions use bare dotted paths
+	// like `$event.event_properties.value`.
+	Map string `json:"map" api:"required"`
+	// Destination-side field name. Comes from the destination template — discover the
+	// valid set via `GET /rest/v1/mapping-templates?entityId=...`.
 	Property string `json:"property" api:"required"`
 	// Any of "CamelCase", "DmaIP", "DomainOnly", "DomainPathOnly", "DomainPathUTMs",
 	// "DomainUTMs", "FakeDomain", "FakeDomainRealPath", "FakeIP", "FullUrl", "Hash",

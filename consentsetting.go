@@ -11,6 +11,7 @@ import (
 	"slices"
 
 	"github.com/with-ours/platform-sdk-go/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/internal/apiquery"
 	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/option"
 	"github.com/with-ours/platform-sdk-go/packages/param"
@@ -108,6 +109,64 @@ func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...o
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return res, err
+}
+
+// Time-series consent analytics for a single consent settings record: banner
+// views, opt-ins, opt-outs, close-icon clicks, and derived opt-in/out rates per
+// UTC day (or per UTC hour with `granularity=HOURLY`). The window is zero-filled
+// so callers get a contiguous series, and rates are person-level
+// (`COUNT(DISTINCT visitor_id)`). Use the optional `pagePath` and `region` filters
+// to scope to one page or one visitor region; use `compareWithPreviousPeriod=true`
+// to also receive the matching prior window. `DAILY` allows a 90-day window;
+// `HOURLY` is capped at 14 days. Reuses the API-key scope `consentSettings:find`
+// because the endpoint is identified by a consent settings `id`. Requires scope:
+// consentSettings:find
+func (r *ConsentSettingService) Analytics(ctx context.Context, id string, query ConsentSettingAnalyticsParams, opts ...option.RequestOption) (res *ConsentSettingAnalyticsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Per-page consent breakdown for one consent settings record, ranked by opt-outs
+// (descending). Each row bundles banner views, opt-outs, close-icon clicks, and
+// the derived opt-out rate. Documented exception to the cursor-pagination
+// standard: this is a derived read whose underlying GraphQL contract is
+// offset/limit-based; cursors are not used. `search` is a substring match against
+// `pathname`; `region` filters to one visitor region. Reuses the API-key scope
+// `consentSettings:find`. Requires scope: consentSettings:find
+func (r *ConsentSettingService) PageAnalysis(ctx context.Context, id string, query ConsentSettingPageAnalysisParams, opts ...option.RequestOption) (res *ConsentSettingPageAnalysisResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/consent-settings/%s/page-analysis", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Region-grouped consent totals for the window: banner views, opt-ins, opt-outs,
+// close-icon clicks, and derived rates per visitor `country_region_name`, ranked
+// by banner views (descending). Visitors whose region cannot be resolved (e.g. bot
+// traffic, IP geo failure) are bucketed under the literal `Unknown` so per-region
+// counts always sum to the global totals. Use this to discover the region names
+// you can later pass to the `region` filter on
+// `GET /rest/v1/consent-settings/{id}/analytics`. Reuses the API-key scope
+// `consentSettings:find`. Requires scope: consentSettings:find
+func (r *ConsentSettingService) AnalyticsByRegion(ctx context.Context, id string, query ConsentSettingAnalyticsByRegionParams, opts ...option.RequestOption) (res *ConsentSettingAnalyticsByRegionResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics-by-region", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -2863,6 +2922,171 @@ const (
 	ConsentSettingDeleteResponseStatusEnabled  ConsentSettingDeleteResponseStatus = "Enabled"
 )
 
+type ConsentSettingAnalyticsResponse struct {
+	// One entry per time bucket (day or hour, depending on `granularity`) covering the
+	// full window — empty windows are zero-filled so callers can render contiguous
+	// time series without gap-handling logic.
+	Items []ConsentSettingAnalyticsResponseItem `json:"items" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Items       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsResponseItem struct {
+	BannerViews                     int64   `json:"bannerViews" api:"required"`
+	CloseIconClicks                 int64   `json:"closeIconClicks" api:"required"`
+	DateTime                        string  `json:"dateTime" api:"required"`
+	ExplicitOptIns                  int64   `json:"explicitOptIns" api:"required"`
+	ExplicitOptOuts                 int64   `json:"explicitOptOuts" api:"required"`
+	OptInRate                       float64 `json:"optInRate" api:"required"`
+	OptOutRate                      float64 `json:"optOutRate" api:"required"`
+	PercentageChangeBannerViews     float64 `json:"percentageChangeBannerViews" api:"nullable"`
+	PercentageChangeCloseIconClicks float64 `json:"percentageChangeCloseIconClicks" api:"nullable"`
+	PercentageChangeExplicitOptIns  float64 `json:"percentageChangeExplicitOptIns" api:"nullable"`
+	PercentageChangeExplicitOptOuts float64 `json:"percentageChangeExplicitOptOuts" api:"nullable"`
+	PreviousBannerViews             float64 `json:"previousBannerViews" api:"nullable"`
+	PreviousCloseIconClicks         float64 `json:"previousCloseIconClicks" api:"nullable"`
+	PreviousExplicitOptIns          float64 `json:"previousExplicitOptIns" api:"nullable"`
+	PreviousExplicitOptOuts         float64 `json:"previousExplicitOptOuts" api:"nullable"`
+	PreviousOptInRate               float64 `json:"previousOptInRate" api:"nullable"`
+	PreviousOptOutRate              float64 `json:"previousOptOutRate" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews                     respjson.Field
+		CloseIconClicks                 respjson.Field
+		DateTime                        respjson.Field
+		ExplicitOptIns                  respjson.Field
+		ExplicitOptOuts                 respjson.Field
+		OptInRate                       respjson.Field
+		OptOutRate                      respjson.Field
+		PercentageChangeBannerViews     respjson.Field
+		PercentageChangeCloseIconClicks respjson.Field
+		PercentageChangeExplicitOptIns  respjson.Field
+		PercentageChangeExplicitOptOuts respjson.Field
+		PreviousBannerViews             respjson.Field
+		PreviousCloseIconClicks         respjson.Field
+		PreviousExplicitOptIns          respjson.Field
+		PreviousExplicitOptOuts         respjson.Field
+		PreviousOptInRate               respjson.Field
+		PreviousOptOutRate              respjson.Field
+		ExtraFields                     map[string]respjson.Field
+		raw                             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingPageAnalysisResponse struct {
+	// True when at least one more page is available beyond the current window.
+	HasMore bool `json:"hasMore" api:"required"`
+	// Pages with consent activity in the window, ranked by opt-outs (descending). Each
+	// page bundles banner views, opt-outs, close-icon clicks, and the derived opt-out
+	// rate.
+	Items []ConsentSettingPageAnalysisResponseItem `json:"items" api:"required"`
+	// Running count of pages loaded so far (`offset + items.length`). Approximate for
+	// load-more flows; query without `offset` to get the exact size of the first page.
+	Total int64 `json:"total" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		Items       respjson.Field
+		Total       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingPageAnalysisResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingPageAnalysisResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingPageAnalysisResponseItem struct {
+	BannerViews     int64   `json:"bannerViews" api:"required"`
+	CloseIconClicks int64   `json:"closeIconClicks" api:"required"`
+	OptOutRate      float64 `json:"optOutRate" api:"required"`
+	OptOuts         int64   `json:"optOuts" api:"required"`
+	Page            string  `json:"page" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews     respjson.Field
+		CloseIconClicks respjson.Field
+		OptOutRate      respjson.Field
+		OptOuts         respjson.Field
+		Page            respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingPageAnalysisResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingPageAnalysisResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsByRegionResponse struct {
+	// Per-region totals for the window, ranked by banner views (descending). Visitors
+	// whose region cannot be resolved (e.g. bot traffic, IP geo failure) are bucketed
+	// under the literal `Unknown`, so the per-region counts always sum to the global
+	// totals.
+	Regions []ConsentSettingAnalyticsByRegionResponseRegion `json:"regions" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Regions     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsByRegionResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsByRegionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsByRegionResponseRegion struct {
+	BannerViews     int64   `json:"bannerViews" api:"required"`
+	CloseIconClicks int64   `json:"closeIconClicks" api:"required"`
+	ExplicitOptIns  int64   `json:"explicitOptIns" api:"required"`
+	ExplicitOptOuts int64   `json:"explicitOptOuts" api:"required"`
+	OptInRate       float64 `json:"optInRate" api:"required"`
+	OptOutRate      float64 `json:"optOutRate" api:"required"`
+	RegionName      string  `json:"regionName" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews     respjson.Field
+		CloseIconClicks respjson.Field
+		ExplicitOptIns  respjson.Field
+		ExplicitOptOuts respjson.Field
+		OptInRate       respjson.Field
+		OptOutRate      respjson.Field
+		RegionName      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsByRegionResponseRegion) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsByRegionResponseRegion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ConsentSettingReplaceParams struct {
 	// Top-level consent categories. Server re-stamps `priority` to 0..N.
 	Categories []ConsentSettingReplaceParamsCategory `json:"categories,omitzero" api:"required"`
@@ -3598,3 +3822,107 @@ const (
 	ConsentSettingUpdateParamsStatusDisabled ConsentSettingUpdateParamsStatus = "Disabled"
 	ConsentSettingUpdateParamsStatusEnabled  ConsentSettingUpdateParamsStatus = "Enabled"
 )
+
+type ConsentSettingAnalyticsParams struct {
+	// Inclusive lower bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
+	// (14 for `HOURLY` granularity).
+	From string `query:"from" api:"required" json:"-"`
+	// Inclusive upper bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
+	// (14 for `HOURLY` granularity).
+	To string `query:"to" api:"required" json:"-"`
+	// When `true`, each bucket also returns the matching bucket from the immediately
+	// preceding window of equal length (in `previous*` and `percentageChange*`
+	// fields). Defaults to `false`.
+	CompareWithPreviousPeriod param.Opt[bool] `query:"compareWithPreviousPeriod,omitzero" json:"-"`
+	// Filter to events whose `default_properties.pathname` equals this value (exact
+	// match, case-sensitive). Use this to drill into a single page.
+	PagePath param.Opt[string] `query:"pagePath,omitzero" json:"-"`
+	// Filter results to events whose `request_context.country_region_name` is in this
+	// set. Pass a single region (e.g. `California`) or a comma-separated list
+	// (`California,Texas`). Case-sensitive. Use
+	// `GET /rest/v1/consent-settings/{id}/analytics-by-region` to discover the region
+	// names available for an account.
+	Regions param.Opt[string] `query:"regions,omitzero" json:"-"`
+	// Bucket size for the time-series rollup. `DAILY` (default) buckets per UTC day;
+	// `HOURLY` buckets per UTC hour and limits the window to 14 days.
+	//
+	// Any of "DAILY", "HOURLY".
+	Granularity ConsentSettingAnalyticsParamsGranularity `query:"granularity,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConsentSettingAnalyticsParams]'s query parameters as
+// `url.Values`.
+func (r ConsentSettingAnalyticsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Bucket size for the time-series rollup. `DAILY` (default) buckets per UTC day;
+// `HOURLY` buckets per UTC hour and limits the window to 14 days.
+type ConsentSettingAnalyticsParamsGranularity string
+
+const (
+	ConsentSettingAnalyticsParamsGranularityDaily  ConsentSettingAnalyticsParamsGranularity = "DAILY"
+	ConsentSettingAnalyticsParamsGranularityHourly ConsentSettingAnalyticsParamsGranularity = "HOURLY"
+)
+
+type ConsentSettingPageAnalysisParams struct {
+	// Inclusive lower bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
+	// (14 for `HOURLY` granularity).
+	From string `query:"from" api:"required" json:"-"`
+	// Inclusive upper bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
+	// (14 for `HOURLY` granularity).
+	To string `query:"to" api:"required" json:"-"`
+	// Skip this many top-ranked pages before returning. Use together with `limit` for
+	// load-more pagination.
+	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Maximum number of pages to return. Defaults to 50.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter results to events whose `request_context.country_region_name` is in this
+	// set. Pass a single region (e.g. `California`) or a comma-separated list
+	// (`California,Texas`). Case-sensitive. Use
+	// `GET /rest/v1/consent-settings/{id}/analytics-by-region` to discover the region
+	// names available for an account.
+	Regions param.Opt[string] `query:"regions,omitzero" json:"-"`
+	// Case-sensitive substring match against `default_properties.pathname`. Wrapped in
+	// `%...%` server-side.
+	Search param.Opt[string] `query:"search,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConsentSettingPageAnalysisParams]'s query parameters as
+// `url.Values`.
+func (r ConsentSettingPageAnalysisParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type ConsentSettingAnalyticsByRegionParams struct {
+	// Inclusive lower bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
+	// (14 for `HOURLY` granularity).
+	From string `query:"from" api:"required" json:"-"`
+	// Inclusive upper bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
+	// (14 for `HOURLY` granularity).
+	To string `query:"to" api:"required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConsentSettingAnalyticsByRegionParams]'s query parameters
+// as `url.Values`.
+func (r ConsentSettingAnalyticsByRegionParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}

@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestGlobalDispatchCenterListWithOptionalParams(t *testing.T) {
+func TestDataGovernanceListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,7 @@ func TestGlobalDispatchCenterListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.List(context.TODO(), oursprivacy.GlobalDispatchCenterListParams{
+	_, err := client.DataGovernance.List(context.TODO(), oursprivacy.DataGovernanceListParams{
 		Cursor: oursprivacy.String("cursor"),
 		Limit:  oursprivacy.Int(25),
 	})
@@ -38,7 +38,7 @@ func TestGlobalDispatchCenterListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestGlobalDispatchCenterNewWithOptionalParams(t *testing.T) {
+func TestDataGovernanceNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,7 +50,7 @@ func TestGlobalDispatchCenterNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.New(context.TODO(), oursprivacy.GlobalDispatchCenterNewParams{
+	_, err := client.DataGovernance.New(context.TODO(), oursprivacy.DataGovernanceNewParams{
 		IsEnabled: oursprivacy.Bool(true),
 		Name:      oursprivacy.String("name"),
 		Notes:     oursprivacy.String("notes"),
@@ -64,7 +64,7 @@ func TestGlobalDispatchCenterNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestGlobalDispatchCenterGet(t *testing.T) {
+func TestDataGovernanceGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -76,7 +76,7 @@ func TestGlobalDispatchCenterGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.Get(context.TODO(), "id")
+	_, err := client.DataGovernance.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -86,7 +86,7 @@ func TestGlobalDispatchCenterGet(t *testing.T) {
 	}
 }
 
-func TestGlobalDispatchCenterUpdateWithOptionalParams(t *testing.T) {
+func TestDataGovernanceUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -98,16 +98,25 @@ func TestGlobalDispatchCenterUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.Update(
+	_, err := client.DataGovernance.Update(
 		context.TODO(),
 		"id",
-		oursprivacy.GlobalDispatchCenterUpdateParams{
-			Categories: []oursprivacy.GlobalDispatchCenterUpdateParamsCategory{{
+		oursprivacy.DataGovernanceUpdateParams{
+			Categories: []oursprivacy.DataGovernanceUpdateParamsCategory{{
 				Description:    oursprivacy.String("description"),
 				DestinationIDs: []string{"string"},
-				Logic:          map[string]any{},
-				Name:           oursprivacy.String("name"),
-				Priority:       oursprivacy.Float(0),
+				Logic: oursprivacy.DataGovernanceUpdateParamsCategoryLogic{
+					And: []any{map[string]any{}},
+					Condition: oursprivacy.DataGovernanceUpdateParamsCategoryLogicCondition{
+						Operator: "Is",
+						Property: "property",
+						Value:    "value",
+					},
+					Not: map[string]any{},
+					Or:  []any{map[string]any{}},
+				},
+				Name:     oursprivacy.String("name"),
+				Priority: oursprivacy.Float(0),
 			}},
 			IsEnabled: oursprivacy.Bool(true),
 			Name:      oursprivacy.String("name"),
@@ -123,7 +132,7 @@ func TestGlobalDispatchCenterUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestGlobalDispatchCenterDelete(t *testing.T) {
+func TestDataGovernanceDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -135,7 +144,7 @@ func TestGlobalDispatchCenterDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.GlobalDispatchCenters.Delete(context.TODO(), "id")
+	_, err := client.DataGovernance.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
