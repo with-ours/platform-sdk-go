@@ -285,11 +285,11 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Destinations.ListAutoPaging(context.TODO(), oursprivacy.DestinationListParams{})
+iter := client.DataGovernance.ListAutoPaging(context.TODO(), oursprivacy.DataGovernanceListParams{})
 // Automatically fetches more pages as needed.
 for iter.Next() {
-	destinationListResponse := iter.Current()
-	fmt.Printf("%+v\n", destinationListResponse)
+	dataGovernanceListResponse := iter.Current()
+	fmt.Printf("%+v\n", dataGovernanceListResponse)
 }
 if err := iter.Err(); err != nil {
 	panic(err.Error())
@@ -300,10 +300,10 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Destinations.List(context.TODO(), oursprivacy.DestinationListParams{})
+page, err := client.DataGovernance.List(context.TODO(), oursprivacy.DataGovernanceListParams{})
 for page != nil {
-	for _, destination := range page.Entities {
-		fmt.Printf("%+v\n", destination)
+	for _, dataGovernance := range page.Entities {
+		fmt.Printf("%+v\n", dataGovernance)
 	}
 	page, err = page.GetNextPage()
 }
