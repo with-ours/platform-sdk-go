@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestSourceList(t *testing.T) {
+func TestSourceListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,13 @@ func TestSourceList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.List(context.TODO())
+	_, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
+		Cursor:       oursprivacy.String("cursor"),
+		Limit:        oursprivacy.Int(25),
+		NameContains: oursprivacy.String("nameContains"),
+		Status:       oursprivacy.SourceListParamsStatusDisabled,
+		Type:         oursprivacy.SourceListParamsTypeAlchemerWebhook,
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -98,7 +104,6 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.SourceUpdateParams{
-			Status:                oursprivacy.SourceUpdateParamsStatusDisabled,
 			BotControlMode:        oursprivacy.String("botControlMode"),
 			BotScoreThreshold:     oursprivacy.Float(0),
 			ExcludeRequestContext: oursprivacy.Bool(true),
@@ -107,6 +112,7 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 			ProjectAPIKey:         oursprivacy.String("projectAPIKey"),
 			RedirectURL:           oursprivacy.String("redirectUrl"),
 			SelectedAccountID:     oursprivacy.String("selectedAccountId"),
+			Status:                oursprivacy.String("status"),
 			WhitelistDomains:      []string{"string"},
 			WhitelistIPs:          []string{"string"},
 		},

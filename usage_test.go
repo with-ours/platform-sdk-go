@@ -24,9 +24,9 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	sources, err := client.Sources.List(context.TODO())
+	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", sources.Entities)
+	t.Logf("%+v\n", page)
 }
