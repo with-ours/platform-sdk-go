@@ -56,11 +56,11 @@ func main() {
 	client := oursprivacy.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
 	)
-	sources, err := client.Sources.List(context.TODO())
+	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", sources.Entities)
+	fmt.Printf("%+v\n", page)
 }
 
 ```
@@ -285,11 +285,11 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.DataGovernance.ListAutoPaging(context.TODO(), oursprivacy.DataGovernanceListParams{})
+iter := client.Sources.ListAutoPaging(context.TODO(), oursprivacy.SourceListParams{})
 // Automatically fetches more pages as needed.
 for iter.Next() {
-	dataGovernanceListResponse := iter.Current()
-	fmt.Printf("%+v\n", dataGovernanceListResponse)
+	sourceListResponse := iter.Current()
+	fmt.Printf("%+v\n", sourceListResponse)
 }
 if err := iter.Err(); err != nil {
 	panic(err.Error())
@@ -300,10 +300,10 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.DataGovernance.List(context.TODO(), oursprivacy.DataGovernanceListParams{})
+page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
 for page != nil {
-	for _, dataGovernance := range page.Entities {
-		fmt.Printf("%+v\n", dataGovernance)
+	for _, source := range page.Entities {
+		fmt.Printf("%+v\n", source)
 	}
 	page, err = page.GetNextPage()
 }
@@ -322,7 +322,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Sources.List(context.TODO())
+_, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
 if err != nil {
 	var apierr *oursprivacy.Error
 	if errors.As(err, &apierr) {
@@ -349,6 +349,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Sources.List(
 	ctx,
+	oursprivacy.SourceListParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -382,7 +383,11 @@ client := oursprivacy.NewClient(
 )
 
 // Override per-request:
-client.Sources.List(context.TODO(), option.WithMaxRetries(5))
+client.Sources.List(
+	context.TODO(),
+	oursprivacy.SourceListParams{},
+	option.WithMaxRetries(5),
+)
 ```
 
 ### Accessing raw response data (e.g. response headers)
@@ -393,11 +398,15 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-sources, err := client.Sources.List(context.TODO(), option.WithResponseInto(&response))
+page, err := client.Sources.List(
+	context.TODO(),
+	oursprivacy.SourceListParams{},
+	option.WithResponseInto(&response),
+)
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", sources)
+fmt.Printf("%+v\n", page)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

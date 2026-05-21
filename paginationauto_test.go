@@ -24,11 +24,11 @@ func TestAutoPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	iter := client.DataGovernance.ListAutoPaging(context.TODO(), oursprivacy.DataGovernanceListParams{})
+	iter := client.Sources.ListAutoPaging(context.TODO(), oursprivacy.SourceListParams{})
 	// The mock server isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
-		dataGovernance := iter.Current()
-		t.Logf("%+v\n", dataGovernance.ID)
+		source := iter.Current()
+		t.Logf("%+v\n", source.ID)
 	}
 	if err := iter.Err(); err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
