@@ -674,7 +674,7 @@ func (r *SourceTokensResponseObject) UnmarshalJSON(data []byte) error {
 }
 
 type SourceTokensResponseObject2 struct {
-	// Source token (the source id).
+	// Ingest token embedded in the webhook URL path.
 	Token string `json:"token" api:"required"`
 	// Production ingest URL for the webhook source.
 	IngestURL string `json:"ingestUrl" api:"required"`
@@ -687,7 +687,7 @@ type SourceTokensResponseObject2 struct {
 	SourceType string `json:"sourceType" api:"required"`
 	// Test-mode ingest URL.
 	TestIngestURL string `json:"testIngestUrl" api:"required"`
-	// Test-mode token derived from `token`.
+	// Test-mode ingest token derived from `token`.
 	TestToken string `json:"testToken" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
