@@ -138,9 +138,14 @@ type TagManagerTriggerListResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Trigger implementation identifier — typically equals `type`.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Trigger string `json:"Trigger" api:"required"`
-	// Trigger type (e.g. `Initialization`, `PageView`, `Click`).
+	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
+	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
+	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
+	// `GET /tag-manager-triggers/types` for the canonical set. Note there is no plain
+	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
@@ -183,9 +188,14 @@ type TagManagerTriggerNewResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Trigger implementation identifier — typically equals `type`.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Trigger string `json:"Trigger" api:"required"`
-	// Trigger type (e.g. `Initialization`, `PageView`, `Click`).
+	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
+	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
+	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
+	// `GET /tag-manager-triggers/types` for the canonical set. Note there is no plain
+	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
@@ -228,9 +238,14 @@ type TagManagerTriggerGetResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Trigger implementation identifier — typically equals `type`.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Trigger string `json:"Trigger" api:"required"`
-	// Trigger type (e.g. `Initialization`, `PageView`, `Click`).
+	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
+	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
+	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
+	// `GET /tag-manager-triggers/types` for the canonical set. Note there is no plain
+	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
@@ -273,9 +288,14 @@ type TagManagerTriggerUpdateResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Trigger implementation identifier — typically equals `type`.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Trigger string `json:"Trigger" api:"required"`
-	// Trigger type (e.g. `Initialization`, `PageView`, `Click`).
+	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
+	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
+	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
+	// `GET /tag-manager-triggers/types` for the canonical set. Note there is no plain
+	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
@@ -482,9 +502,11 @@ type TagManagerTriggerNewParams struct {
 	Parameters map[string]any `json:"parameters,omitzero" api:"required"`
 	// Parent tag manager that will own the new trigger.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Trigger implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Trigger string `json:"Trigger" api:"required"`
-	// Trigger type discriminator.
+	// Trigger type discriminator. Pick from `GET /tag-manager-triggers/types` for the
+	// canonical set (e.g. `PageView`, `CustomEvent`, `AllElementsClick`).
 	Type    string          `json:"type" api:"required"`
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	paramObj
@@ -503,9 +525,11 @@ type TagManagerTriggerUpdateParams struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Updated trigger name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Updated trigger implementation identifier.
+	// Must equal `type`. Omit both fields, or send both with the same value — the
+	// server rejects any divergence.
 	Trigger param.Opt[string] `json:"Trigger,omitzero"`
-	// Updated trigger type.
+	// Updated trigger type. Pick from `GET /tag-manager-triggers/types`. When changing
+	// `type`, send the new value in `Trigger` as well (they must match).
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Replaces conditions wholesale when sent. Use `[]` for an unconditional trigger.
 	Conditions []map[string]any `json:"conditions,omitzero"`
