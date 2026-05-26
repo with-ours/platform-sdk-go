@@ -142,9 +142,8 @@ func (r *MappingService) Reorder(ctx context.Context, body MappingReorderParams,
 // `POST /rest/v1/mappings` (template fat-create variant), and use each entry under
 // `mappings[]` to learn the valid `property`, `kind`, `modificationOptions`, and
 // any enforced `options`. The `isDefault: true` entry is the destination's
-// built-in default template (the one stored at `MAPPER#{destinationId}` when
-// configured via `PUT /rest/v1/default-mappings/{destinationId}`). Requires scope:
-// mapping:find
+// built-in default template, configured via
+// `PUT /rest/v1/default-mappings/{destinationId}`. Requires scope: mapping:find
 func (r *MappingService) Templates(ctx context.Context, query MappingTemplatesParams, opts ...option.RequestOption) (res *MappingTemplatesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/templates"
@@ -165,9 +164,9 @@ func (r *MappingService) DefaultVariables(ctx context.Context, opts ...option.Re
 
 // Lists the custom variables observed in this account’s recent event stream (last
 // 14 days). These are dot-paths under `event.event_properties.*` that callers can
-// target in mapping `value` fields. The result is cached for 10 minutes; an empty
-// list means no custom properties have been seen yet for this account. Requires
-// scope: variables:find-custom
+// target in mapping `value` fields. Newly seen properties may take a few minutes
+// to appear; an empty list means no custom properties have been observed yet for
+// this account. Requires scope: variables:find-custom
 func (r *MappingService) CustomVariables(ctx context.Context, opts ...option.RequestOption) (res *MappingCustomVariablesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/custom-variables"

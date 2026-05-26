@@ -75,9 +75,9 @@ func (r *LocationService) Update(ctx context.Context, id string, body LocationUp
 
 // Generate the paste-ready HTML embed snippet for a location. The response is a
 // single self-contained HTML string (a `<style>` block + `<div>` wrapping an
-// `<iframe>` pointed at the maps CDN for the current stage, plus an optional
-// JSON-LD `<script>`). Customize the render with the optional query params
-// (`color`, `theme`, `colorScheme`, `mapStyle`, `includeAddressBox`, `zoom`,
+// `<iframe>` pointed at the Ours Privacy maps CDN, plus an optional JSON-LD
+// `<script>`). Customize the render with the optional query params (`color`,
+// `theme`, `colorScheme`, `mapStyle`, `includeAddressBox`, `zoom`,
 // `includeControls`, `includeSEOSchema`); all have sane defaults. Requires scope:
 // maps:find
 func (r *LocationService) EmbedCode(ctx context.Context, id string, query LocationEmbedCodeParams, opts ...option.RequestOption) (res *LocationEmbedCodeResponse, err error) {

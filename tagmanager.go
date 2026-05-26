@@ -49,9 +49,13 @@ func (r *TagManagerService) List(ctx context.Context, opts ...option.RequestOpti
 
 // Create a new tag manager. The server seeds three default triggers
 // (`Initialization`, `PageView`, `DomReady`) and one `OursInitTag` so the
-// container is immediately usable. Returns the bare entity. Accounts have a
-// per-account tag manager limit — exceeding it returns 409 with the reason in the
-// response `error` field. Requires scope: tagManagers:create
+// container is immediately usable — call
+// `GET /tag-manager-triggers?tagManagerId={id}` right after create to grab their
+// server-assigned ids so you can reuse them in `fireTriggerIds` instead of
+// redundantly creating a second `PageView`/`DomReady`/`Initialization`. Returns
+// the bare entity. Accounts have a per-account tag manager limit — exceeding it
+// returns 409 with the reason in the response `error` field. Requires scope:
+// tagManagers:create
 func (r *TagManagerService) New(ctx context.Context, body TagManagerNewParams, opts ...option.RequestOption) (res *TagManagerNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-managers"

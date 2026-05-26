@@ -145,12 +145,15 @@ type TagManagerTagListResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Tag implementation identifier — usually matches `type` but kept distinct for
-	// legacy tags whose implementation diverged from the type label.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Tag type discriminator (e.g. `GA4Event`, `MetaPixel`, `OursInitTag`).
+	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
+	// `OursInitTag`, `OursIdentifyTag`, `CustomHtmlTag`. Pick from
+	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
+	// not valid ids.
 	Type string `json:"type" api:"required"`
 	// Triggers that suppress this tag when they match — evaluated after fire triggers.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
@@ -202,12 +205,15 @@ type TagManagerTagNewResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Tag implementation identifier — usually matches `type` but kept distinct for
-	// legacy tags whose implementation diverged from the type label.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Tag type discriminator (e.g. `GA4Event`, `MetaPixel`, `OursInitTag`).
+	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
+	// `OursInitTag`, `OursIdentifyTag`, `CustomHtmlTag`. Pick from
+	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
+	// not valid ids.
 	Type string `json:"type" api:"required"`
 	// Triggers that suppress this tag when they match — evaluated after fire triggers.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
@@ -259,12 +265,15 @@ type TagManagerTagGetResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Tag implementation identifier — usually matches `type` but kept distinct for
-	// legacy tags whose implementation diverged from the type label.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Tag type discriminator (e.g. `GA4Event`, `MetaPixel`, `OursInitTag`).
+	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
+	// `OursInitTag`, `OursIdentifyTag`, `CustomHtmlTag`. Pick from
+	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
+	// not valid ids.
 	Type string `json:"type" api:"required"`
 	// Triggers that suppress this tag when they match — evaluated after fire triggers.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
@@ -316,12 +325,15 @@ type TagManagerTagUpdateResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Tag implementation identifier — usually matches `type` but kept distinct for
-	// legacy tags whose implementation diverged from the type label.
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Tag type discriminator (e.g. `GA4Event`, `MetaPixel`, `OursInitTag`).
+	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
+	// `OursInitTag`, `OursIdentifyTag`, `CustomHtmlTag`. Pick from
+	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
+	// not valid ids.
 	Type string `json:"type" api:"required"`
 	// Triggers that suppress this tag when they match — evaluated after fire triggers.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
@@ -534,11 +546,14 @@ type TagManagerTagNewParams struct {
 	Name string `json:"name" api:"required"`
 	// Type-specific JSON configuration. Send `{}` for a placeholder.
 	Parameters map[string]any `json:"parameters,omitzero" api:"required"`
-	// Tag implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that will own the new tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Tag type discriminator (e.g. `GA4Event`).
+	// Tag type discriminator. Pick from `GET /tag-manager-tags/types` for the
+	// canonical set (e.g. `OursTrackTag`, `OursInitTag`, `CustomHtmlTag`). Names like
+	// `GA4Event` are not valid ids.
 	Type string `json:"type" api:"required"`
 	// Defaults to `true`.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -564,9 +579,11 @@ type TagManagerTagUpdateParams struct {
 	Priority param.Opt[float64] `json:"priority,omitzero"`
 	// Updated tag name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Updated tag implementation identifier.
+	// Must equal `type`. Omit both fields, or send both with the same value — the
+	// server rejects any divergence.
 	Tag param.Opt[string] `json:"Tag,omitzero"`
-	// Updated tag type.
+	// Updated tag type. Pick from `GET /tag-manager-tags/types`. When changing `type`,
+	// send the new value in `Tag` as well (they must match).
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Replaces the block trigger list wholesale. Send `null` to clear.
 	BlockTriggerIDs []string `json:"blockTriggerIds,omitzero"`
