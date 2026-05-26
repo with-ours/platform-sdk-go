@@ -137,9 +137,12 @@ type TagManagerVariableListResponse struct {
 	// Type-specific configuration.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Variable type (e.g. `DataLayer`, `Constant`, `LookUpTable`).
+	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
+	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
+	// `GET /tag-manager-variables/types` for the canonical set.
 	Type string `json:"type" api:"required"`
-	// Variable implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Variable  string `json:"Variable" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
@@ -185,9 +188,12 @@ type TagManagerVariableNewResponse struct {
 	// Type-specific configuration.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Variable type (e.g. `DataLayer`, `Constant`, `LookUpTable`).
+	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
+	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
+	// `GET /tag-manager-variables/types` for the canonical set.
 	Type string `json:"type" api:"required"`
-	// Variable implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Variable  string `json:"Variable" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
@@ -233,9 +239,12 @@ type TagManagerVariableGetResponse struct {
 	// Type-specific configuration.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Variable type (e.g. `DataLayer`, `Constant`, `LookUpTable`).
+	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
+	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
+	// `GET /tag-manager-variables/types` for the canonical set.
 	Type string `json:"type" api:"required"`
-	// Variable implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Variable  string `json:"Variable" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
@@ -281,9 +290,12 @@ type TagManagerVariableUpdateResponse struct {
 	// Type-specific configuration.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Variable type (e.g. `DataLayer`, `Constant`, `LookUpTable`).
+	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
+	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
+	// `GET /tag-manager-variables/types` for the canonical set.
 	Type string `json:"type" api:"required"`
-	// Variable implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Variable  string `json:"Variable" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
@@ -498,9 +510,11 @@ type TagManagerVariableNewParams struct {
 	Parameters map[string]any `json:"parameters,omitzero" api:"required"`
 	// Parent tag manager that will own the new variable.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Variable type discriminator.
+	// Variable type discriminator. Pick from `GET /tag-manager-variables/types` for
+	// the canonical set (e.g. `DataLayer`, `Constant`, `Cookie`, `Url`).
 	Type string `json:"type" api:"required"`
-	// Variable implementation identifier (typically equals `type`).
+	// Must equal `type` — send the same string in both fields. The server rejects any
+	// divergent value.
 	Variable string          `json:"Variable" api:"required"`
 	Enabled  param.Opt[bool] `json:"enabled,omitzero"`
 	// Optional default value. JSON value of any type.
@@ -523,9 +537,11 @@ type TagManagerVariableUpdateParams struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Updated variable name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Updated variable type.
+	// Updated variable type. Pick from `GET /tag-manager-variables/types`. When
+	// changing `type`, send the new value in `Variable` as well (they must match).
 	Type param.Opt[string] `json:"type,omitzero"`
-	// Updated variable implementation identifier.
+	// Must equal `type`. Omit both fields, or send both with the same value — the
+	// server rejects any divergence.
 	Variable param.Opt[string] `json:"Variable,omitzero"`
 	// Updated default value. JSON value of any type.
 	DefaultValue map[string]any `json:"defaultValue,omitzero"`

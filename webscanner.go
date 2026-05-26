@@ -103,13 +103,12 @@ func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...optio
 }
 
 // Manually kick off a new scan for this web scanner. The request body is empty (or
-// `{}`). A successful response means the enqueue request was accepted; because the
-// scan starts asynchronously, the returned entity may still reflect pre-trigger
-// values for fields like `scanStatus` and `lastScanStartedAt`. The trigger is
+// `{}`). A successful response means the request was accepted; because the scan
+// starts asynchronously, the returned entity may still reflect pre-trigger values
+// for fields like `scanStatus` and `lastScanStartedAt`. The trigger is
 // rate-limited: a 409 is returned if another scan is already in flight, the
-// per-account cooldown has not elapsed, or the trigger backend rejects the
-// request; the reason is in the response `error` field. Requires scope:
-// webScanner:trigger
+// per-account cooldown has not elapsed, or the request was otherwise rejected; the
+// reason is in the response `error` field. Requires scope: webScanner:trigger
 func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerTriggerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
