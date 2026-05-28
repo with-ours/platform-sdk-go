@@ -17,29 +17,30 @@ import (
 // interacting with the ours-privacy-platform API. You should not instantiate this
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options             []option.RequestOption
-	AllowedEvents       AllowedEventService
-	ConsentAnalytics    ConsentAnalyticsService
-	ConsentSettings     ConsentSettingService
-	DataGovernance      DataGovernanceService
-	DefaultMappings     DefaultMappingService
-	Destinations        DestinationService
-	ExperimentSettings  ExperimentSettingService
-	ExperimentVariants  ExperimentVariantService
-	Experiments         ExperimentService
-	HeatmapPages        HeatmapPageService
-	Locations           LocationService
-	Mappings            MappingService
-	ReplaySettings      ReplaySettingService
-	Sources             SourceService
-	Versions            VersionService
-	WebScannerRules     WebScannerRuleService
-	WebScanners         WebScannerService
-	TagManagers         TagManagerService
-	TagManagerTags      TagManagerTagService
-	TagManagerTriggers  TagManagerTriggerService
-	TagManagerVariables TagManagerVariableService
-	TagManagerFolders   TagManagerFolderService
+	Options                []option.RequestOption
+	AllowedEvents          AllowedEventService
+	ConsentAnalytics       ConsentAnalyticsService
+	ConsentSettings        ConsentSettingService
+	DataGovernance         DataGovernanceService
+	DefaultMappings        DefaultMappingService
+	Destinations           DestinationService
+	ExperimentSettings     ExperimentSettingService
+	ExperimentVariants     ExperimentVariantService
+	Experiments            ExperimentService
+	HeatmapPages           HeatmapPageService
+	Locations              LocationService
+	Mappings               MappingService
+	ReplaySettings         ReplaySettingService
+	Sources                SourceService
+	Versions               VersionService
+	WebScannerRules        WebScannerRuleService
+	WebScanners            WebScannerService
+	TagManagers            TagManagerService
+	TagManagerTags         TagManagerTagService
+	TagManagerTriggers     TagManagerTriggerService
+	TagManagerVariables    TagManagerVariableService
+	TagManagerFolders      TagManagerFolderService
+	TagManagerAssetFolders TagManagerAssetFolderService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -94,6 +95,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.TagManagerTriggers = NewTagManagerTriggerService(opts...)
 	r.TagManagerVariables = NewTagManagerVariableService(opts...)
 	r.TagManagerFolders = NewTagManagerFolderService(opts...)
+	r.TagManagerAssetFolders = NewTagManagerAssetFolderService(opts...)
 
 	return
 }

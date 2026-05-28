@@ -832,7 +832,7 @@ func (r *DataGovernanceUpdateResponseCategoryLogicCondition) UnmarshalJSON(data 
 type DataGovernanceDeleteResponse struct {
 	// The id of the data-governance record that was deleted.
 	ID string `json:"id" api:"required"`
-	// True when the underlying mutation succeeded; the entity is gone.
+	// True when the record was deleted.
 	Deleted bool `json:"deleted" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

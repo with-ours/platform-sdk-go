@@ -60,7 +60,6 @@ func TestTagManagerTriggerNewWithOptionalParams(t *testing.T) {
 			"foo": "bar",
 		},
 		TagManagerID: "x",
-		Trigger:      "Trigger",
 		Type:         "type",
 		Enabled:      oursprivacy.Bool(true),
 	})
@@ -119,8 +118,7 @@ func TestTagManagerTriggerUpdateWithOptionalParams(t *testing.T) {
 			Parameters: map[string]any{
 				"foo": "bar",
 			},
-			Trigger: oursprivacy.String("Trigger"),
-			Type:    oursprivacy.String("type"),
+			Type: oursprivacy.String("type"),
 		},
 	)
 	if err != nil {

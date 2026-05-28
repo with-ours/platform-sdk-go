@@ -70,9 +70,8 @@ func (r *TagManagerTagService) ListAutoPaging(ctx context.Context, query TagMana
 }
 
 // Create a new tag inside a tag manager. `tagManagerId` is required in the body.
-// Newly created tags are not assigned to any folder — use the GraphQL
-// `assignTagManagerAssetToFolder` mutation to place them. Requires scope:
-// tagManagers:update
+// Newly created tags are not assigned to any folder — assign after creation via
+// PATCH with `folderId`. Requires scope: tagManagers:update
 func (r *TagManagerTagService) New(ctx context.Context, body TagManagerTagNewParams, opts ...option.RequestOption) (res *TagManagerTagNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-tags"
@@ -93,10 +92,9 @@ func (r *TagManagerTagService) Get(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
-// Partially update a tag. Only the fields you send are changed. `folderId` is
-// read-only here; change folder membership via the GraphQL
-// `assignTagManagerAssetToFolder` mutation. Tags cannot be moved between tag
-// managers (omit `tagManagerId` on patch). Requires scope: tagManagers:update
+// Partially update a tag. Only the fields you send are changed. Tags cannot be
+// moved between tag managers. To assign a tag to a folder, use
+// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
 func (r *TagManagerTagService) Update(ctx context.Context, id string, body TagManagerTagUpdateParams, opts ...option.RequestOption) (res *TagManagerTagUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -145,9 +143,6 @@ type TagManagerTagListResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
@@ -160,8 +155,8 @@ type TagManagerTagListResponse struct {
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
 	Enabled bool `json:"enabled" api:"nullable"`
-	// Folder this tag belongs to in the dashboard. Read-only on this endpoint — change
-	// folder membership via the GraphQL `assignTagManagerAssetToFolder` mutation.
+	// Folder this tag belongs to in the dashboard. Settable via PATCH — send a folder
+	// UUID to assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Lower numbers fire first. Defaults to 0.
 	Priority  float64 `json:"priority" api:"nullable"`
@@ -173,7 +168,6 @@ type TagManagerTagListResponse struct {
 		FireTriggerIDs  respjson.Field
 		Name            respjson.Field
 		Parameters      respjson.Field
-		Tag             respjson.Field
 		TagManagerID    respjson.Field
 		Type            respjson.Field
 		BlockTriggerIDs respjson.Field
@@ -205,9 +199,6 @@ type TagManagerTagNewResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
@@ -220,8 +211,8 @@ type TagManagerTagNewResponse struct {
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
 	Enabled bool `json:"enabled" api:"nullable"`
-	// Folder this tag belongs to in the dashboard. Read-only on this endpoint — change
-	// folder membership via the GraphQL `assignTagManagerAssetToFolder` mutation.
+	// Folder this tag belongs to in the dashboard. Settable via PATCH — send a folder
+	// UUID to assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Lower numbers fire first. Defaults to 0.
 	Priority  float64 `json:"priority" api:"nullable"`
@@ -233,7 +224,6 @@ type TagManagerTagNewResponse struct {
 		FireTriggerIDs  respjson.Field
 		Name            respjson.Field
 		Parameters      respjson.Field
-		Tag             respjson.Field
 		TagManagerID    respjson.Field
 		Type            respjson.Field
 		BlockTriggerIDs respjson.Field
@@ -265,9 +255,6 @@ type TagManagerTagGetResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
@@ -280,8 +267,8 @@ type TagManagerTagGetResponse struct {
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
 	Enabled bool `json:"enabled" api:"nullable"`
-	// Folder this tag belongs to in the dashboard. Read-only on this endpoint — change
-	// folder membership via the GraphQL `assignTagManagerAssetToFolder` mutation.
+	// Folder this tag belongs to in the dashboard. Settable via PATCH — send a folder
+	// UUID to assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Lower numbers fire first. Defaults to 0.
 	Priority  float64 `json:"priority" api:"nullable"`
@@ -293,7 +280,6 @@ type TagManagerTagGetResponse struct {
 		FireTriggerIDs  respjson.Field
 		Name            respjson.Field
 		Parameters      respjson.Field
-		Tag             respjson.Field
 		TagManagerID    respjson.Field
 		Type            respjson.Field
 		BlockTriggerIDs respjson.Field
@@ -325,9 +311,6 @@ type TagManagerTagUpdateResponse struct {
 	// tag of the same type for the field set. Empty object is valid for placeholder
 	// tags.
 	Parameters map[string]any `json:"parameters" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that owns this tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Tag type discriminator. Examples that exist today: `OursTrackTag`,
@@ -340,8 +323,8 @@ type TagManagerTagUpdateResponse struct {
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
 	Enabled bool `json:"enabled" api:"nullable"`
-	// Folder this tag belongs to in the dashboard. Read-only on this endpoint — change
-	// folder membership via the GraphQL `assignTagManagerAssetToFolder` mutation.
+	// Folder this tag belongs to in the dashboard. Settable via PATCH — send a folder
+	// UUID to assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Lower numbers fire first. Defaults to 0.
 	Priority  float64 `json:"priority" api:"nullable"`
@@ -353,7 +336,6 @@ type TagManagerTagUpdateResponse struct {
 		FireTriggerIDs  respjson.Field
 		Name            respjson.Field
 		Parameters      respjson.Field
-		Tag             respjson.Field
 		TagManagerID    respjson.Field
 		Type            respjson.Field
 		BlockTriggerIDs respjson.Field
@@ -546,9 +528,6 @@ type TagManagerTagNewParams struct {
 	Name string `json:"name" api:"required"`
 	// Type-specific JSON configuration. Send `{}` for a placeholder.
 	Parameters map[string]any `json:"parameters,omitzero" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Tag string `json:"Tag" api:"required"`
 	// Parent tag manager that will own the new tag.
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Tag type discriminator. Pick from `GET /tag-manager-tags/types` for the
@@ -579,11 +558,7 @@ type TagManagerTagUpdateParams struct {
 	Priority param.Opt[float64] `json:"priority,omitzero"`
 	// Updated tag name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Must equal `type`. Omit both fields, or send both with the same value — the
-	// server rejects any divergence.
-	Tag param.Opt[string] `json:"Tag,omitzero"`
-	// Updated tag type. Pick from `GET /tag-manager-tags/types`. When changing `type`,
-	// send the new value in `Tag` as well (they must match).
+	// Updated tag type. Pick from `GET /tag-manager-tags/types`.
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Replaces the block trigger list wholesale. Send `null` to clear.
 	BlockTriggerIDs []string `json:"blockTriggerIds,omitzero"`
