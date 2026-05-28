@@ -106,12 +106,12 @@ func (r *DataGovernanceService) Get(ctx context.Context, id string, opts ...opti
 // wholesale**. There is no partial-merge for individual categories. To change one
 // category, fetch the current record, modify the array, and PATCH it back.
 //
-// On write, categories are sorted ascending by the `priority` field you supplied
-// (a sort key, not a stored value), then re-stamped `1..N` so the persisted
-// `priority` is always sequential with no gaps. Stale `destinationIds` (deleted
-// destinations or destinations on another account) are silently filtered out — the
-// response echoes the filtered list, so a follow-up GET is not required to see
-// what was saved. Requires scope: globalDispatch:update
+// Categories are sorted ascending by the `priority` you supplied and then
+// renumbered `1..N` in the response, so the returned `priority` values are always
+// sequential with no gaps. Stale `destinationIds` (deleted destinations or
+// destinations on another account) are silently filtered out — the response echoes
+// the filtered list, so a follow-up GET is not required to see what was saved.
+// Requires scope: globalDispatch:update
 func (r *DataGovernanceService) Update(ctx context.Context, id string, body DataGovernanceUpdateParams, opts ...option.RequestOption) (res *DataGovernanceUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -832,7 +832,7 @@ func (r *DataGovernanceUpdateResponseCategoryLogicCondition) UnmarshalJSON(data 
 type DataGovernanceDeleteResponse struct {
 	// The id of the data-governance record that was deleted.
 	ID string `json:"id" api:"required"`
-	// True when the underlying mutation succeeded; the entity is gone.
+	// True when the record was deleted.
 	Deleted bool `json:"deleted" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
