@@ -32,15 +32,15 @@ type Client struct {
 	Mappings               MappingService
 	ReplaySettings         ReplaySettingService
 	Sources                SourceService
-	Versions               VersionService
-	WebScannerRules        WebScannerRuleService
-	WebScanners            WebScannerService
 	TagManagers            TagManagerService
 	TagManagerTags         TagManagerTagService
 	TagManagerTriggers     TagManagerTriggerService
 	TagManagerVariables    TagManagerVariableService
 	TagManagerFolders      TagManagerFolderService
 	TagManagerAssetFolders TagManagerAssetFolderService
+	Versions               VersionService
+	WebScannerRules        WebScannerRuleService
+	WebScanners            WebScannerService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -87,15 +87,15 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
 	r.Sources = NewSourceService(opts...)
-	r.Versions = NewVersionService(opts...)
-	r.WebScannerRules = NewWebScannerRuleService(opts...)
-	r.WebScanners = NewWebScannerService(opts...)
 	r.TagManagers = NewTagManagerService(opts...)
 	r.TagManagerTags = NewTagManagerTagService(opts...)
 	r.TagManagerTriggers = NewTagManagerTriggerService(opts...)
 	r.TagManagerVariables = NewTagManagerVariableService(opts...)
 	r.TagManagerFolders = NewTagManagerFolderService(opts...)
 	r.TagManagerAssetFolders = NewTagManagerAssetFolderService(opts...)
+	r.Versions = NewVersionService(opts...)
+	r.WebScannerRules = NewWebScannerRuleService(opts...)
+	r.WebScanners = NewWebScannerService(opts...)
 
 	return
 }
