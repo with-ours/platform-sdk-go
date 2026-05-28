@@ -274,7 +274,7 @@ func (r *TagManagerUpdateResponse) UnmarshalJSON(data []byte) error {
 type TagManagerDeleteResponse struct {
 	// The id of the tag manager that was deleted.
 	ID string `json:"id" api:"required"`
-	// True when the underlying mutation succeeded.
+	// True when the tag manager was deleted.
 	Deleted bool `json:"deleted" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

@@ -94,7 +94,8 @@ func (r *TagManagerVariableService) Get(ctx context.Context, id string, opts ...
 
 // Partially update a variable. Only the fields you send are changed. Name
 // collisions with other variables in the same tag manager return 409 with the
-// reason in the response `error` field. Requires scope: tagManagers:update
+// reason in the response `error` field. To assign a variable to a folder, use
+// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
 func (r *TagManagerVariableService) Update(ctx context.Context, id string, body TagManagerVariableUpdateParams, opts ...option.RequestOption) (res *TagManagerVariableUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -140,17 +141,14 @@ type TagManagerVariableListResponse struct {
 	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
 	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
 	// `GET /tag-manager-variables/types` for the canonical set.
-	Type string `json:"type" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Variable  string `json:"Variable" api:"required"`
+	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
 	DefaultValue map[string]any `json:"defaultValue"`
 	Enabled      bool           `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable map[string]any `json:"lookUpTable"`
@@ -163,7 +161,6 @@ type TagManagerVariableListResponse struct {
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
 		Type         respjson.Field
-		Variable     respjson.Field
 		CreatedAt    respjson.Field
 		DefaultValue respjson.Field
 		Enabled      respjson.Field
@@ -191,17 +188,14 @@ type TagManagerVariableNewResponse struct {
 	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
 	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
 	// `GET /tag-manager-variables/types` for the canonical set.
-	Type string `json:"type" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Variable  string `json:"Variable" api:"required"`
+	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
 	DefaultValue map[string]any `json:"defaultValue"`
 	Enabled      bool           `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable map[string]any `json:"lookUpTable"`
@@ -214,7 +208,6 @@ type TagManagerVariableNewResponse struct {
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
 		Type         respjson.Field
-		Variable     respjson.Field
 		CreatedAt    respjson.Field
 		DefaultValue respjson.Field
 		Enabled      respjson.Field
@@ -242,17 +235,14 @@ type TagManagerVariableGetResponse struct {
 	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
 	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
 	// `GET /tag-manager-variables/types` for the canonical set.
-	Type string `json:"type" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Variable  string `json:"Variable" api:"required"`
+	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
 	DefaultValue map[string]any `json:"defaultValue"`
 	Enabled      bool           `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable map[string]any `json:"lookUpTable"`
@@ -265,7 +255,6 @@ type TagManagerVariableGetResponse struct {
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
 		Type         respjson.Field
-		Variable     respjson.Field
 		CreatedAt    respjson.Field
 		DefaultValue respjson.Field
 		Enabled      respjson.Field
@@ -293,17 +282,14 @@ type TagManagerVariableUpdateResponse struct {
 	// Variable type discriminator. Examples that exist today: `DataLayer`, `Constant`,
 	// `Cookie`, `Url`, `UrlParameter`, `Weekday`, `RandomNumber`. Pick from
 	// `GET /tag-manager-variables/types` for the canonical set.
-	Type string `json:"type" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Variable  string `json:"Variable" api:"required"`
+	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
 	DefaultValue map[string]any `json:"defaultValue"`
 	Enabled      bool           `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable map[string]any `json:"lookUpTable"`
@@ -316,7 +302,6 @@ type TagManagerVariableUpdateResponse struct {
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
 		Type         respjson.Field
-		Variable     respjson.Field
 		CreatedAt    respjson.Field
 		DefaultValue respjson.Field
 		Enabled      respjson.Field
@@ -512,11 +497,8 @@ type TagManagerVariableNewParams struct {
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Variable type discriminator. Pick from `GET /tag-manager-variables/types` for
 	// the canonical set (e.g. `DataLayer`, `Constant`, `Cookie`, `Url`).
-	Type string `json:"type" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Variable string          `json:"Variable" api:"required"`
-	Enabled  param.Opt[bool] `json:"enabled,omitzero"`
+	Type    string          `json:"type" api:"required"`
+	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Optional default value. JSON value of any type.
 	DefaultValue map[string]any `json:"defaultValue,omitzero"`
 	// Optional lookup table for `LookUpTable` variables.
@@ -537,12 +519,8 @@ type TagManagerVariableUpdateParams struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Updated variable name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Updated variable type. Pick from `GET /tag-manager-variables/types`. When
-	// changing `type`, send the new value in `Variable` as well (they must match).
+	// Updated variable type. Pick from `GET /tag-manager-variables/types`.
 	Type param.Opt[string] `json:"type,omitzero"`
-	// Must equal `type`. Omit both fields, or send both with the same value — the
-	// server rejects any divergence.
-	Variable param.Opt[string] `json:"Variable,omitzero"`
 	// Updated default value. JSON value of any type.
 	DefaultValue map[string]any `json:"defaultValue,omitzero"`
 	// Updated lookup table payload.
