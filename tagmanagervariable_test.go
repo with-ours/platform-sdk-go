@@ -58,7 +58,6 @@ func TestTagManagerVariableNewWithOptionalParams(t *testing.T) {
 		},
 		TagManagerID: "x",
 		Type:         "type",
-		Variable:     "Variable",
 		DefaultValue: map[string]any{
 			"foo": "bar",
 		},
@@ -125,8 +124,7 @@ func TestTagManagerVariableUpdateWithOptionalParams(t *testing.T) {
 			Parameters: map[string]any{
 				"foo": "bar",
 			},
-			Type:     oursprivacy.String("type"),
-			Variable: oursprivacy.String("Variable"),
+			Type: oursprivacy.String("type"),
 		},
 	)
 	if err != nil {

@@ -57,7 +57,6 @@ func TestTagManagerTagNewWithOptionalParams(t *testing.T) {
 		Parameters: map[string]any{
 			"foo": "bar",
 		},
-		Tag:             "Tag",
 		TagManagerID:    "x",
 		Type:            "type",
 		BlockTriggerIDs: []string{"string"},
@@ -119,7 +118,6 @@ func TestTagManagerTagUpdateWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			},
 			Priority: oursprivacy.Float(0),
-			Tag:      oursprivacy.String("Tag"),
 			Type:     oursprivacy.String("type"),
 		},
 	)

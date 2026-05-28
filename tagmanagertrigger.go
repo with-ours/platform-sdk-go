@@ -92,7 +92,8 @@ func (r *TagManagerTriggerService) Get(ctx context.Context, id string, opts ...o
 }
 
 // Partially update a trigger. Only the fields you send are changed. `conditions`
-// is replaced wholesale when sent. Requires scope: tagManagers:update
+// is replaced wholesale when sent. To assign a trigger to a folder, use
+// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
 func (r *TagManagerTriggerService) Update(ctx context.Context, id string, body TagManagerTriggerUpdateParams, opts ...option.RequestOption) (res *TagManagerTriggerUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -138,9 +139,6 @@ type TagManagerTriggerListResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Trigger string `json:"Trigger" api:"required"`
 	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
 	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
 	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
@@ -149,8 +147,8 @@ type TagManagerTriggerListResponse struct {
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
-	// Folder this trigger belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -161,7 +159,6 @@ type TagManagerTriggerListResponse struct {
 		Name         respjson.Field
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
-		Trigger      respjson.Field
 		Type         respjson.Field
 		CreatedAt    respjson.Field
 		Enabled      respjson.Field
@@ -188,9 +185,6 @@ type TagManagerTriggerNewResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Trigger string `json:"Trigger" api:"required"`
 	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
 	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
 	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
@@ -199,8 +193,8 @@ type TagManagerTriggerNewResponse struct {
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
-	// Folder this trigger belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -211,7 +205,6 @@ type TagManagerTriggerNewResponse struct {
 		Name         respjson.Field
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
-		Trigger      respjson.Field
 		Type         respjson.Field
 		CreatedAt    respjson.Field
 		Enabled      respjson.Field
@@ -238,9 +231,6 @@ type TagManagerTriggerGetResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Trigger string `json:"Trigger" api:"required"`
 	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
 	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
 	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
@@ -249,8 +239,8 @@ type TagManagerTriggerGetResponse struct {
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
-	// Folder this trigger belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -261,7 +251,6 @@ type TagManagerTriggerGetResponse struct {
 		Name         respjson.Field
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
-		Trigger      respjson.Field
 		Type         respjson.Field
 		CreatedAt    respjson.Field
 		Enabled      respjson.Field
@@ -288,9 +277,6 @@ type TagManagerTriggerUpdateResponse struct {
 	// Type-specific configuration. Send `{}` for a no-op trigger.
 	Parameters   map[string]any `json:"parameters" api:"required"`
 	TagManagerID string         `json:"tagManagerId" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Trigger string `json:"Trigger" api:"required"`
 	// Trigger type discriminator. Examples that exist today: `PageView`, `DomReady`,
 	// `Initialization`, `AllElementsClick`, `AllLinksClick`, `FormSubmit`,
 	// `CustomEvent`, `ScrollReach`, `Timer`. Pick from
@@ -299,8 +285,8 @@ type TagManagerTriggerUpdateResponse struct {
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	Enabled   bool   `json:"enabled" api:"nullable"`
-	// Folder this trigger belongs to. Read-only on this endpoint — use the GraphQL
-	// `assignTagManagerAssetToFolder` mutation to change.
+	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
+	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -311,7 +297,6 @@ type TagManagerTriggerUpdateResponse struct {
 		Name         respjson.Field
 		Parameters   respjson.Field
 		TagManagerID respjson.Field
-		Trigger      respjson.Field
 		Type         respjson.Field
 		CreatedAt    respjson.Field
 		Enabled      respjson.Field
@@ -502,9 +487,6 @@ type TagManagerTriggerNewParams struct {
 	Parameters map[string]any `json:"parameters,omitzero" api:"required"`
 	// Parent tag manager that will own the new trigger.
 	TagManagerID string `json:"tagManagerId" api:"required"`
-	// Must equal `type` — send the same string in both fields. The server rejects any
-	// divergent value.
-	Trigger string `json:"Trigger" api:"required"`
 	// Trigger type discriminator. Pick from `GET /tag-manager-triggers/types` for the
 	// canonical set (e.g. `PageView`, `CustomEvent`, `AllElementsClick`).
 	Type    string          `json:"type" api:"required"`
@@ -525,11 +507,7 @@ type TagManagerTriggerUpdateParams struct {
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Updated trigger name.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Must equal `type`. Omit both fields, or send both with the same value — the
-	// server rejects any divergence.
-	Trigger param.Opt[string] `json:"Trigger,omitzero"`
-	// Updated trigger type. Pick from `GET /tag-manager-triggers/types`. When changing
-	// `type`, send the new value in `Trigger` as well (they must match).
+	// Updated trigger type. Pick from `GET /tag-manager-triggers/types`.
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Replaces conditions wholesale when sent. Use `[]` for an unconditional trigger.
 	Conditions []map[string]any `json:"conditions,omitzero"`

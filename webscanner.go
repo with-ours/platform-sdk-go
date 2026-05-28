@@ -381,7 +381,7 @@ const (
 type WebScannerDeleteResponse struct {
 	// The id of the web scanner that was deleted.
 	ID string `json:"id" api:"required"`
-	// True when the underlying mutation succeeded; the scanner and its rules are gone.
+	// True when the scanner and its rules were deleted.
 	Deleted bool `json:"deleted" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
