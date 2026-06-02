@@ -139,9 +139,9 @@ type SourceListResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceListResponseStatus `json:"status" api:"required"`
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
+	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
+	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
 	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
@@ -212,6 +212,7 @@ type SourceListResponseType string
 const (
 	SourceListResponseTypeAlchemerWebhook     SourceListResponseType = "AlchemerWebhook"
 	SourceListResponseTypeAndroidNativeAPI    SourceListResponseType = "AndroidNativeApi"
+	SourceListResponseTypeBranch              SourceListResponseType = "Branch"
 	SourceListResponseTypeCSharpAPI           SourceListResponseType = "CSharpApi"
 	SourceListResponseTypeCalComWebhooks      SourceListResponseType = "CalComWebhooks"
 	SourceListResponseTypeCalendlyWebhook     SourceListResponseType = "CalendlyWebhook"
@@ -250,9 +251,9 @@ type SourceNewResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceNewResponseStatus `json:"status" api:"required"`
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
+	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
+	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
 	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
@@ -323,6 +324,7 @@ type SourceNewResponseType string
 const (
 	SourceNewResponseTypeAlchemerWebhook     SourceNewResponseType = "AlchemerWebhook"
 	SourceNewResponseTypeAndroidNativeAPI    SourceNewResponseType = "AndroidNativeApi"
+	SourceNewResponseTypeBranch              SourceNewResponseType = "Branch"
 	SourceNewResponseTypeCSharpAPI           SourceNewResponseType = "CSharpApi"
 	SourceNewResponseTypeCalComWebhooks      SourceNewResponseType = "CalComWebhooks"
 	SourceNewResponseTypeCalendlyWebhook     SourceNewResponseType = "CalendlyWebhook"
@@ -361,9 +363,9 @@ type SourceGetResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceGetResponseStatus `json:"status" api:"required"`
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
+	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
+	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
 	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
@@ -434,6 +436,7 @@ type SourceGetResponseType string
 const (
 	SourceGetResponseTypeAlchemerWebhook     SourceGetResponseType = "AlchemerWebhook"
 	SourceGetResponseTypeAndroidNativeAPI    SourceGetResponseType = "AndroidNativeApi"
+	SourceGetResponseTypeBranch              SourceGetResponseType = "Branch"
 	SourceGetResponseTypeCSharpAPI           SourceGetResponseType = "CSharpApi"
 	SourceGetResponseTypeCalComWebhooks      SourceGetResponseType = "CalComWebhooks"
 	SourceGetResponseTypeCalendlyWebhook     SourceGetResponseType = "CalendlyWebhook"
@@ -472,9 +475,9 @@ type SourceUpdateResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceUpdateResponseStatus `json:"status" api:"required"`
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
+	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
+	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
 	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
@@ -545,6 +548,7 @@ type SourceUpdateResponseType string
 const (
 	SourceUpdateResponseTypeAlchemerWebhook     SourceUpdateResponseType = "AlchemerWebhook"
 	SourceUpdateResponseTypeAndroidNativeAPI    SourceUpdateResponseType = "AndroidNativeApi"
+	SourceUpdateResponseTypeBranch              SourceUpdateResponseType = "Branch"
 	SourceUpdateResponseTypeCSharpAPI           SourceUpdateResponseType = "CSharpApi"
 	SourceUpdateResponseTypeCalComWebhooks      SourceUpdateResponseType = "CalComWebhooks"
 	SourceUpdateResponseTypeCalendlyWebhook     SourceUpdateResponseType = "CalendlyWebhook"
@@ -724,9 +728,9 @@ type SourceListParams struct {
 	Status SourceListParamsStatus `query:"status,omitzero" json:"-"`
 	// Filter by source type.
 	//
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
+	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
+	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
 	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
@@ -757,6 +761,7 @@ type SourceListParamsType string
 const (
 	SourceListParamsTypeAlchemerWebhook     SourceListParamsType = "AlchemerWebhook"
 	SourceListParamsTypeAndroidNativeAPI    SourceListParamsType = "AndroidNativeApi"
+	SourceListParamsTypeBranch              SourceListParamsType = "Branch"
 	SourceListParamsTypeCSharpAPI           SourceListParamsType = "CSharpApi"
 	SourceListParamsTypeCalComWebhooks      SourceListParamsType = "CalComWebhooks"
 	SourceListParamsTypeCalendlyWebhook     SourceListParamsType = "CalendlyWebhook"
@@ -789,9 +794,9 @@ const (
 )
 
 type SourceNewParams struct {
-	// Any of "AlchemerWebhook", "AndroidNativeApi", "CSharpApi", "CalComWebhooks",
-	// "CalendlyWebhook", "CallRail", "CallTrackingMetrics", "DotNetApi",
-	// "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
+	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
+	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
+	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
 	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
 	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
 	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
@@ -814,6 +819,7 @@ type SourceNewParamsType string
 const (
 	SourceNewParamsTypeAlchemerWebhook     SourceNewParamsType = "AlchemerWebhook"
 	SourceNewParamsTypeAndroidNativeAPI    SourceNewParamsType = "AndroidNativeApi"
+	SourceNewParamsTypeBranch              SourceNewParamsType = "Branch"
 	SourceNewParamsTypeCSharpAPI           SourceNewParamsType = "CSharpApi"
 	SourceNewParamsTypeCalComWebhooks      SourceNewParamsType = "CalComWebhooks"
 	SourceNewParamsTypeCalendlyWebhook     SourceNewParamsType = "CalendlyWebhook"
