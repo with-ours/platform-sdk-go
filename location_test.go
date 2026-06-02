@@ -159,7 +159,7 @@ func TestLocationEmbedCodeWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.LocationEmbedCodeParams{
-			Color:             oursprivacy.String("#B33E3E"),
+			Color:             oursprivacy.String("#007EA8"),
 			ColorScheme:       oursprivacy.LocationEmbedCodeParamsColorSchemeLight,
 			IncludeAddressBox: oursprivacy.Bool(true),
 			IncludeControls:   oursprivacy.LocationEmbedCodeParamsIncludeControlsYes,
