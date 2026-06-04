@@ -56,6 +56,7 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 	_, err := client.Experiments.New(context.TODO(), oursprivacy.ExperimentNewParams{
 		ExperimentSettingsID: "settings_01HZX9BB73EY2Q37VGK5A0VW7A",
 		Name:                 "Homepage Hero Headline Test",
+		ControlWeight:        oursprivacy.Int(34),
 		Description:          oursprivacy.String("description"),
 		IncludeQueryString:   oursprivacy.Bool(true),
 		Key:                  oursprivacy.String("homepage-hero-headline-test"),
