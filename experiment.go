@@ -2406,6 +2406,12 @@ type ExperimentNewParams struct {
 	ExperimentSettingsID string `json:"experimentSettingsId" api:"required"`
 	// Short experiment name.
 	Name string `json:"name" api:"required"`
+	// Weight of the auto-created control variant, as a percentage (1–100). Defaults to
+	// 100 (a new experiment is all control until treatments are added). The control
+	// must keep at least 1% — a 0% control leaves visitors with no bucket to assign at
+	// runtime. As treatments are added the control is reconciled to the remainder (100
+	// − Σ treatment weights), so it normally does not need to be set explicitly.
+	ControlWeight param.Opt[int64] `json:"controlWeight,omitzero"`
 	// Optional hypothesis or operator note.
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Whether redirect variants in this experiment should preserve the original
