@@ -399,7 +399,7 @@ type ExperimentListResponseTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -713,7 +713,7 @@ type ExperimentNewResponseTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -1027,7 +1027,7 @@ type ExperimentGetResponseTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -1233,7 +1233,7 @@ type ExperimentUpdateResponseTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -1455,7 +1455,7 @@ type ExperimentStartResponseExperimentTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -1678,7 +1678,7 @@ type ExperimentStopResponseExperimentTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -1899,7 +1899,7 @@ type ExperimentPauseResponseExperimentTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -2122,7 +2122,7 @@ type ExperimentResumeResponseExperimentTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -2542,7 +2542,7 @@ type ExperimentNewParamsTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator,omitzero" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -2560,7 +2560,7 @@ func (r *ExperimentNewParamsTargetingRulesQueryParam) UnmarshalJSON(data []byte)
 
 func init() {
 	apijson.RegisterFieldValidator[ExperimentNewParamsTargetingRulesQueryParam](
-		"operator", "contains", "equals", "exists", "not_equals", "not_exists",
+		"operator", "contains", "equals", "exists", "not_equals", "not_exists", "regex",
 	)
 }
 
@@ -2701,7 +2701,7 @@ type ExperimentUpdateParamsTargetingRulesQueryParam struct {
 	Key string `json:"key" api:"required"`
 	// Comparison operator applied to the query string value.
 	//
-	// Any of "contains", "equals", "exists", "not_equals", "not_exists".
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
 	Operator string `json:"operator,omitzero" api:"required"`
 	// Comparison value used by operators that require one. Omit for `exists` and
 	// `not_exists`.
@@ -2719,7 +2719,7 @@ func (r *ExperimentUpdateParamsTargetingRulesQueryParam) UnmarshalJSON(data []by
 
 func init() {
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsTargetingRulesQueryParam](
-		"operator", "contains", "equals", "exists", "not_equals", "not_exists",
+		"operator", "contains", "equals", "exists", "not_equals", "not_exists", "regex",
 	)
 }
 
