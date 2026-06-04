@@ -654,16 +654,17 @@ type ExperimentVariantNewParams struct {
 	ExperimentID string `json:"experimentId" api:"required"`
 	// Human-readable name for the new variant.
 	Name string `json:"name" api:"required"`
-	// Traffic weight to assign to this variant. Weights are relative shares; the
-	// runtime normalizes by their sum. Must be a positive integer in the range
-	// 1..1_000_000.
+	// Traffic weight for this variant as a percentage (0–100). Treatment weights are
+	// percentages of the split and must total 99% or less to leave room for the
+	// control; the control variant is the remainder (100 − Σ treatment weights, always
+	// ≥ 1%) and is maintained automatically.
 	Weight int64 `json:"weight" api:"required"`
 	// Mark this variant as the experiment control. Defaults to `false`. The API
-	// rejects the request with 409 if the experiment already has a control variant —
-	// to swap controls, first PATCH the existing control to clear `isControl`, then
-	// create or PATCH the new one with `isControl: true`. The auto-generated control
-	// variant created with each new experiment can be replaced this way. DELETE on the
-	// control returns 409.
+	// rejects the request with 409 if the experiment already has a control variant.
+	// Every experiment keeps exactly one control whose weight is the auto-derived
+	// remainder of the split, so the control cannot be cleared while it would leave
+	// the treatments at 100% (no room for a control). DELETE on the control
+	// returns 409.
 	IsControl param.Opt[bool] `json:"isControl,omitzero"`
 	// Required for redirect variants. Use either a site-relative path such as
 	// `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
@@ -773,8 +774,9 @@ const (
 
 type ExperimentVariantUpdateParams struct {
 	// Promote or demote this variant as the control. Promoting a second variant while
-	// another already has `isControl: true` is rejected with 409 — clear the existing
-	// control first.
+	// another already has `isControl: true` is rejected with 409. Demoting the control
+	// (`isControl: false`) is rejected when it would leave the treatments at 100% —
+	// there must always be room for a control.
 	IsControl param.Opt[bool] `json:"isControl,omitzero"`
 	// Updated variant name.
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -782,8 +784,9 @@ type ExperimentVariantUpdateParams struct {
 	// as `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
 	// rejected.
 	RedirectURL param.Opt[string] `json:"redirectUrl,omitzero"`
-	// Updated traffic weight relative to other variants. Must be a positive integer in
-	// the range 1..1_000_000.
+	// Updated traffic weight as a percentage (0–100). The control variant weight is
+	// derived from the treatments (it is the remainder of the split) and cannot be set
+	// directly.
 	Weight param.Opt[int64] `json:"weight,omitzero"`
 	// Updated declarative DOM mutations. Sending this field replaces the prior list —
 	// partial-array merging is not supported.

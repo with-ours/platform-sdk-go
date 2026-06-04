@@ -141,11 +141,11 @@ type DestinationListResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
+	// "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI",
+	// "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
 	Type               DestinationListResponseType `json:"type" api:"required"`
 	HashingSalt        string                      `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                    `json:"limitedToSourceIds" api:"nullable"`
@@ -240,6 +240,7 @@ const (
 	DestinationListResponseTypeNextdoorAds                  DestinationListResponseType = "NextdoorAds"
 	DestinationListResponseTypeOpenAIAds                    DestinationListResponseType = "OpenAIAds"
 	DestinationListResponseTypeOursSyntheticData            DestinationListResponseType = "OursSyntheticData"
+	DestinationListResponseTypeOutbrain                     DestinationListResponseType = "Outbrain"
 	DestinationListResponseTypePartnerize                   DestinationListResponseType = "Partnerize"
 	DestinationListResponseTypePinterest                    DestinationListResponseType = "Pinterest"
 	DestinationListResponseTypePlausible                    DestinationListResponseType = "Plausible"
@@ -263,6 +264,7 @@ const (
 	DestinationListResponseTypeVibe                         DestinationListResponseType = "Vibe"
 	DestinationListResponseTypeWoopra                       DestinationListResponseType = "Woopra"
 	DestinationListResponseTypeXAds                         DestinationListResponseType = "XAds"
+	DestinationListResponseTypeYelpCapi                     DestinationListResponseType = "YelpCAPI"
 	DestinationListResponseTypeZendesk                      DestinationListResponseType = "Zendesk"
 	DestinationListResponseTypeZoomInfo                     DestinationListResponseType = "ZoomInfo"
 )
@@ -286,11 +288,11 @@ type DestinationNewResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
+	// "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI",
+	// "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
 	Type               DestinationNewResponseType `json:"type" api:"required"`
 	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
@@ -385,6 +387,7 @@ const (
 	DestinationNewResponseTypeNextdoorAds                  DestinationNewResponseType = "NextdoorAds"
 	DestinationNewResponseTypeOpenAIAds                    DestinationNewResponseType = "OpenAIAds"
 	DestinationNewResponseTypeOursSyntheticData            DestinationNewResponseType = "OursSyntheticData"
+	DestinationNewResponseTypeOutbrain                     DestinationNewResponseType = "Outbrain"
 	DestinationNewResponseTypePartnerize                   DestinationNewResponseType = "Partnerize"
 	DestinationNewResponseTypePinterest                    DestinationNewResponseType = "Pinterest"
 	DestinationNewResponseTypePlausible                    DestinationNewResponseType = "Plausible"
@@ -408,6 +411,7 @@ const (
 	DestinationNewResponseTypeVibe                         DestinationNewResponseType = "Vibe"
 	DestinationNewResponseTypeWoopra                       DestinationNewResponseType = "Woopra"
 	DestinationNewResponseTypeXAds                         DestinationNewResponseType = "XAds"
+	DestinationNewResponseTypeYelpCapi                     DestinationNewResponseType = "YelpCAPI"
 	DestinationNewResponseTypeZendesk                      DestinationNewResponseType = "Zendesk"
 	DestinationNewResponseTypeZoomInfo                     DestinationNewResponseType = "ZoomInfo"
 )
@@ -431,11 +435,11 @@ type DestinationGetResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
+	// "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI",
+	// "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
 	Type               DestinationGetResponseType `json:"type" api:"required"`
 	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
@@ -530,6 +534,7 @@ const (
 	DestinationGetResponseTypeNextdoorAds                  DestinationGetResponseType = "NextdoorAds"
 	DestinationGetResponseTypeOpenAIAds                    DestinationGetResponseType = "OpenAIAds"
 	DestinationGetResponseTypeOursSyntheticData            DestinationGetResponseType = "OursSyntheticData"
+	DestinationGetResponseTypeOutbrain                     DestinationGetResponseType = "Outbrain"
 	DestinationGetResponseTypePartnerize                   DestinationGetResponseType = "Partnerize"
 	DestinationGetResponseTypePinterest                    DestinationGetResponseType = "Pinterest"
 	DestinationGetResponseTypePlausible                    DestinationGetResponseType = "Plausible"
@@ -553,6 +558,7 @@ const (
 	DestinationGetResponseTypeVibe                         DestinationGetResponseType = "Vibe"
 	DestinationGetResponseTypeWoopra                       DestinationGetResponseType = "Woopra"
 	DestinationGetResponseTypeXAds                         DestinationGetResponseType = "XAds"
+	DestinationGetResponseTypeYelpCapi                     DestinationGetResponseType = "YelpCAPI"
 	DestinationGetResponseTypeZendesk                      DestinationGetResponseType = "Zendesk"
 	DestinationGetResponseTypeZoomInfo                     DestinationGetResponseType = "ZoomInfo"
 )
@@ -576,11 +582,11 @@ type DestinationUpdateResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
+	// "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI",
+	// "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
 	Type               DestinationUpdateResponseType `json:"type" api:"required"`
 	HashingSalt        string                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                      `json:"limitedToSourceIds" api:"nullable"`
@@ -675,6 +681,7 @@ const (
 	DestinationUpdateResponseTypeNextdoorAds                  DestinationUpdateResponseType = "NextdoorAds"
 	DestinationUpdateResponseTypeOpenAIAds                    DestinationUpdateResponseType = "OpenAIAds"
 	DestinationUpdateResponseTypeOursSyntheticData            DestinationUpdateResponseType = "OursSyntheticData"
+	DestinationUpdateResponseTypeOutbrain                     DestinationUpdateResponseType = "Outbrain"
 	DestinationUpdateResponseTypePartnerize                   DestinationUpdateResponseType = "Partnerize"
 	DestinationUpdateResponseTypePinterest                    DestinationUpdateResponseType = "Pinterest"
 	DestinationUpdateResponseTypePlausible                    DestinationUpdateResponseType = "Plausible"
@@ -698,6 +705,7 @@ const (
 	DestinationUpdateResponseTypeVibe                         DestinationUpdateResponseType = "Vibe"
 	DestinationUpdateResponseTypeWoopra                       DestinationUpdateResponseType = "Woopra"
 	DestinationUpdateResponseTypeXAds                         DestinationUpdateResponseType = "XAds"
+	DestinationUpdateResponseTypeYelpCapi                     DestinationUpdateResponseType = "YelpCAPI"
 	DestinationUpdateResponseTypeZendesk                      DestinationUpdateResponseType = "Zendesk"
 	DestinationUpdateResponseTypeZoomInfo                     DestinationUpdateResponseType = "ZoomInfo"
 )
@@ -719,20 +727,21 @@ func (r *DestinationTypesResponse) UnmarshalJSON(data []byte) error {
 }
 
 type DestinationTypesResponseEntity struct {
-	// Any of "Audiohook", "BasisPostback", "OursSyntheticData", "FullContact",
-	// "ZoomInfo", "TheTradeDesk", "Braze", "LiveIntent", "ConvertABTestingEvent",
-	// "Customerio", "BingAds", "BingAdsWeb", "HTTPDestination", "Woopra",
-	// "HTTPCustomRequest", "Google", "GoogleAdsServerContainer", "G4Analytics",
-	// "GA4ServerProxy", "GA4MeasurementProtocol", "GoogleAds360", "Facebook",
-	// "Mixpanel", "Amplitude", "TikTok", "Reddit", "Podscribe", "Pinterest",
-	// "Mailchimp", "AWSKinesis", "AWSLambda", "GooglePubSub", "LinkedInAdsCAPI",
-	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds",
-	// "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari", "Viant", "ViantCAPI",
-	// "Impact", "Spotify", "Taboola", "AmazonDSP", "AppLovin", "IHeartMediaMagellan",
-	// "Vibe", "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
+	// Any of "Audiohook", "BasisPostback", "Outbrain", "OursSyntheticData",
+	// "FullContact", "ZoomInfo", "TheTradeDesk", "Braze", "LiveIntent",
+	// "ConvertABTestingEvent", "Customerio", "BingAds", "BingAdsWeb",
+	// "HTTPDestination", "Woopra", "HTTPCustomRequest", "Google",
+	// "GoogleAdsServerContainer", "G4Analytics", "GA4ServerProxy",
+	// "GA4MeasurementProtocol", "GoogleAds360", "Facebook", "Mixpanel", "Amplitude",
+	// "TikTok", "Reddit", "Podscribe", "Pinterest", "Mailchimp", "AWSKinesis",
+	// "AWSLambda", "AWSSNS", "GooglePubSub", "LinkedInAdsCAPI", "ActiveCampaignApi",
+	// "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds", "SnapchatAdsCapi",
+	// "Partnerize", "NextdoorAds", "Tatari", "Viant", "ViantCAPI", "Impact",
+	// "Spotify", "Taboola", "AmazonDSP", "AppLovin", "IHeartMediaMagellan", "Vibe",
+	// "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
 	// "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive", "Admitad", "Plausible",
 	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics",
-	// "UniversalAds", "OpenAIAds".
+	// "UniversalAds", "OpenAIAds", "YelpCAPI".
 	ID           string                                       `json:"id" api:"required"`
 	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
 	Label        string                                       `json:"label" api:"required"`
@@ -1018,11 +1027,11 @@ type DestinationListParams struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "Mailchimp", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe",
-	// "Woopra", "XAds", "Zendesk", "ZoomInfo".
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
+	// "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant", "ViantCAPI",
+	// "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
 	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -1101,6 +1110,7 @@ const (
 	DestinationListParamsTypeNextdoorAds                  DestinationListParamsType = "NextdoorAds"
 	DestinationListParamsTypeOpenAIAds                    DestinationListParamsType = "OpenAIAds"
 	DestinationListParamsTypeOursSyntheticData            DestinationListParamsType = "OursSyntheticData"
+	DestinationListParamsTypeOutbrain                     DestinationListParamsType = "Outbrain"
 	DestinationListParamsTypePartnerize                   DestinationListParamsType = "Partnerize"
 	DestinationListParamsTypePinterest                    DestinationListParamsType = "Pinterest"
 	DestinationListParamsTypePlausible                    DestinationListParamsType = "Plausible"
@@ -1124,6 +1134,7 @@ const (
 	DestinationListParamsTypeVibe                         DestinationListParamsType = "Vibe"
 	DestinationListParamsTypeWoopra                       DestinationListParamsType = "Woopra"
 	DestinationListParamsTypeXAds                         DestinationListParamsType = "XAds"
+	DestinationListParamsTypeYelpCapi                     DestinationListParamsType = "YelpCAPI"
 	DestinationListParamsTypeZendesk                      DestinationListParamsType = "Zendesk"
 	DestinationListParamsTypeZoomInfo                     DestinationListParamsType = "ZoomInfo"
 )
@@ -1133,20 +1144,21 @@ type DestinationNewParams struct {
 	// destination types may appear on read responses but are not creatable through
 	// POST.
 	//
-	// Any of "Audiohook", "BasisPostback", "OursSyntheticData", "FullContact",
-	// "ZoomInfo", "TheTradeDesk", "Braze", "LiveIntent", "ConvertABTestingEvent",
-	// "Customerio", "BingAds", "BingAdsWeb", "HTTPDestination", "Woopra",
-	// "HTTPCustomRequest", "Google", "GoogleAdsServerContainer", "G4Analytics",
-	// "GA4ServerProxy", "GA4MeasurementProtocol", "GoogleAds360", "Facebook",
-	// "Mixpanel", "Amplitude", "TikTok", "Reddit", "Podscribe", "Pinterest",
-	// "Mailchimp", "AWSKinesis", "AWSLambda", "GooglePubSub", "LinkedInAdsCAPI",
-	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds",
-	// "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari", "Viant", "ViantCAPI",
-	// "Impact", "Spotify", "Taboola", "AmazonDSP", "AppLovin", "IHeartMediaMagellan",
-	// "Vibe", "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
+	// Any of "Audiohook", "BasisPostback", "Outbrain", "OursSyntheticData",
+	// "FullContact", "ZoomInfo", "TheTradeDesk", "Braze", "LiveIntent",
+	// "ConvertABTestingEvent", "Customerio", "BingAds", "BingAdsWeb",
+	// "HTTPDestination", "Woopra", "HTTPCustomRequest", "Google",
+	// "GoogleAdsServerContainer", "G4Analytics", "GA4ServerProxy",
+	// "GA4MeasurementProtocol", "GoogleAds360", "Facebook", "Mixpanel", "Amplitude",
+	// "TikTok", "Reddit", "Podscribe", "Pinterest", "Mailchimp", "AWSKinesis",
+	// "AWSLambda", "AWSSNS", "GooglePubSub", "LinkedInAdsCAPI", "ActiveCampaignApi",
+	// "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds", "SnapchatAdsCapi",
+	// "Partnerize", "NextdoorAds", "Tatari", "Viant", "ViantCAPI", "Impact",
+	// "Spotify", "Taboola", "AmazonDSP", "AppLovin", "IHeartMediaMagellan", "Vibe",
+	// "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
 	// "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive", "Admitad", "Plausible",
 	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics",
-	// "UniversalAds", "OpenAIAds".
+	// "UniversalAds", "OpenAIAds", "YelpCAPI".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
@@ -1171,6 +1183,7 @@ type DestinationNewParamsType string
 const (
 	DestinationNewParamsTypeAudiohook                    DestinationNewParamsType = "Audiohook"
 	DestinationNewParamsTypeBasisPostback                DestinationNewParamsType = "BasisPostback"
+	DestinationNewParamsTypeOutbrain                     DestinationNewParamsType = "Outbrain"
 	DestinationNewParamsTypeOursSyntheticData            DestinationNewParamsType = "OursSyntheticData"
 	DestinationNewParamsTypeFullContact                  DestinationNewParamsType = "FullContact"
 	DestinationNewParamsTypeZoomInfo                     DestinationNewParamsType = "ZoomInfo"
@@ -1200,6 +1213,7 @@ const (
 	DestinationNewParamsTypeMailchimp                    DestinationNewParamsType = "Mailchimp"
 	DestinationNewParamsTypeAwsKinesis                   DestinationNewParamsType = "AWSKinesis"
 	DestinationNewParamsTypeAwsLambda                    DestinationNewParamsType = "AWSLambda"
+	DestinationNewParamsTypeAwssns                       DestinationNewParamsType = "AWSSNS"
 	DestinationNewParamsTypeGooglePubSub                 DestinationNewParamsType = "GooglePubSub"
 	DestinationNewParamsTypeLinkedInAdsCapi              DestinationNewParamsType = "LinkedInAdsCAPI"
 	DestinationNewParamsTypeActiveCampaignAPI            DestinationNewParamsType = "ActiveCampaignApi"
@@ -1238,6 +1252,7 @@ const (
 	DestinationNewParamsTypeAdobeAnalytics               DestinationNewParamsType = "AdobeAnalytics"
 	DestinationNewParamsTypeUniversalAds                 DestinationNewParamsType = "UniversalAds"
 	DestinationNewParamsTypeOpenAIAds                    DestinationNewParamsType = "OpenAIAds"
+	DestinationNewParamsTypeYelpCapi                     DestinationNewParamsType = "YelpCAPI"
 )
 
 type DestinationUpdateParams struct {
