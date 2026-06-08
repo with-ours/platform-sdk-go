@@ -217,6 +217,10 @@ type ConsentSettingListResponseEntity struct {
 	// Optional custom CDN domain for serving the CMP script (e.g.
 	// consent.example.com).
 	CustomDomain string `json:"customDomain" api:"nullable"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id") so consent and SDK
+	// events resolve to the same visitor.
+	DeviceIDCookieName string `json:"deviceIdCookieName" api:"nullable"`
 	// Revision counter. Bump this to force users who already consented to see the
 	// modal again (the SDK compares the persisted revision against this value).
 	Revision float64 `json:"revision" api:"nullable"`
@@ -245,6 +249,7 @@ type ConsentSettingListResponseEntity struct {
 		Status                 respjson.Field
 		ConsentCookieName      respjson.Field
 		CustomDomain           respjson.Field
+		DeviceIDCookieName     respjson.Field
 		Revision               respjson.Field
 		SkipBlockingClassNames respjson.Field
 		UpdatedAt              respjson.Field
@@ -668,6 +673,10 @@ type ConsentSettingNewResponse struct {
 	// Optional custom CDN domain for serving the CMP script (e.g.
 	// consent.example.com).
 	CustomDomain string `json:"customDomain" api:"nullable"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id") so consent and SDK
+	// events resolve to the same visitor.
+	DeviceIDCookieName string `json:"deviceIdCookieName" api:"nullable"`
 	// Revision counter. Bump this to force users who already consented to see the
 	// modal again (the SDK compares the persisted revision against this value).
 	Revision float64 `json:"revision" api:"nullable"`
@@ -696,6 +705,7 @@ type ConsentSettingNewResponse struct {
 		Status                 respjson.Field
 		ConsentCookieName      respjson.Field
 		CustomDomain           respjson.Field
+		DeviceIDCookieName     respjson.Field
 		Revision               respjson.Field
 		SkipBlockingClassNames respjson.Field
 		UpdatedAt              respjson.Field
@@ -1125,6 +1135,10 @@ type ConsentSettingGetResponse struct {
 	// Optional custom CDN domain for serving the CMP script (e.g.
 	// consent.example.com).
 	CustomDomain string `json:"customDomain" api:"nullable"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id") so consent and SDK
+	// events resolve to the same visitor.
+	DeviceIDCookieName string `json:"deviceIdCookieName" api:"nullable"`
 	// Revision counter. Bump this to force users who already consented to see the
 	// modal again (the SDK compares the persisted revision against this value).
 	Revision float64 `json:"revision" api:"nullable"`
@@ -1153,6 +1167,7 @@ type ConsentSettingGetResponse struct {
 		Status                 respjson.Field
 		ConsentCookieName      respjson.Field
 		CustomDomain           respjson.Field
+		DeviceIDCookieName     respjson.Field
 		Revision               respjson.Field
 		SkipBlockingClassNames respjson.Field
 		UpdatedAt              respjson.Field
@@ -1582,6 +1597,10 @@ type ConsentSettingReplaceResponse struct {
 	// Optional custom CDN domain for serving the CMP script (e.g.
 	// consent.example.com).
 	CustomDomain string `json:"customDomain" api:"nullable"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id") so consent and SDK
+	// events resolve to the same visitor.
+	DeviceIDCookieName string `json:"deviceIdCookieName" api:"nullable"`
 	// Revision counter. Bump this to force users who already consented to see the
 	// modal again (the SDK compares the persisted revision against this value).
 	Revision float64 `json:"revision" api:"nullable"`
@@ -1610,6 +1629,7 @@ type ConsentSettingReplaceResponse struct {
 		Status                 respjson.Field
 		ConsentCookieName      respjson.Field
 		CustomDomain           respjson.Field
+		DeviceIDCookieName     respjson.Field
 		Revision               respjson.Field
 		SkipBlockingClassNames respjson.Field
 		UpdatedAt              respjson.Field
@@ -2039,6 +2059,10 @@ type ConsentSettingUpdateResponse struct {
 	// Optional custom CDN domain for serving the CMP script (e.g.
 	// consent.example.com).
 	CustomDomain string `json:"customDomain" api:"nullable"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id") so consent and SDK
+	// events resolve to the same visitor.
+	DeviceIDCookieName string `json:"deviceIdCookieName" api:"nullable"`
 	// Revision counter. Bump this to force users who already consented to see the
 	// modal again (the SDK compares the persisted revision against this value).
 	Revision float64 `json:"revision" api:"nullable"`
@@ -2067,6 +2091,7 @@ type ConsentSettingUpdateResponse struct {
 		Status                 respjson.Field
 		ConsentCookieName      respjson.Field
 		CustomDomain           respjson.Field
+		DeviceIDCookieName     respjson.Field
 		Revision               respjson.Field
 		SkipBlockingClassNames respjson.Field
 		UpdatedAt              respjson.Field
@@ -2496,6 +2521,10 @@ type ConsentSettingDeleteResponse struct {
 	// Optional custom CDN domain for serving the CMP script (e.g.
 	// consent.example.com).
 	CustomDomain string `json:"customDomain" api:"nullable"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id") so consent and SDK
+	// events resolve to the same visitor.
+	DeviceIDCookieName string `json:"deviceIdCookieName" api:"nullable"`
 	// Revision counter. Bump this to force users who already consented to see the
 	// modal again (the SDK compares the persisted revision against this value).
 	Revision float64 `json:"revision" api:"nullable"`
@@ -2524,6 +2553,7 @@ type ConsentSettingDeleteResponse struct {
 		Status                 respjson.Field
 		ConsentCookieName      respjson.Field
 		CustomDomain           respjson.Field
+		DeviceIDCookieName     respjson.Field
 		Revision               respjson.Field
 		SkipBlockingClassNames respjson.Field
 		UpdatedAt              respjson.Field
@@ -3111,6 +3141,9 @@ type ConsentSettingReplaceParams struct {
 	ConsentCookieName param.Opt[string] `json:"consentCookieName,omitzero"`
 	// Custom CDN domain for serving the CMP script. Pass null to clear.
 	CustomDomain param.Opt[string] `json:"customDomain,omitzero"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id"). Pass null to clear.
+	DeviceIDCookieName param.Opt[string] `json:"deviceIdCookieName,omitzero"`
 	// Revision counter. Bump to re-prompt users who already consented.
 	Revision param.Opt[float64] `json:"revision,omitzero"`
 	// Pixel of the WebSource this CMP is wired into. Pass null to clear the link.
@@ -3463,6 +3496,9 @@ type ConsentSettingUpdateParams struct {
 	ConsentCookieName param.Opt[string] `json:"consentCookieName,omitzero"`
 	// Set or clear the custom CDN domain.
 	CustomDomain param.Opt[string] `json:"customDomain,omitzero"`
+	// Cookie/localStorage key for the visitor (device) ID. Must exactly match the web
+	// SDK's cookie_names.device_id (default "ours_device_id"). Pass null to clear.
+	DeviceIDCookieName param.Opt[string] `json:"deviceIdCookieName,omitzero"`
 	// Bump the revision counter to re-prompt users.
 	Revision param.Opt[float64] `json:"revision,omitzero"`
 	// Set or clear the WebSource pixel link. A non-null token must be a valid

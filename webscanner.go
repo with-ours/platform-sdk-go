@@ -699,8 +699,16 @@ type WebScannerSummaryResponse struct {
 	// ignore).
 	TopUncoveredHosts []WebScannerSummaryResponseTopUncoveredHost `json:"topUncoveredHosts" api:"required"`
 	VendorCount       int64                                       `json:"vendorCount" api:"required"`
-	Delta             WebScannerSummaryResponseDelta              `json:"delta" api:"nullable"`
-	RunDate           string                                      `json:"runDate" api:"nullable"`
+	// Automated accessibility (WCAG 2.1/2.2 A + AA) rollup for the run: `score` is a
+	// 0-100 site score (mean of per-page scores; higher is better), with distinct
+	// rule-violation `countsByImpact` and the most frequently violated rules in
+	// `topViolations` (each with the number of pages it appears on). Covers only the
+	// machine-detectable subset of WCAG (~30-40%) — a high score is not a
+	// certification of full conformance; manual audit is still required. Null when the
+	// run audited no pages.
+	Accessibility WebScannerSummaryResponseAccessibility `json:"accessibility" api:"nullable"`
+	Delta         WebScannerSummaryResponseDelta         `json:"delta" api:"nullable"`
+	RunDate       string                                 `json:"runDate" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ByCategory        respjson.Field
@@ -714,6 +722,7 @@ type WebScannerSummaryResponse struct {
 		ScanStatus        respjson.Field
 		TopUncoveredHosts respjson.Field
 		VendorCount       respjson.Field
+		Accessibility     respjson.Field
 		Delta             respjson.Field
 		RunDate           respjson.Field
 		ExtraFields       map[string]respjson.Field
@@ -854,6 +863,117 @@ type WebScannerSummaryResponseTopUncoveredHostCookie struct {
 // Returns the unmodified JSON received from the API
 func (r WebScannerSummaryResponseTopUncoveredHostCookie) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerSummaryResponseTopUncoveredHostCookie) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Automated accessibility (WCAG 2.1/2.2 A + AA) rollup for the run: `score` is a
+// 0-100 site score (mean of per-page scores; higher is better), with distinct
+// rule-violation `countsByImpact` and the most frequently violated rules in
+// `topViolations` (each with the number of pages it appears on). Covers only the
+// machine-detectable subset of WCAG (~30-40%) — a high score is not a
+// certification of full conformance; manual audit is still required. Null when the
+// run audited no pages.
+type WebScannerSummaryResponseAccessibility struct {
+	CountsByImpact  WebScannerSummaryResponseAccessibilityCountsByImpact `json:"countsByImpact" api:"required"`
+	Engine          string                                               `json:"engine" api:"required"`
+	PagesEvaluated  int64                                                `json:"pagesEvaluated" api:"required"`
+	Score           int64                                                `json:"score" api:"required"`
+	TopViolations   []WebScannerSummaryResponseAccessibilityTopViolation `json:"topViolations" api:"required"`
+	TotalNodes      int64                                                `json:"totalNodes" api:"required"`
+	TotalViolations int64                                                `json:"totalViolations" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CountsByImpact  respjson.Field
+		Engine          respjson.Field
+		PagesEvaluated  respjson.Field
+		Score           respjson.Field
+		TopViolations   respjson.Field
+		TotalNodes      respjson.Field
+		TotalViolations respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseAccessibility) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseAccessibility) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseAccessibilityCountsByImpact struct {
+	Critical int64 `json:"critical" api:"required"`
+	Minor    int64 `json:"minor" api:"required"`
+	Moderate int64 `json:"moderate" api:"required"`
+	Serious  int64 `json:"serious" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Critical    respjson.Field
+		Minor       respjson.Field
+		Moderate    respjson.Field
+		Serious     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseAccessibilityCountsByImpact) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseAccessibilityCountsByImpact) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseAccessibilityTopViolation struct {
+	ID          string                                                         `json:"id" api:"required"`
+	Help        string                                                         `json:"help" api:"required"`
+	HelpURL     string                                                         `json:"helpUrl" api:"required"`
+	NodeCount   int64                                                          `json:"nodeCount" api:"required"`
+	PageCount   int64                                                          `json:"pageCount" api:"required"`
+	Pages       []string                                                       `json:"pages" api:"required"`
+	SampleNodes []WebScannerSummaryResponseAccessibilityTopViolationSampleNode `json:"sampleNodes" api:"required"`
+	WcagTags    []string                                                       `json:"wcagTags" api:"required"`
+	Impact      string                                                         `json:"impact" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Help        respjson.Field
+		HelpURL     respjson.Field
+		NodeCount   respjson.Field
+		PageCount   respjson.Field
+		Pages       respjson.Field
+		SampleNodes respjson.Field
+		WcagTags    respjson.Field
+		Impact      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseAccessibilityTopViolation) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseAccessibilityTopViolation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseAccessibilityTopViolationSampleNode struct {
+	HTML           string   `json:"html" api:"required"`
+	Target         []string `json:"target" api:"required"`
+	FailureSummary string   `json:"failureSummary" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HTML           respjson.Field
+		Target         respjson.Field
+		FailureSummary respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseAccessibilityTopViolationSampleNode) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebScannerSummaryResponseAccessibilityTopViolationSampleNode) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
