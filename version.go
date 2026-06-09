@@ -171,6 +171,43 @@ func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query
 	return res, err
 }
 
+// Revert one or more pending draft changes back to the latest published version
+// (the "abandon a change" action). Send a body listing the entities to revert;
+// each is handled independently — a modified entity is restored to its published
+// values, a deleted entity is recreated, and a newly-added entity is discarded. An
+// entity that already matches the published version is left untouched and is not
+// counted (a no-op). An entity present in neither the draft nor the published
+// version is reported in `notFoundCount`. `remainingChanges` is the total number
+// of pending draft changes left after this call, which may stay above zero when
+// other unreverted changes remain.
+//
+// The `experiments` and `experimentVariants` collections are not supported here —
+// use the experiment lifecycle endpoints (`/start`, `/stop`) for those — but
+// `experimentSettings` is supported. To discard every pending change at once, use
+// `POST /rest/v1/versions/draft/abandon`. (`draft` is a literal path segment
+// identifying the live draft as the target.) Requires scope: version:publish
+func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, body VersionRevertParams, opts ...option.RequestOption) (res *VersionRevertResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("rest/v1/versions/%v/revert", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Abandon ALL pending draft changes, resetting every supported entity collection
+// back to the latest published version. Running experiments and experiment
+// variants are not affected (ship those via the experiment lifecycle endpoints),
+// but experiment settings are reset. Returns HTTP 409 when there is no published
+// version to revert to, or when another publish or abandon is already in flight.
+// To revert only specific changes, use `POST /rest/v1/versions/draft/revert`.
+// (`draft` is a literal path segment identifying the live draft as the target.)
+// Requires scope: version:publish
+func (r *VersionService) Abandon(ctx context.Context, id VersionAbandonParamsID, opts ...option.RequestOption) (res *VersionAbandonResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("rest/v1/versions/%v/abandon", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 type VersionListResponse struct {
 	ID            string  `json:"id" api:"required"`
 	CreatedAt     string  `json:"createdAt" api:"required"`
@@ -390,6 +427,7 @@ type VersionDiffResponseDifferences struct {
 	Mappings                 VersionDiffResponseDifferencesMappings                 `json:"mappings" api:"required"`
 	ReplaySettings           VersionDiffResponseDifferencesReplaySettings           `json:"replaySettings" api:"required"`
 	Sources                  VersionDiffResponseDifferencesSources                  `json:"sources" api:"required"`
+	TagManagers              VersionDiffResponseDifferencesTagManagers              `json:"tagManagers" api:"required"`
 	TagManagerTags           VersionDiffResponseDifferencesTagManagerTags           `json:"tagManagerTags" api:"required"`
 	TagManagerTriggers       VersionDiffResponseDifferencesTagManagerTriggers       `json:"tagManagerTriggers" api:"required"`
 	TagManagerVariables      VersionDiffResponseDifferencesTagManagerVariables      `json:"tagManagerVariables" api:"required"`
@@ -408,6 +446,7 @@ type VersionDiffResponseDifferences struct {
 		Mappings                 respjson.Field
 		ReplaySettings           respjson.Field
 		Sources                  respjson.Field
+		TagManagers              respjson.Field
 		TagManagerTags           respjson.Field
 		TagManagerTriggers       respjson.Field
 		TagManagerVariables      respjson.Field
@@ -2711,6 +2750,179 @@ func (r *VersionDiffResponseDifferencesSourcesRemoved) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VersionDiffResponseDifferencesTagManagers struct {
+	Added []VersionDiffResponseDifferencesTagManagersAdded `json:"added" api:"required"`
+	// Entities present in both snapshots but with at least one field changed. `old` is
+	// the snapshot of the entity in the baseline (latest published); `new` is the
+	// snapshot in the comparison target (the draft).
+	Modified []VersionDiffResponseDifferencesTagManagersModified `json:"modified" api:"required"`
+	Removed  []VersionDiffResponseDifferencesTagManagersRemoved  `json:"removed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Added       respjson.Field
+		Modified    respjson.Field
+		Removed     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagers) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagers) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagersAdded struct {
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagersAdded) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagersAdded) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagersModified struct {
+	New VersionDiffResponseDifferencesTagManagersModifiedNew `json:"new" api:"required"`
+	Old VersionDiffResponseDifferencesTagManagersModifiedOld `json:"old" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		New         respjson.Field
+		Old         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagersModified) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagersModified) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagersModifiedNew struct {
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagersModifiedNew) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagersModifiedNew) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagersModifiedOld struct {
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagersModifiedOld) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagersModifiedOld) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionDiffResponseDifferencesTagManagersRemoved struct {
+	ID string `json:"id" api:"required"`
+	// Human-readable label for the entity at the snapshot it was captured in. For most
+	// collections this is the entity's `name` field; for `allowedEvents` it is a
+	// computed summary of the event's key fields. Two `modified` items can therefore
+	// have identical `old.name` and `new.name` even though their underlying records
+	// differ — the change is in fields not surfaced by the summary. Use the `id` to
+	// fetch full detail.
+	Name string `json:"name" api:"nullable"`
+	// Optional change-classifier. Currently set to `'Reordered'` on `mappings`
+	// modifications when the only change is priority reordering — this lets clients
+	// de-emphasize them in change-review UI. `null` for every other diff item.
+	Summary string `json:"summary" api:"nullable"`
+	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
+	// `tagManagerVariables`. `null` for every other collection.
+	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Name         respjson.Field
+		Summary      respjson.Field
+		TagManagerID respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionDiffResponseDifferencesTagManagersRemoved) RawJSON() string { return r.JSON.raw }
+func (r *VersionDiffResponseDifferencesTagManagersRemoved) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VersionDiffResponseDifferencesTagManagerTags struct {
 	Added []VersionDiffResponseDifferencesTagManagerTagsAdded `json:"added" api:"required"`
 	// Entities present in both snapshots but with at least one field changed. `old` is
@@ -3240,6 +3452,66 @@ func (r *VersionDiffResponseDifferencesTagManagerVariablesRemoved) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VersionRevertResponse struct {
+	// Newly-added draft entities that were deleted.
+	DiscardedCount float64 `json:"discardedCount" api:"required"`
+	// Requested entities present in neither the draft nor the latest published
+	// version.
+	NotFoundCount float64 `json:"notFoundCount" api:"required"`
+	// Total pending draft changes remaining after this operation.
+	RemainingChanges float64 `json:"remainingChanges" api:"required"`
+	// Entities recreated because they had been deleted from the draft.
+	RestoredCount float64 `json:"restoredCount" api:"required"`
+	// Entities overwritten back to their published values.
+	RevertedCount float64 `json:"revertedCount" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DiscardedCount   respjson.Field
+		NotFoundCount    respjson.Field
+		RemainingChanges respjson.Field
+		RestoredCount    respjson.Field
+		RevertedCount    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionRevertResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionRevertResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionAbandonResponse struct {
+	// Newly-added draft entities that were deleted.
+	DiscardedCount float64 `json:"discardedCount" api:"required"`
+	// Requested entities present in neither the draft nor the latest published
+	// version.
+	NotFoundCount float64 `json:"notFoundCount" api:"required"`
+	// Total pending draft changes remaining after this operation.
+	RemainingChanges float64 `json:"remainingChanges" api:"required"`
+	// Entities recreated because they had been deleted from the draft.
+	RestoredCount float64 `json:"restoredCount" api:"required"`
+	// Entities overwritten back to their published values.
+	RevertedCount float64 `json:"revertedCount" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DiscardedCount   respjson.Field
+		NotFoundCount    respjson.Field
+		RemainingChanges respjson.Field
+		RestoredCount    respjson.Field
+		RevertedCount    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionAbandonResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionAbandonResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VersionListParams struct {
 	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
 	// 1 and values above 100 are clamped to 100.
@@ -3369,4 +3641,64 @@ type VersionDiffParamsID string
 
 const (
 	VersionDiffParamsIDDraft VersionDiffParamsID = "draft"
+)
+
+type VersionRevertParams struct {
+	// Draft entities to revert back to the latest published version. Each entry is
+	// processed independently: a modified entity is restored to its published values,
+	// a deleted entity is recreated, and a newly-added entity is discarded. Pass a
+	// single entry to revert one change.
+	Entities []VersionRevertParamsEntity `json:"entities,omitzero" api:"required"`
+	paramObj
+}
+
+func (r VersionRevertParams) MarshalJSON() (data []byte, err error) {
+	type shadow VersionRevertParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VersionRevertParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VersionRevertParamsID string
+
+const (
+	VersionRevertParamsIDDraft VersionRevertParamsID = "draft"
+)
+
+// The properties ID, Collection are required.
+type VersionRevertParamsEntity struct {
+	// Id of the draft entity to revert.
+	ID string `json:"id" api:"required"`
+	// Entity collection the id belongs to. `experiments` and `experimentVariants` are
+	// not supported — use the experiment lifecycle endpoints for those — but
+	// `experimentSettings` is.
+	//
+	// Any of "allowedEvents", "consentSettings", "dataGovernanceEvents",
+	// "dataGovernanceRules", "destinations", "experimentSettings",
+	// "externalAllowedEventData", "globalDispatchCenters", "mappings",
+	// "replaySettings", "sources", "tagManagerTags", "tagManagerTriggers",
+	// "tagManagerVariables", "tagManagers".
+	Collection string `json:"collection,omitzero" api:"required"`
+	paramObj
+}
+
+func (r VersionRevertParamsEntity) MarshalJSON() (data []byte, err error) {
+	type shadow VersionRevertParamsEntity
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VersionRevertParamsEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[VersionRevertParamsEntity](
+		"collection", "allowedEvents", "consentSettings", "dataGovernanceEvents", "dataGovernanceRules", "destinations", "experimentSettings", "externalAllowedEventData", "globalDispatchCenters", "mappings", "replaySettings", "sources", "tagManagerTags", "tagManagerTriggers", "tagManagerVariables", "tagManagers",
+	)
+}
+
+type VersionAbandonParamsID string
+
+const (
+	VersionAbandonParamsIDDraft VersionAbandonParamsID = "draft"
 )
