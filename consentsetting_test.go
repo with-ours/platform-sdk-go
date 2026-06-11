@@ -171,6 +171,7 @@ func TestConsentSettingReplaceWithOptionalParams(t *testing.T) {
 			Status:                 oursprivacy.ConsentSettingReplaceParamsStatusDisabled,
 			ConsentCookieName:      oursprivacy.String("consentCookieName"),
 			CustomDomain:           oursprivacy.String("customDomain"),
+			DeviceIDCookieName:     oursprivacy.String("deviceIdCookieName"),
 			Revision:               oursprivacy.Float(0),
 			SkipBlockingClassNames: []string{"string"},
 			WebSDKToken:            oursprivacy.String("webSDKToken"),
@@ -237,7 +238,8 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 				HideFromBots:             oursprivacy.Bool(true),
 				ShowVendorsInPreferences: oursprivacy.Bool(true),
 			},
-			Name: oursprivacy.String("name"),
+			DeviceIDCookieName: oursprivacy.String("deviceIdCookieName"),
+			Name:               oursprivacy.String("name"),
 			Regions: []oursprivacy.ConsentSettingUpdateParamsRegion{{
 				RegionCode: "US-CA",
 				Rule: oursprivacy.ConsentSettingUpdateParamsRegionRule{
