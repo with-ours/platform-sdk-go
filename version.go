@@ -500,12 +500,17 @@ type VersionDiffResponseDifferencesAllowedEventsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -551,12 +556,17 @@ type VersionDiffResponseDifferencesAllowedEventsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -584,12 +594,17 @@ type VersionDiffResponseDifferencesAllowedEventsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -617,12 +632,17 @@ type VersionDiffResponseDifferencesAllowedEventsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -673,12 +693,17 @@ type VersionDiffResponseDifferencesConsentSettingsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -724,12 +749,17 @@ type VersionDiffResponseDifferencesConsentSettingsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -757,12 +787,17 @@ type VersionDiffResponseDifferencesConsentSettingsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -790,12 +825,17 @@ type VersionDiffResponseDifferencesConsentSettingsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -846,12 +886,17 @@ type VersionDiffResponseDifferencesDataGovernanceEventsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -899,12 +944,17 @@ type VersionDiffResponseDifferencesDataGovernanceEventsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -934,12 +984,17 @@ type VersionDiffResponseDifferencesDataGovernanceEventsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -969,12 +1024,17 @@ type VersionDiffResponseDifferencesDataGovernanceEventsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1027,12 +1087,17 @@ type VersionDiffResponseDifferencesDataGovernanceRulesAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1080,12 +1145,17 @@ type VersionDiffResponseDifferencesDataGovernanceRulesModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1115,12 +1185,17 @@ type VersionDiffResponseDifferencesDataGovernanceRulesModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1150,12 +1225,17 @@ type VersionDiffResponseDifferencesDataGovernanceRulesRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1206,12 +1286,17 @@ type VersionDiffResponseDifferencesDestinationsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1257,12 +1342,17 @@ type VersionDiffResponseDifferencesDestinationsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1290,12 +1380,17 @@ type VersionDiffResponseDifferencesDestinationsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1323,12 +1418,17 @@ type VersionDiffResponseDifferencesDestinationsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1379,12 +1479,17 @@ type VersionDiffResponseDifferencesExperimentsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1430,12 +1535,17 @@ type VersionDiffResponseDifferencesExperimentsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1463,12 +1573,17 @@ type VersionDiffResponseDifferencesExperimentsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1496,12 +1611,17 @@ type VersionDiffResponseDifferencesExperimentsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1552,12 +1672,17 @@ type VersionDiffResponseDifferencesExperimentSettingsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1603,12 +1728,17 @@ type VersionDiffResponseDifferencesExperimentSettingsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1638,12 +1768,17 @@ type VersionDiffResponseDifferencesExperimentSettingsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1673,12 +1808,17 @@ type VersionDiffResponseDifferencesExperimentSettingsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1729,12 +1869,17 @@ type VersionDiffResponseDifferencesExperimentVariantsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1780,12 +1925,17 @@ type VersionDiffResponseDifferencesExperimentVariantsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1815,12 +1965,17 @@ type VersionDiffResponseDifferencesExperimentVariantsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1850,12 +2005,17 @@ type VersionDiffResponseDifferencesExperimentVariantsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1906,12 +2066,17 @@ type VersionDiffResponseDifferencesExternalAllowedEventDataAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1961,12 +2126,17 @@ type VersionDiffResponseDifferencesExternalAllowedEventDataModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -1996,12 +2166,17 @@ type VersionDiffResponseDifferencesExternalAllowedEventDataModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2031,12 +2206,17 @@ type VersionDiffResponseDifferencesExternalAllowedEventDataRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2089,12 +2269,17 @@ type VersionDiffResponseDifferencesGlobalDispatchCentersAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2142,12 +2327,17 @@ type VersionDiffResponseDifferencesGlobalDispatchCentersModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2177,12 +2367,17 @@ type VersionDiffResponseDifferencesGlobalDispatchCentersModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2212,12 +2407,17 @@ type VersionDiffResponseDifferencesGlobalDispatchCentersRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2270,12 +2470,17 @@ type VersionDiffResponseDifferencesMappingsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2321,12 +2526,17 @@ type VersionDiffResponseDifferencesMappingsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2354,12 +2564,17 @@ type VersionDiffResponseDifferencesMappingsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2387,12 +2602,17 @@ type VersionDiffResponseDifferencesMappingsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2443,12 +2663,17 @@ type VersionDiffResponseDifferencesReplaySettingsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2494,12 +2719,17 @@ type VersionDiffResponseDifferencesReplaySettingsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2527,12 +2757,17 @@ type VersionDiffResponseDifferencesReplaySettingsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2560,12 +2795,17 @@ type VersionDiffResponseDifferencesReplaySettingsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2616,12 +2856,17 @@ type VersionDiffResponseDifferencesSourcesAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2667,12 +2912,17 @@ type VersionDiffResponseDifferencesSourcesModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2700,12 +2950,17 @@ type VersionDiffResponseDifferencesSourcesModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2733,12 +2988,17 @@ type VersionDiffResponseDifferencesSourcesRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2789,12 +3049,17 @@ type VersionDiffResponseDifferencesTagManagersAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2840,12 +3105,17 @@ type VersionDiffResponseDifferencesTagManagersModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2873,12 +3143,17 @@ type VersionDiffResponseDifferencesTagManagersModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2906,12 +3181,17 @@ type VersionDiffResponseDifferencesTagManagersRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -2962,12 +3242,17 @@ type VersionDiffResponseDifferencesTagManagerTagsAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3013,12 +3298,17 @@ type VersionDiffResponseDifferencesTagManagerTagsModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3046,12 +3336,17 @@ type VersionDiffResponseDifferencesTagManagerTagsModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3079,12 +3374,17 @@ type VersionDiffResponseDifferencesTagManagerTagsRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3135,12 +3435,17 @@ type VersionDiffResponseDifferencesTagManagerTriggersAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3186,12 +3491,17 @@ type VersionDiffResponseDifferencesTagManagerTriggersModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3221,12 +3531,17 @@ type VersionDiffResponseDifferencesTagManagerTriggersModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3256,12 +3571,17 @@ type VersionDiffResponseDifferencesTagManagerTriggersRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3312,12 +3632,17 @@ type VersionDiffResponseDifferencesTagManagerVariablesAdded struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3365,12 +3690,17 @@ type VersionDiffResponseDifferencesTagManagerVariablesModifiedNew struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3400,12 +3730,17 @@ type VersionDiffResponseDifferencesTagManagerVariablesModifiedOld struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -3435,12 +3770,17 @@ type VersionDiffResponseDifferencesTagManagerVariablesRemoved struct {
 	// Parent tag-manager id for `tagManagerTags`, `tagManagerTriggers`, and
 	// `tagManagerVariables`. `null` for every other collection.
 	TagManagerID string `json:"tagManagerId" api:"nullable"`
+	// Entity subtype when the collection has one — for `sources` it matches the
+	// source's `type` field, letting clients distinguish kinds of source. `null` for
+	// collections without a subtype.
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		Name         respjson.Field
 		Summary      respjson.Field
 		TagManagerID respjson.Field
+		Type         respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
