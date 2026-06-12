@@ -71,7 +71,7 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 			}},
 		},
 		TargetingRules: oursprivacy.ExperimentNewParamsTargetingRules{
-			URLPatterns: []string{"/pricing*", "/enterprise"},
+			URLPatterns: []string{"/pricing*", "get.example.com/learn-more"},
 			AudienceID:  oursprivacy.String("audienceId"),
 			QueryParams: []oursprivacy.ExperimentNewParamsTargetingRulesQueryParam{{
 				Key:      "utm_campaign",
@@ -146,7 +146,7 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 			},
 			Name: oursprivacy.String("name"),
 			TargetingRules: oursprivacy.ExperimentUpdateParamsTargetingRules{
-				URLPatterns: []string{"/pricing*", "/enterprise"},
+				URLPatterns: []string{"/pricing*", "get.example.com/learn-more"},
 				AudienceID:  oursprivacy.String("audienceId"),
 				QueryParams: []oursprivacy.ExperimentUpdateParamsTargetingRulesQueryParam{{
 					Key:      "utm_campaign",
