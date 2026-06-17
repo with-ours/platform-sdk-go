@@ -145,7 +145,8 @@ type DestinationListResponse struct {
 	// "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI",
 	// "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI",
 	// "Taboola", "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
-	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
+	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM",
+	// "ZoomInfo".
 	Type               DestinationListResponseType `json:"type" api:"required"`
 	HashingSalt        string                      `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                    `json:"limitedToSourceIds" api:"nullable"`
@@ -267,6 +268,7 @@ const (
 	DestinationListResponseTypeXAds                         DestinationListResponseType = "XAds"
 	DestinationListResponseTypeYelpCapi                     DestinationListResponseType = "YelpCAPI"
 	DestinationListResponseTypeZendesk                      DestinationListResponseType = "Zendesk"
+	DestinationListResponseTypeZohoCRM                      DestinationListResponseType = "ZohoCRM"
 	DestinationListResponseTypeZoomInfo                     DestinationListResponseType = "ZoomInfo"
 )
 
@@ -293,7 +295,8 @@ type DestinationNewResponse struct {
 	// "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI",
 	// "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI",
 	// "Taboola", "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
-	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
+	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM",
+	// "ZoomInfo".
 	Type               DestinationNewResponseType `json:"type" api:"required"`
 	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
@@ -415,6 +418,7 @@ const (
 	DestinationNewResponseTypeXAds                         DestinationNewResponseType = "XAds"
 	DestinationNewResponseTypeYelpCapi                     DestinationNewResponseType = "YelpCAPI"
 	DestinationNewResponseTypeZendesk                      DestinationNewResponseType = "Zendesk"
+	DestinationNewResponseTypeZohoCRM                      DestinationNewResponseType = "ZohoCRM"
 	DestinationNewResponseTypeZoomInfo                     DestinationNewResponseType = "ZoomInfo"
 )
 
@@ -441,7 +445,8 @@ type DestinationGetResponse struct {
 	// "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI",
 	// "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI",
 	// "Taboola", "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
-	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
+	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM",
+	// "ZoomInfo".
 	Type               DestinationGetResponseType `json:"type" api:"required"`
 	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
@@ -563,6 +568,7 @@ const (
 	DestinationGetResponseTypeXAds                         DestinationGetResponseType = "XAds"
 	DestinationGetResponseTypeYelpCapi                     DestinationGetResponseType = "YelpCAPI"
 	DestinationGetResponseTypeZendesk                      DestinationGetResponseType = "Zendesk"
+	DestinationGetResponseTypeZohoCRM                      DestinationGetResponseType = "ZohoCRM"
 	DestinationGetResponseTypeZoomInfo                     DestinationGetResponseType = "ZoomInfo"
 )
 
@@ -589,7 +595,8 @@ type DestinationUpdateResponse struct {
 	// "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI",
 	// "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI",
 	// "Taboola", "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
-	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
+	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM",
+	// "ZoomInfo".
 	Type               DestinationUpdateResponseType `json:"type" api:"required"`
 	HashingSalt        string                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                      `json:"limitedToSourceIds" api:"nullable"`
@@ -711,6 +718,7 @@ const (
 	DestinationUpdateResponseTypeXAds                         DestinationUpdateResponseType = "XAds"
 	DestinationUpdateResponseTypeYelpCapi                     DestinationUpdateResponseType = "YelpCAPI"
 	DestinationUpdateResponseTypeZendesk                      DestinationUpdateResponseType = "Zendesk"
+	DestinationUpdateResponseTypeZohoCRM                      DestinationUpdateResponseType = "ZohoCRM"
 	DestinationUpdateResponseTypeZoomInfo                     DestinationUpdateResponseType = "ZoomInfo"
 )
 
@@ -745,7 +753,7 @@ type DestinationTypesResponseEntity struct {
 	// "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
 	// "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive", "Admitad", "Plausible",
 	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics",
-	// "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN".
+	// "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM".
 	ID           string                                       `json:"id" api:"required"`
 	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
 	Label        string                                       `json:"label" api:"required"`
@@ -803,11 +811,11 @@ type DestinationTypesResponseEntitySettingUnion struct {
 	Label string `json:"label"`
 	Type  string `json:"type"`
 	// This field is from variant [DestinationTypesResponseEntitySettingObject2].
-	Options  []DestinationTypesResponseEntitySettingObject2Option `json:"options"`
-	Required bool                                                 `json:"required"`
-	Sublabel string                                               `json:"sublabel"`
-	// This field is from variant [DestinationTypesResponseEntitySettingObject3].
-	DefaultValue bool `json:"defaultValue"`
+	Options []DestinationTypesResponseEntitySettingObject2Option `json:"options"`
+	// This field is a union of [string], [bool]
+	DefaultValue DestinationTypesResponseEntitySettingUnionDefaultValue `json:"defaultValue"`
+	Required     bool                                                   `json:"required"`
+	Sublabel     string                                                 `json:"sublabel"`
 	// This field is from variant [DestinationTypesResponseEntitySettingObject5].
 	Placeholder string `json:"placeholder"`
 	JSON        struct {
@@ -815,9 +823,9 @@ type DestinationTypesResponseEntitySettingUnion struct {
 		Label        respjson.Field
 		Type         respjson.Field
 		Options      respjson.Field
+		DefaultValue respjson.Field
 		Required     respjson.Field
 		Sublabel     respjson.Field
-		DefaultValue respjson.Field
 		Placeholder  respjson.Field
 		raw          string
 	} `json:"-"`
@@ -855,6 +863,32 @@ func (r *DestinationTypesResponseEntitySettingUnion) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// DestinationTypesResponseEntitySettingUnionDefaultValue is an implicit subunion
+// of [DestinationTypesResponseEntitySettingUnion].
+// DestinationTypesResponseEntitySettingUnionDefaultValue provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [DestinationTypesResponseEntitySettingUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfBool]
+type DestinationTypesResponseEntitySettingUnionDefaultValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *DestinationTypesResponseEntitySettingUnionDefaultValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DestinationTypesResponseEntitySettingObject struct {
 	Key string `json:"key" api:"required"`
 	// Informational display message only. Do not send this key in POST or PATCH
@@ -883,19 +917,21 @@ type DestinationTypesResponseEntitySettingObject2 struct {
 	Label   string                                               `json:"label" api:"required"`
 	Options []DestinationTypesResponseEntitySettingObject2Option `json:"options" api:"required"`
 	// Any of "Select".
-	Type     string `json:"type" api:"required"`
-	Required bool   `json:"required" api:"nullable"`
-	Sublabel string `json:"sublabel" api:"nullable"`
+	Type         string `json:"type" api:"required"`
+	DefaultValue string `json:"defaultValue" api:"nullable"`
+	Required     bool   `json:"required" api:"nullable"`
+	Sublabel     string `json:"sublabel" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Key         respjson.Field
-		Label       respjson.Field
-		Options     respjson.Field
-		Type        respjson.Field
-		Required    respjson.Field
-		Sublabel    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Key          respjson.Field
+		Label        respjson.Field
+		Options      respjson.Field
+		Type         respjson.Field
+		DefaultValue respjson.Field
+		Required     respjson.Field
+		Sublabel     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -1035,7 +1071,8 @@ type DestinationListParams struct {
 	// "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI",
 	// "QuoraAds", "Reddit", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI",
 	// "Taboola", "Tatari", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
-	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZoomInfo".
+	// "ViantCAPI", "Vibe", "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM",
+	// "ZoomInfo".
 	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -1141,6 +1178,7 @@ const (
 	DestinationListParamsTypeXAds                         DestinationListParamsType = "XAds"
 	DestinationListParamsTypeYelpCapi                     DestinationListParamsType = "YelpCAPI"
 	DestinationListParamsTypeZendesk                      DestinationListParamsType = "Zendesk"
+	DestinationListParamsTypeZohoCRM                      DestinationListParamsType = "ZohoCRM"
 	DestinationListParamsTypeZoomInfo                     DestinationListParamsType = "ZoomInfo"
 )
 
@@ -1163,7 +1201,7 @@ type DestinationNewParams struct {
 	// "GoogleDataManagerEventIngest", "Zendesk", "Iterable", "ArtsAI",
 	// "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive", "Admitad", "Plausible",
 	// "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback", "AdobeAnalytics",
-	// "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN".
+	// "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
@@ -1259,6 +1297,7 @@ const (
 	DestinationNewParamsTypeOpenAIAds                    DestinationNewParamsType = "OpenAIAds"
 	DestinationNewParamsTypeYelpCapi                     DestinationNewParamsType = "YelpCAPI"
 	DestinationNewParamsTypeMntn                         DestinationNewParamsType = "MNTN"
+	DestinationNewParamsTypeZohoCRM                      DestinationNewParamsType = "ZohoCRM"
 )
 
 type DestinationUpdateParams struct {
