@@ -135,7 +135,9 @@ func (r *ExperimentService) Start(ctx context.Context, id string, body Experimen
 }
 
 // Stop an experiment. The request body is optional — send `{}` to stop without
-// recording a winner. Requires scope: experiment:stop
+// recording a winner. Optionally pass `winnerVariantId` to record the winner
+// (reporting only) and/or `rolloutVariantId` to keep that variant serving to all
+// traffic. Requires scope: experiment:stop
 func (r *ExperimentService) Stop(ctx context.Context, id string, body ExperimentStopParams, opts ...option.RequestOption) (res *ExperimentStopResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -143,6 +145,52 @@ func (r *ExperimentService) Stop(ctx context.Context, id string, body Experiment
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/stop", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Roll a non-control variant out to 100% of targeted traffic on a completed
+// experiment — the explicit, reversible serving decision that makes a winning
+// experience the ongoing default. Publishes. Reverse with `/end-rollout`. Returns
+// 409 if the experiment is not completed or the variant is the control. Requires
+// scope: experiment:stop
+func (r *ExperimentService) Rollout(ctx context.Context, id string, body ExperimentRolloutParams, opts ...option.RequestOption) (res *ExperimentRolloutResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/experiments/%s/rollout", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// End an active rollout: stop serving the rolled-out variant so every matching
+// visitor reverts to the original experience. The declared winner is left intact.
+// Publishes. Returns 409 if the experiment is not currently rolled out. Requires
+// scope: experiment:stop
+func (r *ExperimentService) EndRollout(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentEndRolloutResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/experiments/%s/end-rollout", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
+// Declare, change, or clear the winning variant on a completed experiment.
+// Reporting metadata only — it does not change what visitors see and does not
+// republish. Omit `winnerVariantId` to clear. To make the winner live, use
+// `/rollout`. Requires scope: experiment:stop
+func (r *ExperimentService) Winner(ctx context.Context, id string, body ExperimentWinnerParams, opts ...option.RequestOption) (res *ExperimentWinnerResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/experiments/%s/winner", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -252,6 +300,12 @@ type ExperimentListResponse struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentListResponseMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -267,8 +321,9 @@ type ExperimentListResponse struct {
 	Type ExperimentListResponseType `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -281,6 +336,7 @@ type ExperimentListResponse struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -466,6 +522,12 @@ type ExperimentNewResponse struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentNewResponseMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -481,8 +543,9 @@ type ExperimentNewResponse struct {
 	Type ExperimentNewResponseType `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -496,6 +559,7 @@ type ExperimentNewResponse struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -784,6 +848,12 @@ type ExperimentGetResponse struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentGetResponseMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -799,8 +869,9 @@ type ExperimentGetResponse struct {
 	Type ExperimentGetResponseType `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -814,6 +885,7 @@ type ExperimentGetResponse struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -1098,6 +1170,12 @@ type ExperimentUpdateResponse struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentUpdateResponseMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -1113,8 +1191,9 @@ type ExperimentUpdateResponse struct {
 	Type ExperimentUpdateResponseType `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1127,6 +1206,7 @@ type ExperimentUpdateResponse struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -1335,6 +1415,12 @@ type ExperimentStartResponseExperiment struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentStartResponseExperimentMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -1350,8 +1436,9 @@ type ExperimentStartResponseExperiment struct {
 	Type string `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1364,6 +1451,7 @@ type ExperimentStartResponseExperiment struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -1562,6 +1650,12 @@ type ExperimentStopResponseExperiment struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentStopResponseExperimentMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -1577,8 +1671,9 @@ type ExperimentStopResponseExperiment struct {
 	Type string `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1591,6 +1686,7 @@ type ExperimentStopResponseExperiment struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -1732,6 +1828,694 @@ const (
 	ExperimentStopResponsePublishStatusPublished      ExperimentStopResponsePublishStatus = "published"
 )
 
+type ExperimentRolloutResponse struct {
+	// Number of unpublished version changes detected at the time of the lifecycle
+	// action. Values greater than 1 mean other unpublished work exists besides this
+	// experiment state change.
+	ConcurrentVersionChanges int64                               `json:"concurrentVersionChanges" api:"required"`
+	Experiment               ExperimentRolloutResponseExperiment `json:"experiment" api:"required"`
+	// Whether the status change was also published to the current live version
+	// immediately.
+	//
+	// Any of "pending_publish", "published".
+	PublishStatus ExperimentRolloutResponsePublishStatus `json:"publishStatus" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConcurrentVersionChanges respjson.Field
+		Experiment               respjson.Field
+		PublishStatus            respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentRolloutResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentRolloutResponseExperiment struct {
+	// Unique identifier for the experiment.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when the experiment was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Stable code-facing key for the experiment. Use this with the headless SDK
+	// `getExperimentByKey()` API instead of hard-coding opaque experiment IDs into
+	// application code.
+	Key string `json:"key" api:"required"`
+	// Short, human-readable experiment name.
+	Name string `json:"name" api:"required"`
+	// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+	// temporarily inactive, and `completed` is permanently stopped.
+	//
+	// Any of "completed", "draft", "paused", "running".
+	Status string `json:"status" api:"required"`
+	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
+	// enrollment without deleting the experiment.
+	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
+	// experiment hypothesis field.
+	Description string `json:"description" api:"nullable"`
+	// For redirect variants, whether the original page query string should be
+	// forwarded onto the redirect URL.
+	IncludeQueryString bool `json:"includeQueryString" api:"nullable"`
+	// Configured success metrics. The read shape mirrors the write shape — `metrics`
+	// from a GET response can be PATCHed back without modification.
+	Metrics ExperimentRolloutResponseExperimentMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
+	// ISO-8601 timestamp when the experiment most recently entered a running state.
+	StartedAt string `json:"startedAt" api:"nullable"`
+	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
+	StoppedAt string `json:"stoppedAt" api:"nullable"`
+	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+	// visitor status, and (server-side) visitor properties. Same shape as the
+	// create/patch input.
+	TargetingRules ExperimentRolloutResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
+	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+	// `personalization` is always-on targeting.
+	//
+	// Any of "ab", "multivariate", "personalization".
+	Type string `json:"type" api:"nullable"`
+	// ISO-8601 timestamp for the last persisted update, if any.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
+	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Key                respjson.Field
+		Name               respjson.Field
+		Status             respjson.Field
+		TrafficAllocation  respjson.Field
+		Description        respjson.Field
+		IncludeQueryString respjson.Field
+		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
+		StartedAt          respjson.Field
+		StoppedAt          respjson.Field
+		TargetingRules     respjson.Field
+		Type               respjson.Field
+		UpdatedAt          respjson.Field
+		WinnerVariantID    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperiment) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentRolloutResponseExperiment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configured success metrics. The read shape mirrors the write shape — `metrics`
+// from a GET response can be PATCHed back without modification.
+type ExperimentRolloutResponseExperimentMetrics struct {
+	// Primary success metric used in the results report.
+	Primary any `json:"primary" api:"nullable"`
+	// Optional secondary metrics tracked alongside the primary goal.
+	Secondary []ExperimentRolloutResponseExperimentMetricsSecondary `json:"secondary" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperimentMetrics) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentRolloutResponseExperimentMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentRolloutResponseExperimentMetricsSecondary struct {
+	// Name of the event used to measure success for this metric.
+	EventName string `json:"eventName" api:"nullable"`
+	// Optional funnel identifier when the metric is derived from an existing funnel
+	// definition.
+	FunnelID string `json:"funnelId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		FunnelID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentRolloutResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+// visitor status, and (server-side) visitor properties. Same shape as the
+// create/patch input.
+type ExperimentRolloutResponseExperimentTargetingRules struct {
+	// Glob-style URL patterns that must match for the experiment to be eligible. Each
+	// pattern is either a path (`/pricing`, matched on any domain) or a host-qualified
+	// pattern (`get.example.com/pricing` or `https://get.example.com/pricing`, matched
+	// against the full URL so a single domain or subdomain can be targeted). Use `*`
+	// to match within a path segment and `**` to match across segments. Up to 200
+	// patterns; each pattern up to 2000 characters. An empty array (or omitting the
+	// field) matches all URLs — equivalent to `['**']`. The host(s) targeted here must
+	// also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
+	URLPatterns []string `json:"urlPatterns" api:"required"`
+	// Optional audience identifier used for server-side eligibility filtering.
+	AudienceID string `json:"audienceId" api:"nullable"`
+	// Additional query-string conditions that must all match for the visitor to
+	// qualify.
+	QueryParams []ExperimentRolloutResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
+	// Optional visitor-property matching rules. These are passed through as JSON for
+	// experimentation targeting.
+	VisitorProperties any `json:"visitorProperties" api:"nullable"`
+	// Whether the experiment should target new visitors, returning visitors, or any
+	// visitor.
+	VisitorStatus string `json:"visitorStatus" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URLPatterns       respjson.Field
+		AudienceID        respjson.Field
+		QueryParams       respjson.Field
+		VisitorProperties respjson.Field
+		VisitorStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperimentTargetingRules) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentRolloutResponseExperimentTargetingRules) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentRolloutResponseExperimentTargetingRulesQueryParam struct {
+	// Query string key to inspect on the current page URL.
+	Key string `json:"key" api:"required"`
+	// Comparison operator applied to the query string value.
+	//
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
+	Operator string `json:"operator" api:"required"`
+	// Comparison value used by operators that require one. Omit for `exists` and
+	// `not_exists`.
+	Value string `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Operator    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperimentTargetingRulesQueryParam) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentRolloutResponseExperimentTargetingRulesQueryParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Whether the status change was also published to the current live version
+// immediately.
+type ExperimentRolloutResponsePublishStatus string
+
+const (
+	ExperimentRolloutResponsePublishStatusPendingPublish ExperimentRolloutResponsePublishStatus = "pending_publish"
+	ExperimentRolloutResponsePublishStatusPublished      ExperimentRolloutResponsePublishStatus = "published"
+)
+
+type ExperimentEndRolloutResponse struct {
+	// Number of unpublished version changes detected at the time of the lifecycle
+	// action. Values greater than 1 mean other unpublished work exists besides this
+	// experiment state change.
+	ConcurrentVersionChanges int64                                  `json:"concurrentVersionChanges" api:"required"`
+	Experiment               ExperimentEndRolloutResponseExperiment `json:"experiment" api:"required"`
+	// Whether the status change was also published to the current live version
+	// immediately.
+	//
+	// Any of "pending_publish", "published".
+	PublishStatus ExperimentEndRolloutResponsePublishStatus `json:"publishStatus" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ConcurrentVersionChanges respjson.Field
+		Experiment               respjson.Field
+		PublishStatus            respjson.Field
+		ExtraFields              map[string]respjson.Field
+		raw                      string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentEndRolloutResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentEndRolloutResponseExperiment struct {
+	// Unique identifier for the experiment.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when the experiment was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Stable code-facing key for the experiment. Use this with the headless SDK
+	// `getExperimentByKey()` API instead of hard-coding opaque experiment IDs into
+	// application code.
+	Key string `json:"key" api:"required"`
+	// Short, human-readable experiment name.
+	Name string `json:"name" api:"required"`
+	// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+	// temporarily inactive, and `completed` is permanently stopped.
+	//
+	// Any of "completed", "draft", "paused", "running".
+	Status string `json:"status" api:"required"`
+	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
+	// enrollment without deleting the experiment.
+	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
+	// experiment hypothesis field.
+	Description string `json:"description" api:"nullable"`
+	// For redirect variants, whether the original page query string should be
+	// forwarded onto the redirect URL.
+	IncludeQueryString bool `json:"includeQueryString" api:"nullable"`
+	// Configured success metrics. The read shape mirrors the write shape — `metrics`
+	// from a GET response can be PATCHed back without modification.
+	Metrics ExperimentEndRolloutResponseExperimentMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
+	// ISO-8601 timestamp when the experiment most recently entered a running state.
+	StartedAt string `json:"startedAt" api:"nullable"`
+	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
+	StoppedAt string `json:"stoppedAt" api:"nullable"`
+	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+	// visitor status, and (server-side) visitor properties. Same shape as the
+	// create/patch input.
+	TargetingRules ExperimentEndRolloutResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
+	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+	// `personalization` is always-on targeting.
+	//
+	// Any of "ab", "multivariate", "personalization".
+	Type string `json:"type" api:"nullable"`
+	// ISO-8601 timestamp for the last persisted update, if any.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
+	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Key                respjson.Field
+		Name               respjson.Field
+		Status             respjson.Field
+		TrafficAllocation  respjson.Field
+		Description        respjson.Field
+		IncludeQueryString respjson.Field
+		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
+		StartedAt          respjson.Field
+		StoppedAt          respjson.Field
+		TargetingRules     respjson.Field
+		Type               respjson.Field
+		UpdatedAt          respjson.Field
+		WinnerVariantID    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperiment) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentEndRolloutResponseExperiment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configured success metrics. The read shape mirrors the write shape — `metrics`
+// from a GET response can be PATCHed back without modification.
+type ExperimentEndRolloutResponseExperimentMetrics struct {
+	// Primary success metric used in the results report.
+	Primary any `json:"primary" api:"nullable"`
+	// Optional secondary metrics tracked alongside the primary goal.
+	Secondary []ExperimentEndRolloutResponseExperimentMetricsSecondary `json:"secondary" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperimentMetrics) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentEndRolloutResponseExperimentMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentEndRolloutResponseExperimentMetricsSecondary struct {
+	// Name of the event used to measure success for this metric.
+	EventName string `json:"eventName" api:"nullable"`
+	// Optional funnel identifier when the metric is derived from an existing funnel
+	// definition.
+	FunnelID string `json:"funnelId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		FunnelID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentEndRolloutResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+// visitor status, and (server-side) visitor properties. Same shape as the
+// create/patch input.
+type ExperimentEndRolloutResponseExperimentTargetingRules struct {
+	// Glob-style URL patterns that must match for the experiment to be eligible. Each
+	// pattern is either a path (`/pricing`, matched on any domain) or a host-qualified
+	// pattern (`get.example.com/pricing` or `https://get.example.com/pricing`, matched
+	// against the full URL so a single domain or subdomain can be targeted). Use `*`
+	// to match within a path segment and `**` to match across segments. Up to 200
+	// patterns; each pattern up to 2000 characters. An empty array (or omitting the
+	// field) matches all URLs — equivalent to `['**']`. The host(s) targeted here must
+	// also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
+	URLPatterns []string `json:"urlPatterns" api:"required"`
+	// Optional audience identifier used for server-side eligibility filtering.
+	AudienceID string `json:"audienceId" api:"nullable"`
+	// Additional query-string conditions that must all match for the visitor to
+	// qualify.
+	QueryParams []ExperimentEndRolloutResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
+	// Optional visitor-property matching rules. These are passed through as JSON for
+	// experimentation targeting.
+	VisitorProperties any `json:"visitorProperties" api:"nullable"`
+	// Whether the experiment should target new visitors, returning visitors, or any
+	// visitor.
+	VisitorStatus string `json:"visitorStatus" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URLPatterns       respjson.Field
+		AudienceID        respjson.Field
+		QueryParams       respjson.Field
+		VisitorProperties respjson.Field
+		VisitorStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperimentTargetingRules) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentEndRolloutResponseExperimentTargetingRules) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentEndRolloutResponseExperimentTargetingRulesQueryParam struct {
+	// Query string key to inspect on the current page URL.
+	Key string `json:"key" api:"required"`
+	// Comparison operator applied to the query string value.
+	//
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
+	Operator string `json:"operator" api:"required"`
+	// Comparison value used by operators that require one. Omit for `exists` and
+	// `not_exists`.
+	Value string `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Operator    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperimentTargetingRulesQueryParam) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentEndRolloutResponseExperimentTargetingRulesQueryParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Whether the status change was also published to the current live version
+// immediately.
+type ExperimentEndRolloutResponsePublishStatus string
+
+const (
+	ExperimentEndRolloutResponsePublishStatusPendingPublish ExperimentEndRolloutResponsePublishStatus = "pending_publish"
+	ExperimentEndRolloutResponsePublishStatusPublished      ExperimentEndRolloutResponsePublishStatus = "published"
+)
+
+type ExperimentWinnerResponse struct {
+	// Unique identifier for the experiment.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when the experiment was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Stable code-facing key for the experiment. Use this with the headless SDK
+	// `getExperimentByKey()` API instead of hard-coding opaque experiment IDs into
+	// application code.
+	Key string `json:"key" api:"required"`
+	// Short, human-readable experiment name.
+	Name string `json:"name" api:"required"`
+	// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+	// temporarily inactive, and `completed` is permanently stopped.
+	//
+	// Any of "completed", "draft", "paused", "running".
+	Status ExperimentWinnerResponseStatus `json:"status" api:"required"`
+	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
+	// enrollment without deleting the experiment.
+	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
+	// experiment hypothesis field.
+	Description string `json:"description" api:"nullable"`
+	// For redirect variants, whether the original page query string should be
+	// forwarded onto the redirect URL.
+	IncludeQueryString bool `json:"includeQueryString" api:"nullable"`
+	// Configured success metrics. The read shape mirrors the write shape — `metrics`
+	// from a GET response can be PATCHed back without modification.
+	Metrics ExperimentWinnerResponseMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
+	// ISO-8601 timestamp when the experiment most recently entered a running state.
+	StartedAt string `json:"startedAt" api:"nullable"`
+	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
+	StoppedAt string `json:"stoppedAt" api:"nullable"`
+	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+	// visitor status, and (server-side) visitor properties. Same shape as the
+	// create/patch input.
+	TargetingRules ExperimentWinnerResponseTargetingRules `json:"targetingRules" api:"nullable"`
+	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+	// `personalization` is always-on targeting.
+	//
+	// Any of "ab", "multivariate", "personalization".
+	Type ExperimentWinnerResponseType `json:"type" api:"nullable"`
+	// ISO-8601 timestamp for the last persisted update, if any.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
+	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                 respjson.Field
+		CreatedAt          respjson.Field
+		Key                respjson.Field
+		Name               respjson.Field
+		Status             respjson.Field
+		TrafficAllocation  respjson.Field
+		Description        respjson.Field
+		IncludeQueryString respjson.Field
+		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
+		StartedAt          respjson.Field
+		StoppedAt          respjson.Field
+		TargetingRules     respjson.Field
+		Type               respjson.Field
+		UpdatedAt          respjson.Field
+		WinnerVariantID    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentWinnerResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+// temporarily inactive, and `completed` is permanently stopped.
+type ExperimentWinnerResponseStatus string
+
+const (
+	ExperimentWinnerResponseStatusCompleted ExperimentWinnerResponseStatus = "completed"
+	ExperimentWinnerResponseStatusDraft     ExperimentWinnerResponseStatus = "draft"
+	ExperimentWinnerResponseStatusPaused    ExperimentWinnerResponseStatus = "paused"
+	ExperimentWinnerResponseStatusRunning   ExperimentWinnerResponseStatus = "running"
+)
+
+// Configured success metrics. The read shape mirrors the write shape — `metrics`
+// from a GET response can be PATCHed back without modification.
+type ExperimentWinnerResponseMetrics struct {
+	// Primary success metric used in the results report.
+	Primary any `json:"primary" api:"nullable"`
+	// Optional secondary metrics tracked alongside the primary goal.
+	Secondary []ExperimentWinnerResponseMetricsSecondary `json:"secondary" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponseMetrics) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentWinnerResponseMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentWinnerResponseMetricsSecondary struct {
+	// Name of the event used to measure success for this metric.
+	EventName string `json:"eventName" api:"nullable"`
+	// Optional funnel identifier when the metric is derived from an existing funnel
+	// definition.
+	FunnelID string `json:"funnelId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		FunnelID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentWinnerResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+// visitor status, and (server-side) visitor properties. Same shape as the
+// create/patch input.
+type ExperimentWinnerResponseTargetingRules struct {
+	// Glob-style URL patterns that must match for the experiment to be eligible. Each
+	// pattern is either a path (`/pricing`, matched on any domain) or a host-qualified
+	// pattern (`get.example.com/pricing` or `https://get.example.com/pricing`, matched
+	// against the full URL so a single domain or subdomain can be targeted). Use `*`
+	// to match within a path segment and `**` to match across segments. Up to 200
+	// patterns; each pattern up to 2000 characters. An empty array (or omitting the
+	// field) matches all URLs — equivalent to `['**']`. The host(s) targeted here must
+	// also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
+	URLPatterns []string `json:"urlPatterns" api:"required"`
+	// Optional audience identifier used for server-side eligibility filtering.
+	AudienceID string `json:"audienceId" api:"nullable"`
+	// Additional query-string conditions that must all match for the visitor to
+	// qualify.
+	QueryParams []ExperimentWinnerResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
+	// Optional visitor-property matching rules. These are passed through as JSON for
+	// experimentation targeting.
+	VisitorProperties any `json:"visitorProperties" api:"nullable"`
+	// Whether the experiment should target new visitors, returning visitors, or any
+	// visitor.
+	VisitorStatus string `json:"visitorStatus" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URLPatterns       respjson.Field
+		AudienceID        respjson.Field
+		QueryParams       respjson.Field
+		VisitorProperties respjson.Field
+		VisitorStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponseTargetingRules) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentWinnerResponseTargetingRules) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentWinnerResponseTargetingRulesQueryParam struct {
+	// Query string key to inspect on the current page URL.
+	Key string `json:"key" api:"required"`
+	// Comparison operator applied to the query string value.
+	//
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
+	Operator string `json:"operator" api:"required"`
+	// Comparison value used by operators that require one. Omit for `exists` and
+	// `not_exists`.
+	Value string `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Operator    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponseTargetingRulesQueryParam) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentWinnerResponseTargetingRulesQueryParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+// `personalization` is always-on targeting.
+type ExperimentWinnerResponseType string
+
+const (
+	ExperimentWinnerResponseTypeAb              ExperimentWinnerResponseType = "ab"
+	ExperimentWinnerResponseTypeMultivariate    ExperimentWinnerResponseType = "multivariate"
+	ExperimentWinnerResponseTypePersonalization ExperimentWinnerResponseType = "personalization"
+)
+
 type ExperimentPauseResponse struct {
 	// Number of unpublished version changes detected at the time of the lifecycle
 	// action. Values greater than 1 mean other unpublished work exists besides this
@@ -1787,6 +2571,12 @@ type ExperimentPauseResponseExperiment struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentPauseResponseExperimentMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -1802,8 +2592,9 @@ type ExperimentPauseResponseExperiment struct {
 	Type string `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1816,6 +2607,7 @@ type ExperimentPauseResponseExperiment struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -2014,6 +2806,12 @@ type ExperimentResumeResponseExperiment struct {
 	// Configured success metrics. The read shape mirrors the write shape — `metrics`
 	// from a GET response can be PATCHed back without modification.
 	Metrics ExperimentResumeResponseExperimentMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
 	// ISO-8601 timestamp when the experiment most recently entered a running state.
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
@@ -2029,8 +2827,9 @@ type ExperimentResumeResponseExperiment struct {
 	Type string `json:"type" api:"nullable"`
 	// ISO-8601 timestamp for the last persisted update, if any.
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
-	// Variant ID persisted as the winner when the experiment was stopped. Set via
-	// `POST /experiments/{id}/stop` with a `winnerVariantId` body field.
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2043,6 +2842,7 @@ type ExperimentResumeResponseExperiment struct {
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
+		RolloutVariantID   respjson.Field
 		StartedAt          respjson.Field
 		StoppedAt          respjson.Field
 		TargetingRules     respjson.Field
@@ -2784,7 +3584,13 @@ func (r *ExperimentStartParams) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentStopParams struct {
-	// Optional winning variant ID to persist when completing the experiment.
+	// Optional variant to roll out to 100% of traffic immediately on stop — the
+	// explicit serving decision that keeps the winning experience live (a winning
+	// redirect becomes an ongoing redirect). Must be a non-control variant. Reverse
+	// later via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID param.Opt[string] `json:"rolloutVariantId,omitzero"`
+	// Optional declared winner to record (reporting metadata only — does not change
+	// what visitors are served).
 	WinnerVariantID param.Opt[string] `json:"winnerVariantId,omitzero"`
 	paramObj
 }
@@ -2794,6 +3600,39 @@ func (r ExperimentStopParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ExperimentStopParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentRolloutParams struct {
+	// Non-control variant to roll out to 100% of targeted traffic. The runtime keeps
+	// serving it to every matching visitor — a winning redirect becomes an ongoing
+	// redirect. Reverse via `POST /experiments/{id}/end-rollout`. The experiment must
+	// be completed.
+	VariantID string `json:"variantId" api:"required"`
+	paramObj
+}
+
+func (r ExperimentRolloutParams) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentRolloutParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentRolloutParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentWinnerParams struct {
+	// Variant to record as the declared winner (reporting metadata only — does not
+	// change what visitors are served). Omit to clear the declared winner. The
+	// experiment must be completed.
+	WinnerVariantID param.Opt[string] `json:"winnerVariantId,omitzero"`
+	paramObj
+}
+
+func (r ExperimentWinnerParams) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentWinnerParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentWinnerParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
