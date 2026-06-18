@@ -557,9 +557,9 @@ type WebScannerFindingsResponseItem struct {
 	CoveredByCmp bool     `json:"coveredByCmp" api:"required"`
 	Hostname     string   `json:"hostname" api:"required"`
 	SeenOn       []string `json:"seenOn" api:"required"`
-	// Any of "audio", "beacon", "document", "eventsource", "fetch", "font", "image",
-	// "manifest", "media", "other", "ping", "prefetch", "script", "stylesheet",
-	// "texttrack", "video", "websocket", "xhr".
+	// Any of "audio", "beacon", "document", "eventsource", "fedcm", "fetch", "font",
+	// "image", "manifest", "media", "other", "ping", "prefetch", "script",
+	// "stylesheet", "texttrack", "video", "websocket", "xhr".
 	Types                []string                               `json:"types" api:"required"`
 	URLs                 []string                               `json:"urls" api:"required"`
 	Category             string                                 `json:"category" api:"nullable"`
@@ -809,9 +809,9 @@ type WebScannerSummaryResponseTopUncoveredHost struct {
 	CoveredByCmp bool     `json:"coveredByCmp" api:"required"`
 	Hostname     string   `json:"hostname" api:"required"`
 	SeenOn       []string `json:"seenOn" api:"required"`
-	// Any of "audio", "beacon", "document", "eventsource", "fetch", "font", "image",
-	// "manifest", "media", "other", "ping", "prefetch", "script", "stylesheet",
-	// "texttrack", "video", "websocket", "xhr".
+	// Any of "audio", "beacon", "document", "eventsource", "fedcm", "fetch", "font",
+	// "image", "manifest", "media", "other", "ping", "prefetch", "script",
+	// "stylesheet", "texttrack", "video", "websocket", "xhr".
 	Types                []string                                          `json:"types" api:"required"`
 	URLs                 []string                                          `json:"urls" api:"required"`
 	Category             string                                            `json:"category" api:"nullable"`
