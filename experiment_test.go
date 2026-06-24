@@ -234,6 +234,85 @@ func TestExperimentStopWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ExperimentStopParams{
+			RolloutVariantID: oursprivacy.String("var_01HZX8YJH3Z3W1R2Q4M5N6P7Q8"),
+			WinnerVariantID:  oursprivacy.String("var_01HZX8YJH3Z3W1R2Q4M5N6P7Q8"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestExperimentRollout(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Experiments.Rollout(
+		context.TODO(),
+		"id",
+		oursprivacy.ExperimentRolloutParams{
+			VariantID: "var_01HZX8YJH3Z3W1R2Q4M5N6P7Q8",
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestExperimentEndRollout(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Experiments.EndRollout(context.TODO(), "id")
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestExperimentWinnerWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Experiments.Winner(
+		context.TODO(),
+		"id",
+		oursprivacy.ExperimentWinnerParams{
 			WinnerVariantID: oursprivacy.String("var_01HZX8YJH3Z3W1R2Q4M5N6P7Q8"),
 		},
 	)
