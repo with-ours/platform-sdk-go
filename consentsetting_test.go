@@ -336,6 +336,8 @@ func TestConsentSettingAnalyticsWithOptionalParams(t *testing.T) {
 			From:                      "2026-04-01",
 			To:                        "2026-04-30",
 			CompareWithPreviousPeriod: oursprivacy.Bool(true),
+			ComparisonFrom:            oursprivacy.String("2026-03-01"),
+			ComparisonTo:              oursprivacy.String("2026-03-14"),
 			Granularity:               oursprivacy.ConsentSettingAnalyticsParamsGranularityDaily,
 			PagePath:                  oursprivacy.String("/pricing"),
 			Regions:                   oursprivacy.String("California"),
