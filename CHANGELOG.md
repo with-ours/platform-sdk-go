@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.33.0 (2026-07-03)
+
+Full Changelog: [v1.32.0...v1.33.0](https://github.com/with-ours/platform-sdk-go/compare/v1.32.0...v1.33.0)
+
+### Features
+
+* **api:** api update ([6b4050d](https://github.com/with-ours/platform-sdk-go/commit/6b4050d66494d1967bbc5cd76e2237f663960b9d))
+
 ## 1.32.0 (2026-06-18)
 
 Full Changelog: [v1.31.0...v1.32.0](https://github.com/with-ours/platform-sdk-go/compare/v1.31.0...v1.32.0)
