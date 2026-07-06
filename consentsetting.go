@@ -3874,6 +3874,17 @@ type ConsentSettingAnalyticsParams struct {
 	// preceding window of equal length (in `previous*` and `percentageChange*`
 	// fields). Defaults to `false`.
 	CompareWithPreviousPeriod param.Opt[bool] `query:"compareWithPreviousPeriod,omitzero" json:"-"`
+	// Optional custom comparison-window lower bound, as a UTC calendar day in
+	// `YYYY-MM-DD` format. Provide together with `comparisonTo`; the window between
+	// them must be the same length as `from`–`to` (a mismatch returns `400`). When
+	// omitted (with `compareWithPreviousPeriod=true`), the immediately preceding
+	// equal-length period is used.
+	ComparisonFrom param.Opt[string] `query:"comparisonFrom,omitzero" json:"-"`
+	// Optional custom comparison-window upper bound, as a UTC calendar day in
+	// `YYYY-MM-DD` format. Provide together with `comparisonFrom`; the window must
+	// match the `from`–`to` length. Ignored unless both comparison bounds are
+	// supplied.
+	ComparisonTo param.Opt[string] `query:"comparisonTo,omitzero" json:"-"`
 	// Filter to events whose `default_properties.pathname` equals this value (exact
 	// match, case-sensitive). Use this to drill into a single page.
 	PagePath param.Opt[string] `query:"pagePath,omitzero" json:"-"`
