@@ -122,6 +122,20 @@ func (r *DestinationService) Types(ctx context.Context, opts ...option.RequestOp
 	return res, err
 }
 
+// Snapshot of dispatch health for this destination over the trailing 24 hours:
+// counts of succeeded, failed, and intentionally stopped/blocked dispatches, plus
+// a derived `status`. Requires scope: destination:find
+func (r *DestinationService) Health(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationHealthResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/destinations/%s/health", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type DestinationListResponse struct {
 	ID        string `json:"id" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
@@ -1041,6 +1055,63 @@ type DestinationTypesResponseEntitySettingObject5Type string
 const (
 	DestinationTypesResponseEntitySettingObject5TypeText   DestinationTypesResponseEntitySettingObject5Type = "Text"
 	DestinationTypesResponseEntitySettingObject5TypeSecret DestinationTypesResponseEntitySettingObject5Type = "Secret"
+)
+
+type DestinationHealthResponse struct {
+	FailureCount float64 `json:"failureCount" api:"required"`
+	// Dispatches blocked by an account-wide dispatch rule (not a failure).
+	GlobalStopCount float64 `json:"globalStopCount" api:"required"`
+	// HEALTHY (>=95% of decisive dispatches succeeded), DEGRADED (50-95%), UNHEALTHY
+	// (<50%), or NO_DATA (no succeeded/failed dispatches in the window).
+	//
+	// Any of "DEGRADED", "HEALTHY", "NO_DATA", "UNHEALTHY".
+	Status DestinationHealthResponseStatus `json:"status" api:"required"`
+	// Dispatches intentionally stopped before send (not a failure).
+	StoppedCount float64 `json:"stoppedCount" api:"required"`
+	SuccessCount float64 `json:"successCount" api:"required"`
+	// All dispatch attempts in the window, including stopped/blocked ones.
+	TotalDispatches float64 `json:"totalDispatches" api:"required"`
+	// End of the snapshot window (ISO 8601).
+	WindowEnd string `json:"windowEnd" api:"required"`
+	// Start of the snapshot window (ISO 8601).
+	WindowStart string `json:"windowStart" api:"required"`
+	// Timestamp of the most recent dispatch attempt to this destination, if any.
+	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
+	// successCount / (successCount + failureCount). Null when there were no
+	// succeeded/failed dispatches in the window.
+	SuccessRate float64 `json:"successRate" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FailureCount     respjson.Field
+		GlobalStopCount  respjson.Field
+		Status           respjson.Field
+		StoppedCount     respjson.Field
+		SuccessCount     respjson.Field
+		TotalDispatches  respjson.Field
+		WindowEnd        respjson.Field
+		WindowStart      respjson.Field
+		LastDispatchedAt respjson.Field
+		SuccessRate      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DestinationHealthResponse) RawJSON() string { return r.JSON.raw }
+func (r *DestinationHealthResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// HEALTHY (>=95% of decisive dispatches succeeded), DEGRADED (50-95%), UNHEALTHY
+// (<50%), or NO_DATA (no succeeded/failed dispatches in the window).
+type DestinationHealthResponseStatus string
+
+const (
+	DestinationHealthResponseStatusDegraded  DestinationHealthResponseStatus = "DEGRADED"
+	DestinationHealthResponseStatusHealthy   DestinationHealthResponseStatus = "HEALTHY"
+	DestinationHealthResponseStatusNoData    DestinationHealthResponseStatus = "NO_DATA"
+	DestinationHealthResponseStatusUnhealthy DestinationHealthResponseStatus = "UNHEALTHY"
 )
 
 type DestinationListParams struct {
