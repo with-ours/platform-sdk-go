@@ -41,6 +41,8 @@ type Client struct {
 	Versions               VersionService
 	WebScannerRules        WebScannerRuleService
 	WebScanners            WebScannerService
+	Attribution            AttributionService
+	Funnels                FunnelService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -96,6 +98,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Versions = NewVersionService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
+	r.Attribution = NewAttributionService(opts...)
+	r.Funnels = NewFunnelService(opts...)
 
 	return
 }
