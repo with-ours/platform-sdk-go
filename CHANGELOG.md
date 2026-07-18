@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.36.0 (2026-07-18)
+
+Full Changelog: [v1.35.0...v1.36.0](https://github.com/with-ours/platform-sdk-go/compare/v1.35.0...v1.36.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([a24850d](https://github.com/with-ours/platform-sdk-go/commit/a24850d4f5ea992c8391944a635f5c998295a9d4))
+
 ## 1.35.0 (2026-07-07)
 
 Full Changelog: [v1.34.0...v1.35.0](https://github.com/with-ours/platform-sdk-go/compare/v1.34.0...v1.35.0)
