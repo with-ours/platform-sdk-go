@@ -38,9 +38,11 @@ func NewExperimentService(opts ...option.RequestOption) (r ExperimentService) {
 	return
 }
 
-// List experiments for this account. Supports cursor pagination and filtering by
-// `status`, `type`, and free-text `search` matched against experiment id, name,
-// and description. Combine filters with AND semantics. Requires scope:
+// List experiments for this account. Each experiment includes its full `variants`
+// array (redirect URLs and DOM modifications), so a single paginated call returns
+// a complete client-side experiment config. Supports cursor pagination and
+// filtering by `status`, `type`, and free-text `search` matched against experiment
+// id, name, and description. Combine filters with AND semantics. Requires scope:
 // experiment:list
 func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentListResponse], err error) {
 	var raw *http.Response
@@ -59,9 +61,11 @@ func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams
 	return res, nil
 }
 
-// List experiments for this account. Supports cursor pagination and filtering by
-// `status`, `type`, and free-text `search` matched against experiment id, name,
-// and description. Combine filters with AND semantics. Requires scope:
+// List experiments for this account. Each experiment includes its full `variants`
+// array (redirect URLs and DOM modifications), so a single paginated call returns
+// a complete client-side experiment config. Supports cursor pagination and
+// filtering by `status`, `type`, and free-text `search` matched against experiment
+// id, name, and description. Combine filters with AND semantics. Requires scope:
 // experiment:list
 func (r *ExperimentService) ListAutoPaging(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExperimentListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
@@ -291,6 +295,11 @@ type ExperimentListResponse struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// All persisted variants for this experiment, including the control variant. A
+	// non-personalization experiment needs at least two variants before it can be
+	// started. Reading variants requires the `experiment:find` scope in addition to
+	// `experiment:list`; an API key without it receives an empty array here.
+	Variants []ExperimentListResponseVariant `json:"variants" api:"required"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -333,6 +342,7 @@ type ExperimentListResponse struct {
 		Name               respjson.Field
 		Status             respjson.Field
 		TrafficAllocation  respjson.Field
+		Variants           respjson.Field
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
@@ -364,6 +374,109 @@ const (
 	ExperimentListResponseStatusPaused    ExperimentListResponseStatus = "paused"
 	ExperimentListResponseStatusRunning   ExperimentListResponseStatus = "running"
 )
+
+type ExperimentListResponseVariant struct {
+	// Unique identifier for this experiment variant.
+	ID string `json:"id" api:"required"`
+	// Parent experiment ID this variant belongs to.
+	ExperimentID string `json:"experimentId" api:"required"`
+	// Whether this is the baseline control variant.
+	IsControl bool `json:"isControl" api:"required"`
+	// Human-readable variant name shown in the dashboard and results.
+	Name string `json:"name" api:"required"`
+	// Relative traffic weight used when assigning visitors among variants in an active
+	// experiment.
+	Weight int64 `json:"weight" api:"required"`
+	// Ordered list of declarative DOM mutations applied when this variant is assigned.
+	DomModifications []ExperimentListResponseVariantDomModification `json:"domModifications" api:"nullable"`
+	// Target URL for redirect variants. Use either a site-relative path such as
+	// `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
+	// rejected. Omit for DOM modification variants.
+	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// How this variant changes the user experience. `dom_modifications` for on-page
+	// changes or `redirect` for redirect tests.
+	VariantType string `json:"variantType" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		ExperimentID     respjson.Field
+		IsControl        respjson.Field
+		Name             respjson.Field
+		Weight           respjson.Field
+		DomModifications respjson.Field
+		RedirectURL      respjson.Field
+		VariantType      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentListResponseVariant) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentListResponseVariantDomModification struct {
+	// Mutation to apply when the selector matches. Use `redirectUrl` instead of DOM
+	// modifications for redirect variants.
+	//
+	// Any of "customCss", "customJs", "insertAfter", "insertBefore", "remove",
+	// "setAttribute", "setHtml", "setImage", "setStyle", "setText".
+	Action string `json:"action" api:"required"`
+	// CSS selector used to find the element to modify on the page at runtime.
+	Selector string `json:"selector" api:"required"`
+	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
+	// `setImage` / `insertBefore` / `insertAfter` this is the literal
+	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
+	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
+	// below to avoid manual JSON encoding.
+	Value string `json:"value" api:"required"`
+	// Populated on read for `setAttribute` modifications, parsed from `value`.
+	// Customers may also send this field instead of a JSON-stringified `value` on
+	// write — see `domModificationInputSchema`.
+	Attribute any `json:"attribute" api:"nullable"`
+	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
+	// may also send this field instead of a JSON-stringified `value` on write — see
+	// `domModificationInputSchema`.
+	Styles []ExperimentListResponseVariantDomModificationStyle `json:"styles" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Selector    respjson.Field
+		Value       respjson.Field
+		Attribute   respjson.Field
+		Styles      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentListResponseVariantDomModification) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseVariantDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentListResponseVariantDomModificationStyle struct {
+	// CSS property name in camelCase or kebab-case.
+	Property string `json:"property" api:"required"`
+	// CSS value to assign to the property.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentListResponseVariantDomModificationStyle) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseVariantDomModificationStyle) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Configured success metrics. The read shape mirrors the write shape — `metrics`
 // from a GET response can be PATCHed back without modification.
@@ -511,7 +624,8 @@ type ExperimentNewResponse struct {
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
 	// All persisted variants for this experiment, including the control variant. A
 	// non-personalization experiment needs at least two variants before it can be
-	// started.
+	// started. Reading variants requires the `experiment:find` scope in addition to
+	// `experiment:list`; an API key without it receives an empty array here.
 	Variants []ExperimentNewResponseVariant `json:"variants" api:"required"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
@@ -837,7 +951,8 @@ type ExperimentGetResponse struct {
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
 	// All persisted variants for this experiment, including the control variant. A
 	// non-personalization experiment needs at least two variants before it can be
-	// started.
+	// started. Reading variants requires the `experiment:find` scope in addition to
+	// `experiment:list`; an API key without it receives an empty array here.
 	Variants []ExperimentGetResponseVariant `json:"variants" api:"required"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
@@ -1161,6 +1276,11 @@ type ExperimentUpdateResponse struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// All persisted variants for this experiment, including the control variant. A
+	// non-personalization experiment needs at least two variants before it can be
+	// started. Reading variants requires the `experiment:find` scope in addition to
+	// `experiment:list`; an API key without it receives an empty array here.
+	Variants []ExperimentUpdateResponseVariant `json:"variants" api:"required"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -1203,6 +1323,7 @@ type ExperimentUpdateResponse struct {
 		Name               respjson.Field
 		Status             respjson.Field
 		TrafficAllocation  respjson.Field
+		Variants           respjson.Field
 		Description        respjson.Field
 		IncludeQueryString respjson.Field
 		Metrics            respjson.Field
@@ -1234,6 +1355,109 @@ const (
 	ExperimentUpdateResponseStatusPaused    ExperimentUpdateResponseStatus = "paused"
 	ExperimentUpdateResponseStatusRunning   ExperimentUpdateResponseStatus = "running"
 )
+
+type ExperimentUpdateResponseVariant struct {
+	// Unique identifier for this experiment variant.
+	ID string `json:"id" api:"required"`
+	// Parent experiment ID this variant belongs to.
+	ExperimentID string `json:"experimentId" api:"required"`
+	// Whether this is the baseline control variant.
+	IsControl bool `json:"isControl" api:"required"`
+	// Human-readable variant name shown in the dashboard and results.
+	Name string `json:"name" api:"required"`
+	// Relative traffic weight used when assigning visitors among variants in an active
+	// experiment.
+	Weight int64 `json:"weight" api:"required"`
+	// Ordered list of declarative DOM mutations applied when this variant is assigned.
+	DomModifications []ExperimentUpdateResponseVariantDomModification `json:"domModifications" api:"nullable"`
+	// Target URL for redirect variants. Use either a site-relative path such as
+	// `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
+	// rejected. Omit for DOM modification variants.
+	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// How this variant changes the user experience. `dom_modifications` for on-page
+	// changes or `redirect` for redirect tests.
+	VariantType string `json:"variantType" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		ExperimentID     respjson.Field
+		IsControl        respjson.Field
+		Name             respjson.Field
+		Weight           respjson.Field
+		DomModifications respjson.Field
+		RedirectURL      respjson.Field
+		VariantType      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentUpdateResponseVariant) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentUpdateResponseVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentUpdateResponseVariantDomModification struct {
+	// Mutation to apply when the selector matches. Use `redirectUrl` instead of DOM
+	// modifications for redirect variants.
+	//
+	// Any of "customCss", "customJs", "insertAfter", "insertBefore", "remove",
+	// "setAttribute", "setHtml", "setImage", "setStyle", "setText".
+	Action string `json:"action" api:"required"`
+	// CSS selector used to find the element to modify on the page at runtime.
+	Selector string `json:"selector" api:"required"`
+	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
+	// `setImage` / `insertBefore` / `insertAfter` this is the literal
+	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
+	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
+	// below to avoid manual JSON encoding.
+	Value string `json:"value" api:"required"`
+	// Populated on read for `setAttribute` modifications, parsed from `value`.
+	// Customers may also send this field instead of a JSON-stringified `value` on
+	// write — see `domModificationInputSchema`.
+	Attribute any `json:"attribute" api:"nullable"`
+	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
+	// may also send this field instead of a JSON-stringified `value` on write — see
+	// `domModificationInputSchema`.
+	Styles []ExperimentUpdateResponseVariantDomModificationStyle `json:"styles" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Selector    respjson.Field
+		Value       respjson.Field
+		Attribute   respjson.Field
+		Styles      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentUpdateResponseVariantDomModification) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentUpdateResponseVariantDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentUpdateResponseVariantDomModificationStyle struct {
+	// CSS property name in camelCase or kebab-case.
+	Property string `json:"property" api:"required"`
+	// CSS value to assign to the property.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentUpdateResponseVariantDomModificationStyle) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentUpdateResponseVariantDomModificationStyle) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Configured success metrics. The read shape mirrors the write shape — `metrics`
 // from a GET response can be PATCHed back without modification.
