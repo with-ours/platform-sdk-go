@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestSourceListWithOptionalParams(t *testing.T) {
+func TestShortLinkListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,12 +25,11 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
+	_, err := client.ShortLinks.List(context.TODO(), oursprivacy.ShortLinkListParams{
 		Cursor:       oursprivacy.String("cursor"),
 		Limit:        oursprivacy.Int(25),
 		NameContains: oursprivacy.String("nameContains"),
-		Status:       oursprivacy.SourceListParamsStatusDisabled,
-		Type:         oursprivacy.SourceListParamsTypeAlchemerWebhook,
+		Status:       oursprivacy.ShortLinkListParamsStatusDisabled,
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -41,7 +40,7 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestSourceNewWithOptionalParams(t *testing.T) {
+func TestShortLinkNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -53,10 +52,11 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.New(context.TODO(), oursprivacy.SourceNewParams{
-		Type:        oursprivacy.SourceNewParamsTypeAlchemerWebhook,
-		Name:        oursprivacy.String("name"),
-		RedirectURL: oursprivacy.String("redirectUrl"),
+	_, err := client.ShortLinks.New(context.TODO(), oursprivacy.ShortLinkNewParams{
+		Name:        oursprivacy.String("Spring Sale QR"),
+		Qr:          map[string]any{},
+		RedirectURL: oursprivacy.String("https://example.com/spring"),
+		Utm:         map[string]any{},
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -67,7 +67,7 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestSourceGet(t *testing.T) {
+func TestShortLinkGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -79,7 +79,7 @@ func TestSourceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.Get(context.TODO(), "id")
+	_, err := client.ShortLinks.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -89,7 +89,7 @@ func TestSourceGet(t *testing.T) {
 	}
 }
 
-func TestSourceUpdateWithOptionalParams(t *testing.T) {
+func TestShortLinkUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -101,21 +101,15 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.Update(
+	_, err := client.ShortLinks.Update(
 		context.TODO(),
 		"id",
-		oursprivacy.SourceUpdateParams{
-			BotControlMode:        oursprivacy.String("botControlMode"),
-			BotScoreThreshold:     oursprivacy.Float(0),
-			ExcludeRequestContext: oursprivacy.Bool(true),
-			Name:                  oursprivacy.String("name"),
-			ProbabilisticIdentity: map[string]any{},
-			ProjectAPIKey:         oursprivacy.String("projectAPIKey"),
-			RedirectURL:           oursprivacy.String("redirectUrl"),
-			SelectedAccountID:     oursprivacy.String("selectedAccountId"),
-			Status:                oursprivacy.String("status"),
-			WhitelistDomains:      []string{"string"},
-			WhitelistIPs:          []string{"string"},
+		oursprivacy.ShortLinkUpdateParams{
+			Name:        oursprivacy.String("name"),
+			Qr:          map[string]any{},
+			RedirectURL: oursprivacy.String("redirectUrl"),
+			Status:      oursprivacy.String("status"),
+			Utm:         map[string]any{},
 		},
 	)
 	if err != nil {
@@ -127,7 +121,7 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestSourceDelete(t *testing.T) {
+func TestShortLinkDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -139,7 +133,7 @@ func TestSourceDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.Delete(context.TODO(), "id")
+	_, err := client.ShortLinks.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -149,7 +143,7 @@ func TestSourceDelete(t *testing.T) {
 	}
 }
 
-func TestSourceTokens(t *testing.T) {
+func TestShortLinkResultsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -161,7 +155,16 @@ func TestSourceTokens(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Sources.Tokens(context.TODO(), "id")
+	_, err := client.ShortLinks.Results(
+		context.TODO(),
+		"id",
+		oursprivacy.ShortLinkResultsParams{
+			From:        "2026-06-01",
+			To:          "2026-06-30",
+			ExcludeBots: oursprivacy.Bool(true),
+			Granularity: oursprivacy.ShortLinkResultsParamsGranularityDaily,
+		},
+	)
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
