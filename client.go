@@ -31,6 +31,7 @@ type Client struct {
 	Locations              LocationService
 	Mappings               MappingService
 	ReplaySettings         ReplaySettingService
+	ShortLinks             ShortLinkService
 	Sources                SourceService
 	TagManagers            TagManagerService
 	TagManagerTags         TagManagerTagService
@@ -88,6 +89,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Locations = NewLocationService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
+	r.ShortLinks = NewShortLinkService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.TagManagers = NewTagManagerService(opts...)
 	r.TagManagerTags = NewTagManagerTagService(opts...)
