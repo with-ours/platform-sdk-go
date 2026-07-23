@@ -803,6 +803,9 @@ type SourceNewParams struct {
 	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
 	Type SourceNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]   `json:"name,omitzero"`
+	// Destination URL for a RedirectSource (short link). Ignored by other source
+	// types. Must be a valid http(s) URL.
+	RedirectURL param.Opt[string] `json:"redirectUrl,omitzero"`
 	paramObj
 }
 

@@ -19,6 +19,7 @@ import (
 type Client struct {
 	Options                []option.RequestOption
 	AllowedEvents          AllowedEventService
+	Attribution            AttributionService
 	ConsentAnalytics       ConsentAnalyticsService
 	ConsentSettings        ConsentSettingService
 	DataGovernance         DataGovernanceService
@@ -27,10 +28,12 @@ type Client struct {
 	ExperimentSettings     ExperimentSettingService
 	ExperimentVariants     ExperimentVariantService
 	Experiments            ExperimentService
+	Funnels                FunnelService
 	HeatmapPages           HeatmapPageService
 	Locations              LocationService
 	Mappings               MappingService
 	ReplaySettings         ReplaySettingService
+	ShortLinks             ShortLinkService
 	Sources                SourceService
 	TagManagers            TagManagerService
 	TagManagerTags         TagManagerTagService
@@ -41,8 +44,6 @@ type Client struct {
 	Versions               VersionService
 	WebScannerRules        WebScannerRuleService
 	WebScanners            WebScannerService
-	Attribution            AttributionService
-	Funnels                FunnelService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -76,6 +77,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r = Client{Options: opts}
 
 	r.AllowedEvents = NewAllowedEventService(opts...)
+	r.Attribution = NewAttributionService(opts...)
 	r.ConsentAnalytics = NewConsentAnalyticsService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
 	r.DataGovernance = NewDataGovernanceService(opts...)
@@ -84,10 +86,12 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.ExperimentSettings = NewExperimentSettingService(opts...)
 	r.ExperimentVariants = NewExperimentVariantService(opts...)
 	r.Experiments = NewExperimentService(opts...)
+	r.Funnels = NewFunnelService(opts...)
 	r.HeatmapPages = NewHeatmapPageService(opts...)
 	r.Locations = NewLocationService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
+	r.ShortLinks = NewShortLinkService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.TagManagers = NewTagManagerService(opts...)
 	r.TagManagerTags = NewTagManagerTagService(opts...)
@@ -98,8 +102,6 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Versions = NewVersionService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
-	r.Attribution = NewAttributionService(opts...)
-	r.Funnels = NewFunnelService(opts...)
 
 	return
 }
