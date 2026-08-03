@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.38.1 (2026-08-03)
+
+Full Changelog: [v1.38.0...v1.38.1](https://github.com/with-ours/platform-sdk-go/compare/v1.38.0...v1.38.1)
+
+### Chores
+
+* add CODEOWNERS ([#48](https://github.com/with-ours/platform-sdk-go/issues/48)) ([7e3acc4](https://github.com/with-ours/platform-sdk-go/commit/7e3acc4d2a9d1ed7c963f2b5f5cf7293edbca325))
+
 ## 1.38.0 (2026-07-22)
 
 Full Changelog: [v1.37.0...v1.38.0](https://github.com/with-ours/platform-sdk-go/compare/v1.37.0...v1.38.0)
