@@ -53,6 +53,7 @@ func TestWebScannerNewWithOptionalParams(t *testing.T) {
 		ExcludedPatterns: []string{"string"},
 		IncludedURLs:     []string{"string"},
 		Name:             oursprivacy.String("name"),
+		ScanSchedule:     oursprivacy.WebScannerNewParamsScanScheduleDaily,
 		Status:           oursprivacy.WebScannerNewParamsStatusDisabled,
 		URLLimit:         oursprivacy.Float(0),
 	})
@@ -107,6 +108,7 @@ func TestWebScannerUpdateWithOptionalParams(t *testing.T) {
 			IncludedURLs:     []string{"string"},
 			Name:             oursprivacy.String("name"),
 			RootDomain:       oursprivacy.String("rootDomain"),
+			ScanSchedule:     oursprivacy.WebScannerUpdateParamsScanScheduleDaily,
 			Status:           oursprivacy.WebScannerUpdateParamsStatusDisabled,
 			URLLimit:         oursprivacy.Float(0),
 		},

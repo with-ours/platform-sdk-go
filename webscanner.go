@@ -163,14 +163,15 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 
 // Compliance summary for a scan run — the rolled-up "what does this site look
 // like, and what still needs a decision" view, assembled server-side so you do not
-// have to page every finding. Includes total host/vendor/cookie counts, a
-// breakdown by risk and by category, coverage (how many hosts are already covered
-// by a CMP consent service or a suppression rule vs. how many still need a
-// decision), the new/removed host delta versus the previous run, and up to 10
-// highest-risk hosts that still need a decision. Defaults to the latest run; pass
-// `date` (an ISO-8601 timestamp; only the calendar day is used to select the run)
-// to read an earlier run. Clear a host that needs a decision by adding it to a CMP
-// consent service or creating a suppression rule with
+// have to page every finding. Includes total host/vendor/cookie counts, captured
+// privacy policies and host coverage, a breakdown by risk and by category, coverage
+// (how many hosts are already covered by a CMP consent service or a suppression
+// rule vs. how many still need a decision), the new/removed host delta versus the
+// previous run, and up to 10 highest-risk hosts that still need a decision. A null
+// privacyPolicyUrl means that no policy was captured for the hostname. Defaults to
+// the latest run; pass `date` (an ISO-8601 timestamp; only the calendar day is used
+// to select the run) to read an earlier run. Clear a host that needs a decision by
+// adding it to a CMP consent service or creating a suppression rule with
 // `POST /rest/v1/web-scanner-rules`. When the scanner has no completed runs, every
 // count is 0 and `runDate` is null. Requires scope: webScanner:find
 func (r *WebScannerService) Summary(ctx context.Context, id string, query WebScannerSummaryParams, opts ...option.RequestOption) (res *WebScannerSummaryResponse, err error) {
@@ -204,6 +205,8 @@ type WebScannerListResponseEntity struct {
 	ID         string `json:"id" api:"required"`
 	AccountID  string `json:"accountId" api:"required"`
 	RootDomain string `json:"rootDomain" api:"required"`
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule string `json:"scanSchedule" api:"required"`
 	// Any of "idle", "scanning".
 	ScanStatus string `json:"scanStatus" api:"required"`
 	// Any of "Disabled", "Enabled".
@@ -218,6 +221,7 @@ type WebScannerListResponseEntity struct {
 	LastScannedAt               string   `json:"lastScannedAt" api:"nullable"`
 	LastScanStartedAt           string   `json:"lastScanStartedAt" api:"nullable"`
 	Name                        string   `json:"name" api:"nullable"`
+	NextScheduledScanAt         string   `json:"nextScheduledScanAt" api:"nullable"`
 	UpdatedAt                   string   `json:"updatedAt" api:"nullable"`
 	URLLimit                    float64  `json:"urlLimit" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -225,6 +229,7 @@ type WebScannerListResponseEntity struct {
 		ID                          respjson.Field
 		AccountID                   respjson.Field
 		RootDomain                  respjson.Field
+		ScanSchedule                respjson.Field
 		ScanStatus                  respjson.Field
 		Status                      respjson.Field
 		CreatedAt                   respjson.Field
@@ -237,6 +242,7 @@ type WebScannerListResponseEntity struct {
 		LastScannedAt               respjson.Field
 		LastScanStartedAt           respjson.Field
 		Name                        respjson.Field
+		NextScheduledScanAt         respjson.Field
 		UpdatedAt                   respjson.Field
 		URLLimit                    respjson.Field
 		ExtraFields                 map[string]respjson.Field
@@ -254,6 +260,8 @@ type WebScannerNewResponse struct {
 	ID         string `json:"id" api:"required"`
 	AccountID  string `json:"accountId" api:"required"`
 	RootDomain string `json:"rootDomain" api:"required"`
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerNewResponseScanSchedule `json:"scanSchedule" api:"required"`
 	// Any of "idle", "scanning".
 	ScanStatus WebScannerNewResponseScanStatus `json:"scanStatus" api:"required"`
 	// Any of "Disabled", "Enabled".
@@ -268,6 +276,7 @@ type WebScannerNewResponse struct {
 	LastScannedAt               string                      `json:"lastScannedAt" api:"nullable"`
 	LastScanStartedAt           string                      `json:"lastScanStartedAt" api:"nullable"`
 	Name                        string                      `json:"name" api:"nullable"`
+	NextScheduledScanAt         string                      `json:"nextScheduledScanAt" api:"nullable"`
 	UpdatedAt                   string                      `json:"updatedAt" api:"nullable"`
 	URLLimit                    float64                     `json:"urlLimit" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -275,6 +284,7 @@ type WebScannerNewResponse struct {
 		ID                          respjson.Field
 		AccountID                   respjson.Field
 		RootDomain                  respjson.Field
+		ScanSchedule                respjson.Field
 		ScanStatus                  respjson.Field
 		Status                      respjson.Field
 		CreatedAt                   respjson.Field
@@ -287,6 +297,7 @@ type WebScannerNewResponse struct {
 		LastScannedAt               respjson.Field
 		LastScanStartedAt           respjson.Field
 		Name                        respjson.Field
+		NextScheduledScanAt         respjson.Field
 		UpdatedAt                   respjson.Field
 		URLLimit                    respjson.Field
 		ExtraFields                 map[string]respjson.Field
@@ -299,6 +310,15 @@ func (r WebScannerNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type WebScannerNewResponseScanSchedule string
+
+const (
+	WebScannerNewResponseScanScheduleDaily   WebScannerNewResponseScanSchedule = "daily"
+	WebScannerNewResponseScanScheduleManual  WebScannerNewResponseScanSchedule = "manual"
+	WebScannerNewResponseScanScheduleMonthly WebScannerNewResponseScanSchedule = "monthly"
+	WebScannerNewResponseScanScheduleWeekly  WebScannerNewResponseScanSchedule = "weekly"
+)
 
 type WebScannerNewResponseScanStatus string
 
@@ -318,6 +338,8 @@ type WebScannerGetResponse struct {
 	ID         string `json:"id" api:"required"`
 	AccountID  string `json:"accountId" api:"required"`
 	RootDomain string `json:"rootDomain" api:"required"`
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerGetResponseScanSchedule `json:"scanSchedule" api:"required"`
 	// Any of "idle", "scanning".
 	ScanStatus WebScannerGetResponseScanStatus `json:"scanStatus" api:"required"`
 	// Any of "Disabled", "Enabled".
@@ -332,6 +354,7 @@ type WebScannerGetResponse struct {
 	LastScannedAt               string                      `json:"lastScannedAt" api:"nullable"`
 	LastScanStartedAt           string                      `json:"lastScanStartedAt" api:"nullable"`
 	Name                        string                      `json:"name" api:"nullable"`
+	NextScheduledScanAt         string                      `json:"nextScheduledScanAt" api:"nullable"`
 	UpdatedAt                   string                      `json:"updatedAt" api:"nullable"`
 	URLLimit                    float64                     `json:"urlLimit" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -339,6 +362,7 @@ type WebScannerGetResponse struct {
 		ID                          respjson.Field
 		AccountID                   respjson.Field
 		RootDomain                  respjson.Field
+		ScanSchedule                respjson.Field
 		ScanStatus                  respjson.Field
 		Status                      respjson.Field
 		CreatedAt                   respjson.Field
@@ -351,6 +375,7 @@ type WebScannerGetResponse struct {
 		LastScannedAt               respjson.Field
 		LastScanStartedAt           respjson.Field
 		Name                        respjson.Field
+		NextScheduledScanAt         respjson.Field
 		UpdatedAt                   respjson.Field
 		URLLimit                    respjson.Field
 		ExtraFields                 map[string]respjson.Field
@@ -363,6 +388,15 @@ func (r WebScannerGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type WebScannerGetResponseScanSchedule string
+
+const (
+	WebScannerGetResponseScanScheduleDaily   WebScannerGetResponseScanSchedule = "daily"
+	WebScannerGetResponseScanScheduleManual  WebScannerGetResponseScanSchedule = "manual"
+	WebScannerGetResponseScanScheduleMonthly WebScannerGetResponseScanSchedule = "monthly"
+	WebScannerGetResponseScanScheduleWeekly  WebScannerGetResponseScanSchedule = "weekly"
+)
 
 type WebScannerGetResponseScanStatus string
 
@@ -382,6 +416,8 @@ type WebScannerUpdateResponse struct {
 	ID         string `json:"id" api:"required"`
 	AccountID  string `json:"accountId" api:"required"`
 	RootDomain string `json:"rootDomain" api:"required"`
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerUpdateResponseScanSchedule `json:"scanSchedule" api:"required"`
 	// Any of "idle", "scanning".
 	ScanStatus WebScannerUpdateResponseScanStatus `json:"scanStatus" api:"required"`
 	// Any of "Disabled", "Enabled".
@@ -396,6 +432,7 @@ type WebScannerUpdateResponse struct {
 	LastScannedAt               string                         `json:"lastScannedAt" api:"nullable"`
 	LastScanStartedAt           string                         `json:"lastScanStartedAt" api:"nullable"`
 	Name                        string                         `json:"name" api:"nullable"`
+	NextScheduledScanAt         string                         `json:"nextScheduledScanAt" api:"nullable"`
 	UpdatedAt                   string                         `json:"updatedAt" api:"nullable"`
 	URLLimit                    float64                        `json:"urlLimit" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -403,6 +440,7 @@ type WebScannerUpdateResponse struct {
 		ID                          respjson.Field
 		AccountID                   respjson.Field
 		RootDomain                  respjson.Field
+		ScanSchedule                respjson.Field
 		ScanStatus                  respjson.Field
 		Status                      respjson.Field
 		CreatedAt                   respjson.Field
@@ -415,6 +453,7 @@ type WebScannerUpdateResponse struct {
 		LastScannedAt               respjson.Field
 		LastScanStartedAt           respjson.Field
 		Name                        respjson.Field
+		NextScheduledScanAt         respjson.Field
 		UpdatedAt                   respjson.Field
 		URLLimit                    respjson.Field
 		ExtraFields                 map[string]respjson.Field
@@ -427,6 +466,15 @@ func (r WebScannerUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type WebScannerUpdateResponseScanSchedule string
+
+const (
+	WebScannerUpdateResponseScanScheduleDaily   WebScannerUpdateResponseScanSchedule = "daily"
+	WebScannerUpdateResponseScanScheduleManual  WebScannerUpdateResponseScanSchedule = "manual"
+	WebScannerUpdateResponseScanScheduleMonthly WebScannerUpdateResponseScanSchedule = "monthly"
+	WebScannerUpdateResponseScanScheduleWeekly  WebScannerUpdateResponseScanSchedule = "weekly"
+)
 
 type WebScannerUpdateResponseScanStatus string
 
@@ -466,6 +514,8 @@ type WebScannerTriggerResponse struct {
 	ID         string `json:"id" api:"required"`
 	AccountID  string `json:"accountId" api:"required"`
 	RootDomain string `json:"rootDomain" api:"required"`
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerTriggerResponseScanSchedule `json:"scanSchedule" api:"required"`
 	// Any of "idle", "scanning".
 	ScanStatus WebScannerTriggerResponseScanStatus `json:"scanStatus" api:"required"`
 	// Any of "Disabled", "Enabled".
@@ -480,6 +530,7 @@ type WebScannerTriggerResponse struct {
 	LastScannedAt               string                          `json:"lastScannedAt" api:"nullable"`
 	LastScanStartedAt           string                          `json:"lastScanStartedAt" api:"nullable"`
 	Name                        string                          `json:"name" api:"nullable"`
+	NextScheduledScanAt         string                          `json:"nextScheduledScanAt" api:"nullable"`
 	UpdatedAt                   string                          `json:"updatedAt" api:"nullable"`
 	URLLimit                    float64                         `json:"urlLimit" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -487,6 +538,7 @@ type WebScannerTriggerResponse struct {
 		ID                          respjson.Field
 		AccountID                   respjson.Field
 		RootDomain                  respjson.Field
+		ScanSchedule                respjson.Field
 		ScanStatus                  respjson.Field
 		Status                      respjson.Field
 		CreatedAt                   respjson.Field
@@ -499,6 +551,7 @@ type WebScannerTriggerResponse struct {
 		LastScannedAt               respjson.Field
 		LastScanStartedAt           respjson.Field
 		Name                        respjson.Field
+		NextScheduledScanAt         respjson.Field
 		UpdatedAt                   respjson.Field
 		URLLimit                    respjson.Field
 		ExtraFields                 map[string]respjson.Field
@@ -511,6 +564,15 @@ func (r WebScannerTriggerResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerTriggerResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type WebScannerTriggerResponseScanSchedule string
+
+const (
+	WebScannerTriggerResponseScanScheduleDaily   WebScannerTriggerResponseScanSchedule = "daily"
+	WebScannerTriggerResponseScanScheduleManual  WebScannerTriggerResponseScanSchedule = "manual"
+	WebScannerTriggerResponseScanScheduleMonthly WebScannerTriggerResponseScanSchedule = "monthly"
+	WebScannerTriggerResponseScanScheduleWeekly  WebScannerTriggerResponseScanSchedule = "weekly"
+)
 
 type WebScannerTriggerResponseScanStatus string
 
@@ -688,8 +750,15 @@ type WebScannerSummaryResponse struct {
 	Coverage          WebScannerSummaryResponseCoverage     `json:"coverage" api:"required"`
 	HostCount         int64                                 `json:"hostCount" api:"required"`
 	LocalStorageCount int64                                 `json:"localStorageCount" api:"required"`
-	RootDomain        string                                `json:"rootDomain" api:"required"`
-	ScannerID         string                                `json:"scannerId" api:"required"`
+	// Distinct privacy policies captured for first-party hostnames in the selected
+	// scan run, including the bounded visible policy text.
+	PrivacyPolicies    []WebScannerSummaryResponsePrivacyPolicy `json:"privacyPolicies" api:"required"`
+	PrivacyPolicyCount int64                                    `json:"privacyPolicyCount" api:"required"`
+	// Every successfully crawled first-party hostname and its captured privacy policy
+	// URL. A null privacyPolicyUrl means no policy was captured for that hostname.
+	PrivacyPolicyHosts []WebScannerSummaryResponsePrivacyPolicyHost `json:"privacyPolicyHosts" api:"required"`
+	RootDomain         string                                       `json:"rootDomain" api:"required"`
+	ScannerID          string                                       `json:"scannerId" api:"required"`
 	// Any of "idle", "scanning".
 	ScanStatus WebScannerSummaryResponseScanStatus `json:"scanStatus" api:"required"`
 	// Up to 10 hosts that still need a decision (neither CMP-covered nor suppressed),
@@ -711,22 +780,25 @@ type WebScannerSummaryResponse struct {
 	RunDate       string                                 `json:"runDate" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ByCategory        respjson.Field
-		CookieCount       respjson.Field
-		CountsByRisk      respjson.Field
-		Coverage          respjson.Field
-		HostCount         respjson.Field
-		LocalStorageCount respjson.Field
-		RootDomain        respjson.Field
-		ScannerID         respjson.Field
-		ScanStatus        respjson.Field
-		TopUncoveredHosts respjson.Field
-		VendorCount       respjson.Field
-		Accessibility     respjson.Field
-		Delta             respjson.Field
-		RunDate           respjson.Field
-		ExtraFields       map[string]respjson.Field
-		raw               string
+		ByCategory         respjson.Field
+		CookieCount        respjson.Field
+		CountsByRisk       respjson.Field
+		Coverage           respjson.Field
+		HostCount          respjson.Field
+		LocalStorageCount  respjson.Field
+		PrivacyPolicies    respjson.Field
+		PrivacyPolicyCount respjson.Field
+		PrivacyPolicyHosts respjson.Field
+		RootDomain         respjson.Field
+		ScannerID          respjson.Field
+		ScanStatus         respjson.Field
+		TopUncoveredHosts  respjson.Field
+		VendorCount        respjson.Field
+		Accessibility      respjson.Field
+		Delta              respjson.Field
+		RunDate            respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -795,6 +867,44 @@ type WebScannerSummaryResponseCoverage struct {
 // Returns the unmodified JSON received from the API
 func (r WebScannerSummaryResponseCoverage) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerSummaryResponseCoverage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponsePrivacyPolicy struct {
+	Hostnames []string `json:"hostnames" api:"required"`
+	Text      string   `json:"text" api:"required"`
+	URL       string   `json:"url" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostnames   respjson.Field
+		Text        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponsePrivacyPolicy) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponsePrivacyPolicy) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponsePrivacyPolicyHost struct {
+	Hostname         string `json:"hostname" api:"required"`
+	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostname         respjson.Field
+		PrivacyPolicyURL respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponsePrivacyPolicyHost) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponsePrivacyPolicyHost) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1008,6 +1118,13 @@ type WebScannerNewParams struct {
 	// Additional seed URLs to include as crawl entry points. Each must be an http(s)
 	// URL. Max 100 entries.
 	IncludedURLs []string `json:"includedUrls,omitzero"`
+	// How often the scanner crawls this monitor on its own: `daily`, `weekly`,
+	// `monthly`, or `manual` to disable scheduled crawls and only run on demand.
+	// Defaults to `weekly`. Cadences advance on UTC calendar days from the last
+	// completed scan.
+	//
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerNewParamsScanSchedule `json:"scanSchedule,omitzero"`
 	// Any of "Disabled", "Enabled".
 	Status WebScannerNewParamsStatus `json:"status,omitzero"`
 	paramObj
@@ -1020,6 +1137,19 @@ func (r WebScannerNewParams) MarshalJSON() (data []byte, err error) {
 func (r *WebScannerNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// How often the scanner crawls this monitor on its own: `daily`, `weekly`,
+// `monthly`, or `manual` to disable scheduled crawls and only run on demand.
+// Defaults to `weekly`. Cadences advance on UTC calendar days from the last
+// completed scan.
+type WebScannerNewParamsScanSchedule string
+
+const (
+	WebScannerNewParamsScanScheduleDaily   WebScannerNewParamsScanSchedule = "daily"
+	WebScannerNewParamsScanScheduleManual  WebScannerNewParamsScanSchedule = "manual"
+	WebScannerNewParamsScanScheduleMonthly WebScannerNewParamsScanSchedule = "monthly"
+	WebScannerNewParamsScanScheduleWeekly  WebScannerNewParamsScanSchedule = "weekly"
+)
 
 type WebScannerNewParamsStatus string
 
@@ -1036,6 +1166,13 @@ type WebScannerUpdateParams struct {
 	URLLimit         param.Opt[float64] `json:"urlLimit,omitzero"`
 	ExcludedPatterns []string           `json:"excludedPatterns,omitzero"`
 	IncludedURLs     []string           `json:"includedUrls,omitzero"`
+	// How often the scanner crawls this monitor on its own: `daily`, `weekly`,
+	// `monthly`, or `manual` to disable scheduled crawls and only run on demand.
+	// Defaults to `weekly`. Cadences advance on UTC calendar days from the last
+	// completed scan. Omit to leave the current cadence unchanged.
+	//
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerUpdateParamsScanSchedule `json:"scanSchedule,omitzero"`
 	// Any of "Disabled", "Enabled".
 	Status WebScannerUpdateParamsStatus `json:"status,omitzero"`
 	paramObj
@@ -1048,6 +1185,19 @@ func (r WebScannerUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *WebScannerUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// How often the scanner crawls this monitor on its own: `daily`, `weekly`,
+// `monthly`, or `manual` to disable scheduled crawls and only run on demand.
+// Defaults to `weekly`. Cadences advance on UTC calendar days from the last
+// completed scan. Omit to leave the current cadence unchanged.
+type WebScannerUpdateParamsScanSchedule string
+
+const (
+	WebScannerUpdateParamsScanScheduleDaily   WebScannerUpdateParamsScanSchedule = "daily"
+	WebScannerUpdateParamsScanScheduleManual  WebScannerUpdateParamsScanSchedule = "manual"
+	WebScannerUpdateParamsScanScheduleMonthly WebScannerUpdateParamsScanSchedule = "monthly"
+	WebScannerUpdateParamsScanScheduleWeekly  WebScannerUpdateParamsScanSchedule = "weekly"
+)
 
 type WebScannerUpdateParamsStatus string
 
