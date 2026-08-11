@@ -220,17 +220,23 @@ type VersionListResponse struct {
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
 	// determine the current live version.
 	PublishedAt string `json:"publishedAt" api:"nullable"`
+	// Identifier of the user who most recently published this version.
+	PublishedByUserID string `json:"publishedByUserId" api:"nullable"`
+	// Display name of the user who most recently published this version.
+	PublishedByUserName string `json:"publishedByUserName" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		CreatedAt     respjson.Field
-		IsPublished   respjson.Field
-		VersionNumber respjson.Field
-		Name          respjson.Field
-		Notes         respjson.Field
-		PublishedAt   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		IsPublished         respjson.Field
+		VersionNumber       respjson.Field
+		Name                respjson.Field
+		Notes               respjson.Field
+		PublishedAt         respjson.Field
+		PublishedByUserID   respjson.Field
+		PublishedByUserName respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -252,17 +258,23 @@ type VersionNewResponse struct {
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
 	// determine the current live version.
 	PublishedAt string `json:"publishedAt" api:"nullable"`
+	// Identifier of the user who most recently published this version.
+	PublishedByUserID string `json:"publishedByUserId" api:"nullable"`
+	// Display name of the user who most recently published this version.
+	PublishedByUserName string `json:"publishedByUserName" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		CreatedAt     respjson.Field
-		IsPublished   respjson.Field
-		VersionNumber respjson.Field
-		Name          respjson.Field
-		Notes         respjson.Field
-		PublishedAt   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		IsPublished         respjson.Field
+		VersionNumber       respjson.Field
+		Name                respjson.Field
+		Notes               respjson.Field
+		PublishedAt         respjson.Field
+		PublishedByUserID   respjson.Field
+		PublishedByUserName respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -284,17 +296,23 @@ type VersionGetResponse struct {
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
 	// determine the current live version.
 	PublishedAt string `json:"publishedAt" api:"nullable"`
+	// Identifier of the user who most recently published this version.
+	PublishedByUserID string `json:"publishedByUserId" api:"nullable"`
+	// Display name of the user who most recently published this version.
+	PublishedByUserName string `json:"publishedByUserName" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		CreatedAt     respjson.Field
-		IsPublished   respjson.Field
-		VersionNumber respjson.Field
-		Name          respjson.Field
-		Notes         respjson.Field
-		PublishedAt   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		IsPublished         respjson.Field
+		VersionNumber       respjson.Field
+		Name                respjson.Field
+		Notes               respjson.Field
+		PublishedAt         respjson.Field
+		PublishedByUserID   respjson.Field
+		PublishedByUserName respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -316,17 +334,23 @@ type VersionUpdateResponse struct {
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
 	// determine the current live version.
 	PublishedAt string `json:"publishedAt" api:"nullable"`
+	// Identifier of the user who most recently published this version.
+	PublishedByUserID string `json:"publishedByUserId" api:"nullable"`
+	// Display name of the user who most recently published this version.
+	PublishedByUserName string `json:"publishedByUserName" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		CreatedAt     respjson.Field
-		IsPublished   respjson.Field
-		VersionNumber respjson.Field
-		Name          respjson.Field
-		Notes         respjson.Field
-		PublishedAt   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		IsPublished         respjson.Field
+		VersionNumber       respjson.Field
+		Name                respjson.Field
+		Notes               respjson.Field
+		PublishedAt         respjson.Field
+		PublishedByUserID   respjson.Field
+		PublishedByUserName respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
@@ -348,17 +372,23 @@ type VersionPublishResponse struct {
 	// row, regardless of whether `isPublished` is currently true. Use `isPublished` to
 	// determine the current live version.
 	PublishedAt string `json:"publishedAt" api:"nullable"`
+	// Identifier of the user who most recently published this version.
+	PublishedByUserID string `json:"publishedByUserId" api:"nullable"`
+	// Display name of the user who most recently published this version.
+	PublishedByUserName string `json:"publishedByUserName" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID            respjson.Field
-		CreatedAt     respjson.Field
-		IsPublished   respjson.Field
-		VersionNumber respjson.Field
-		Name          respjson.Field
-		Notes         respjson.Field
-		PublishedAt   respjson.Field
-		ExtraFields   map[string]respjson.Field
-		raw           string
+		ID                  respjson.Field
+		CreatedAt           respjson.Field
+		IsPublished         respjson.Field
+		VersionNumber       respjson.Field
+		Name                respjson.Field
+		Notes               respjson.Field
+		PublishedAt         respjson.Field
+		PublishedByUserID   respjson.Field
+		PublishedByUserName respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 

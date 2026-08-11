@@ -7,14 +7,13 @@ import (
 	"errors"
 	"os"
 	"testing"
-	"time"
 
 	"github.com/with-ours/platform-sdk-go"
 	"github.com/with-ours/platform-sdk-go/internal/testutil"
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestWebScannerList(t *testing.T) {
+func TestVideoListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,36 +25,10 @@ func TestWebScannerList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.List(context.TODO())
-	if err != nil {
-		var apierr *oursprivacy.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestWebScannerNewWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := oursprivacy.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.WebScanners.New(context.TODO(), oursprivacy.WebScannerNewParams{
-		RootDomain:       "x",
-		ExcludedPatterns: []string{"string"},
-		IncludedURLs:     []string{"string"},
-		Name:             oursprivacy.String("name"),
-		ScanSchedule:     oursprivacy.WebScannerNewParamsScanScheduleDaily,
-		Status:           oursprivacy.WebScannerNewParamsStatusDisabled,
-		URLLimit:         oursprivacy.Float(0),
+	_, err := client.Videos.List(context.TODO(), oursprivacy.VideoListParams{
+		Cursor:       oursprivacy.String("cursor"),
+		Limit:        oursprivacy.Int(25),
+		NameContains: oursprivacy.String("nameContains"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -66,7 +39,7 @@ func TestWebScannerNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebScannerGet(t *testing.T) {
+func TestVideoNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -78,7 +51,11 @@ func TestWebScannerGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Get(context.TODO(), "id")
+	_, err := client.Videos.New(context.TODO(), oursprivacy.VideoNewParams{
+		MimeType:    oursprivacy.VideoNewParamsMimeTypeMP4,
+		Description: oursprivacy.String("description"),
+		Name:        oursprivacy.String("name"),
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -88,7 +65,7 @@ func TestWebScannerGet(t *testing.T) {
 	}
 }
 
-func TestWebScannerUpdateWithOptionalParams(t *testing.T) {
+func TestVideoGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -100,17 +77,38 @@ func TestWebScannerUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Update(
+	_, err := client.Videos.Get(context.TODO(), "id")
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVideoUpdateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Videos.Update(
 		context.TODO(),
 		"id",
-		oursprivacy.WebScannerUpdateParams{
-			ExcludedPatterns: []string{"string"},
-			IncludedURLs:     []string{"string"},
-			Name:             oursprivacy.String("name"),
-			RootDomain:       oursprivacy.String("rootDomain"),
-			ScanSchedule:     oursprivacy.WebScannerUpdateParamsScanScheduleDaily,
-			Status:           oursprivacy.WebScannerUpdateParamsStatusDisabled,
-			URLLimit:         oursprivacy.Float(0),
+		oursprivacy.VideoUpdateParams{
+			Description:    oursprivacy.String("description"),
+			Duration:       oursprivacy.Float(0),
+			HasVideoUpload: oursprivacy.Bool(true),
+			Height:         oursprivacy.Float(0),
+			Name:           oursprivacy.String("name"),
+			Width:          oursprivacy.Float(0),
 		},
 	)
 	if err != nil {
@@ -122,7 +120,7 @@ func TestWebScannerUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebScannerDelete(t *testing.T) {
+func TestVideoDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -134,7 +132,7 @@ func TestWebScannerDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Delete(context.TODO(), "id")
+	_, err := client.Videos.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -144,7 +142,7 @@ func TestWebScannerDelete(t *testing.T) {
 	}
 }
 
-func TestWebScannerTrigger(t *testing.T) {
+func TestVideoTranscript(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -156,7 +154,7 @@ func TestWebScannerTrigger(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Trigger(context.TODO(), "id")
+	_, err := client.Videos.Transcript(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -166,7 +164,7 @@ func TestWebScannerTrigger(t *testing.T) {
 	}
 }
 
-func TestWebScannerFindingsWithOptionalParams(t *testing.T) {
+func TestVideoUpdateTranscript(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -178,13 +176,12 @@ func TestWebScannerFindingsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Findings(
+	_, err := client.Videos.UpdateTranscript(
 		context.TODO(),
 		"id",
-		oursprivacy.WebScannerFindingsParams{
-			Date:   oursprivacy.Time(time.Now()),
-			Limit:  oursprivacy.Int(1),
-			Offset: oursprivacy.Int(0),
+		oursprivacy.VideoUpdateTranscriptParams{
+			Content: "content",
+			Format:  oursprivacy.VideoUpdateTranscriptParamsFormatSrt,
 		},
 	)
 	if err != nil {
@@ -196,7 +193,7 @@ func TestWebScannerFindingsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebScannerCookiesWithOptionalParams(t *testing.T) {
+func TestVideoAnalyticsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -208,15 +205,12 @@ func TestWebScannerCookiesWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Cookies(
-		context.TODO(),
-		"id",
-		oursprivacy.WebScannerCookiesParams{
-			Date:   oursprivacy.Time(time.Now()),
-			Limit:  oursprivacy.Int(1),
-			Offset: oursprivacy.Int(0),
-		},
-	)
+	_, err := client.Videos.Analytics(context.TODO(), oursprivacy.VideoAnalyticsParams{
+		From:   "from",
+		To:     "to",
+		Limit:  oursprivacy.Int(1),
+		Offset: oursprivacy.Int(0),
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -226,7 +220,7 @@ func TestWebScannerCookiesWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebScannerSummaryWithOptionalParams(t *testing.T) {
+func TestVideoAnalyticsTimeseriesWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -238,11 +232,13 @@ func TestWebScannerSummaryWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebScanners.Summary(
+	_, err := client.Videos.AnalyticsTimeseries(
 		context.TODO(),
 		"id",
-		oursprivacy.WebScannerSummaryParams{
-			Date: oursprivacy.Time(time.Now()),
+		oursprivacy.VideoAnalyticsTimeseriesParams{
+			From:        "from",
+			To:          "to",
+			Granularity: oursprivacy.VideoAnalyticsTimeseriesParamsGranularityDaily,
 		},
 	)
 	if err != nil {

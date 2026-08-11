@@ -38,9 +38,11 @@ func NewFunnelService(opts ...option.RequestOption) (r FunnelService) {
 }
 
 // List every funnel configured on this account. Each funnel includes its step
-// configuration, funnel type, conversion window, and current processing status.
-// The available report date range (if any pre-computed reports exist) is returned
-// in `reportDateRange`. Requires scope: web-analytics:view
+// configuration, funnel type, and conversion window. Funnel results are
+// computed on demand, so `status` is always `READY` and `reportDateRange` is
+// always `null`; both fields are retained for backward compatibility and should
+// not be used to decide whether results are available. Requires scope:
+// web-analytics:view
 func (r *FunnelService) List(ctx context.Context, opts ...option.RequestOption) (res *FunnelListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/funnels"
@@ -64,9 +66,10 @@ func (r *FunnelService) Get(ctx context.Context, id string, opts ...option.Reque
 
 // Compute funnel step analytics for a funnel over a date window. Returns per-step
 // visitor counts, conversion rates, drop-off rates, average time to next step, and
-// sample session IDs for replay. Funnel results are pre-computed daily from S3;
-// reports outside the `reportDateRange` shown on the funnel config will return
-// empty steps. Requires scope: web-analytics:view
+// sample session IDs for replay. Results are computed on demand from event data at
+// request time, so any date window within the supported range returns current
+// results. `to` must be on or after `from`, and the window may span at most 31 days
+// including both endpoints. Requires scope: web-analytics:view
 func (r *FunnelService) Results(ctx context.Context, id string, query FunnelResultsParams, opts ...option.RequestOption) (res *FunnelResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -352,12 +355,18 @@ type FunnelResultsResponse struct {
 	TotalVisitors int64 `json:"totalVisitors" api:"required"`
 	// Average time from first step to last step in seconds. Null when no completions.
 	OverallAvgTimeToConversion float64 `json:"overallAvgTimeToConversion" api:"nullable"`
+	// Present when the results are wider than the funnel as configured. Some step
+	// conditions could not be expressed as a query and were ignored, so the counts
+	// above include visitors those conditions would have excluded. Absent when the
+	// whole definition was applied. The dashboard surfaces the same caveat.
+	Warning string `json:"warning"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		OverallConversionRate      respjson.Field
 		Steps                      respjson.Field
 		TotalVisitors              respjson.Field
 		OverallAvgTimeToConversion respjson.Field
+		Warning                    respjson.Field
 		ExtraFields                map[string]respjson.Field
 		raw                        string
 	} `json:"-"`
@@ -403,28 +412,36 @@ func (r *FunnelResultsResponseStep) UnmarshalJSON(data []byte) error {
 
 type FunnelResultsParams struct {
 	// Inclusive lower bound of the analysis window, as a UTC calendar day in
-	// `YYYY-MM-DD` format.
+	// `YYYY-MM-DD` format. The window may span at most 31 days including both
+	// endpoints.
 	From string `query:"from" api:"required" json:"-"`
 	// Inclusive upper bound of the analysis window, as a UTC calendar day in
-	// `YYYY-MM-DD` format.
+	// `YYYY-MM-DD` format. Must be on or after `from`, and the window may span at most
+	// 31 days including both endpoints.
 	To string `query:"to" api:"required" json:"-"`
-	// Filter by UTM campaign.
+	// Restrict the funnel to sessions whose `utm_campaign` exactly matches this value.
 	UtmCampaign param.Opt[string] `query:"utmCampaign,omitzero" json:"-"`
-	// Filter by UTM content.
+	// Restrict the funnel to sessions whose `utm_content` exactly matches this value.
 	UtmContent param.Opt[string] `query:"utmContent,omitzero" json:"-"`
-	// Filter by UTM medium.
+	// Restrict the funnel to sessions whose `utm_medium` exactly matches this value.
 	UtmMedium param.Opt[string] `query:"utmMedium,omitzero" json:"-"`
-	// Filter by UTM name.
+	// Accepted for backward compatibility but NOT applied — there is no campaign-name
+	// dimension on funnel sessions. Use `utmCampaign` instead.
 	UtmName param.Opt[string] `query:"utmName,omitzero" json:"-"`
-	// Filter by UTM source.
+	// Restrict the funnel to sessions whose `utm_source` exactly matches this value.
 	UtmSource param.Opt[string] `query:"utmSource,omitzero" json:"-"`
-	// Filter by UTM term.
+	// Restrict the funnel to sessions whose `utm_term` exactly matches this value.
 	UtmTerm param.Opt[string] `query:"utmTerm,omitzero" json:"-"`
-	// Attribution type for UTM filter matching in funnel steps.
+	// Accepted for backward compatibility but NOT applied. Funnel sessions carry a
+	// single attribution set, so there is no initial vs. last-touch distinction to
+	// select between.
 	//
 	// Any of "INITIAL", "LAST_TOUCH".
 	AttributionType FunnelResultsParamsAttributionType `query:"attributionType,omitzero" json:"-"`
-	// Filter funnel analytics to a specific device type. Defaults to `ALL`.
+	// Restrict the funnel to sessions on a device class. `MOBILE` matches phone
+	// sessions; `DESKTOP` matches every session that is not a phone, tablet, TV,
+	// console, wearable, XR, or embedded device. `ALL` (the default) applies no device
+	// filter.
 	//
 	// Any of "DESKTOP", "MOBILE", "ALL".
 	DeviceType FunnelResultsParamsDeviceType `query:"deviceType,omitzero" json:"-"`
@@ -439,7 +456,9 @@ func (r FunnelResultsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Attribution type for UTM filter matching in funnel steps.
+// Accepted for backward compatibility but NOT applied. Funnel sessions carry a
+// single attribution set, so there is no initial vs. last-touch distinction to
+// select between.
 type FunnelResultsParamsAttributionType string
 
 const (
@@ -447,7 +466,10 @@ const (
 	FunnelResultsParamsAttributionTypeLastTouch FunnelResultsParamsAttributionType = "LAST_TOUCH"
 )
 
-// Filter funnel analytics to a specific device type. Defaults to `ALL`.
+// Restrict the funnel to sessions on a device class. `MOBILE` matches phone
+// sessions; `DESKTOP` matches every session that is not a phone, tablet, TV,
+// console, wearable, XR, or embedded device. `ALL` (the default) applies no device
+// filter.
 type FunnelResultsParamsDeviceType string
 
 const (
