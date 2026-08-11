@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.39.0 (2026-08-11)
+
+Full Changelog: [v1.38.1...v1.39.0](https://github.com/with-ours/platform-sdk-go/compare/v1.38.1...v1.39.0)
+
+### Features
+
+* sync funnels with platform spec changes OUR-4175 ([0b560ad](https://github.com/with-ours/platform-sdk-go/commit/0b560ad5a7e6810056bdf144f73a20cf0ce3dd7d))
+* sync versions with platform spec changes OUR-4175 ([92233d8](https://github.com/with-ours/platform-sdk-go/commit/92233d8a9517519b23f245d2373b6e5611d1fad6))
+* sync videos with platform spec changes OUR-4175 ([3d5e3ca](https://github.com/with-ours/platform-sdk-go/commit/3d5e3ca8d2303c2d6ce28a64f8b50db17495c5cb))
+* sync web_scanners with platform spec changes OUR-4175 ([08fffa8](https://github.com/with-ours/platform-sdk-go/commit/08fffa82ede01465f4920705b43b19bdb06a6206))
+
+
+### Bug Fixes
+
+* run the mock server against a committed OpenAPI spec ([0fc0e6d](https://github.com/with-ours/platform-sdk-go/commit/0fc0e6de5c3737e5b8fccf1da5e48c72830e3740))
+
 ## 1.38.1 (2026-08-03)
 
 Full Changelog: [v1.38.0...v1.38.1](https://github.com/with-ours/platform-sdk-go/compare/v1.38.0...v1.38.1)
