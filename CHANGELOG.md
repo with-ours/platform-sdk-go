@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.40.0 (2026-08-13)
+
+Full Changelog: [v1.39.0...v1.40.0](https://github.com/with-ours/platform-sdk-go/compare/v1.39.0...v1.40.0)
+
+### Features
+
+* sync experiments with platform spec changes ([bf64c66](https://github.com/with-ours/platform-sdk-go/commit/bf64c662bd1c1910e35fc435797744760af33972))
+* sync video_channels with platform spec changes ([7819b04](https://github.com/with-ours/platform-sdk-go/commit/7819b04fd73241b1f518b12aa7e896f2ecd75afd))
+* sync videos with platform spec changes ([eb40f8f](https://github.com/with-ours/platform-sdk-go/commit/eb40f8fd7a6618674a5689d8cc5632ac566212d7))
+
 ## 1.39.0 (2026-08-11)
 
 Full Changelog: [v1.38.1...v1.39.0](https://github.com/with-ours/platform-sdk-go/compare/v1.38.1...v1.39.0)
