@@ -289,6 +289,7 @@ type VideoGetResponse struct {
 	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
 	Height                float64 `json:"height" api:"nullable"`
 	Name                  string  `json:"name" api:"nullable"`
+	ResolvedValues        any     `json:"resolvedValues" api:"nullable"`
 	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
 	Width                 float64 `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -304,6 +305,7 @@ type VideoGetResponse struct {
 		HasVideoUpload        respjson.Field
 		Height                respjson.Field
 		Name                  respjson.Field
+		ResolvedValues        respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field

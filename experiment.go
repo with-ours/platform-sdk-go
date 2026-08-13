@@ -91,9 +91,10 @@ func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.R
 	return res, err
 }
 
-// Partially update an experiment. Only the fields you send are changed. Edits are
-// allowed on draft, running, and paused experiments and are recorded in the change
-// log. Only completed experiments return 409 with
+// Partially update an experiment. Only the fields you send are changed, except
+// renaming a non-draft legacy experiment with no stored key preserves its current
+// name-derived key. Edits are allowed on draft, running, and paused experiments
+// and are recorded in the change log. Only completed experiments return 409 with
 // `A completed experiment can no longer be edited`. Use the lifecycle endpoints
 // (`/start`, `/pause`, `/resume`, `/stop`) to change status. Requires scope:
 // experiment:update
@@ -3641,7 +3642,8 @@ type ExperimentUpdateParams struct {
 	// Updated redirect query-string forwarding behavior for the experiment.
 	IncludeQueryString param.Opt[bool] `json:"includeQueryString,omitzero"`
 	// Updated stable code-facing key. When blank, the API falls back to a slugified
-	// key derived from the current experiment name.
+	// key derived from the current experiment name. Renaming a non-draft legacy
+	// experiment with no stored key preserves its current name-derived key.
 	Key param.Opt[string] `json:"key,omitzero"`
 	// Updated experiment name.
 	Name param.Opt[string] `json:"name,omitzero"`

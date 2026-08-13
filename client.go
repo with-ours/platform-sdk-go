@@ -42,6 +42,7 @@ type Client struct {
 	TagManagerFolders      TagManagerFolderService
 	TagManagerAssetFolders TagManagerAssetFolderService
 	Versions               VersionService
+	VideoChannels          VideoChannelService
 	Videos                 VideoService
 	WebScannerRules        WebScannerRuleService
 	WebScanners            WebScannerService
@@ -101,6 +102,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.TagManagerFolders = NewTagManagerFolderService(opts...)
 	r.TagManagerAssetFolders = NewTagManagerAssetFolderService(opts...)
 	r.Versions = NewVersionService(opts...)
+	r.VideoChannels = NewVideoChannelService(opts...)
 	r.Videos = NewVideoService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
