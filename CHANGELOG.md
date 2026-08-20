@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.40.1 (2026-08-20)
+
+Full Changelog: [v1.40.0...v1.40.1](https://github.com/with-ours/platform-sdk-go/compare/v1.40.0...v1.40.1)
+
+### Chores
+
+* **internal:** allow the mock server port to be set with STAINLESS_MOCK_PORT ([afb425a](https://github.com/with-ours/platform-sdk-go/commit/afb425aa4e06746dcc3e782535d911328ecf119a))
+
 ## 1.40.0 (2026-08-13)
 
 Full Changelog: [v1.39.0...v1.40.0](https://github.com/with-ours/platform-sdk-go/compare/v1.39.0...v1.40.0)
