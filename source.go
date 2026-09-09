@@ -142,10 +142,11 @@ type SourceListResponse struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
 	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
+	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
+	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
+	// "iOSNativeApi".
 	Type                  SourceListResponseType `json:"type" api:"required"`
 	BotControlMode        string                 `json:"botControlMode" api:"nullable"`
 	BotScoreThreshold     float64                `json:"botScoreThreshold" api:"nullable"`
@@ -225,6 +226,7 @@ const (
 	SourceListResponseTypeGoLangAPI           SourceListResponseType = "GoLangApi"
 	SourceListResponseTypeHTTPAPISource       SourceListResponseType = "HTTPApiSource"
 	SourceListResponseTypeHealthie            SourceListResponseType = "Healthie"
+	SourceListResponseTypeHeyflow             SourceListResponseType = "Heyflow"
 	SourceListResponseTypeHubspotAppActions   SourceListResponseType = "HubspotAppActions"
 	SourceListResponseTypeHubspotFormWebhook  SourceListResponseType = "HubspotFormWebhook"
 	SourceListResponseTypeJotFormWebhooks     SourceListResponseType = "JotFormWebhooks"
@@ -254,10 +256,11 @@ type SourceNewResponse struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
 	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
+	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
+	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
+	// "iOSNativeApi".
 	Type                  SourceNewResponseType `json:"type" api:"required"`
 	BotControlMode        string                `json:"botControlMode" api:"nullable"`
 	BotScoreThreshold     float64               `json:"botScoreThreshold" api:"nullable"`
@@ -337,6 +340,7 @@ const (
 	SourceNewResponseTypeGoLangAPI           SourceNewResponseType = "GoLangApi"
 	SourceNewResponseTypeHTTPAPISource       SourceNewResponseType = "HTTPApiSource"
 	SourceNewResponseTypeHealthie            SourceNewResponseType = "Healthie"
+	SourceNewResponseTypeHeyflow             SourceNewResponseType = "Heyflow"
 	SourceNewResponseTypeHubspotAppActions   SourceNewResponseType = "HubspotAppActions"
 	SourceNewResponseTypeHubspotFormWebhook  SourceNewResponseType = "HubspotFormWebhook"
 	SourceNewResponseTypeJotFormWebhooks     SourceNewResponseType = "JotFormWebhooks"
@@ -366,10 +370,11 @@ type SourceGetResponse struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
 	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
+	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
+	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
+	// "iOSNativeApi".
 	Type                  SourceGetResponseType `json:"type" api:"required"`
 	BotControlMode        string                `json:"botControlMode" api:"nullable"`
 	BotScoreThreshold     float64               `json:"botScoreThreshold" api:"nullable"`
@@ -449,6 +454,7 @@ const (
 	SourceGetResponseTypeGoLangAPI           SourceGetResponseType = "GoLangApi"
 	SourceGetResponseTypeHTTPAPISource       SourceGetResponseType = "HTTPApiSource"
 	SourceGetResponseTypeHealthie            SourceGetResponseType = "Healthie"
+	SourceGetResponseTypeHeyflow             SourceGetResponseType = "Heyflow"
 	SourceGetResponseTypeHubspotAppActions   SourceGetResponseType = "HubspotAppActions"
 	SourceGetResponseTypeHubspotFormWebhook  SourceGetResponseType = "HubspotFormWebhook"
 	SourceGetResponseTypeJotFormWebhooks     SourceGetResponseType = "JotFormWebhooks"
@@ -478,10 +484,11 @@ type SourceUpdateResponse struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
 	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
+	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
+	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
+	// "iOSNativeApi".
 	Type                  SourceUpdateResponseType `json:"type" api:"required"`
 	BotControlMode        string                   `json:"botControlMode" api:"nullable"`
 	BotScoreThreshold     float64                  `json:"botScoreThreshold" api:"nullable"`
@@ -561,6 +568,7 @@ const (
 	SourceUpdateResponseTypeGoLangAPI           SourceUpdateResponseType = "GoLangApi"
 	SourceUpdateResponseTypeHTTPAPISource       SourceUpdateResponseType = "HTTPApiSource"
 	SourceUpdateResponseTypeHealthie            SourceUpdateResponseType = "Healthie"
+	SourceUpdateResponseTypeHeyflow             SourceUpdateResponseType = "Heyflow"
 	SourceUpdateResponseTypeHubspotAppActions   SourceUpdateResponseType = "HubspotAppActions"
 	SourceUpdateResponseTypeHubspotFormWebhook  SourceUpdateResponseType = "HubspotFormWebhook"
 	SourceUpdateResponseTypeJotFormWebhooks     SourceUpdateResponseType = "JotFormWebhooks"
@@ -731,10 +739,11 @@ type SourceListParams struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
 	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
+	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
+	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
+	// "iOSNativeApi".
 	Type SourceListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -774,6 +783,7 @@ const (
 	SourceListParamsTypeGoLangAPI           SourceListParamsType = "GoLangApi"
 	SourceListParamsTypeHTTPAPISource       SourceListParamsType = "HTTPApiSource"
 	SourceListParamsTypeHealthie            SourceListParamsType = "Healthie"
+	SourceListParamsTypeHeyflow             SourceListParamsType = "Heyflow"
 	SourceListParamsTypeHubspotAppActions   SourceListParamsType = "HubspotAppActions"
 	SourceListParamsTypeHubspotFormWebhook  SourceListParamsType = "HubspotFormWebhook"
 	SourceListParamsTypeJotFormWebhooks     SourceListParamsType = "JotFormWebhooks"
@@ -797,10 +807,11 @@ type SourceNewParams struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
 	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "HubspotAppActions", "HubspotFormWebhook",
-	// "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi", "PixelImage",
-	// "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi", "SegmentWebPlugin",
-	// "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts", "iOSNativeApi".
+	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
+	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
+	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
+	// "iOSNativeApi".
 	Type SourceNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]   `json:"name,omitzero"`
 	// Destination URL for a RedirectSource (short link). Ignored by other source
@@ -835,6 +846,7 @@ const (
 	SourceNewParamsTypeGoLangAPI           SourceNewParamsType = "GoLangApi"
 	SourceNewParamsTypeHTTPAPISource       SourceNewParamsType = "HTTPApiSource"
 	SourceNewParamsTypeHealthie            SourceNewParamsType = "Healthie"
+	SourceNewParamsTypeHeyflow             SourceNewParamsType = "Heyflow"
 	SourceNewParamsTypeHubspotAppActions   SourceNewParamsType = "HubspotAppActions"
 	SourceNewParamsTypeHubspotFormWebhook  SourceNewParamsType = "HubspotFormWebhook"
 	SourceNewParamsTypeJotFormWebhooks     SourceNewParamsType = "JotFormWebhooks"

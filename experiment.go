@@ -121,6 +121,20 @@ func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...optio
 	return res, err
 }
 
+// Create a draft copy of an experiment. The copy keeps its configuration and
+// variants, receives a new key, and does not retain lifecycle, rollout, or result
+// state. Requires scope: experiment:create
+func (r *ExperimentService) Duplicate(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentDuplicateResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/experiments/%s/duplicate", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Start an experiment. By default also publishes the experiment and its variants
 // atomically as a new version, making them live for end users — this is the
 // canonical publish path for experiment changes. They do NOT flow through
@@ -241,6 +255,24 @@ func (r *ExperimentService) Results(ctx context.Context, id string, query Experi
 	return res, err
 }
 
+// Return the configured Bayesian, fixed-horizon Frequentist, or Sequential
+// analysis for conversion metrics; Bayesian and Frequentist also support value
+// metrics. The response includes common visitor, impression, readiness, evidence,
+// and data-quality fields plus the applicable method-specific result block.
+// Visitors are the inferential unit; impressions remain a delivery diagnostic.
+// Secondary event overrides are labeled exploratory, and unsupported legacy plans
+// suppress official evidence. Requires scope: experiment:find
+func (r *ExperimentService) Analysis(ctx context.Context, id string, query ExperimentAnalysisParams, opts ...option.RequestOption) (res *ExperimentAnalysisResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/experiments/%s/analysis", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Per-day per-variant impressions, conversions, and conversion rate, sliced to a
 // date range. Use this to chart trends, compare windows, or zoom in on a specific
 // period. Pass `startDate` / `endDate` (`YYYY-MM-DD`, UTC, both inclusive) to set
@@ -298,9 +330,19 @@ type ExperimentListResponse struct {
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
 	// All persisted variants for this experiment, including the control variant. A
 	// non-personalization experiment needs at least two variants before it can be
-	// started. Reading variants requires the `experiment:find` scope in addition to
-	// `experiment:list`; an API key without it receives an empty array here.
+	// started. Reading variants is gated by the `experiment:find` permission: a key
+	// holding the `experiment:find` scope always receives them, and a key created by
+	// an org admin/member receives them too (that role satisfies the check). A key
+	// that holds neither the scope nor a qualifying creator role receives an empty
+	// array here.
 	Variants []ExperimentListResponseVariant `json:"variants" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -337,25 +379,28 @@ type ExperimentListResponse struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Variants           respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		Variants               respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -625,9 +670,19 @@ type ExperimentNewResponse struct {
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
 	// All persisted variants for this experiment, including the control variant. A
 	// non-personalization experiment needs at least two variants before it can be
-	// started. Reading variants requires the `experiment:find` scope in addition to
-	// `experiment:list`; an API key without it receives an empty array here.
+	// started. Reading variants is gated by the `experiment:find` permission: a key
+	// holding the `experiment:find` scope always receives them, and a key created by
+	// an org admin/member receives them too (that role satisfies the check). A key
+	// that holds neither the scope nor a qualifying creator role receives an empty
+	// array here.
 	Variants []ExperimentNewResponseVariant `json:"variants" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -664,25 +719,28 @@ type ExperimentNewResponse struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Variants           respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		Variants               respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -952,9 +1010,19 @@ type ExperimentGetResponse struct {
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
 	// All persisted variants for this experiment, including the control variant. A
 	// non-personalization experiment needs at least two variants before it can be
-	// started. Reading variants requires the `experiment:find` scope in addition to
-	// `experiment:list`; an API key without it receives an empty array here.
+	// started. Reading variants is gated by the `experiment:find` permission: a key
+	// holding the `experiment:find` scope always receives them, and a key created by
+	// an org admin/member receives them too (that role satisfies the check). A key
+	// that holds neither the scope nor a qualifying creator role receives an empty
+	// array here.
 	Variants []ExperimentGetResponseVariant `json:"variants" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -991,25 +1059,28 @@ type ExperimentGetResponse struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Variants           respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		Variants               respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -1279,9 +1350,19 @@ type ExperimentUpdateResponse struct {
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
 	// All persisted variants for this experiment, including the control variant. A
 	// non-personalization experiment needs at least two variants before it can be
-	// started. Reading variants requires the `experiment:find` scope in addition to
-	// `experiment:list`; an API key without it receives an empty array here.
+	// started. Reading variants is gated by the `experiment:find` permission: a key
+	// holding the `experiment:find` scope always receives them, and a key created by
+	// an org admin/member receives them too (that role satisfies the check). A key
+	// that holds neither the scope nor a qualifying creator role receives an empty
+	// array here.
 	Variants []ExperimentUpdateResponseVariant `json:"variants" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -1318,25 +1399,28 @@ type ExperimentUpdateResponse struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Variants           respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		Variants               respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -1585,6 +1669,346 @@ const (
 	ExperimentUpdateResponseTypePersonalization ExperimentUpdateResponseType = "personalization"
 )
 
+type ExperimentDuplicateResponse struct {
+	// Unique identifier for the experiment.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when the experiment was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Stable code-facing key for the experiment. Use this with the headless SDK
+	// `getExperimentByKey()` API instead of hard-coding opaque experiment IDs into
+	// application code.
+	Key string `json:"key" api:"required"`
+	// Short, human-readable experiment name.
+	Name string `json:"name" api:"required"`
+	// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+	// temporarily inactive, and `completed` is permanently stopped.
+	//
+	// Any of "completed", "draft", "paused", "running".
+	Status ExperimentDuplicateResponseStatus `json:"status" api:"required"`
+	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
+	// enrollment without deleting the experiment.
+	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// All persisted variants for this experiment, including the control variant. A
+	// non-personalization experiment needs at least two variants before it can be
+	// started. Reading variants is gated by the `experiment:find` permission: a key
+	// holding the `experiment:find` scope always receives them, and a key created by
+	// an org admin/member receives them too (that role satisfies the check). A key
+	// that holds neither the scope nor a qualifying creator role receives an empty
+	// array here.
+	Variants []ExperimentDuplicateResponseVariant `json:"variants" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
+	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
+	// experiment hypothesis field.
+	Description string `json:"description" api:"nullable"`
+	// For redirect variants, whether the original page query string should be
+	// forwarded onto the redirect URL.
+	IncludeQueryString bool `json:"includeQueryString" api:"nullable"`
+	// Configured success metrics. The read shape mirrors the write shape — `metrics`
+	// from a GET response can be PATCHed back without modification.
+	Metrics ExperimentDuplicateResponseMetrics `json:"metrics" api:"nullable"`
+	// Variant currently rolled out to 100% of targeted traffic on a completed
+	// experiment. When set (and not the control), the runtime keeps serving it to
+	// every matching visitor — a winning redirect becomes an ongoing redirect.
+	// Independent of `winnerVariantId`. Set via `POST /experiments/{id}/rollout`;
+	// cleared via `POST /experiments/{id}/end-rollout`.
+	RolloutVariantID string `json:"rolloutVariantId" api:"nullable"`
+	// ISO-8601 timestamp when the experiment most recently entered a running state.
+	StartedAt string `json:"startedAt" api:"nullable"`
+	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
+	StoppedAt string `json:"stoppedAt" api:"nullable"`
+	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+	// visitor status, and (server-side) visitor properties. Same shape as the
+	// create/patch input.
+	TargetingRules ExperimentDuplicateResponseTargetingRules `json:"targetingRules" api:"nullable"`
+	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+	// `personalization` is always-on targeting.
+	//
+	// Any of "ab", "multivariate", "personalization".
+	Type ExperimentDuplicateResponseType `json:"type" api:"nullable"`
+	// ISO-8601 timestamp for the last persisted update, if any.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Declared winning variant — reporting metadata only. Records which variant won;
+	// does NOT change what visitors are served. Set at stop time or later via
+	// `POST /experiments/{id}/winner`.
+	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		Variants               respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Lifecycle state. `draft` is editable, `running` is active, `paused` is
+// temporarily inactive, and `completed` is permanently stopped.
+type ExperimentDuplicateResponseStatus string
+
+const (
+	ExperimentDuplicateResponseStatusCompleted ExperimentDuplicateResponseStatus = "completed"
+	ExperimentDuplicateResponseStatusDraft     ExperimentDuplicateResponseStatus = "draft"
+	ExperimentDuplicateResponseStatusPaused    ExperimentDuplicateResponseStatus = "paused"
+	ExperimentDuplicateResponseStatusRunning   ExperimentDuplicateResponseStatus = "running"
+)
+
+type ExperimentDuplicateResponseVariant struct {
+	// Unique identifier for this experiment variant.
+	ID string `json:"id" api:"required"`
+	// Parent experiment ID this variant belongs to.
+	ExperimentID string `json:"experimentId" api:"required"`
+	// Whether this is the baseline control variant.
+	IsControl bool `json:"isControl" api:"required"`
+	// Human-readable variant name shown in the dashboard and results.
+	Name string `json:"name" api:"required"`
+	// Relative traffic weight used when assigning visitors among variants in an active
+	// experiment.
+	Weight int64 `json:"weight" api:"required"`
+	// Ordered list of declarative DOM mutations applied when this variant is assigned.
+	DomModifications []ExperimentDuplicateResponseVariantDomModification `json:"domModifications" api:"nullable"`
+	// Target URL for redirect variants. Use either a site-relative path such as
+	// `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
+	// rejected. Omit for DOM modification variants.
+	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// How this variant changes the user experience. `dom_modifications` for on-page
+	// changes or `redirect` for redirect tests.
+	VariantType string `json:"variantType" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		ExperimentID     respjson.Field
+		IsControl        respjson.Field
+		Name             respjson.Field
+		Weight           respjson.Field
+		DomModifications respjson.Field
+		RedirectURL      respjson.Field
+		VariantType      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseVariant) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentDuplicateResponseVariantDomModification struct {
+	// Mutation to apply when the selector matches. Use `redirectUrl` instead of DOM
+	// modifications for redirect variants.
+	//
+	// Any of "customCss", "customJs", "insertAfter", "insertBefore", "remove",
+	// "setAttribute", "setHtml", "setImage", "setStyle", "setText".
+	Action string `json:"action" api:"required"`
+	// CSS selector used to find the element to modify on the page at runtime.
+	Selector string `json:"selector" api:"required"`
+	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
+	// `setImage` / `insertBefore` / `insertAfter` this is the literal
+	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
+	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
+	// below to avoid manual JSON encoding.
+	Value string `json:"value" api:"required"`
+	// Populated on read for `setAttribute` modifications, parsed from `value`.
+	// Customers may also send this field instead of a JSON-stringified `value` on
+	// write — see `domModificationInputSchema`.
+	Attribute any `json:"attribute" api:"nullable"`
+	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
+	// may also send this field instead of a JSON-stringified `value` on write — see
+	// `domModificationInputSchema`.
+	Styles []ExperimentDuplicateResponseVariantDomModificationStyle `json:"styles" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Action      respjson.Field
+		Selector    respjson.Field
+		Value       respjson.Field
+		Attribute   respjson.Field
+		Styles      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseVariantDomModification) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseVariantDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentDuplicateResponseVariantDomModificationStyle struct {
+	// CSS property name in camelCase or kebab-case.
+	Property string `json:"property" api:"required"`
+	// CSS value to assign to the property.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseVariantDomModificationStyle) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseVariantDomModificationStyle) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Configured success metrics. The read shape mirrors the write shape — `metrics`
+// from a GET response can be PATCHed back without modification.
+type ExperimentDuplicateResponseMetrics struct {
+	// Primary success metric used in the results report.
+	Primary any `json:"primary" api:"nullable"`
+	// Optional secondary metrics tracked alongside the primary goal.
+	Secondary []ExperimentDuplicateResponseMetricsSecondary `json:"secondary" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseMetrics) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseMetrics) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentDuplicateResponseMetricsSecondary struct {
+	// Name of the event used to measure success for this metric.
+	EventName string `json:"eventName" api:"nullable"`
+	// Optional funnel identifier when the metric is derived from an existing funnel
+	// definition.
+	FunnelID string `json:"funnelId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		FunnelID    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
+// visitor status, and (server-side) visitor properties. Same shape as the
+// create/patch input.
+type ExperimentDuplicateResponseTargetingRules struct {
+	// Glob-style URL patterns that must match for the experiment to be eligible. Each
+	// pattern is either a path (`/pricing`, matched on any domain) or a host-qualified
+	// pattern (`get.example.com/pricing` or `https://get.example.com/pricing`, matched
+	// against the full URL so a single domain or subdomain can be targeted). Use `*`
+	// to match within a path segment and `**` to match across segments. Up to 200
+	// patterns; each pattern up to 2000 characters. An empty array (or omitting the
+	// field) matches all URLs — equivalent to `['**']`. The host(s) targeted here must
+	// also appear in the parent experiment settings' `whitelistDomains` — that
+	// allowlist is what limits which domains can load your experiments (see
+	// `GET /experiment-settings`). If the host is missing, the SDK refuses to load
+	// there and the experiment never runs, even after `POST /experiments/{id}/start`
+	// succeeds.
+	URLPatterns []string `json:"urlPatterns" api:"required"`
+	// Optional audience identifier used for server-side eligibility filtering.
+	AudienceID string `json:"audienceId" api:"nullable"`
+	// Additional query-string conditions that must all match for the visitor to
+	// qualify.
+	QueryParams []ExperimentDuplicateResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
+	// Optional visitor-property matching rules. These are passed through as JSON for
+	// experimentation targeting.
+	VisitorProperties any `json:"visitorProperties" api:"nullable"`
+	// Whether the experiment should target new visitors, returning visitors, or any
+	// visitor.
+	VisitorStatus string `json:"visitorStatus" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URLPatterns       respjson.Field
+		AudienceID        respjson.Field
+		QueryParams       respjson.Field
+		VisitorProperties respjson.Field
+		VisitorStatus     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseTargetingRules) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseTargetingRules) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentDuplicateResponseTargetingRulesQueryParam struct {
+	// Query string key to inspect on the current page URL.
+	Key string `json:"key" api:"required"`
+	// Comparison operator applied to the query string value.
+	//
+	// Any of "contains", "equals", "exists", "not_equals", "not_exists", "regex".
+	Operator string `json:"operator" api:"required"`
+	// Comparison value used by operators that require one. Omit for `exists` and
+	// `not_exists`.
+	Value string `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Key         respjson.Field
+		Operator    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseTargetingRulesQueryParam) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseTargetingRulesQueryParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
+// `personalization` is always-on targeting.
+type ExperimentDuplicateResponseType string
+
+const (
+	ExperimentDuplicateResponseTypeAb              ExperimentDuplicateResponseType = "ab"
+	ExperimentDuplicateResponseTypeMultivariate    ExperimentDuplicateResponseType = "multivariate"
+	ExperimentDuplicateResponseTypePersonalization ExperimentDuplicateResponseType = "personalization"
+)
+
 type ExperimentStartResponse struct {
 	// Number of unpublished version changes detected at the time of the lifecycle
 	// action. Values greater than 1 mean other unpublished work exists besides this
@@ -1631,6 +2055,13 @@ type ExperimentStartResponseExperiment struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -1667,24 +2098,27 @@ type ExperimentStartResponseExperiment struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -1866,6 +2300,13 @@ type ExperimentStopResponseExperiment struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -1902,24 +2343,27 @@ type ExperimentStopResponseExperiment struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -2099,6 +2543,13 @@ type ExperimentRolloutResponseExperiment struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -2135,24 +2586,27 @@ type ExperimentRolloutResponseExperiment struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -2334,6 +2788,13 @@ type ExperimentEndRolloutResponseExperiment struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -2370,24 +2831,27 @@ type ExperimentEndRolloutResponseExperiment struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -2542,6 +3006,13 @@ type ExperimentWinnerResponse struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -2578,24 +3049,27 @@ type ExperimentWinnerResponse struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -2787,6 +3261,13 @@ type ExperimentPauseResponseExperiment struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -2823,24 +3304,27 @@ type ExperimentPauseResponseExperiment struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -3022,6 +3506,13 @@ type ExperimentResumeResponseExperiment struct {
 	// Percent of eligible traffic assigned into the experiment. Use 0 to fully disable
 	// enrollment without deleting the experiment.
 	TrafficAllocation int64 `json:"trafficAllocation" api:"required"`
+	// Normalized statistical analysis plan. Missing legacy rows resolve to Bayesian
+	// analysis in GraphQL.
+	AnalysisConfig any `json:"analysisConfig" api:"nullable"`
+	// Primary metric definition frozen with the analysis plan at start time.
+	AnalysisMetricSnapshot any `json:"analysisMetricSnapshot" api:"nullable"`
+	// ISO-8601 timestamp when the analysis plan was locked at experiment start.
+	AnalysisStartedAt string `json:"analysisStartedAt" api:"nullable"`
 	// Optional human-readable hypothesis or summary. In GraphQL this is backed by the
 	// experiment hypothesis field.
 	Description string `json:"description" api:"nullable"`
@@ -3058,24 +3549,27 @@ type ExperimentResumeResponseExperiment struct {
 	WinnerVariantID string `json:"winnerVariantId" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                 respjson.Field
-		CreatedAt          respjson.Field
-		Key                respjson.Field
-		Name               respjson.Field
-		Status             respjson.Field
-		TrafficAllocation  respjson.Field
-		Description        respjson.Field
-		IncludeQueryString respjson.Field
-		Metrics            respjson.Field
-		RolloutVariantID   respjson.Field
-		StartedAt          respjson.Field
-		StoppedAt          respjson.Field
-		TargetingRules     respjson.Field
-		Type               respjson.Field
-		UpdatedAt          respjson.Field
-		WinnerVariantID    respjson.Field
-		ExtraFields        map[string]respjson.Field
-		raw                string
+		ID                     respjson.Field
+		CreatedAt              respjson.Field
+		Key                    respjson.Field
+		Name                   respjson.Field
+		Status                 respjson.Field
+		TrafficAllocation      respjson.Field
+		AnalysisConfig         respjson.Field
+		AnalysisMetricSnapshot respjson.Field
+		AnalysisStartedAt      respjson.Field
+		Description            respjson.Field
+		IncludeQueryString     respjson.Field
+		Metrics                respjson.Field
+		RolloutVariantID       respjson.Field
+		StartedAt              respjson.Field
+		StoppedAt              respjson.Field
+		TargetingRules         respjson.Field
+		Type                   respjson.Field
+		UpdatedAt              respjson.Field
+		WinnerVariantID        respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -3267,6 +3761,137 @@ func (r ExperimentResultsResponseVariant) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentResultsResponseVariant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ExperimentAnalysisResponse struct {
+	AnalysisCutoffAt string `json:"analysisCutoffAt" api:"required"`
+	// Any of "ANALYSIS_UNAVAILABLE", "COLLECTING_DATA", "FINALIZING_OUTCOMES",
+	// "INCONCLUSIVE_STOPPED_EARLY", "READY".
+	AnalysisState    ExperimentAnalysisResponseAnalysisState `json:"analysisState" api:"required"`
+	DataQuality      ExperimentAnalysisResponseDataQuality   `json:"dataQuality" api:"required"`
+	Exploratory      bool                                    `json:"exploratory" api:"required"`
+	ExposureCutoffAt string                                  `json:"exposureCutoffAt" api:"required"`
+	// Any of "BAYESIAN", "FREQUENTIST", "SEQUENTIAL".
+	Method ExperimentAnalysisResponseMethod `json:"method" api:"required"`
+	// Any of "conversion", "value".
+	MetricType ExperimentAnalysisResponseMetricType `json:"metricType" api:"required"`
+	Variants   []ExperimentAnalysisResponseVariant  `json:"variants" api:"required"`
+	Bayesian   any                                  `json:"bayesian" api:"nullable"`
+	// Any of "EVIDENCE_OF_HARM", "EVIDENCE_OF_IMPROVEMENT", "NO_CONCLUSION".
+	EvidenceState ExperimentAnalysisResponseEvidenceState `json:"evidenceState" api:"nullable"`
+	Frequentist   any                                     `json:"frequentist" api:"nullable"`
+	Sequential    any                                     `json:"sequential" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AnalysisCutoffAt respjson.Field
+		AnalysisState    respjson.Field
+		DataQuality      respjson.Field
+		Exploratory      respjson.Field
+		ExposureCutoffAt respjson.Field
+		Method           respjson.Field
+		MetricType       respjson.Field
+		Variants         respjson.Field
+		Bayesian         respjson.Field
+		EvidenceState    respjson.Field
+		Frequentist      respjson.Field
+		Sequential       respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentAnalysisResponse) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentAnalysisResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentAnalysisResponseAnalysisState string
+
+const (
+	ExperimentAnalysisResponseAnalysisStateAnalysisUnavailable      ExperimentAnalysisResponseAnalysisState = "ANALYSIS_UNAVAILABLE"
+	ExperimentAnalysisResponseAnalysisStateCollectingData           ExperimentAnalysisResponseAnalysisState = "COLLECTING_DATA"
+	ExperimentAnalysisResponseAnalysisStateFinalizingOutcomes       ExperimentAnalysisResponseAnalysisState = "FINALIZING_OUTCOMES"
+	ExperimentAnalysisResponseAnalysisStateInconclusiveStoppedEarly ExperimentAnalysisResponseAnalysisState = "INCONCLUSIVE_STOPPED_EARLY"
+	ExperimentAnalysisResponseAnalysisStateReady                    ExperimentAnalysisResponseAnalysisState = "READY"
+)
+
+type ExperimentAnalysisResponseDataQuality struct {
+	CrossoverVisitors           int64 `json:"crossoverVisitors" api:"required"`
+	MissingVisitorIDImpressions int64 `json:"missingVisitorIdImpressions" api:"required"`
+	// Any of "FAIL", "NOT_EVALUATED", "PASS".
+	SampleRatioMismatch       string  `json:"sampleRatioMismatch" api:"required"`
+	SampleRatioMismatchPValue float64 `json:"sampleRatioMismatchPValue" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CrossoverVisitors           respjson.Field
+		MissingVisitorIDImpressions respjson.Field
+		SampleRatioMismatch         respjson.Field
+		SampleRatioMismatchPValue   respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentAnalysisResponseDataQuality) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentAnalysisResponseDataQuality) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentAnalysisResponseMethod string
+
+const (
+	ExperimentAnalysisResponseMethodBayesian    ExperimentAnalysisResponseMethod = "BAYESIAN"
+	ExperimentAnalysisResponseMethodFrequentist ExperimentAnalysisResponseMethod = "FREQUENTIST"
+	ExperimentAnalysisResponseMethodSequential  ExperimentAnalysisResponseMethod = "SEQUENTIAL"
+)
+
+type ExperimentAnalysisResponseMetricType string
+
+const (
+	ExperimentAnalysisResponseMetricTypeConversion ExperimentAnalysisResponseMetricType = "conversion"
+	ExperimentAnalysisResponseMetricTypeValue      ExperimentAnalysisResponseMetricType = "value"
+)
+
+type ExperimentAnalysisResponseVariant struct {
+	ID               string  `json:"id" api:"required"`
+	ConversionRate   float64 `json:"conversionRate" api:"required"`
+	Conversions      int64   `json:"conversions" api:"required"`
+	Impressions      int64   `json:"impressions" api:"required"`
+	IsControl        bool    `json:"isControl" api:"required"`
+	Name             string  `json:"name" api:"required"`
+	ObservedVisitors int64   `json:"observedVisitors" api:"required"`
+	Visitors         int64   `json:"visitors" api:"required"`
+	MeanValue        float64 `json:"meanValue" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		ConversionRate   respjson.Field
+		Conversions      respjson.Field
+		Impressions      respjson.Field
+		IsControl        respjson.Field
+		Name             respjson.Field
+		ObservedVisitors respjson.Field
+		Visitors         respjson.Field
+		MeanValue        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentAnalysisResponseVariant) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentAnalysisResponseVariant) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentAnalysisResponseEvidenceState string
+
+const (
+	ExperimentAnalysisResponseEvidenceStateEvidenceOfHarm        ExperimentAnalysisResponseEvidenceState = "EVIDENCE_OF_HARM"
+	ExperimentAnalysisResponseEvidenceStateEvidenceOfImprovement ExperimentAnalysisResponseEvidenceState = "EVIDENCE_OF_IMPROVEMENT"
+	ExperimentAnalysisResponseEvidenceStateNoConclusion          ExperimentAnalysisResponseEvidenceState = "NO_CONCLUSION"
+)
 
 type ExperimentResultsTimeSeriesResponse struct {
 	// Per-day metrics for each variant. Days with no impression rows are omitted from
@@ -3479,6 +4104,9 @@ type ExperimentNewParams struct {
 	Key param.Opt[string] `json:"key,omitzero"`
 	// Initial traffic allocation percentage from 0 to 100.
 	TrafficAllocation param.Opt[float64] `json:"trafficAllocation,omitzero"`
+	// Optional draft analysis method. Server-owned statistical constants are
+	// normalized before storage.
+	AnalysisConfig any `json:"analysisConfig,omitzero"`
 	// Goal events. If you send `metrics.primary`, `metrics.primary.eventName` must be
 	// a non-blank string. A primary event name is required before the experiment can
 	// be started.
@@ -3649,6 +4277,8 @@ type ExperimentUpdateParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Updated traffic allocation percentage from 0 to 100.
 	TrafficAllocation param.Opt[float64] `json:"trafficAllocation,omitzero"`
+	// Updated draft analysis method. This field is locked once an experiment starts.
+	AnalysisConfig any `json:"analysisConfig,omitzero"`
 	// Updated goal events. Send the full nested object — replaces the previous value,
 	// not merged. If you send `metrics.primary`, `metrics.primary.eventName` must be a
 	// non-blank string.
@@ -3906,6 +4536,22 @@ type ExperimentResultsParams struct {
 // URLQuery serializes [ExperimentResultsParams]'s query parameters as
 // `url.Values`.
 func (r ExperimentResultsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type ExperimentAnalysisParams struct {
+	// Optional override for the conversion event name. When omitted, the experiment
+	// primary metric event is used.
+	EventName param.Opt[string] `query:"eventName,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ExperimentAnalysisParams]'s query parameters as
+// `url.Values`.
+func (r ExperimentAnalysisParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

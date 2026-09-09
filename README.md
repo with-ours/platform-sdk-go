@@ -9,6 +9,8 @@
 The Ours Privacy Platform Go library provides convenient access to the [Ours Privacy Platform REST API](https://docs.oursprivacy.com/docs/api)
 from applications written in Go.
 
+It is generated with [Stainless](https://www.stainless.com/).
+
 ## Installation
 
 <!-- x-release-please-start-version -->

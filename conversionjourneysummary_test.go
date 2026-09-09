@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestAttributionInitialWithOptionalParams(t *testing.T) {
+func TestConversionJourneySummaryListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,17 +25,9 @@ func TestAttributionInitialWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Attribution.Initial(context.TODO(), oursprivacy.AttributionInitialParams{
-		EventName:       "purchase",
-		From:            "2026-05-01",
-		To:              "2026-06-30",
-		AttributionType: oursprivacy.AttributionInitialParamsAttributionTypeInitial,
-		UtmCampaign:     oursprivacy.String("x"),
-		UtmContent:      oursprivacy.String("x"),
-		UtmMedium:       oursprivacy.String("x"),
-		UtmName:         oursprivacy.String("x"),
-		UtmSource:       oursprivacy.String("x"),
-		UtmTerm:         oursprivacy.String("x"),
+	_, err := client.ConversionJourneySummaries.List(context.TODO(), oursprivacy.ConversionJourneySummaryListParams{
+		Cursor: oursprivacy.String("cursor"),
+		Limit:  oursprivacy.Int(25),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -46,7 +38,7 @@ func TestAttributionInitialWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAttributionLastTouchWithOptionalParams(t *testing.T) {
+func TestConversionJourneySummaryNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -58,17 +50,20 @@ func TestAttributionLastTouchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Attribution.LastTouch(context.TODO(), oursprivacy.AttributionLastTouchParams{
-		EventName:       "purchase",
-		From:            "2026-05-01",
-		To:              "2026-06-30",
-		AttributionType: oursprivacy.AttributionLastTouchParamsAttributionTypeInitial,
-		UtmCampaign:     oursprivacy.String("x"),
-		UtmContent:      oursprivacy.String("x"),
-		UtmMedium:       oursprivacy.String("x"),
-		UtmName:         oursprivacy.String("x"),
-		UtmSource:       oursprivacy.String("x"),
-		UtmTerm:         oursprivacy.String("x"),
+	_, err := client.ConversionJourneySummaries.New(context.TODO(), oursprivacy.ConversionJourneySummaryNewParams{
+		DateFrom:    "2026-06-01",
+		DateTo:      "2026-06-30",
+		EventName:   "x",
+		Name:        "x",
+		WindowDays:  1,
+		ExcludeBots: oursprivacy.Bool(true),
+		Filters: []oursprivacy.ConversionJourneySummaryNewParamsFilter{{
+			Dimension: "browser",
+			Operator:  "CONTAINS",
+			Value:     oursprivacy.String("x"),
+			Values:    []string{"x"},
+		}},
+		WebSourceID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -79,7 +74,7 @@ func TestAttributionLastTouchWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAttributionConversionWithOptionalParams(t *testing.T) {
+func TestConversionJourneySummaryGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -91,15 +86,7 @@ func TestAttributionConversionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Attribution.Conversion(context.TODO(), oursprivacy.AttributionConversionParams{
-		AttributionModel: oursprivacy.AttributionConversionParamsAttributionModelFirstTouch,
-		EventName:        "purchase",
-		From:             "2026-06-01",
-		To:               "2026-06-30",
-		Limit:            oursprivacy.Int(1),
-		LookbackWindow:   oursprivacy.AttributionConversionParamsLookbackWindowSevenDays,
-		WebSourceID:      oursprivacy.String("x"),
-	})
+	_, err := client.ConversionJourneySummaries.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -109,7 +96,7 @@ func TestAttributionConversionWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAttributionAudienceConversionWithOptionalParams(t *testing.T) {
+func TestConversionJourneySummaryUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -121,15 +108,25 @@ func TestAttributionAudienceConversionWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Attribution.AudienceConversion(context.TODO(), oursprivacy.AttributionAudienceConversionParams{
-		EventName:         "purchase",
-		From:              "2026-05-01",
-		To:                "2026-06-30",
-		AttributionWindow: oursprivacy.String("IN_RANGE"),
-		ExcludeBots:       oursprivacy.AttributionAudienceConversionParamsExcludeBotsTrue,
-		ValueProperty:     oursprivacy.String("revenue"),
-		WebSourceID:       oursprivacy.String("550e8400-e29b-41d4-a716-446655440000"),
-	})
+	_, err := client.ConversionJourneySummaries.Update(
+		context.TODO(),
+		"id",
+		oursprivacy.ConversionJourneySummaryUpdateParams{
+			DateFrom:    oursprivacy.String("7321-69-10"),
+			DateTo:      oursprivacy.String("7321-69-10"),
+			EventName:   oursprivacy.String("x"),
+			ExcludeBots: oursprivacy.Bool(true),
+			Filters: []oursprivacy.ConversionJourneySummaryUpdateParamsFilter{{
+				Dimension: "browser",
+				Operator:  "CONTAINS",
+				Value:     oursprivacy.String("x"),
+				Values:    []string{"x"},
+			}},
+			Name:        oursprivacy.String("x"),
+			WebSourceID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			WindowDays:  oursprivacy.Int(1),
+		},
+	)
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -139,7 +136,7 @@ func TestAttributionAudienceConversionWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAttributionUtmComparison(t *testing.T) {
+func TestConversionJourneySummaryDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -151,12 +148,7 @@ func TestAttributionUtmComparison(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Attribution.UtmComparison(context.TODO(), oursprivacy.AttributionUtmComparisonParams{
-		Combos:    `[{"utmSource":"google","utmMedium":"cpc"},{"utmSource":"meta"}]`,
-		EventName: "purchase",
-		From:      "2026-06-01",
-		To:        "2026-06-30",
-	})
+	_, err := client.ConversionJourneySummaries.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {

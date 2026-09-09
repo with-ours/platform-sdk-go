@@ -794,7 +794,8 @@ const (
 type AttributionConversionParams struct {
 	// Attribution model to apply to multi-touch conversion paths.
 	//
-	// Any of "FIRST_TOUCH", "LAST_TOUCH", "LINEAR", "POSITION_BASED".
+	// Any of "FIRST_TOUCH", "LAST_TOUCH", "LINEAR", "U_SHAPED", "J_SHAPED",
+	// "TIME_DECAY".
 	AttributionModel AttributionConversionParamsAttributionModel `query:"attributionModel,omitzero" api:"required" json:"-"`
 	// Conversion event to attribute. Must be a selectable conversion event.
 	EventName string `query:"eventName" api:"required" json:"-"`
@@ -832,10 +833,12 @@ func (r AttributionConversionParams) URLQuery() (v url.Values, err error) {
 type AttributionConversionParamsAttributionModel string
 
 const (
-	AttributionConversionParamsAttributionModelFirstTouch    AttributionConversionParamsAttributionModel = "FIRST_TOUCH"
-	AttributionConversionParamsAttributionModelLastTouch     AttributionConversionParamsAttributionModel = "LAST_TOUCH"
-	AttributionConversionParamsAttributionModelLinear        AttributionConversionParamsAttributionModel = "LINEAR"
-	AttributionConversionParamsAttributionModelPositionBased AttributionConversionParamsAttributionModel = "POSITION_BASED"
+	AttributionConversionParamsAttributionModelFirstTouch AttributionConversionParamsAttributionModel = "FIRST_TOUCH"
+	AttributionConversionParamsAttributionModelLastTouch  AttributionConversionParamsAttributionModel = "LAST_TOUCH"
+	AttributionConversionParamsAttributionModelLinear     AttributionConversionParamsAttributionModel = "LINEAR"
+	AttributionConversionParamsAttributionModelUShaped    AttributionConversionParamsAttributionModel = "U_SHAPED"
+	AttributionConversionParamsAttributionModelJShaped    AttributionConversionParamsAttributionModel = "J_SHAPED"
+	AttributionConversionParamsAttributionModelTimeDecay  AttributionConversionParamsAttributionModel = "TIME_DECAY"
 )
 
 // How far back before each conversion to consider touchpoints. Capped at 60 days
@@ -868,6 +871,12 @@ type AttributionAudienceConversionParams struct {
 	AttributionWindow param.Opt[string] `query:"attributionWindow,omitzero" json:"-"`
 	// Event property to sum as conversion value.
 	ValueProperty param.Opt[string] `query:"valueProperty,omitzero" json:"-"`
+	// Filter results to a specific web source by its UUID.
+	WebSourceID param.Opt[string] `query:"webSourceId,omitzero" format:"uuid" json:"-"`
+	// Exclude bot sessions. Defaults to `true`.
+	//
+	// Any of "true", "false".
+	ExcludeBots AttributionAudienceConversionParamsExcludeBots `query:"excludeBots,omitzero" json:"-"`
 	paramObj
 }
 
@@ -879,6 +888,14 @@ func (r AttributionAudienceConversionParams) URLQuery() (v url.Values, err error
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Exclude bot sessions. Defaults to `true`.
+type AttributionAudienceConversionParamsExcludeBots string
+
+const (
+	AttributionAudienceConversionParamsExcludeBotsTrue  AttributionAudienceConversionParamsExcludeBots = "true"
+	AttributionAudienceConversionParamsExcludeBotsFalse AttributionAudienceConversionParamsExcludeBots = "false"
+)
 
 type AttributionUtmComparisonParams struct {
 	// JSON-encoded array of UTM dimension combos to compare side-by-side (min 1, max

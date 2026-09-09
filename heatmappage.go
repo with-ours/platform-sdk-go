@@ -37,12 +37,14 @@ func NewHeatmapPageService(opts ...option.RequestOption) (r HeatmapPageService) 
 }
 
 // List pages with heatmap coverage in a date window, ranked for triage. Each
-// entity is identified by `pageKey` (origin + pathname, query string stripped);
-// use that value to drill into `GET /rest/v1/heatmap-pages/summary`. Supports
-// cursor pagination, with cursor depth capped at roughly 10,000 entries; if you
-// need pages beyond that, narrow `from`/`to` or add filters rather than paginating
-// further. `from`/`to` are UTC calendar days in `YYYY-MM-DD`; the window must be
-// 60 days or fewer. Requires scope: web-analytics:view
+// entity is identified by `pageKey`, normally origin + pathname with the query
+// string stripped; an account-configured split may include one significant query
+// parameter. Preserve the returned `pageKey` when calling
+// `GET /rest/v1/heatmap-pages/summary`. Supports cursor pagination, with cursor
+// depth capped at roughly 10,000 entries; if you need pages beyond that, narrow
+// `from`/`to` or add filters rather than paginating further. `from`/`to` are UTC
+// calendar days in `YYYY-MM-DD`; the window must be 60 days or fewer. Requires
+// scope: web-analytics:view
 func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) (res *pagination.Cursor[HeatmapPageListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -61,12 +63,14 @@ func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListPara
 }
 
 // List pages with heatmap coverage in a date window, ranked for triage. Each
-// entity is identified by `pageKey` (origin + pathname, query string stripped);
-// use that value to drill into `GET /rest/v1/heatmap-pages/summary`. Supports
-// cursor pagination, with cursor depth capped at roughly 10,000 entries; if you
-// need pages beyond that, narrow `from`/`to` or add filters rather than paginating
-// further. `from`/`to` are UTC calendar days in `YYYY-MM-DD`; the window must be
-// 60 days or fewer. Requires scope: web-analytics:view
+// entity is identified by `pageKey`, normally origin + pathname with the query
+// string stripped; an account-configured split may include one significant query
+// parameter. Preserve the returned `pageKey` when calling
+// `GET /rest/v1/heatmap-pages/summary`. Supports cursor pagination, with cursor
+// depth capped at roughly 10,000 entries; if you need pages beyond that, narrow
+// `from`/`to` or add filters rather than paginating further. `from`/`to` are UTC
+// calendar days in `YYYY-MM-DD`; the window must be 60 days or fewer. Requires
+// scope: web-analytics:view
 func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[HeatmapPageListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -93,9 +97,10 @@ type HeatmapPageListResponse struct {
 	DeadClicks  int64                               `json:"deadClicks" api:"required"`
 	DeadRate    float64                             `json:"deadRate" api:"required"`
 	IssueScore  int64                               `json:"issueScore" api:"required"`
-	// Stable per-page identifier (origin + pathname, query string stripped). Use this
-	// as the `pageKey` argument to `GET /rest/v1/heatmap-pages/summary` and the
-	// heatmap MCP tools.
+	// Stable per-page identifier. It is normally origin + pathname with the query
+	// string stripped, but an account-configured split may include one significant
+	// query parameter. Preserve the returned value when calling
+	// `GET /rest/v1/heatmap-pages/summary` and the heatmap MCP tools.
 	PageKey     string  `json:"pageKey" api:"required"`
 	RageClicks  int64   `json:"rageClicks" api:"required"`
 	RageRate    float64 `json:"rageRate" api:"required"`
@@ -350,8 +355,10 @@ type HeatmapPageSummaryParams struct {
 	// `YYYY-MM-DD` format. The window between `from` and `to` must be 60 days or
 	// fewer.
 	From string `query:"from" api:"required" json:"-"`
-	// Page identifier returned by `GET /rest/v1/heatmap-pages`. Origin + pathname with
-	// the query string stripped (e.g. `https://example.com/pricing`).
+	// Page identifier returned by `GET /rest/v1/heatmap-pages`. It is normally
+	// origin + pathname with the query string stripped, but may include one
+	// account-configured significant query parameter. Pass the returned value
+	// unchanged.
 	PageKey string `query:"pageKey" api:"required" json:"-"`
 	// Inclusive upper bound of the heatmap window, as a UTC calendar day in
 	// `YYYY-MM-DD` format. The window between `from` and `to` must be 60 days or

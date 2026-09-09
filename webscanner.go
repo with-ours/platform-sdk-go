@@ -108,9 +108,10 @@ func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...optio
 // `{}`). A successful response means the request was accepted; because the scan
 // starts asynchronously, the returned entity may still reflect pre-trigger values
 // for fields like `scanStatus` and `lastScanStartedAt`. The trigger is
-// rate-limited: a 409 is returned if another scan is already in flight, the
-// per-account cooldown has not elapsed, or the request was otherwise rejected; the
-// reason is in the response `error` field. Requires scope: webScanner:trigger
+// rate-limited: a 409 is returned if another scan is already in flight, or if this
+// production monitor has `urlLimit >= 5000` and its previous scan completed within
+// the last 10 minutes; the reason is in the response `error` field. Requires
+// scope: webScanner:trigger
 func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerTriggerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -119,6 +120,67 @@ func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...opti
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/trigger", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
+// Start a normal full scan with short-lived credentials supplied by your
+// scheduler. Every in-scope page in this scan uses the credentials. Set
+// `scanSchedule` to `manual` when your scheduler should be the only source of
+// scans. Credential values are not returned or included in scan results. Requires
+// scope: webScanner:trigger
+func (r *WebScannerService) AuthenticatedScan(ctx context.Context, id string, body WebScannerAuthenticatedScanParams, opts ...option.RequestOption) (res *WebScannerAuthenticatedScanResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/authenticated-scan", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Queue an isolated verification capture for one exact in-scope page. This does
+// not update monitor history, inventory counts, or the monitor-wide last-scanned
+// timestamp. Poll the verification-run endpoint with the returned id for terminal
+// evidence. Requires scope: webScanner:trigger
+func (r *WebScannerService) TargetedScan(ctx context.Context, id string, body WebScannerTargetedScanParams, opts ...option.RequestOption) (res *WebScannerTargetedScanResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/targeted-scan", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Read a UUID-addressed one-page verification run. The run is isolated from normal
+// monitor history and is returned only when it belongs to the requested scanner.
+// Requires scope: webScanner:find
+func (r *WebScannerService) VerificationRun(ctx context.Context, id string, query WebScannerVerificationRunParams, opts ...option.RequestOption) (res *WebScannerVerificationRunResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/verification-run", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// List the one-page verification runs recorded for this scanner, newest first,
+// each with its own capture counts. This is how a fix is compared against the
+// attempts before it without reading each run individually. Verification runs are
+// isolated from monitor history and never affect inventory counts or the
+// monitor-wide last-scanned timestamp. Requires scope: webScanner:find
+func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, query WebScannerVerificationRunsParams, opts ...option.RequestOption) (res *WebScannerVerificationRunsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/verification-runs", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -164,16 +226,17 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 // Compliance summary for a scan run — the rolled-up "what does this site look
 // like, and what still needs a decision" view, assembled server-side so you do not
 // have to page every finding. Includes total host/vendor/cookie counts, captured
-// privacy policies and host coverage, a breakdown by risk and by category, coverage
-// (how many hosts are already covered by a CMP consent service or a suppression
-// rule vs. how many still need a decision), the new/removed host delta versus the
-// previous run, and up to 10 highest-risk hosts that still need a decision. A null
-// privacyPolicyUrl means that no policy was captured for the hostname. Defaults to
-// the latest run; pass `date` (an ISO-8601 timestamp; only the calendar day is used
-// to select the run) to read an earlier run. Clear a host that needs a decision by
-// adding it to a CMP consent service or creating a suppression rule with
-// `POST /rest/v1/web-scanner-rules`. When the scanner has no completed runs, every
-// count is 0 and `runDate` is null. Requires scope: webScanner:find
+// privacy policies and host coverage, a breakdown by risk and by category,
+// coverage (how many hosts are already covered by a CMP consent service or a
+// suppression rule vs. how many still need a decision), the new/removed host delta
+// versus the previous run, and up to 10 highest-risk hosts that still need a
+// decision. A null privacyPolicyUrl means that no policy was captured for the
+// hostname. Defaults to the latest run; pass `date` (an ISO-8601 timestamp; only
+// the calendar day is used to select the run) to read an earlier run. Clear a host
+// that needs a decision by adding it to a CMP consent service or creating a
+// suppression rule with `POST /rest/v1/web-scanner-rules`. When the scanner has no
+// completed runs, every count is 0 and `runDate` is null. Requires scope:
+// webScanner:find
 func (r *WebScannerService) Summary(ctx context.Context, id string, query WebScannerSummaryParams, opts ...option.RequestOption) (res *WebScannerSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -588,6 +651,423 @@ const (
 	WebScannerTriggerResponseStatusEnabled  WebScannerTriggerResponseStatus = "Enabled"
 )
 
+type WebScannerAuthenticatedScanResponse struct {
+	ID         string `json:"id" api:"required"`
+	AccountID  string `json:"accountId" api:"required"`
+	RootDomain string `json:"rootDomain" api:"required"`
+	// Any of "daily", "manual", "monthly", "weekly".
+	ScanSchedule WebScannerAuthenticatedScanResponseScanSchedule `json:"scanSchedule" api:"required"`
+	// Any of "idle", "scanning".
+	ScanStatus WebScannerAuthenticatedScanResponseScanStatus `json:"scanStatus" api:"required"`
+	// Any of "Disabled", "Enabled".
+	Status                      WebScannerAuthenticatedScanResponseStatus `json:"status" api:"required"`
+	CreatedAt                   string                                    `json:"createdAt" api:"nullable"`
+	ExcludedPatterns            []string                                  `json:"excludedPatterns" api:"nullable"`
+	IncludedURLs                []string                                  `json:"includedUrls" api:"nullable"`
+	LastRunCookieCount          float64                                   `json:"lastRunCookieCount" api:"nullable"`
+	LastRunHighRiskRequestCount float64                                   `json:"lastRunHighRiskRequestCount" api:"nullable"`
+	LastRunRequestCount         float64                                   `json:"lastRunRequestCount" api:"nullable"`
+	LastRunSuccessURLCount      float64                                   `json:"lastRunSuccessUrlCount" api:"nullable"`
+	LastScannedAt               string                                    `json:"lastScannedAt" api:"nullable"`
+	LastScanStartedAt           string                                    `json:"lastScanStartedAt" api:"nullable"`
+	Name                        string                                    `json:"name" api:"nullable"`
+	NextScheduledScanAt         string                                    `json:"nextScheduledScanAt" api:"nullable"`
+	UpdatedAt                   string                                    `json:"updatedAt" api:"nullable"`
+	URLLimit                    float64                                   `json:"urlLimit" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                          respjson.Field
+		AccountID                   respjson.Field
+		RootDomain                  respjson.Field
+		ScanSchedule                respjson.Field
+		ScanStatus                  respjson.Field
+		Status                      respjson.Field
+		CreatedAt                   respjson.Field
+		ExcludedPatterns            respjson.Field
+		IncludedURLs                respjson.Field
+		LastRunCookieCount          respjson.Field
+		LastRunHighRiskRequestCount respjson.Field
+		LastRunRequestCount         respjson.Field
+		LastRunSuccessURLCount      respjson.Field
+		LastScannedAt               respjson.Field
+		LastScanStartedAt           respjson.Field
+		Name                        respjson.Field
+		NextScheduledScanAt         respjson.Field
+		UpdatedAt                   respjson.Field
+		URLLimit                    respjson.Field
+		ExtraFields                 map[string]respjson.Field
+		raw                         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerAuthenticatedScanResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerAuthenticatedScanResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerAuthenticatedScanResponseScanSchedule string
+
+const (
+	WebScannerAuthenticatedScanResponseScanScheduleDaily   WebScannerAuthenticatedScanResponseScanSchedule = "daily"
+	WebScannerAuthenticatedScanResponseScanScheduleManual  WebScannerAuthenticatedScanResponseScanSchedule = "manual"
+	WebScannerAuthenticatedScanResponseScanScheduleMonthly WebScannerAuthenticatedScanResponseScanSchedule = "monthly"
+	WebScannerAuthenticatedScanResponseScanScheduleWeekly  WebScannerAuthenticatedScanResponseScanSchedule = "weekly"
+)
+
+type WebScannerAuthenticatedScanResponseScanStatus string
+
+const (
+	WebScannerAuthenticatedScanResponseScanStatusIdle     WebScannerAuthenticatedScanResponseScanStatus = "idle"
+	WebScannerAuthenticatedScanResponseScanStatusScanning WebScannerAuthenticatedScanResponseScanStatus = "scanning"
+)
+
+type WebScannerAuthenticatedScanResponseStatus string
+
+const (
+	WebScannerAuthenticatedScanResponseStatusDisabled WebScannerAuthenticatedScanResponseStatus = "Disabled"
+	WebScannerAuthenticatedScanResponseStatusEnabled  WebScannerAuthenticatedScanResponseStatus = "Enabled"
+)
+
+type WebScannerTargetedScanResponse struct {
+	ID           string `json:"id" api:"required" format:"uuid"`
+	CreatedAt    string `json:"createdAt" api:"required"`
+	RequestedURL string `json:"requestedUrl" api:"required" format:"uri"`
+	ScannerID    string `json:"scannerId" api:"required" format:"uuid"`
+	// Any of "queued", "in_progress", "completed", "failed".
+	Status      WebScannerTargetedScanResponseStatus `json:"status" api:"required"`
+	Cause       string                               `json:"cause" api:"nullable"`
+	CompletedAt string                               `json:"completedAt" api:"nullable"`
+	ResolvedURL string                               `json:"resolvedUrl" api:"nullable"`
+	Run         WebScannerTargetedScanResponseRun    `json:"run" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		RequestedURL respjson.Field
+		ScannerID    respjson.Field
+		Status       respjson.Field
+		Cause        respjson.Field
+		CompletedAt  respjson.Field
+		ResolvedURL  respjson.Field
+		Run          respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerTargetedScanResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerTargetedScanResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerTargetedScanResponseStatus string
+
+const (
+	WebScannerTargetedScanResponseStatusQueued     WebScannerTargetedScanResponseStatus = "queued"
+	WebScannerTargetedScanResponseStatusInProgress WebScannerTargetedScanResponseStatus = "in_progress"
+	WebScannerTargetedScanResponseStatusCompleted  WebScannerTargetedScanResponseStatus = "completed"
+	WebScannerTargetedScanResponseStatusFailed     WebScannerTargetedScanResponseStatus = "failed"
+)
+
+type WebScannerTargetedScanResponseRun struct {
+	CookieCount        int64                                     `json:"cookieCount" api:"required"`
+	LocalStorageCount  int64                                     `json:"localStorageCount" api:"required"`
+	RequestCount       int64                                     `json:"requestCount" api:"required"`
+	VendorCount        int64                                     `json:"vendorCount" api:"required"`
+	Metadata           WebScannerTargetedScanResponseRunMetadata `json:"metadata" api:"nullable"`
+	SummaryGeneratedAt string                                    `json:"summary_generated_at" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CookieCount        respjson.Field
+		LocalStorageCount  respjson.Field
+		RequestCount       respjson.Field
+		VendorCount        respjson.Field
+		Metadata           respjson.Field
+		SummaryGeneratedAt respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerTargetedScanResponseRun) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerTargetedScanResponseRun) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerTargetedScanResponseRunMetadata struct {
+	FailedURLs       []WebScannerTargetedScanResponseRunMetadataFailedURL `json:"failed_urls" api:"required"`
+	SuccessURLs      []string                                             `json:"success_urls" api:"required"`
+	ExcludedPatterns []string                                             `json:"excluded_patterns" api:"nullable"`
+	ExcludedURLs     []string                                             `json:"excluded_urls" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FailedURLs       respjson.Field
+		SuccessURLs      respjson.Field
+		ExcludedPatterns respjson.Field
+		ExcludedURLs     respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerTargetedScanResponseRunMetadata) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerTargetedScanResponseRunMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerTargetedScanResponseRunMetadataFailedURL struct {
+	URL        string  `json:"url" api:"required"`
+	Details    string  `json:"details" api:"nullable"`
+	StatusCode float64 `json:"status_code" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Details     respjson.Field
+		StatusCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerTargetedScanResponseRunMetadataFailedURL) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerTargetedScanResponseRunMetadataFailedURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunResponse struct {
+	ID           string `json:"id" api:"required" format:"uuid"`
+	CreatedAt    string `json:"createdAt" api:"required"`
+	RequestedURL string `json:"requestedUrl" api:"required" format:"uri"`
+	ScannerID    string `json:"scannerId" api:"required" format:"uuid"`
+	// Any of "queued", "in_progress", "completed", "failed".
+	Status      WebScannerVerificationRunResponseStatus `json:"status" api:"required"`
+	Cause       string                                  `json:"cause" api:"nullable"`
+	CompletedAt string                                  `json:"completedAt" api:"nullable"`
+	ResolvedURL string                                  `json:"resolvedUrl" api:"nullable"`
+	Run         WebScannerVerificationRunResponseRun    `json:"run" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		RequestedURL respjson.Field
+		ScannerID    respjson.Field
+		Status       respjson.Field
+		Cause        respjson.Field
+		CompletedAt  respjson.Field
+		ResolvedURL  respjson.Field
+		Run          respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunResponseStatus string
+
+const (
+	WebScannerVerificationRunResponseStatusQueued     WebScannerVerificationRunResponseStatus = "queued"
+	WebScannerVerificationRunResponseStatusInProgress WebScannerVerificationRunResponseStatus = "in_progress"
+	WebScannerVerificationRunResponseStatusCompleted  WebScannerVerificationRunResponseStatus = "completed"
+	WebScannerVerificationRunResponseStatusFailed     WebScannerVerificationRunResponseStatus = "failed"
+)
+
+type WebScannerVerificationRunResponseRun struct {
+	CookieCount        int64                                        `json:"cookieCount" api:"required"`
+	LocalStorageCount  int64                                        `json:"localStorageCount" api:"required"`
+	RequestCount       int64                                        `json:"requestCount" api:"required"`
+	VendorCount        int64                                        `json:"vendorCount" api:"required"`
+	Metadata           WebScannerVerificationRunResponseRunMetadata `json:"metadata" api:"nullable"`
+	SummaryGeneratedAt string                                       `json:"summary_generated_at" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CookieCount        respjson.Field
+		LocalStorageCount  respjson.Field
+		RequestCount       respjson.Field
+		VendorCount        respjson.Field
+		Metadata           respjson.Field
+		SummaryGeneratedAt respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunResponseRun) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunResponseRun) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunResponseRunMetadata struct {
+	FailedURLs       []WebScannerVerificationRunResponseRunMetadataFailedURL `json:"failed_urls" api:"required"`
+	SuccessURLs      []string                                                `json:"success_urls" api:"required"`
+	ExcludedPatterns []string                                                `json:"excluded_patterns" api:"nullable"`
+	ExcludedURLs     []string                                                `json:"excluded_urls" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FailedURLs       respjson.Field
+		SuccessURLs      respjson.Field
+		ExcludedPatterns respjson.Field
+		ExcludedURLs     respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunResponseRunMetadata) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunResponseRunMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunResponseRunMetadataFailedURL struct {
+	URL        string  `json:"url" api:"required"`
+	Details    string  `json:"details" api:"nullable"`
+	StatusCode float64 `json:"status_code" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Details     respjson.Field
+		StatusCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunResponseRunMetadataFailedURL) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunResponseRunMetadataFailedURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunsResponse struct {
+	Items []WebScannerVerificationRunsResponseItem `json:"items" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Items       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunsResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunsResponseItem struct {
+	ID           string `json:"id" api:"required" format:"uuid"`
+	CreatedAt    string `json:"createdAt" api:"required"`
+	RequestedURL string `json:"requestedUrl" api:"required" format:"uri"`
+	ScannerID    string `json:"scannerId" api:"required" format:"uuid"`
+	// Any of "queued", "in_progress", "completed", "failed".
+	Status      string                                    `json:"status" api:"required"`
+	Cause       string                                    `json:"cause" api:"nullable"`
+	CompletedAt string                                    `json:"completedAt" api:"nullable"`
+	ResolvedURL string                                    `json:"resolvedUrl" api:"nullable"`
+	Run         WebScannerVerificationRunsResponseItemRun `json:"run" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		RequestedURL respjson.Field
+		ScannerID    respjson.Field
+		Status       respjson.Field
+		Cause        respjson.Field
+		CompletedAt  respjson.Field
+		ResolvedURL  respjson.Field
+		Run          respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunsResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunsResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunsResponseItemRun struct {
+	CookieCount        int64                                             `json:"cookieCount" api:"required"`
+	LocalStorageCount  int64                                             `json:"localStorageCount" api:"required"`
+	RequestCount       int64                                             `json:"requestCount" api:"required"`
+	VendorCount        int64                                             `json:"vendorCount" api:"required"`
+	Metadata           WebScannerVerificationRunsResponseItemRunMetadata `json:"metadata" api:"nullable"`
+	SummaryGeneratedAt string                                            `json:"summary_generated_at" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CookieCount        respjson.Field
+		LocalStorageCount  respjson.Field
+		RequestCount       respjson.Field
+		VendorCount        respjson.Field
+		Metadata           respjson.Field
+		SummaryGeneratedAt respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunsResponseItemRun) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunsResponseItemRun) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunsResponseItemRunMetadata struct {
+	FailedURLs       []WebScannerVerificationRunsResponseItemRunMetadataFailedURL `json:"failed_urls" api:"required"`
+	SuccessURLs      []string                                                     `json:"success_urls" api:"required"`
+	ExcludedPatterns []string                                                     `json:"excluded_patterns" api:"nullable"`
+	ExcludedURLs     []string                                                     `json:"excluded_urls" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FailedURLs       respjson.Field
+		SuccessURLs      respjson.Field
+		ExcludedPatterns respjson.Field
+		ExcludedURLs     respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunsResponseItemRunMetadata) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerVerificationRunsResponseItemRunMetadata) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunsResponseItemRunMetadataFailedURL struct {
+	URL        string  `json:"url" api:"required"`
+	Details    string  `json:"details" api:"nullable"`
+	StatusCode float64 `json:"status_code" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		URL         respjson.Field
+		Details     respjson.Field
+		StatusCode  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerVerificationRunsResponseItemRunMetadataFailedURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebScannerVerificationRunsResponseItemRunMetadataFailedURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebScannerFindingsResponse struct {
 	// True when more findings are available beyond the current window.
 	HasMore bool `json:"hasMore" api:"required"`
@@ -873,7 +1353,7 @@ func (r *WebScannerSummaryResponseCoverage) UnmarshalJSON(data []byte) error {
 type WebScannerSummaryResponsePrivacyPolicy struct {
 	Hostnames []string `json:"hostnames" api:"required"`
 	Text      string   `json:"text" api:"required"`
-	URL       string   `json:"url" api:"required"`
+	URL       string   `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Hostnames   respjson.Field
@@ -1205,6 +1685,97 @@ const (
 	WebScannerUpdateParamsStatusDisabled WebScannerUpdateParamsStatus = "Disabled"
 	WebScannerUpdateParamsStatusEnabled  WebScannerUpdateParamsStatus = "Enabled"
 )
+
+type WebScannerAuthenticatedScanParams struct {
+	// Short-lived credentials for this scan. Their values are not returned in API
+	// responses or captured in scan results.
+	Credentials []WebScannerAuthenticatedScanParamsCredential `json:"credentials,omitzero" api:"required"`
+	// Whole-hour validity window for these credentials. Send a fresh credential for
+	// every externally scheduled scan.
+	ExpiresInHours int64 `json:"expiresInHours" api:"required"`
+	paramObj
+}
+
+func (r WebScannerAuthenticatedScanParams) MarshalJSON() (data []byte, err error) {
+	type shadow WebScannerAuthenticatedScanParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebScannerAuthenticatedScanParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Location, Name, Value are required.
+type WebScannerAuthenticatedScanParamsCredential struct {
+	// Where to place the credential for first-party crawl requests. Header credentials
+	// are not sent to third-party requests.
+	//
+	// Any of "header", "cookie".
+	Location string `json:"location,omitzero" api:"required"`
+	// HTTP header or cookie name. Use `Authorization` for a bearer-style header.
+	Name string `json:"name" api:"required"`
+	// Complete credential value, including any required prefix such as `Bearer `.
+	Value string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r WebScannerAuthenticatedScanParamsCredential) MarshalJSON() (data []byte, err error) {
+	type shadow WebScannerAuthenticatedScanParamsCredential
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebScannerAuthenticatedScanParamsCredential) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WebScannerAuthenticatedScanParamsCredential](
+		"location", "header", "cookie",
+	)
+}
+
+type WebScannerTargetedScanParams struct {
+	// Exact in-scope HTTP(S) page URL to verify. Fragments are removed; query
+	// parameters are retained.
+	TargetURL string `json:"targetUrl" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r WebScannerTargetedScanParams) MarshalJSON() (data []byte, err error) {
+	type shadow WebScannerTargetedScanParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebScannerTargetedScanParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerVerificationRunParams struct {
+	// Verification run UUID returned by the targeted scan command.
+	RunID string `query:"runId" api:"required" format:"uuid" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [WebScannerVerificationRunParams]'s query parameters as
+// `url.Values`.
+func (r WebScannerVerificationRunParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type WebScannerVerificationRunsParams struct {
+	// How many runs to read, newest first. Defaults to 20, capped at 50.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [WebScannerVerificationRunsParams]'s query parameters as
+// `url.Values`.
+func (r WebScannerVerificationRunsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
 type WebScannerFindingsParams struct {
 	// Skip this many findings before returning. Use with `limit` for load-more paging.

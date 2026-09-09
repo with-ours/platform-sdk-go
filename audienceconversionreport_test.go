@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
-func TestShortLinkListWithOptionalParams(t *testing.T) {
+func TestAudienceConversionReportList(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,11 +25,43 @@ func TestShortLinkListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ShortLinks.List(context.TODO(), oursprivacy.ShortLinkListParams{
-		Cursor:       oursprivacy.String("cursor"),
-		Limit:        oursprivacy.Int(25),
-		NameContains: oursprivacy.String("nameContains"),
-		Status:       oursprivacy.ShortLinkListParamsStatusDisabled,
+	_, err := client.AudienceConversionReports.List(context.TODO())
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAudienceConversionReportNewWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.AudienceConversionReports.New(context.TODO(), oursprivacy.AudienceConversionReportNewParams{
+		AttributionWindow: "30",
+		EventName:         "x",
+		Name:              "x",
+		ValueProperty:     "x",
+		DateFrom:          oursprivacy.String("7321-69-10"),
+		DateTo:            oursprivacy.String("7321-69-10"),
+		ExcludeBots:       oursprivacy.Bool(true),
+		Filters: []oursprivacy.AudienceConversionReportNewParamsFilter{{
+			Dimension: "browser",
+			Operator:  "CONTAINS",
+			Value:     oursprivacy.String("x"),
+			Values:    []string{"x"},
+		}},
+		WebSourceID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -40,7 +72,7 @@ func TestShortLinkListWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestShortLinkNewWithOptionalParams(t *testing.T) {
+func TestAudienceConversionReportGet(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -52,13 +84,7 @@ func TestShortLinkNewWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ShortLinks.New(context.TODO(), oursprivacy.ShortLinkNewParams{
-		Code:        oursprivacy.String("code"),
-		Name:        oursprivacy.String("Spring Sale QR"),
-		Qr:          map[string]any{},
-		RedirectURL: oursprivacy.String("https://example.com/spring"),
-		Utm:         map[string]any{},
-	})
+	_, err := client.AudienceConversionReports.Get(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -68,7 +94,7 @@ func TestShortLinkNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestShortLinkGet(t *testing.T) {
+func TestAudienceConversionReportUpdateWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -80,38 +106,24 @@ func TestShortLinkGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ShortLinks.Get(context.TODO(), "id")
-	if err != nil {
-		var apierr *oursprivacy.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestShortLinkUpdateWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := oursprivacy.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.ShortLinks.Update(
+	_, err := client.AudienceConversionReports.Update(
 		context.TODO(),
 		"id",
-		oursprivacy.ShortLinkUpdateParams{
-			Code:        oursprivacy.String("code"),
-			Name:        oursprivacy.String("name"),
-			Qr:          map[string]any{},
-			RedirectURL: oursprivacy.String("redirectUrl"),
-			Status:      oursprivacy.String("status"),
-			Utm:         map[string]any{},
+		oursprivacy.AudienceConversionReportUpdateParams{
+			AttributionWindow: oursprivacy.String("30"),
+			DateFrom:          oursprivacy.String("7321-69-10"),
+			DateTo:            oursprivacy.String("7321-69-10"),
+			EventName:         oursprivacy.String("x"),
+			ExcludeBots:       oursprivacy.Bool(true),
+			Filters: []oursprivacy.AudienceConversionReportUpdateParamsFilter{{
+				Dimension: "browser",
+				Operator:  "CONTAINS",
+				Value:     oursprivacy.String("x"),
+				Values:    []string{"x"},
+			}},
+			Name:          oursprivacy.String("x"),
+			ValueProperty: oursprivacy.String("x"),
+			WebSourceID:   oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
 	)
 	if err != nil {
@@ -123,7 +135,7 @@ func TestShortLinkUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestShortLinkDelete(t *testing.T) {
+func TestAudienceConversionReportDelete(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -135,7 +147,7 @@ func TestShortLinkDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ShortLinks.Delete(context.TODO(), "id")
+	_, err := client.AudienceConversionReports.Delete(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -145,7 +157,7 @@ func TestShortLinkDelete(t *testing.T) {
 	}
 }
 
-func TestShortLinkResultsWithOptionalParams(t *testing.T) {
+func TestAudienceConversionReportResultsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -157,14 +169,12 @@ func TestShortLinkResultsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.ShortLinks.Results(
+	_, err := client.AudienceConversionReports.Results(
 		context.TODO(),
 		"id",
-		oursprivacy.ShortLinkResultsParams{
-			From:        "2026-06-01",
-			To:          "2026-06-30",
-			ExcludeBots: oursprivacy.Bool(true),
-			Granularity: oursprivacy.ShortLinkResultsParamsGranularityDaily,
+		oursprivacy.AudienceConversionReportResultsParams{
+			From: oursprivacy.String("7321-69-10"),
+			To:   oursprivacy.String("7321-69-10"),
 		},
 	)
 	if err != nil {

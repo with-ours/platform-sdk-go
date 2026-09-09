@@ -160,6 +160,7 @@ func TestConsentSettingReplaceWithOptionalParams(t *testing.T) {
 					ShowVendorsInPreferences: oursprivacy.Bool(true),
 				},
 				AdditionalRegions: []string{"string"},
+				Name:              oursprivacy.String("name"),
 			}},
 			Services: []oursprivacy.ConsentSettingReplaceParamsService{{
 				InternalNotes:        "internalNotes",
@@ -271,6 +272,7 @@ func TestConsentSettingUpdateWithOptionalParams(t *testing.T) {
 					ShowVendorsInPreferences: oursprivacy.Bool(true),
 				},
 				AdditionalRegions: []string{"string"},
+				Name:              oursprivacy.String("name"),
 			}},
 			Revision: oursprivacy.Float(0),
 			Services: []oursprivacy.ConsentSettingUpdateParamsService{{

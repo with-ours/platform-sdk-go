@@ -40,7 +40,7 @@ func NewShortLinkService(opts ...option.RequestOption) (r ShortLinkService) {
 
 // List all short links (QR codes / redirects) for this account, newest first.
 // Supports cursor pagination and optional `status` and `nameContains` filters.
-// Each entity bundles the destination URL, the composed public `shortUrl`, and the
+// Each entity bundles the destination URL, immutable code, path format, and
 // QR/campaign design. Requires scope: source:list
 func (r *ShortLinkService) List(ctx context.Context, query ShortLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[ShortLinkListResponse], err error) {
 	var raw *http.Response
@@ -61,18 +61,18 @@ func (r *ShortLinkService) List(ctx context.Context, query ShortLinkListParams, 
 
 // List all short links (QR codes / redirects) for this account, newest first.
 // Supports cursor pagination and optional `status` and `nameContains` filters.
-// Each entity bundles the destination URL, the composed public `shortUrl`, and the
+// Each entity bundles the destination URL, immutable code, path format, and
 // QR/campaign design. Requires scope: source:list
 func (r *ShortLinkService) ListAutoPaging(ctx context.Context, query ShortLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ShortLinkListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a short link (QR code / redirect) with its destination, campaign tags,
-// and QR styling in a single call. The short code is generated automatically; the
-// response `shortUrl` is the public URL the QR encodes. All body fields are
-// optional — send `{}` to create an unconfigured link and fill it in later with
-// PATCH. A newly created short link only resolves at the edge once a version is
-// published. Requires scope: source:create
+// and QR styling in a single call. The server atomically reserves an immutable
+// compact code; `shortUrl` resolves as `/r/{pixel}` without tracking query
+// parameters. All body fields are optional: send `{}` to create an unconfigured
+// link and fill it in later with PATCH. A newly created short link only resolves
+// at the edge once a version is published. Requires scope: source:create
 func (r *ShortLinkService) New(ctx context.Context, body ShortLinkNewParams, opts ...option.RequestOption) (res *ShortLinkNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/short-links"
@@ -80,9 +80,9 @@ func (r *ShortLinkService) New(ctx context.Context, body ShortLinkNewParams, opt
 	return res, err
 }
 
-// Fetch a single short link by id, including its destination, composed `shortUrl`,
-// and QR/campaign design. Returns 404 when no short link matches the id or it
-// belongs to a different account. Requires scope: source:view
+// Fetch a single short link by id, including its destination, immutable code,
+// composed `shortUrl`, and QR/campaign design. Returns 404 when no short link
+// matches the id or it belongs to a different account. Requires scope: source:view
 func (r *ShortLinkService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortLinkGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -147,35 +147,41 @@ type ShortLinkListResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkListResponseStatus `json:"status" api:"required"`
+	// Whether a user selected this code instead of using a generated code.
+	HasCustomShortLinkCode bool `json:"hasCustomShortLinkCode" api:"nullable"`
 	// Whether this short link exists in the currently published version. An
 	// unpublished short link does not resolve at the edge.
 	IsPublished bool   `json:"isPublished" api:"nullable"`
 	Name        string `json:"name" api:"nullable"`
-	// The short code embedded in the public URL (`/redirect/{pixel}`).
-	// Server-assigned.
+	// The immutable short code embedded in the public URL (`/r/{pixel}` for new
+	// links). Server-assigned.
 	Pixel string `json:"pixel" api:"nullable"`
 	// The destination URL this short link redirects to.
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// The public code embedded in the short-link URL.
+	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
 	// QR styling + campaign tags. Null until the link is styled.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
-	// The public short-link URL that the QR encodes and callers share. Composed from
-	// the short code, the link name (sent as the tracked event), and the campaign
-	// tags. Also resolves on any branded custom domains configured for the account.
+	// The public short-link URL that the QR encodes and callers share. New links use
+	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
+	// resolves on branded custom domains configured for the account.
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		AccountID       respjson.Field
-		CreatedAt       respjson.Field
-		Status          respjson.Field
-		IsPublished     respjson.Field
-		Name            respjson.Field
-		Pixel           respjson.Field
-		RedirectURL     respjson.Field
-		ShortLinkDesign respjson.Field
-		ShortURL        respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                     respjson.Field
+		AccountID              respjson.Field
+		CreatedAt              respjson.Field
+		Status                 respjson.Field
+		HasCustomShortLinkCode respjson.Field
+		IsPublished            respjson.Field
+		Name                   respjson.Field
+		Pixel                  respjson.Field
+		RedirectURL            respjson.Field
+		ShortLinkCode          respjson.Field
+		ShortLinkDesign        respjson.Field
+		ShortURL               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -199,35 +205,41 @@ type ShortLinkNewResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkNewResponseStatus `json:"status" api:"required"`
+	// Whether a user selected this code instead of using a generated code.
+	HasCustomShortLinkCode bool `json:"hasCustomShortLinkCode" api:"nullable"`
 	// Whether this short link exists in the currently published version. An
 	// unpublished short link does not resolve at the edge.
 	IsPublished bool   `json:"isPublished" api:"nullable"`
 	Name        string `json:"name" api:"nullable"`
-	// The short code embedded in the public URL (`/redirect/{pixel}`).
-	// Server-assigned.
+	// The immutable short code embedded in the public URL (`/r/{pixel}` for new
+	// links). Server-assigned.
 	Pixel string `json:"pixel" api:"nullable"`
 	// The destination URL this short link redirects to.
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// The public code embedded in the short-link URL.
+	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
 	// QR styling + campaign tags. Null until the link is styled.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
-	// The public short-link URL that the QR encodes and callers share. Composed from
-	// the short code, the link name (sent as the tracked event), and the campaign
-	// tags. Also resolves on any branded custom domains configured for the account.
+	// The public short-link URL that the QR encodes and callers share. New links use
+	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
+	// resolves on branded custom domains configured for the account.
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		AccountID       respjson.Field
-		CreatedAt       respjson.Field
-		Status          respjson.Field
-		IsPublished     respjson.Field
-		Name            respjson.Field
-		Pixel           respjson.Field
-		RedirectURL     respjson.Field
-		ShortLinkDesign respjson.Field
-		ShortURL        respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                     respjson.Field
+		AccountID              respjson.Field
+		CreatedAt              respjson.Field
+		Status                 respjson.Field
+		HasCustomShortLinkCode respjson.Field
+		IsPublished            respjson.Field
+		Name                   respjson.Field
+		Pixel                  respjson.Field
+		RedirectURL            respjson.Field
+		ShortLinkCode          respjson.Field
+		ShortLinkDesign        respjson.Field
+		ShortURL               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -251,35 +263,41 @@ type ShortLinkGetResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkGetResponseStatus `json:"status" api:"required"`
+	// Whether a user selected this code instead of using a generated code.
+	HasCustomShortLinkCode bool `json:"hasCustomShortLinkCode" api:"nullable"`
 	// Whether this short link exists in the currently published version. An
 	// unpublished short link does not resolve at the edge.
 	IsPublished bool   `json:"isPublished" api:"nullable"`
 	Name        string `json:"name" api:"nullable"`
-	// The short code embedded in the public URL (`/redirect/{pixel}`).
-	// Server-assigned.
+	// The immutable short code embedded in the public URL (`/r/{pixel}` for new
+	// links). Server-assigned.
 	Pixel string `json:"pixel" api:"nullable"`
 	// The destination URL this short link redirects to.
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// The public code embedded in the short-link URL.
+	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
 	// QR styling + campaign tags. Null until the link is styled.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
-	// The public short-link URL that the QR encodes and callers share. Composed from
-	// the short code, the link name (sent as the tracked event), and the campaign
-	// tags. Also resolves on any branded custom domains configured for the account.
+	// The public short-link URL that the QR encodes and callers share. New links use
+	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
+	// resolves on branded custom domains configured for the account.
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		AccountID       respjson.Field
-		CreatedAt       respjson.Field
-		Status          respjson.Field
-		IsPublished     respjson.Field
-		Name            respjson.Field
-		Pixel           respjson.Field
-		RedirectURL     respjson.Field
-		ShortLinkDesign respjson.Field
-		ShortURL        respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                     respjson.Field
+		AccountID              respjson.Field
+		CreatedAt              respjson.Field
+		Status                 respjson.Field
+		HasCustomShortLinkCode respjson.Field
+		IsPublished            respjson.Field
+		Name                   respjson.Field
+		Pixel                  respjson.Field
+		RedirectURL            respjson.Field
+		ShortLinkCode          respjson.Field
+		ShortLinkDesign        respjson.Field
+		ShortURL               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -303,35 +321,41 @@ type ShortLinkUpdateResponse struct {
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkUpdateResponseStatus `json:"status" api:"required"`
+	// Whether a user selected this code instead of using a generated code.
+	HasCustomShortLinkCode bool `json:"hasCustomShortLinkCode" api:"nullable"`
 	// Whether this short link exists in the currently published version. An
 	// unpublished short link does not resolve at the edge.
 	IsPublished bool   `json:"isPublished" api:"nullable"`
 	Name        string `json:"name" api:"nullable"`
-	// The short code embedded in the public URL (`/redirect/{pixel}`).
-	// Server-assigned.
+	// The immutable short code embedded in the public URL (`/r/{pixel}` for new
+	// links). Server-assigned.
 	Pixel string `json:"pixel" api:"nullable"`
 	// The destination URL this short link redirects to.
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// The public code embedded in the short-link URL.
+	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
 	// QR styling + campaign tags. Null until the link is styled.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
-	// The public short-link URL that the QR encodes and callers share. Composed from
-	// the short code, the link name (sent as the tracked event), and the campaign
-	// tags. Also resolves on any branded custom domains configured for the account.
+	// The public short-link URL that the QR encodes and callers share. New links use
+	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
+	// resolves on branded custom domains configured for the account.
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID              respjson.Field
-		AccountID       respjson.Field
-		CreatedAt       respjson.Field
-		Status          respjson.Field
-		IsPublished     respjson.Field
-		Name            respjson.Field
-		Pixel           respjson.Field
-		RedirectURL     respjson.Field
-		ShortLinkDesign respjson.Field
-		ShortURL        respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
+		ID                     respjson.Field
+		AccountID              respjson.Field
+		CreatedAt              respjson.Field
+		Status                 respjson.Field
+		HasCustomShortLinkCode respjson.Field
+		IsPublished            respjson.Field
+		Name                   respjson.Field
+		Pixel                  respjson.Field
+		RedirectURL            respjson.Field
+		ShortLinkCode          respjson.Field
+		ShortLinkDesign        respjson.Field
+		ShortURL               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
 	} `json:"-"`
 }
 
@@ -504,6 +528,8 @@ const (
 )
 
 type ShortLinkNewParams struct {
+	// Optional custom code in the shared public short-link namespace.
+	Code param.Opt[string] `json:"code,omitzero"`
 	// Human-readable name. Also sent as the tracked event name on every click/scan.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Destination URL the short link redirects to. Must be a valid URL.
@@ -524,6 +550,7 @@ func (r *ShortLinkNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type ShortLinkUpdateParams struct {
+	Code param.Opt[string] `json:"code,omitzero"`
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Destination URL the short link redirects to. Must be a valid URL. Send `null` to
 	// clear it.
