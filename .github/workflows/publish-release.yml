@@ -4,56 +4,89 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Semantic version to tag and release
+        description: Semantic version to publish
+        required: true
+        type: string
+      commit:
+        description: Full release commit SHA already merged into main
         required: true
         type: string
   pull_request:
     types: [closed]
 
+permissions: {}
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)) ||
       (github.event.pull_request.merged == true &&
       github.event.pull_request.base.ref == github.event.repository.default_branch &&
       startsWith(github.event.pull_request.title, 'release: '))
     name: publish
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: write
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          persist-credentials: false
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.merge_commit_sha || inputs.commit }}
 
-      - name: Validate release version
+      - name: Validate release version and commit
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
           INPUT_VERSION: ${{ inputs.version }}
+          RELEASE_COMMIT: ${{ github.event.pull_request.merge_commit_sha || inputs.commit }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == 'pull_request' ]]; then
             RELEASE_VERSION="${PR_TITLE#release: }"
           else
             RELEASE_VERSION="$INPUT_VERSION"
           fi
           RELEASE_VERSION="${RELEASE_VERSION#v}"
           if ! [[ "$RELEASE_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
-            echo "Expected release: <semantic version> or a semantic manual version; received: ${PR_TITLE:-$INPUT_VERSION}" >&2
+            echo "Expected a semantic release version" >&2
             exit 1
           fi
+          if ! [[ "$RELEASE_COMMIT" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "Expected a full release commit SHA" >&2
+            exit 1
+          fi
+          test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
+          git merge-base --is-ancestor "$RELEASE_COMMIT" "origin/$DEFAULT_BRANCH"
+          test "$(jq -er '.["."]' .release-please-manifest.json)" = "$RELEASE_VERSION"
+          TAG="v${RELEASE_VERSION}"
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            test "$(git rev-parse "$TAG^{commit}")" = "$RELEASE_COMMIT"
+          fi
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> "$GITHUB_ENV"
+          echo "RELEASE_COMMIT=$RELEASE_COMMIT" >> "$GITHUB_ENV"
 
       - name: Tag and create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
         run: |
+          set -euo pipefail
           TAG="v${RELEASE_VERSION}"
-          git fetch --tags --force
-          if ! git rev-parse --verify --quiet "refs/tags/$TAG"; then
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "$TAG"
+          git fetch --tags origin
+          if git show-ref --verify --quiet "refs/tags/$TAG"; then
+            test "$(git rev-parse "$TAG^{commit}")" = "$RELEASE_COMMIT"
+          else
+            git tag -a "$TAG" "$RELEASE_COMMIT" -m "Release $TAG"
+            git -c credential.helper='!gh auth git-credential' push origin "refs/tags/$TAG"
           fi
           if ! gh release view "$TAG" >/dev/null 2>&1; then
-            gh release create "$TAG" --target "$(git rev-parse HEAD)" --generate-notes --title "$TAG"
+            gh release create "$TAG" --verify-tag --target "$RELEASE_COMMIT" --generate-notes --title "$TAG"
           fi
