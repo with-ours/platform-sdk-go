@@ -142,6 +142,34 @@ func TestVideoDelete(t *testing.T) {
 	}
 }
 
+func TestVideoUpload(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Videos.Upload(
+		context.TODO(),
+		"id",
+		oursprivacy.VideoUploadParams{
+			MimeType: oursprivacy.VideoUploadParamsMimeTypeMP4,
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestVideoTranscript(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -180,7 +208,7 @@ func TestVideoUpdateTranscript(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.VideoUpdateTranscriptParams{
-			Content: "content",
+			Content: "x",
 			Format:  oursprivacy.VideoUpdateTranscriptParamsFormatSrt,
 		},
 	)
@@ -206,10 +234,11 @@ func TestVideoAnalyticsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Videos.Analytics(context.TODO(), oursprivacy.VideoAnalyticsParams{
-		From:   "from",
-		To:     "to",
-		Limit:  oursprivacy.Int(1),
-		Offset: oursprivacy.Int(0),
+		From:    "7321-69-10",
+		To:      "7321-69-10",
+		Limit:   oursprivacy.Int(1),
+		Offset:  oursprivacy.Int(0),
+		VideoID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -236,8 +265,8 @@ func TestVideoAnalyticsTimeseriesWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.VideoAnalyticsTimeseriesParams{
-			From:        "from",
-			To:          "to",
+			From:        "7321-69-10",
+			To:          "7321-69-10",
 			Granularity: oursprivacy.VideoAnalyticsTimeseriesParamsGranularityDaily,
 		},
 	)
