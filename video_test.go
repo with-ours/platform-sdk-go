@@ -234,10 +234,11 @@ func TestVideoAnalyticsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Videos.Analytics(context.TODO(), oursprivacy.VideoAnalyticsParams{
-		From:   "7321-69-10",
-		To:     "7321-69-10",
-		Limit:  oursprivacy.Int(1),
-		Offset: oursprivacy.Int(0),
+		From:    "7321-69-10",
+		To:      "7321-69-10",
+		Limit:   oursprivacy.Int(1),
+		Offset:  oursprivacy.Int(0),
+		VideoID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
