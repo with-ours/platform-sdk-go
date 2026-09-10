@@ -157,9 +157,10 @@ func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body Vid
 }
 
 // Return per-video starts, unique viewers, completion rate, and average watch time
-// for a date window. This derived report uses `limit` and `offset` pagination;
-// `total` is the number of rows returned through the current offset, not a total
-// match count. Requires scope: report:video-analytics
+// for a date window. Optionally filter to one video with `videoId`; omit it to
+// include all account videos. This derived report uses `limit` and `offset`
+// pagination; `total` is the number of rows returned through the current offset,
+// not a total match count. Requires scope: report:video-analytics
 func (r *VideoService) Analytics(ctx context.Context, query VideoAnalyticsParams, opts ...option.RequestOption) (res *VideoAnalyticsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/videos/analytics"
@@ -781,6 +782,8 @@ type VideoAnalyticsParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Maximum number of video rows to return. Defaults to 50.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter analytics to one video by its ID. Omit to include all account videos.
+	VideoID param.Opt[string] `query:"videoId,omitzero" format:"uuid" json:"-"`
 	paramObj
 }
 
