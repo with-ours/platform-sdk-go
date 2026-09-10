@@ -157,9 +157,10 @@ func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body Vid
 }
 
 // Return per-video starts, unique viewers, completion rate, and average watch time
-// for a date window. This derived report uses `limit` and `offset` pagination;
-// `total` is the number of rows returned through the current offset, not a total
-// match count. Requires scope: report:video-analytics
+// for a date window. Optionally filter to one video with `videoId`; omit it to
+// include all account videos. This derived report uses `limit` and `offset`
+// pagination; `total` is the number of rows returned through the current offset,
+// not a total match count. Requires scope: report:video-analytics
 func (r *VideoService) Analytics(ctx context.Context, query VideoAnalyticsParams, opts ...option.RequestOption) (res *VideoAnalyticsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/videos/analytics"
@@ -182,20 +183,19 @@ func (r *VideoService) AnalyticsTimeseries(ctx context.Context, id string, query
 }
 
 type VideoListResponse struct {
-	ID        string `json:"id" api:"required"`
-	AccountID string `json:"accountId" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Video".
-	Type                  VideoListResponseType `json:"type" api:"required"`
-	CaptionsUpdatedAt     string                `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string                `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string                `json:"description" api:"nullable"`
-	Duration              float64               `json:"duration" api:"nullable"`
-	HasVideoUpload        bool                  `json:"hasVideoUpload" api:"nullable"`
-	Height                float64               `json:"height" api:"nullable"`
-	Name                  string                `json:"name" api:"nullable"`
-	UpdatedAt             string                `json:"updatedAt" api:"nullable"`
-	Width                 float64               `json:"width" api:"nullable"`
+	ID                    string  `json:"id" api:"required"`
+	AccountID             string  `json:"accountId" api:"required"`
+	CreatedAt             string  `json:"createdAt" api:"required"`
+	Type                  string  `json:"type" api:"required"`
+	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string  `json:"description" api:"nullable"`
+	Duration              float64 `json:"duration" api:"nullable"`
+	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
+	Height                float64 `json:"height" api:"nullable"`
+	Name                  string  `json:"name" api:"nullable"`
+	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
+	Width                 float64 `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -222,18 +222,11 @@ func (r *VideoListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoListResponseType string
-
-const (
-	VideoListResponseTypeVideo VideoListResponseType = "Video"
-)
-
 type VideoNewResponse struct {
-	ID        string `json:"id" api:"required"`
-	AccountID string `json:"accountId" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Video".
-	Type                  VideoNewResponseType   `json:"type" api:"required"`
+	ID                    string                 `json:"id" api:"required"`
+	AccountID             string                 `json:"accountId" api:"required"`
+	CreatedAt             string                 `json:"createdAt" api:"required"`
+	Type                  string                 `json:"type" api:"required"`
 	Upload                VideoNewResponseUpload `json:"upload" api:"required"`
 	CaptionsUpdatedAt     string                 `json:"captionsUpdatedAt" api:"nullable"`
 	CaptionsUpdatedByName string                 `json:"captionsUpdatedByName" api:"nullable"`
@@ -271,16 +264,10 @@ func (r *VideoNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoNewResponseType string
-
-const (
-	VideoNewResponseTypeVideo VideoNewResponseType = "Video"
-)
-
 type VideoNewResponseUpload struct {
 	// Any of "MP4", "WEBM".
-	MimeType string `json:"mimeType" api:"required"`
-	URL      string `json:"url" api:"required" format:"uri"`
+	MimeType VideoNewResponseUploadMimeType `json:"mimeType" api:"required"`
+	URL      string                         `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		MimeType    respjson.Field
@@ -296,22 +283,28 @@ func (r *VideoNewResponseUpload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VideoNewResponseUploadMimeType string
+
+const (
+	VideoNewResponseUploadMimeTypeMP4  VideoNewResponseUploadMimeType = "MP4"
+	VideoNewResponseUploadMimeTypeWebm VideoNewResponseUploadMimeType = "WEBM"
+)
+
 type VideoGetResponse struct {
-	ID        string `json:"id" api:"required"`
-	AccountID string `json:"accountId" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Video".
-	Type                  VideoGetResponseType           `json:"type" api:"required"`
-	CaptionsUpdatedAt     string                         `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string                         `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string                         `json:"description" api:"nullable"`
-	Duration              float64                        `json:"duration" api:"nullable"`
-	HasVideoUpload        bool                           `json:"hasVideoUpload" api:"nullable"`
-	Height                float64                        `json:"height" api:"nullable"`
-	Name                  string                         `json:"name" api:"nullable"`
-	ResolvedValues        VideoGetResponseResolvedValues `json:"resolvedValues" api:"nullable"`
-	UpdatedAt             string                         `json:"updatedAt" api:"nullable"`
-	Width                 float64                        `json:"width" api:"nullable"`
+	ID                    string  `json:"id" api:"required"`
+	AccountID             string  `json:"accountId" api:"required"`
+	CreatedAt             string  `json:"createdAt" api:"required"`
+	Type                  string  `json:"type" api:"required"`
+	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string  `json:"description" api:"nullable"`
+	Duration              float64 `json:"duration" api:"nullable"`
+	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
+	Height                float64 `json:"height" api:"nullable"`
+	Name                  string  `json:"name" api:"nullable"`
+	ResolvedValues        any     `json:"resolvedValues" api:"nullable"`
+	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
+	Width                 float64 `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -339,91 +332,20 @@ func (r *VideoGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type VideoGetResponseType string
-
-const (
-	VideoGetResponseTypeVideo VideoGetResponseType = "Video"
-)
-
-type VideoGetResponseResolvedValues struct {
-	PosterURL       string                                        `json:"posterUrl" api:"required"`
-	VideoURL        string                                        `json:"videoUrl" api:"required"`
-	MediaConvertJob VideoGetResponseResolvedValuesMediaConvertJob `json:"mediaConvertJob" api:"nullable"`
-	VideoStatus     VideoGetResponseResolvedValuesVideoStatus     `json:"videoStatus" api:"nullable"`
-	VttURL          string                                        `json:"vttUrl" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PosterURL       respjson.Field
-		VideoURL        respjson.Field
-		MediaConvertJob respjson.Field
-		VideoStatus     respjson.Field
-		VttURL          respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoGetResponseResolvedValues) RawJSON() string { return r.JSON.raw }
-func (r *VideoGetResponseResolvedValues) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoGetResponseResolvedValuesMediaConvertJob struct {
-	PercentComplete float64 `json:"percentComplete" api:"nullable"`
-	Status          string  `json:"status" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		PercentComplete respjson.Field
-		Status          respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoGetResponseResolvedValuesMediaConvertJob) RawJSON() string { return r.JSON.raw }
-func (r *VideoGetResponseResolvedValuesMediaConvertJob) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type VideoGetResponseResolvedValuesVideoStatus struct {
-	OutputExists        bool `json:"outputExists" api:"nullable"`
-	OutputIsCurrent     bool `json:"outputIsCurrent" api:"nullable"`
-	PosterExists        bool `json:"posterExists" api:"nullable"`
-	TranscriptionExists bool `json:"transcriptionExists" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		OutputExists        respjson.Field
-		OutputIsCurrent     respjson.Field
-		PosterExists        respjson.Field
-		TranscriptionExists respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r VideoGetResponseResolvedValuesVideoStatus) RawJSON() string { return r.JSON.raw }
-func (r *VideoGetResponseResolvedValuesVideoStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type VideoUpdateResponse struct {
-	ID        string `json:"id" api:"required"`
-	AccountID string `json:"accountId" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Video".
-	Type                  VideoUpdateResponseType `json:"type" api:"required"`
-	CaptionsUpdatedAt     string                  `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string                  `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string                  `json:"description" api:"nullable"`
-	Duration              float64                 `json:"duration" api:"nullable"`
-	HasVideoUpload        bool                    `json:"hasVideoUpload" api:"nullable"`
-	Height                float64                 `json:"height" api:"nullable"`
-	Name                  string                  `json:"name" api:"nullable"`
-	UpdatedAt             string                  `json:"updatedAt" api:"nullable"`
-	Width                 float64                 `json:"width" api:"nullable"`
+	ID                    string  `json:"id" api:"required"`
+	AccountID             string  `json:"accountId" api:"required"`
+	CreatedAt             string  `json:"createdAt" api:"required"`
+	Type                  string  `json:"type" api:"required"`
+	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string  `json:"description" api:"nullable"`
+	Duration              float64 `json:"duration" api:"nullable"`
+	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
+	Height                float64 `json:"height" api:"nullable"`
+	Name                  string  `json:"name" api:"nullable"`
+	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
+	Width                 float64 `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -449,12 +371,6 @@ func (r VideoUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type VideoUpdateResponseType string
-
-const (
-	VideoUpdateResponseTypeVideo VideoUpdateResponseType = "Video"
-)
 
 type VideoDeleteResponse struct {
 	ID string `json:"id" api:"required"`
@@ -518,20 +434,19 @@ func (r *VideoTranscriptResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VideoUpdateTranscriptResponse struct {
-	ID        string `json:"id" api:"required"`
-	AccountID string `json:"accountId" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
-	// Any of "Video".
-	Type                  VideoUpdateTranscriptResponseType `json:"type" api:"required"`
-	CaptionsUpdatedAt     string                            `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string                            `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string                            `json:"description" api:"nullable"`
-	Duration              float64                           `json:"duration" api:"nullable"`
-	HasVideoUpload        bool                              `json:"hasVideoUpload" api:"nullable"`
-	Height                float64                           `json:"height" api:"nullable"`
-	Name                  string                            `json:"name" api:"nullable"`
-	UpdatedAt             string                            `json:"updatedAt" api:"nullable"`
-	Width                 float64                           `json:"width" api:"nullable"`
+	ID                    string  `json:"id" api:"required"`
+	AccountID             string  `json:"accountId" api:"required"`
+	CreatedAt             string  `json:"createdAt" api:"required"`
+	Type                  string  `json:"type" api:"required"`
+	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string  `json:"description" api:"nullable"`
+	Duration              float64 `json:"duration" api:"nullable"`
+	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
+	Height                float64 `json:"height" api:"nullable"`
+	Name                  string  `json:"name" api:"nullable"`
+	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
+	Width                 float64 `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
@@ -557,12 +472,6 @@ func (r VideoUpdateTranscriptResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoUpdateTranscriptResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type VideoUpdateTranscriptResponseType string
-
-const (
-	VideoUpdateTranscriptResponseTypeVideo VideoUpdateTranscriptResponseType = "Video"
-)
 
 type VideoAnalyticsResponse struct {
 	HasMore bool                         `json:"hasMore" api:"required"`
@@ -781,6 +690,8 @@ type VideoAnalyticsParams struct {
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Maximum number of video rows to return. Defaults to 50.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter analytics to one video by its ID. Omit to include all account videos.
+	VideoID param.Opt[string] `query:"videoId,omitzero" format:"uuid" json:"-"`
 	paramObj
 }
 
