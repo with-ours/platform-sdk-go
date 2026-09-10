@@ -1,14 +1,20 @@
 name: CI
 on: [push, pull_request]
 
+permissions: {}
+
 jobs:
   lint:
+    permissions:
+      contents: read
     timeout-minutes: 10
     name: lint
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Setup go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
@@ -18,11 +24,15 @@ jobs:
       - name: Run lints
         run: ./scripts/lint
   test:
+    permissions:
+      contents: read
     timeout-minutes: 10
     name: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Setup go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
