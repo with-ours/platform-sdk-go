@@ -447,11 +447,16 @@ type ConsentSettingListResponseEntityRegion struct {
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
 	AdditionalRegions []string `json:"additionalRegions" api:"nullable"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
 		Rule              respjson.Field
 		AdditionalRegions respjson.Field
+		Name              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -903,11 +908,16 @@ type ConsentSettingNewResponseRegion struct {
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
 	AdditionalRegions []string `json:"additionalRegions" api:"nullable"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
 		Rule              respjson.Field
 		AdditionalRegions respjson.Field
+		Name              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -1365,11 +1375,16 @@ type ConsentSettingGetResponseRegion struct {
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
 	AdditionalRegions []string `json:"additionalRegions" api:"nullable"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
 		Rule              respjson.Field
 		AdditionalRegions respjson.Field
+		Name              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -1827,11 +1842,16 @@ type ConsentSettingReplaceResponseRegion struct {
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
 	AdditionalRegions []string `json:"additionalRegions" api:"nullable"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
 		Rule              respjson.Field
 		AdditionalRegions respjson.Field
+		Name              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -2289,11 +2309,16 @@ type ConsentSettingUpdateResponseRegion struct {
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
 	AdditionalRegions []string `json:"additionalRegions" api:"nullable"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
 		Rule              respjson.Field
 		AdditionalRegions respjson.Field
+		Name              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -2751,11 +2776,16 @@ type ConsentSettingDeleteResponseRegion struct {
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
 	AdditionalRegions []string `json:"additionalRegions" api:"nullable"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name string `json:"name" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		RegionCode        respjson.Field
 		Rule              respjson.Field
 		AdditionalRegions respjson.Field
+		Name              respjson.Field
 		ExtraFields       map[string]respjson.Field
 		raw               string
 	} `json:"-"`
@@ -3317,6 +3347,10 @@ type ConsentSettingReplaceParamsRegion struct {
 	// may appear in only one rule across `regions[]`.
 	RegionCode string                                `json:"regionCode" api:"required"`
 	Rule       ConsentSettingReplaceParamsRegionRule `json:"rule,omitzero" api:"required"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Other region codes that should reuse this rule. Same code-format rules as
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.
@@ -3687,6 +3721,10 @@ type ConsentSettingUpdateParamsRegion struct {
 	// may appear in only one rule across `regions[]`.
 	RegionCode string                               `json:"regionCode" api:"required"`
 	Rule       ConsentSettingUpdateParamsRegionRule `json:"rule,omitzero" api:"required"`
+	// Optional label for this override group, e.g. "CCPA States". Shown in the
+	// dashboard instead of the region codes. Pass null to clear it and fall back to
+	// the codes.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Other region codes that should reuse this rule. Same code-format rules as
 	// `regionCode`. Cannot include `regionCode` itself, cannot duplicate, cannot
 	// overlap with another rule's regions.

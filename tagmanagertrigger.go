@@ -146,7 +146,8 @@ type TagManagerTriggerListResponse struct {
 	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
-	Enabled   bool   `json:"enabled" api:"nullable"`
+	// Defaults to `true` on create.
+	Enabled bool `json:"enabled" api:"nullable"`
 	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
@@ -192,7 +193,8 @@ type TagManagerTriggerNewResponse struct {
 	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
-	Enabled   bool   `json:"enabled" api:"nullable"`
+	// Defaults to `true` on create.
+	Enabled bool `json:"enabled" api:"nullable"`
 	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
@@ -238,7 +240,8 @@ type TagManagerTriggerGetResponse struct {
 	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
-	Enabled   bool   `json:"enabled" api:"nullable"`
+	// Defaults to `true` on create.
+	Enabled bool `json:"enabled" api:"nullable"`
 	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
@@ -284,7 +287,8 @@ type TagManagerTriggerUpdateResponse struct {
 	// `Click` id; use one of the `All*Click` variants.
 	Type      string `json:"type" api:"required"`
 	CreatedAt string `json:"createdAt" api:"nullable"`
-	Enabled   bool   `json:"enabled" api:"nullable"`
+	// Defaults to `true` on create.
+	Enabled bool `json:"enabled" api:"nullable"`
 	// Folder this trigger belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID  string `json:"folderId" api:"nullable"`
@@ -480,7 +484,9 @@ func (r TagManagerTriggerListParams) URLQuery() (v url.Values, err error) {
 }
 
 type TagManagerTriggerNewParams struct {
-	// Match conditions; use `[]` for an unconditional trigger.
+	// Match conditions; use `[]` for an unconditional trigger. Conditions are
+	// evaluated by the Tag Manager runtime. For a CSS selector click condition, send
+	// `{ "actual": "{{Click Element}}", "expected": ".cta", "comparison": "match_css_selector" }`.
 	Conditions []map[string]any `json:"conditions,omitzero" api:"required"`
 	Name       string           `json:"name" api:"required"`
 	// Type-specific JSON configuration.
@@ -489,7 +495,8 @@ type TagManagerTriggerNewParams struct {
 	TagManagerID string `json:"tagManagerId" api:"required"`
 	// Trigger type discriminator. Pick from `GET /tag-manager-triggers/types` for the
 	// canonical set (e.g. `PageView`, `CustomEvent`, `AllElementsClick`).
-	Type    string          `json:"type" api:"required"`
+	Type string `json:"type" api:"required"`
+	// Defaults to `true`.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	paramObj
 }

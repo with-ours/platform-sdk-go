@@ -244,7 +244,7 @@ type DataGovernanceListResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
 	And       []any                                            `json:"AND" api:"nullable"`
-	Condition DataGovernanceListResponseCategoryLogicCondition `json:"condition"`
+	Condition DataGovernanceListResponseCategoryLogicCondition `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
 	Not any `json:"NOT"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
@@ -417,7 +417,7 @@ type DataGovernanceNewResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
 	And       []any                                           `json:"AND" api:"nullable"`
-	Condition DataGovernanceNewResponseCategoryLogicCondition `json:"condition"`
+	Condition DataGovernanceNewResponseCategoryLogicCondition `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
 	Not any `json:"NOT"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
@@ -590,7 +590,7 @@ type DataGovernanceGetResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
 	And       []any                                           `json:"AND" api:"nullable"`
-	Condition DataGovernanceGetResponseCategoryLogicCondition `json:"condition"`
+	Condition DataGovernanceGetResponseCategoryLogicCondition `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
 	Not any `json:"NOT"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
@@ -763,7 +763,7 @@ type DataGovernanceUpdateResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
 	And       []any                                              `json:"AND" api:"nullable"`
-	Condition DataGovernanceUpdateResponseCategoryLogicCondition `json:"condition"`
+	Condition DataGovernanceUpdateResponseCategoryLogicCondition `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
 	Not any `json:"NOT"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
@@ -973,11 +973,11 @@ func (r *DataGovernanceUpdateParamsCategory) UnmarshalJSON(data []byte) error {
 type DataGovernanceUpdateParamsCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And []any `json:"AND,omitzero"`
+	And       []any                                            `json:"AND,omitzero"`
+	Condition DataGovernanceUpdateParamsCategoryLogicCondition `json:"condition,omitzero"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or        []any                                            `json:"OR,omitzero"`
-	Condition DataGovernanceUpdateParamsCategoryLogicCondition `json:"condition,omitzero"`
+	Or []any `json:"OR,omitzero"`
 	// Negates a single child logic node.
 	Not any `json:"NOT,omitzero"`
 	paramObj
