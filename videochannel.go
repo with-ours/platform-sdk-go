@@ -40,8 +40,8 @@ func NewVideoChannelService(opts ...option.RequestOption) (r VideoChannelService
 
 // List video channels for the account, sorted by name. Supports cursor pagination
 // via `limit` and `cursor`; the limit clamp is 1000 so a single request can return
-// the full set. Entries omit `resolvedValues` — fetch a channel by id for its video
-// count and embed output. Requires scope: videoChannel:list
+// the full set. Entries omit `resolvedValues` — fetch a channel by id for its
+// video count and embed output. Requires scope: videoChannel:list
 func (r *VideoChannelService) List(ctx context.Context, query VideoChannelListParams, opts ...option.RequestOption) (res *pagination.Cursor[VideoChannelListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -61,15 +61,15 @@ func (r *VideoChannelService) List(ctx context.Context, query VideoChannelListPa
 
 // List video channels for the account, sorted by name. Supports cursor pagination
 // via `limit` and `cursor`; the limit clamp is 1000 so a single request can return
-// the full set. Entries omit `resolvedValues` — fetch a channel by id for its video
-// count and embed output. Requires scope: videoChannel:list
+// the full set. Entries omit `resolvedValues` — fetch a channel by id for its
+// video count and embed output. Requires scope: videoChannel:list
 func (r *VideoChannelService) ListAutoPaging(ctx context.Context, query VideoChannelListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[VideoChannelListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
-// Create a video channel. Only `name` is accepted here; set branding and publish it
-// with PATCH, and add videos with `POST /rest/v1/video-channels/{id}/media`. New
-// channels start unpublished, so the page is not reachable until you send
+// Create a video channel. Only `name` is accepted here; set branding and publish
+// it with PATCH, and add videos with `POST /rest/v1/video-channels/{id}/media`.
+// New channels start unpublished, so the page is not reachable until you send
 // `isPublished: true`. Requires scope: videoChannel:create
 func (r *VideoChannelService) New(ctx context.Context, body VideoChannelNewParams, opts ...option.RequestOption) (res *VideoChannelNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -137,10 +137,10 @@ func (r *VideoChannelService) Media(ctx context.Context, id string, opts ...opti
 
 // Add a video to a channel. Omit `position` to append it to the end. A video can
 // belong to several channels, so adding it here does not remove it from any other.
-// Calling this again for a video already in the channel updates its position instead
-// of adding a duplicate, and keeps its current slot when `position` is omitted. The
-// returned `id` is a composite membership key, not a UUID. Requires scope:
-// videoChannel:update
+// Calling this again for a video already in the channel updates its position
+// instead of adding a duplicate, and keeps its current slot when `position` is
+// omitted. The returned `id` is a composite membership key, not a UUID. Requires
+// scope: videoChannel:update
 func (r *VideoChannelService) AssignMedia(ctx context.Context, id string, body VideoChannelAssignMediaParams, opts ...option.RequestOption) (res *VideoChannelAssignMediaResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -152,26 +152,26 @@ func (r *VideoChannelService) AssignMedia(ctx context.Context, id string, body V
 	return res, err
 }
 
-// Remove one video from a channel, identified by the `mediaId` query parameter. The
-// video itself is not deleted and stays in any other channel it belongs to.
-// Idempotent — removing a video that is not in the channel succeeds and returns the
-// channel unchanged. Requires scope: videoChannel:update
-func (r *VideoChannelService) RemoveMedia(ctx context.Context, id string, query VideoChannelRemoveMediaParams, opts ...option.RequestOption) (res *VideoChannelRemoveMediaResponse, err error) {
+// Remove one video from a channel, identified by the `mediaId` query parameter.
+// The video itself is not deleted and stays in any other channel it belongs to.
+// Idempotent — removing a video that is not in the channel succeeds and returns
+// the channel unchanged. Requires scope: videoChannel:update
+func (r *VideoChannelService) RemoveMedia(ctx context.Context, id string, body VideoChannelRemoveMediaParams, opts ...option.RequestOption) (res *VideoChannelRemoveMediaResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s/media", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
 
-// Set the display order of a channel’s videos. Send every video id currently in the
-// channel in the order you want them shown — index 0 appears first. A partial list,
-// or an id that is not in the channel, returns 400 so a caller working from a stale
-// view learns it is out of date instead of getting a partial write. Requires scope:
-// videoChannel:update
+// Set the display order of a channel’s videos. Send every video id currently in
+// the channel in the order you want them shown — index 0 appears first. A partial
+// list, or an id that is not in the channel, returns 400 so a caller working from
+// a stale view learns it is out of date instead of getting a partial write.
+// Requires scope: videoChannel:update
 func (r *VideoChannelService) Reorder(ctx context.Context, id string, body VideoChannelReorderParams, opts ...option.RequestOption) (res *VideoChannelReorderResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -519,7 +519,7 @@ func (r VideoChannelListParams) URLQuery() (v url.Values, err error) {
 
 type VideoChannelNewParams struct {
 	// Channel name. Case-insensitively unique within the account.
-	Name string `json:"name,omitzero" api:"required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -557,9 +557,9 @@ func (r *VideoChannelUpdateParams) UnmarshalJSON(data []byte) error {
 
 type VideoChannelAssignMediaParams struct {
 	// Id of the video to add to the channel. Must be a video, not an image.
-	MediaID string `json:"mediaId,omitzero" api:"required" format:"uuid"`
-	// Zero-based slot in the channel order. Omit to append to the end; omitting it on a
-	// video that is already in the channel keeps its current slot.
+	MediaID string `json:"mediaId" api:"required" format:"uuid"`
+	// Zero-based slot in the channel order. Omit to append to the end; omitting it on
+	// a video that is already in the channel keeps its current slot.
 	Position param.Opt[int64] `json:"position,omitzero"`
 	paramObj
 }
@@ -590,7 +590,7 @@ func (r VideoChannelRemoveMediaParams) URLQuery() (v url.Values, err error) {
 type VideoChannelReorderParams struct {
 	// Every video id currently in the channel, in the order you want them shown.
 	// Partial lists and ids that are not in the channel are rejected.
-	MediaIDs []string `json:"mediaIds,omitzero" api:"required"`
+	MediaIDs []string `json:"mediaIds,omitzero" api:"required" format:"uuid"`
 	paramObj
 }
 

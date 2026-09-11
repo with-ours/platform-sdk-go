@@ -56,6 +56,7 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 	_, err := client.Experiments.New(context.TODO(), oursprivacy.ExperimentNewParams{
 		ExperimentSettingsID: "settings_01HZX9BB73EY2Q37VGK5A0VW7A",
 		Name:                 "Homepage Hero Headline Test",
+		AnalysisConfig:       map[string]any{},
 		ControlWeight:        oursprivacy.Int(34),
 		Description:          oursprivacy.String("description"),
 		IncludeQueryString:   oursprivacy.Bool(true),
@@ -131,6 +132,7 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ExperimentUpdateParams{
+			AnalysisConfig:     map[string]any{},
 			Description:        oursprivacy.String("description"),
 			IncludeQueryString: oursprivacy.Bool(true),
 			Key:                oursprivacy.String("key"),
@@ -181,6 +183,28 @@ func TestExperimentDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Experiments.Delete(context.TODO(), "id")
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestExperimentDuplicate(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Experiments.Duplicate(context.TODO(), "id")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -397,6 +421,34 @@ func TestExperimentResultsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ExperimentResultsParams{
+			EventName: oursprivacy.String("demo_requested"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestExperimentAnalysisWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Experiments.Analysis(
+		context.TODO(),
+		"id",
+		oursprivacy.ExperimentAnalysisParams{
 			EventName: oursprivacy.String("demo_requested"),
 		},
 	)

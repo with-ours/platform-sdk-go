@@ -70,8 +70,8 @@ func (r *TagManagerTagService) ListAutoPaging(ctx context.Context, query TagMana
 }
 
 // Create a new tag inside a tag manager. `tagManagerId` is required in the body.
-// Newly created tags are not assigned to any folder — assign after creation via
-// PATCH with `folderId`. Requires scope: tagManagers:update
+// Newly created tags are not assigned to any folder — assign them with
+// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
 func (r *TagManagerTagService) New(ctx context.Context, body TagManagerTagNewParams, opts ...option.RequestOption) (res *TagManagerTagNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-tags"

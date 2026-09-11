@@ -17,35 +17,41 @@ import (
 // interacting with the ours-privacy-platform API. You should not instantiate this
 // client directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options                []option.RequestOption
-	AllowedEvents          AllowedEventService
-	Attribution            AttributionService
-	ConsentAnalytics       ConsentAnalyticsService
-	ConsentSettings        ConsentSettingService
-	DataGovernance         DataGovernanceService
-	DefaultMappings        DefaultMappingService
-	Destinations           DestinationService
-	ExperimentSettings     ExperimentSettingService
-	ExperimentVariants     ExperimentVariantService
-	Experiments            ExperimentService
-	Funnels                FunnelService
-	HeatmapPages           HeatmapPageService
-	Locations              LocationService
-	Mappings               MappingService
-	ReplaySettings         ReplaySettingService
-	ShortLinks             ShortLinkService
-	Sources                SourceService
-	TagManagers            TagManagerService
-	TagManagerTags         TagManagerTagService
-	TagManagerTriggers     TagManagerTriggerService
-	TagManagerVariables    TagManagerVariableService
-	TagManagerFolders      TagManagerFolderService
-	TagManagerAssetFolders TagManagerAssetFolderService
-	Versions               VersionService
-	VideoChannels          VideoChannelService
-	Videos                 VideoService
-	WebScannerRules        WebScannerRuleService
-	WebScanners            WebScannerService
+	Options                    []option.RequestOption
+	AllowedEvents              AllowedEventService
+	Attribution                AttributionService
+	AudienceConversionReports  AudienceConversionReportService
+	ConsentAnalytics           ConsentAnalyticsService
+	ConsentSettings            ConsentSettingService
+	ConversionJourneySummaries ConversionJourneySummaryService
+	DataGovernance             DataGovernanceService
+	DefaultMappings            DefaultMappingService
+	Destinations               DestinationService
+	ExperimentSettings         ExperimentSettingService
+	ExperimentVariants         ExperimentVariantService
+	Experiments                ExperimentService
+	Funnels                    FunnelService
+	HeatmapPages               HeatmapPageService
+	Locations                  LocationService
+	Mappings                   MappingService
+	ReplaySettings             ReplaySettingService
+	SessionReplays             SessionReplayService
+	ShortLinks                 ShortLinkService
+	Sources                    SourceService
+	TagManagers                TagManagerService
+	TagManagerTags             TagManagerTagService
+	TagManagerTriggers         TagManagerTriggerService
+	TagManagerVariables        TagManagerVariableService
+	TagManagerFolders          TagManagerFolderService
+	TagManagerAssetFolders     TagManagerAssetFolderService
+	TranslationWidgets         TranslationWidgetService
+	Versions                   VersionService
+	Videos                     VideoService
+	VideoChannels              VideoChannelService
+	WebAnalytics               WebAnalyticsService
+	WebScannerRules            WebScannerRuleService
+	WebScanners                WebScannerService
+	PersonalizationProperties  PersonalizationPropertyService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -80,8 +86,10 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r.AllowedEvents = NewAllowedEventService(opts...)
 	r.Attribution = NewAttributionService(opts...)
+	r.AudienceConversionReports = NewAudienceConversionReportService(opts...)
 	r.ConsentAnalytics = NewConsentAnalyticsService(opts...)
 	r.ConsentSettings = NewConsentSettingService(opts...)
+	r.ConversionJourneySummaries = NewConversionJourneySummaryService(opts...)
 	r.DataGovernance = NewDataGovernanceService(opts...)
 	r.DefaultMappings = NewDefaultMappingService(opts...)
 	r.Destinations = NewDestinationService(opts...)
@@ -93,6 +101,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Locations = NewLocationService(opts...)
 	r.Mappings = NewMappingService(opts...)
 	r.ReplaySettings = NewReplaySettingService(opts...)
+	r.SessionReplays = NewSessionReplayService(opts...)
 	r.ShortLinks = NewShortLinkService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.TagManagers = NewTagManagerService(opts...)
@@ -101,11 +110,14 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.TagManagerVariables = NewTagManagerVariableService(opts...)
 	r.TagManagerFolders = NewTagManagerFolderService(opts...)
 	r.TagManagerAssetFolders = NewTagManagerAssetFolderService(opts...)
+	r.TranslationWidgets = NewTranslationWidgetService(opts...)
 	r.Versions = NewVersionService(opts...)
-	r.VideoChannels = NewVideoChannelService(opts...)
 	r.Videos = NewVideoService(opts...)
+	r.VideoChannels = NewVideoChannelService(opts...)
+	r.WebAnalytics = NewWebAnalyticsService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
+	r.PersonalizationProperties = NewPersonalizationPropertyService(opts...)
 
 	return
 }

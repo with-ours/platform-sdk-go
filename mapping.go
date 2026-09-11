@@ -960,11 +960,11 @@ func (r *MappingNewParams) UnmarshalJSON(data []byte) error {
 type MappingNewParamsLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And []any `json:"AND,omitzero"`
+	And       []any                          `json:"AND,omitzero"`
+	Condition MappingNewParamsLogicCondition `json:"condition,omitzero"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or        []any                          `json:"OR,omitzero"`
-	Condition MappingNewParamsLogicCondition `json:"condition,omitzero"`
+	Or []any `json:"OR,omitzero"`
 	// Negates a single child logic node.
 	Not any `json:"NOT,omitzero"`
 	paramObj
@@ -1096,11 +1096,11 @@ func (r *MappingUpdateParams) UnmarshalJSON(data []byte) error {
 type MappingUpdateParamsLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And []any `json:"AND,omitzero"`
+	And       []any                             `json:"AND,omitzero"`
+	Condition MappingUpdateParamsLogicCondition `json:"condition,omitzero"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or        []any                             `json:"OR,omitzero"`
-	Condition MappingUpdateParamsLogicCondition `json:"condition,omitzero"`
+	Or []any `json:"OR,omitzero"`
 	// Negates a single child logic node.
 	Not any `json:"NOT,omitzero"`
 	paramObj
