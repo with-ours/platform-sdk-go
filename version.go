@@ -171,6 +171,28 @@ func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query
 	return res, err
 }
 
+// Check whether one entity has unpublished changes, without fetching the org-wide
+// draft diff.
+// `GET /rest/v1/versions/draft/status?collection={collection}&entityId={id}`
+// returns `status: "added" | "modified" | "removed" | null` for that entity, with
+// the same semantics as `GET /rest/v1/versions/draft/diff` — it shares the diff's
+// field blacklist, so passive fields (timestamps, sync bookkeeping) do not count
+// as a change.
+//
+// `status` is `null` for every outcome other than a real pending change: the
+// entity already matches the published version, the id is unknown, the id belongs
+// to another account, or the account has never published anything. Use
+// `GET /rest/v1/versions/draft/diff` when you need the full change set instead of
+// one entity. (`draft` is a literal path segment identifying the live draft as the
+// target, which is why the entity is passed as `entityId` rather than `id`.)
+// Requires scope: version:find
+func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, query VersionStatusParams, opts ...option.RequestOption) (res *VersionStatusResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("rest/v1/versions/%v/status", id)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Revert one or more pending draft changes back to the latest published version
 // (the "abandon a change" action). Send a body listing the entities to revert;
 // each is handled independently — a modified entity is restored to its published
@@ -3822,6 +3844,77 @@ func (r *VersionDiffResponseDifferencesTagManagerVariablesRemoved) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VersionStatusResponse struct {
+	// Echo of the requested entity id.
+	ID string `json:"id" api:"required"`
+	// Echo of the requested collection.
+	//
+	// Any of "allowedEvents", "consentSettings", "dataGovernanceEvents",
+	// "dataGovernanceRules", "destinations", "experimentSettings",
+	// "externalAllowedEventData", "globalDispatchCenters", "mappings",
+	// "replaySettings", "sources", "tagManagerTags", "tagManagerTriggers",
+	// "tagManagerVariables", "tagManagers".
+	Collection VersionStatusResponseCollection `json:"collection" api:"required"`
+	// How the entity differs from the latest published version: `added` exists only in
+	// the draft, `modified` exists in both with unpublished edits, `removed` exists
+	// only in the published version. `null` covers every other outcome — the entity
+	// matches the published version, is unknown, belongs to another account, or the
+	// account has never published — so callers cannot use it to probe for entities
+	// outside their account.
+	//
+	// Any of "added", "modified", "removed".
+	Status VersionStatusResponseStatus `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Collection  respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VersionStatusResponse) RawJSON() string { return r.JSON.raw }
+func (r *VersionStatusResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Echo of the requested collection.
+type VersionStatusResponseCollection string
+
+const (
+	VersionStatusResponseCollectionAllowedEvents            VersionStatusResponseCollection = "allowedEvents"
+	VersionStatusResponseCollectionConsentSettings          VersionStatusResponseCollection = "consentSettings"
+	VersionStatusResponseCollectionDataGovernanceEvents     VersionStatusResponseCollection = "dataGovernanceEvents"
+	VersionStatusResponseCollectionDataGovernanceRules      VersionStatusResponseCollection = "dataGovernanceRules"
+	VersionStatusResponseCollectionDestinations             VersionStatusResponseCollection = "destinations"
+	VersionStatusResponseCollectionExperimentSettings       VersionStatusResponseCollection = "experimentSettings"
+	VersionStatusResponseCollectionExternalAllowedEventData VersionStatusResponseCollection = "externalAllowedEventData"
+	VersionStatusResponseCollectionGlobalDispatchCenters    VersionStatusResponseCollection = "globalDispatchCenters"
+	VersionStatusResponseCollectionMappings                 VersionStatusResponseCollection = "mappings"
+	VersionStatusResponseCollectionReplaySettings           VersionStatusResponseCollection = "replaySettings"
+	VersionStatusResponseCollectionSources                  VersionStatusResponseCollection = "sources"
+	VersionStatusResponseCollectionTagManagerTags           VersionStatusResponseCollection = "tagManagerTags"
+	VersionStatusResponseCollectionTagManagerTriggers       VersionStatusResponseCollection = "tagManagerTriggers"
+	VersionStatusResponseCollectionTagManagerVariables      VersionStatusResponseCollection = "tagManagerVariables"
+	VersionStatusResponseCollectionTagManagers              VersionStatusResponseCollection = "tagManagers"
+)
+
+// How the entity differs from the latest published version: `added` exists only in
+// the draft, `modified` exists in both with unpublished edits, `removed` exists
+// only in the published version. `null` covers every other outcome — the entity
+// matches the published version, is unknown, belongs to another account, or the
+// account has never published — so callers cannot use it to probe for entities
+// outside their account.
+type VersionStatusResponseStatus string
+
+const (
+	VersionStatusResponseStatusAdded    VersionStatusResponseStatus = "added"
+	VersionStatusResponseStatusModified VersionStatusResponseStatus = "modified"
+	VersionStatusResponseStatusRemoved  VersionStatusResponseStatus = "removed"
+)
+
 type VersionRevertResponse struct {
 	// Newly-added draft entities that were deleted.
 	DiscardedCount float64 `json:"discardedCount" api:"required"`
@@ -4011,6 +4104,61 @@ type VersionDiffParamsID string
 
 const (
 	VersionDiffParamsIDDraft VersionDiffParamsID = "draft"
+)
+
+type VersionStatusParams struct {
+	// Entity collection the id belongs to. `experiments` and `experimentVariants` are
+	// not supported — draft experiments never snapshot into a version — but
+	// `experimentSettings` is.
+	//
+	// Any of "allowedEvents", "consentSettings", "dataGovernanceEvents",
+	// "dataGovernanceRules", "destinations", "experimentSettings",
+	// "externalAllowedEventData", "globalDispatchCenters", "mappings",
+	// "replaySettings", "sources", "tagManagerTags", "tagManagerTriggers",
+	// "tagManagerVariables", "tagManagers".
+	Collection VersionStatusParamsCollection `query:"collection,omitzero" api:"required" json:"-"`
+	// Id of the entity to check. Most collections use UUIDs; `allowedEvents`,
+	// `externalAllowedEventData`, `mappings`, `consentSettings`,
+	// `globalDispatchCenters`, and `replaySettings` use slug-like strings.
+	EntityID string `query:"entityId" api:"required" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VersionStatusParams]'s query parameters as `url.Values`.
+func (r VersionStatusParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type VersionStatusParamsID string
+
+const (
+	VersionStatusParamsIDDraft VersionStatusParamsID = "draft"
+)
+
+// Entity collection the id belongs to. `experiments` and `experimentVariants` are
+// not supported — draft experiments never snapshot into a version — but
+// `experimentSettings` is.
+type VersionStatusParamsCollection string
+
+const (
+	VersionStatusParamsCollectionAllowedEvents            VersionStatusParamsCollection = "allowedEvents"
+	VersionStatusParamsCollectionConsentSettings          VersionStatusParamsCollection = "consentSettings"
+	VersionStatusParamsCollectionDataGovernanceEvents     VersionStatusParamsCollection = "dataGovernanceEvents"
+	VersionStatusParamsCollectionDataGovernanceRules      VersionStatusParamsCollection = "dataGovernanceRules"
+	VersionStatusParamsCollectionDestinations             VersionStatusParamsCollection = "destinations"
+	VersionStatusParamsCollectionExperimentSettings       VersionStatusParamsCollection = "experimentSettings"
+	VersionStatusParamsCollectionExternalAllowedEventData VersionStatusParamsCollection = "externalAllowedEventData"
+	VersionStatusParamsCollectionGlobalDispatchCenters    VersionStatusParamsCollection = "globalDispatchCenters"
+	VersionStatusParamsCollectionMappings                 VersionStatusParamsCollection = "mappings"
+	VersionStatusParamsCollectionReplaySettings           VersionStatusParamsCollection = "replaySettings"
+	VersionStatusParamsCollectionSources                  VersionStatusParamsCollection = "sources"
+	VersionStatusParamsCollectionTagManagerTags           VersionStatusParamsCollection = "tagManagerTags"
+	VersionStatusParamsCollectionTagManagerTriggers       VersionStatusParamsCollection = "tagManagerTriggers"
+	VersionStatusParamsCollectionTagManagerVariables      VersionStatusParamsCollection = "tagManagerVariables"
+	VersionStatusParamsCollectionTagManagers              VersionStatusParamsCollection = "tagManagers"
 )
 
 type VersionRevertParams struct {

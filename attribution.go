@@ -795,7 +795,7 @@ type AttributionConversionParams struct {
 	// Attribution model to apply to multi-touch conversion paths.
 	//
 	// Any of "FIRST_TOUCH", "LAST_TOUCH", "LINEAR", "U_SHAPED", "J_SHAPED",
-	// "TIME_DECAY".
+	// "TIME_DECAY", "POSITION_BASED".
 	AttributionModel AttributionConversionParamsAttributionModel `query:"attributionModel,omitzero" api:"required" json:"-"`
 	// Conversion event to attribute. Must be a selectable conversion event.
 	EventName string `query:"eventName" api:"required" json:"-"`
@@ -833,12 +833,13 @@ func (r AttributionConversionParams) URLQuery() (v url.Values, err error) {
 type AttributionConversionParamsAttributionModel string
 
 const (
-	AttributionConversionParamsAttributionModelFirstTouch AttributionConversionParamsAttributionModel = "FIRST_TOUCH"
-	AttributionConversionParamsAttributionModelLastTouch  AttributionConversionParamsAttributionModel = "LAST_TOUCH"
-	AttributionConversionParamsAttributionModelLinear     AttributionConversionParamsAttributionModel = "LINEAR"
-	AttributionConversionParamsAttributionModelUShaped    AttributionConversionParamsAttributionModel = "U_SHAPED"
-	AttributionConversionParamsAttributionModelJShaped    AttributionConversionParamsAttributionModel = "J_SHAPED"
-	AttributionConversionParamsAttributionModelTimeDecay  AttributionConversionParamsAttributionModel = "TIME_DECAY"
+	AttributionConversionParamsAttributionModelFirstTouch    AttributionConversionParamsAttributionModel = "FIRST_TOUCH"
+	AttributionConversionParamsAttributionModelLastTouch     AttributionConversionParamsAttributionModel = "LAST_TOUCH"
+	AttributionConversionParamsAttributionModelLinear        AttributionConversionParamsAttributionModel = "LINEAR"
+	AttributionConversionParamsAttributionModelUShaped       AttributionConversionParamsAttributionModel = "U_SHAPED"
+	AttributionConversionParamsAttributionModelJShaped       AttributionConversionParamsAttributionModel = "J_SHAPED"
+	AttributionConversionParamsAttributionModelTimeDecay     AttributionConversionParamsAttributionModel = "TIME_DECAY"
+	AttributionConversionParamsAttributionModelPositionBased AttributionConversionParamsAttributionModel = "POSITION_BASED"
 )
 
 // How far back before each conversion to consider touchpoints. Capped at 60 days
