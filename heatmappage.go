@@ -84,7 +84,9 @@ func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPa
 // is a documented derived-read exception. `breakpoint` scopes the bin/scroll
 // aggregations; replays are returned across all breakpoints regardless of
 // `breakpoint` (weighted to cover multiple viewports) so callers can compare
-// devices. Requires scope: web-analytics:view
+// devices. `clickGrid` always supplies fine click positions for rendering.
+// `clickBins` derives compatible 64×64 counts from the same grid; its totals must
+// not be added to them. Requires scope: web-analytics:view
 func (r *HeatmapPageService) Summary(ctx context.Context, query HeatmapPageSummaryParams, opts ...option.RequestOption) (res *HeatmapPageSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/heatmap-pages/summary"
@@ -145,9 +147,12 @@ func (r *HeatmapPageListResponseBreakpoint) UnmarshalJSON(data []byte) error {
 }
 
 type HeatmapPageSummaryResponse struct {
-	// Aggregated click positions for the requested breakpoint, bucketed into a 64×64
-	// grid normalized to the page viewport.
+	// Compatibility click counts for the requested breakpoint in a 64×64
+	// document-normalized grid. Use clickGrid for painting.
 	ClickBins []HeatmapPageSummaryResponseClickBin `json:"clickBins" api:"required"`
+	// Document-normalized click positions at 64×512 resolution. These are the same
+	// clicks as clickBins; do not add their totals together.
+	ClickGrid HeatmapPageSummaryResponseClickGrid `json:"clickGrid" api:"required"`
 	// Click positions where no interactive element was hit. `topElement` is the
 	// most-frequently-clicked non-interactive ancestor tag at that bucket, if
 	// attributable.
@@ -164,6 +169,7 @@ type HeatmapPageSummaryResponse struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ClickBins   respjson.Field
+		ClickGrid   respjson.Field
 		DeadClicks  respjson.Field
 		RageClicks  respjson.Field
 		Replays     respjson.Field
@@ -196,6 +202,50 @@ type HeatmapPageSummaryResponseClickBin struct {
 // Returns the unmodified JSON received from the API
 func (r HeatmapPageSummaryResponseClickBin) RawJSON() string { return r.JSON.raw }
 func (r *HeatmapPageSummaryResponseClickBin) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Document-normalized click positions at 64×512 resolution. These are the same
+// clicks as clickBins; do not add their totals together.
+type HeatmapPageSummaryResponseClickGrid struct {
+	Bins []HeatmapPageSummaryResponseClickGridBin `json:"bins" api:"required"`
+	// Any of 64.
+	Columns float64 `json:"columns" api:"required"`
+	// Any of 512.
+	Rows float64 `json:"rows" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Bins        respjson.Field
+		Columns     respjson.Field
+		Rows        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HeatmapPageSummaryResponseClickGrid) RawJSON() string { return r.JSON.raw }
+func (r *HeatmapPageSummaryResponseClickGrid) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type HeatmapPageSummaryResponseClickGridBin struct {
+	BinX   int64 `json:"binX" api:"required"`
+	BinY   int64 `json:"binY" api:"required"`
+	Clicks int64 `json:"clicks" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BinX        respjson.Field
+		BinY        respjson.Field
+		Clicks      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r HeatmapPageSummaryResponseClickGridBin) RawJSON() string { return r.JSON.raw }
+func (r *HeatmapPageSummaryResponseClickGridBin) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

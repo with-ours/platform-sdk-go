@@ -362,8 +362,8 @@ type ExperimentListResponse struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentListResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -567,8 +567,8 @@ func (r *ExperimentListResponseMetricsSecondary) UnmarshalJSON(data []byte) erro
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentListResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -584,13 +584,18 @@ type ExperimentListResponseTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentListResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -702,8 +707,8 @@ type ExperimentNewResponse struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentNewResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -907,8 +912,8 @@ func (r *ExperimentNewResponseMetricsSecondary) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentNewResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -924,13 +929,18 @@ type ExperimentNewResponseTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentNewResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -1042,8 +1052,8 @@ type ExperimentGetResponse struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentGetResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -1247,8 +1257,8 @@ func (r *ExperimentGetResponseMetricsSecondary) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentGetResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -1264,13 +1274,18 @@ type ExperimentGetResponseTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentGetResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -1382,8 +1397,8 @@ type ExperimentUpdateResponse struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentUpdateResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -1587,8 +1602,8 @@ func (r *ExperimentUpdateResponseMetricsSecondary) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentUpdateResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -1604,13 +1619,18 @@ type ExperimentUpdateResponseTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentUpdateResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -1722,8 +1742,8 @@ type ExperimentDuplicateResponse struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentDuplicateResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -1927,8 +1947,8 @@ func (r *ExperimentDuplicateResponseMetricsSecondary) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentDuplicateResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -1944,13 +1964,18 @@ type ExperimentDuplicateResponseTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentDuplicateResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -2081,8 +2106,8 @@ type ExperimentStartResponseExperiment struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentStartResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -2171,8 +2196,8 @@ func (r *ExperimentStartResponseExperimentMetricsSecondary) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentStartResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -2188,13 +2213,18 @@ type ExperimentStartResponseExperimentTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentStartResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -2326,8 +2356,8 @@ type ExperimentStopResponseExperiment struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentStopResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -2416,8 +2446,8 @@ func (r *ExperimentStopResponseExperimentMetricsSecondary) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentStopResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -2433,13 +2463,18 @@ type ExperimentStopResponseExperimentTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentStopResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -2569,8 +2604,8 @@ type ExperimentRolloutResponseExperiment struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentRolloutResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -2659,8 +2694,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondary) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentRolloutResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -2676,13 +2711,18 @@ type ExperimentRolloutResponseExperimentTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentRolloutResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -2814,8 +2854,8 @@ type ExperimentEndRolloutResponseExperiment struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentEndRolloutResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -2904,8 +2944,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondary) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentEndRolloutResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -2921,13 +2961,18 @@ type ExperimentEndRolloutResponseExperimentTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentEndRolloutResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -3032,8 +3077,8 @@ type ExperimentWinnerResponse struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentWinnerResponseTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -3133,8 +3178,8 @@ func (r *ExperimentWinnerResponseMetricsSecondary) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentWinnerResponseTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -3150,13 +3195,18 @@ type ExperimentWinnerResponseTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentWinnerResponseTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -3287,8 +3337,8 @@ type ExperimentPauseResponseExperiment struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentPauseResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -3377,8 +3427,8 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondary) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentPauseResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -3394,13 +3444,18 @@ type ExperimentPauseResponseExperimentTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentPauseResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -3532,8 +3587,8 @@ type ExperimentResumeResponseExperiment struct {
 	StartedAt string `json:"startedAt" api:"nullable"`
 	// ISO-8601 timestamp when the experiment was completed, if it has been stopped.
 	StoppedAt string `json:"stoppedAt" api:"nullable"`
-	// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-	// visitor status, and (server-side) visitor properties. Same shape as the
+	// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+	// and runtime visitor-context or accumulated-property rules. Same shape as the
 	// create/patch input.
 	TargetingRules ExperimentResumeResponseExperimentTargetingRules `json:"targetingRules" api:"nullable"`
 	// Experiment mode. `ab` and `multivariate` use traffic allocation and results;
@@ -3622,8 +3677,8 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondary) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules: URL-pattern globs, optional audience, query-param conditions,
-// visitor status, and (server-side) visitor properties. Same shape as the
+// Eligibility rules: URL-pattern globs, query-param conditions, visitor status,
+// and runtime visitor-context or accumulated-property rules. Same shape as the
 // create/patch input.
 type ExperimentResumeResponseExperimentTargetingRules struct {
 	// Glob-style URL patterns that must match for the experiment to be eligible. Each
@@ -3639,13 +3694,18 @@ type ExperimentResumeResponseExperimentTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID string `json:"audienceId" api:"nullable"`
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentResumeResponseExperimentTargetingRulesQueryParam `json:"queryParams" api:"nullable"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties" api:"nullable"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -4108,11 +4168,11 @@ type ExperimentNewParams struct {
 	// normalized before storage.
 	AnalysisConfig any `json:"analysisConfig,omitzero"`
 	// Goal events. If you send `metrics.primary`, `metrics.primary.eventName` must be
-	// a non-blank string. A primary event name is required before the experiment can
-	// be started.
+	// a non-blank string. A primary event is required to start `ab` and `multivariate`
+	// experiments, but not always-on `personalization`.
 	Metrics ExperimentNewParamsMetrics `json:"metrics,omitzero"`
-	// Eligibility rules — URL patterns, audience, visitor status, query-param
-	// conditions. Omit to inherit defaults.
+	// Eligibility rules — URL patterns, query-param conditions, visitor status, and
+	// visitor-context or accumulated-property rules. Omit to inherit defaults.
 	TargetingRules ExperimentNewParamsTargetingRules `json:"targetingRules,omitzero"`
 	// Experiment mode to create. `ab` and `multivariate` use traffic allocation and
 	// results; `personalization` is always-on targeting. Omit to create a standard
@@ -4132,8 +4192,8 @@ func (r *ExperimentNewParams) UnmarshalJSON(data []byte) error {
 }
 
 // Goal events. If you send `metrics.primary`, `metrics.primary.eventName` must be
-// a non-blank string. A primary event name is required before the experiment can
-// be started.
+// a non-blank string. A primary event is required to start `ab` and `multivariate`
+// experiments, but not always-on `personalization`.
 type ExperimentNewParamsMetrics struct {
 	// Primary success metric. When provided, `eventName` must be a non-blank string.
 	Primary ExperimentNewParamsMetricsPrimary `json:"primary,omitzero"`
@@ -4185,8 +4245,8 @@ func (r *ExperimentNewParamsMetricsSecondary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Eligibility rules — URL patterns, audience, visitor status, query-param
-// conditions. Omit to inherit defaults.
+// Eligibility rules — URL patterns, query-param conditions, visitor status, and
+// visitor-context or accumulated-property rules. Omit to inherit defaults.
 //
 // The property URLPatterns is required.
 type ExperimentNewParamsTargetingRules struct {
@@ -4203,7 +4263,10 @@ type ExperimentNewParamsTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns,omitzero" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID param.Opt[string] `json:"audienceId,omitzero"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -4211,8 +4274,10 @@ type ExperimentNewParamsTargetingRules struct {
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentNewParamsTargetingRulesQueryParam `json:"queryParams,omitzero"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties,omitzero"`
 	paramObj
 }
@@ -4369,7 +4434,10 @@ type ExperimentUpdateParamsTargetingRules struct {
 	// there and the experiment never runs, even after `POST /experiments/{id}/start`
 	// succeeds.
 	URLPatterns []string `json:"urlPatterns,omitzero" api:"required"`
-	// Optional audience identifier used for server-side eligibility filtering.
+	// Reserved audience identifier. It is stored with the experiment but is not
+	// evaluated by the browser or server-side experiment runtime. Use
+	// `visitorProperties`, URL patterns, query parameters, or visitor status for
+	// runtime eligibility.
 	AudienceID param.Opt[string] `json:"audienceId,omitzero"`
 	// Whether the experiment should target new visitors, returning visitors, or any
 	// visitor.
@@ -4377,8 +4445,10 @@ type ExperimentUpdateParamsTargetingRules struct {
 	// Additional query-string conditions that must all match for the visitor to
 	// qualify.
 	QueryParams []ExperimentUpdateParamsTargetingRulesQueryParam `json:"queryParams,omitzero"`
-	// Optional visitor-property matching rules. These are passed through as JSON for
-	// experimentation targeting.
+	// Optional runtime targeting rules. Recognized namespaced keys read visitor
+	// context (`geo.*`, `utm.*`, `initial_utm.*`, `device.*`, `time.*`,
+	// `query_params.*`, `visitor_status`, and `referrer`); any other bare key reads an
+	// accumulated personalization property.
 	VisitorProperties any `json:"visitorProperties,omitzero"`
 	paramObj
 }
