@@ -38,10 +38,12 @@ func NewShortLinkService(opts ...option.RequestOption) (r ShortLinkService) {
 	return
 }
 
-// List all short links (QR codes / redirects) for this account, newest first.
-// Supports cursor pagination and optional `status` and `nameContains` filters.
-// Each entity bundles the destination URL, immutable code, path format, and
-// QR/campaign design. Requires scope: source:list
+// List links managed through Short Links for this account, newest first. Ordinary
+// Redirect Tracking sources and legacy links without a saved short-link design are
+// excluded. Supports cursor pagination and optional `status`, `nameContains`, and
+// `search` filters. Search matches names, destinations, and codes. Each entity
+// bundles the destination URL, immutable code, path format, and QR/campaign
+// design. Requires scope: source:list
 func (r *ShortLinkService) List(ctx context.Context, query ShortLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[ShortLinkListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -59,10 +61,12 @@ func (r *ShortLinkService) List(ctx context.Context, query ShortLinkListParams, 
 	return res, nil
 }
 
-// List all short links (QR codes / redirects) for this account, newest first.
-// Supports cursor pagination and optional `status` and `nameContains` filters.
-// Each entity bundles the destination URL, immutable code, path format, and
-// QR/campaign design. Requires scope: source:list
+// List links managed through Short Links for this account, newest first. Ordinary
+// Redirect Tracking sources and legacy links without a saved short-link design are
+// excluded. Supports cursor pagination and optional `status`, `nameContains`, and
+// `search` filters. Search matches names, destinations, and codes. Each entity
+// bundles the destination URL, immutable code, path format, and QR/campaign
+// design. Requires scope: source:list
 func (r *ShortLinkService) ListAutoPaging(ctx context.Context, query ShortLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ShortLinkListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -122,6 +126,20 @@ func (r *ShortLinkService) Delete(ctx context.Context, id string, opts ...option
 	return res, err
 }
 
+// Duplicate a short link with its campaign tags and QR styling. The copy starts
+// disabled with a new code. Requires permission to view the original and create a
+// source. Requires scope: source:create
+func (r *ShortLinkService) Clone(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortLinkCloneResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/short-links/%s/clone", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	return res, err
+}
+
 // Aggregate click analytics for a short link over a date window: total and unique
 // clicks, a time series (daily or hourly), and breakdowns by country, city, and
 // device. QR scans are counted as clicks. Pass `from`/`to` as UTC calendar days
@@ -160,7 +178,8 @@ type ShortLinkListResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// The public code embedded in the short-link URL.
 	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
-	// QR styling + campaign tags. Null until the link is styled.
+	// QR styling + campaign tags. New links include an empty design; legacy redirects
+	// may return null.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
 	// The public short-link URL that the QR encodes and callers share. New links use
 	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
@@ -218,7 +237,8 @@ type ShortLinkNewResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// The public code embedded in the short-link URL.
 	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
-	// QR styling + campaign tags. Null until the link is styled.
+	// QR styling + campaign tags. New links include an empty design; legacy redirects
+	// may return null.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
 	// The public short-link URL that the QR encodes and callers share. New links use
 	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
@@ -276,7 +296,8 @@ type ShortLinkGetResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// The public code embedded in the short-link URL.
 	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
-	// QR styling + campaign tags. Null until the link is styled.
+	// QR styling + campaign tags. New links include an empty design; legacy redirects
+	// may return null.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
 	// The public short-link URL that the QR encodes and callers share. New links use
 	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
@@ -334,7 +355,8 @@ type ShortLinkUpdateResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// The public code embedded in the short-link URL.
 	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
-	// QR styling + campaign tags. Null until the link is styled.
+	// QR styling + campaign tags. New links include an empty design; legacy redirects
+	// may return null.
 	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
 	// The public short-link URL that the QR encodes and callers share. New links use
 	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
@@ -388,6 +410,65 @@ func (r ShortLinkDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *ShortLinkDeleteResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type ShortLinkCloneResponse struct {
+	ID string `json:"id" api:"required"`
+	// Organization id that owns this short link.
+	AccountID string `json:"accountId" api:"required"`
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Any of "Disabled", "Enabled".
+	Status ShortLinkCloneResponseStatus `json:"status" api:"required"`
+	// Whether a user selected this code instead of using a generated code.
+	HasCustomShortLinkCode bool `json:"hasCustomShortLinkCode" api:"nullable"`
+	// Whether this short link exists in the currently published version. An
+	// unpublished short link does not resolve at the edge.
+	IsPublished bool   `json:"isPublished" api:"nullable"`
+	Name        string `json:"name" api:"nullable"`
+	// The immutable short code embedded in the public URL (`/r/{pixel}` for new
+	// links). Server-assigned.
+	Pixel string `json:"pixel" api:"nullable"`
+	// The destination URL this short link redirects to.
+	RedirectURL string `json:"redirectUrl" api:"nullable"`
+	// The public code embedded in the short-link URL.
+	ShortLinkCode string `json:"shortLinkCode" api:"nullable"`
+	// QR styling + campaign tags. New links include an empty design; legacy redirects
+	// may return null.
+	ShortLinkDesign any `json:"shortLinkDesign" api:"nullable"`
+	// The public short-link URL that the QR encodes and callers share. New links use
+	// `/r/{pixel}`; tracked event and campaign defaults are stored server-side. Also
+	// resolves on branded custom domains configured for the account.
+	ShortURL string `json:"shortUrl" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                     respjson.Field
+		AccountID              respjson.Field
+		CreatedAt              respjson.Field
+		Status                 respjson.Field
+		HasCustomShortLinkCode respjson.Field
+		IsPublished            respjson.Field
+		Name                   respjson.Field
+		Pixel                  respjson.Field
+		RedirectURL            respjson.Field
+		ShortLinkCode          respjson.Field
+		ShortLinkDesign        respjson.Field
+		ShortURL               respjson.Field
+		ExtraFields            map[string]respjson.Field
+		raw                    string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ShortLinkCloneResponse) RawJSON() string { return r.JSON.raw }
+func (r *ShortLinkCloneResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ShortLinkCloneResponseStatus string
+
+const (
+	ShortLinkCloneResponseStatusDisabled ShortLinkCloneResponseStatus = "Disabled"
+	ShortLinkCloneResponseStatusEnabled  ShortLinkCloneResponseStatus = "Enabled"
+)
 
 type ShortLinkResultsResponse struct {
 	Devices      []ShortLinkResultsResponseDevice       `json:"devices" api:"required"`
@@ -504,6 +585,8 @@ type ShortLinkListParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Case-insensitive substring filter on the short link name.
 	NameContains param.Opt[string] `query:"nameContains,omitzero" json:"-"`
+	// Case-insensitive search across name, destination URL, and public code.
+	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Filter by short link status.
 	//
 	// Any of "Disabled", "Enabled".
