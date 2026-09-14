@@ -26,7 +26,10 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
-		Cursor:       oursprivacy.String("cursor"),
+		Cursor: oursprivacy.String("cursor"),
+		ExcludeShortLinks: oursprivacy.SourceListParamsExcludeShortLinksUnion{
+			OfSourceListsExcludeShortLinksString: oursprivacy.String("true"),
+		},
 		Limit:        oursprivacy.Int(25),
 		NameContains: oursprivacy.String("nameContains"),
 		Status:       oursprivacy.SourceListParamsStatusDisabled,
