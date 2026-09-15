@@ -656,8 +656,10 @@ type ExperimentVariantNewParams struct {
 	Name string `json:"name" api:"required"`
 	// Traffic weight for this variant as a percentage (0–100). Treatment weights are
 	// percentages of the split and must total 99% or less to leave room for the
-	// control; the control variant is the remainder (100 − Σ treatment weights, always
-	// ≥ 1%) and is maintained automatically.
+	// auto-created control; the control is the remainder (100 − Σ treatment weights,
+	// always ≥ 1%). A personalization experience always serves its first non-control
+	// treatment to matching visitors, regardless of traffic allocation or variant
+	// weights.
 	Weight int64 `json:"weight" api:"required"`
 	// Mark this variant as the experiment control. Defaults to `false`. The API
 	// rejects the request with 409 if the experiment already has a control variant.

@@ -730,6 +730,8 @@ type SourceListParams struct {
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Case-insensitive substring filter on the source name.
 	NameContains param.Opt[string] `query:"nameContains,omitzero" json:"-"`
+	// Exclude redirects with a short-link design. Defaults to false.
+	ExcludeShortLinks SourceListParamsExcludeShortLinksUnion `query:"excludeShortLinks,omitzero" json:"-"`
 	// Filter by source status.
 	//
 	// Any of "Disabled", "Enabled".
@@ -755,6 +757,24 @@ func (r SourceListParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type SourceListParamsExcludeShortLinksUnion struct {
+	OfBool param.Opt[bool] `query:",omitzero,inline"`
+	// Check if union is this variant with
+	// !param.IsOmitted(union.OfSourceListsExcludeShortLinksString)
+	OfSourceListsExcludeShortLinksString param.Opt[string] `query:",omitzero,inline"`
+	paramUnion
+}
+
+type SourceListParamsExcludeShortLinksString string
+
+const (
+	SourceListParamsExcludeShortLinksStringTrue  SourceListParamsExcludeShortLinksString = "true"
+	SourceListParamsExcludeShortLinksStringFalse SourceListParamsExcludeShortLinksString = "false"
+)
 
 // Filter by source status.
 type SourceListParamsStatus string
