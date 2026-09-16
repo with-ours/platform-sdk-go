@@ -14,6 +14,82 @@ import (
 	"github.com/with-ours/platform-sdk-go/option"
 )
 
+func TestTranslationWidgetList(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.TranslationWidgets.List(context.TODO())
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTranslationWidgetNewWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.TranslationWidgets.New(context.TODO(), oursprivacy.TranslationWidgetNewParams{
+		BrandColor:         oursprivacy.String("#4F46E5"),
+		CustomDomain:       oursprivacy.String("customDomain"),
+		EnabledLanguages:   []string{"en", "es", "fr"},
+		ModalVariant:       oursprivacy.TranslationWidgetNewParamsModalVariantStandard,
+		NoTranslateTerms:   []string{"string"},
+		Position:           oursprivacy.TranslationWidgetNewParamsPositionBottomRight,
+		Theme:              oursprivacy.TranslationWidgetNewParamsThemeLight,
+		WhitelistedDomains: []string{"www.example.com"},
+		WidgetVariant:      oursprivacy.TranslationWidgetNewParamsWidgetVariantCompact,
+	})
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTranslationWidgetGet(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.TranslationWidgets.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestTranslationWidgetAnalyticsWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
