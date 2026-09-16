@@ -430,6 +430,20 @@ Methods:
 
 - <code title="post /rest/v1/tag-manager-asset-folders">client.TagManagerAssetFolders.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TagManagerAssetFolderService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TagManagerAssetFolderNewParams">TagManagerAssetFolderNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TagManagerAssetFolderNewResponse">TagManagerAssetFolderNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# TranslationWidgets
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetListResponse">TranslationWidgetListResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetNewResponse">TranslationWidgetNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetGetResponse">TranslationWidgetGetResponse</a>
+
+Methods:
+
+- <code title="get /rest/v1/translation-widgets">client.TranslationWidgets.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetListResponse">TranslationWidgetListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /rest/v1/translation-widgets">client.TranslationWidgets.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetNewParams">TranslationWidgetNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetNewResponse">TranslationWidgetNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /rest/v1/translation-widgets/{id}">client.TranslationWidgets.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, id <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go#TranslationWidgetGetResponse">TranslationWidgetGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Versions
 
 Response Types:
