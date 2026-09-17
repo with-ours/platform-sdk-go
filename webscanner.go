@@ -169,10 +169,9 @@ func (r *WebScannerService) VerificationRun(ctx context.Context, id string, quer
 }
 
 // List the one-page verification runs recorded for this scanner, newest first,
-// each with its own capture counts. This is how a fix is compared against the
-// attempts before it without reading each run individually. Verification runs are
-// isolated from monitor history and never affect inventory counts or the
-// monitor-wide last-scanned timestamp. Requires scope: webScanner:find
+// each with its own capture counts. Verification runs are isolated from monitor
+// history and never affect inventory counts or the monitor-wide last-scanned
+// timestamp. Requires scope: webScanner:find
 func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, query WebScannerVerificationRunsParams, opts ...option.RequestOption) (res *WebScannerVerificationRunsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -185,16 +184,18 @@ func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, que
 }
 
 // List the third-party trackers (requests) found on a scan run, with their risk,
-// category, the pages they were seen on, and whether each host is already covered
-// by a CMP consent service. Defaults to the latest run; pass `date` (an ISO-8601
-// timestamp; only the calendar day is used to select the run) to read an earlier
-// run. Documented exception to the cursor-pagination standard: paginates with
-// `limit` and `offset` because each run is an immutable snapshot. A host that is
-// neither covered (`coveredByCmp: false`) nor matched by a suppression rule still
-// needs a triage decision — resolve it by adding the host to a CMP consent service
-// or by creating a suppression rule with `POST /rest/v1/web-scanner-rules`. Use
-// `GET /rest/v1/web-scanners/{id}/summary` for the rolled-up counts. Requires
-// scope: webScanner:find
+// category, the pages they were seen on, redacted deterministic PII/PHI data-flow
+// metadata, and whether each host is already covered by a CMP consent service.
+// Data-flow findings include only recipient metadata, categories, safe field
+// names, and counts; query and body values are never returned. Defaults to the
+// latest run; pass `date` (an ISO-8601 timestamp; only the calendar day is used to
+// select the run) to read an earlier run. Documented exception to the
+// cursor-pagination standard: paginates with `limit` and `offset` because each run
+// is an immutable snapshot. A host that is neither covered (`coveredByCmp: false`)
+// nor matched by a suppression rule still needs a triage decision — resolve it by
+// adding the host to a CMP consent service or by creating a suppression rule with
+// `POST /rest/v1/web-scanner-rules`. Use `GET /rest/v1/web-scanners/{id}/summary`
+// for the rolled-up counts. Requires scope: webScanner:find
 func (r *WebScannerService) Findings(ctx context.Context, id string, query WebScannerFindingsParams, opts ...option.RequestOption) (res *WebScannerFindingsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -1107,6 +1108,7 @@ type WebScannerFindingsResponseItem struct {
 	Category             string                                 `json:"category" api:"nullable"`
 	Cookies              []WebScannerFindingsResponseItemCookie `json:"cookies" api:"nullable"`
 	CoveredByVendorLabel string                                 `json:"coveredByVendorLabel" api:"nullable"`
+	DataFlow             WebScannerFindingsResponseItemDataFlow `json:"dataFlow" api:"nullable"`
 	DisplayName          string                                 `json:"displayName" api:"nullable"`
 	PrivacyKeywords      []string                               `json:"privacyKeywords" api:"nullable"`
 	Risk                 string                                 `json:"risk" api:"nullable"`
@@ -1120,6 +1122,7 @@ type WebScannerFindingsResponseItem struct {
 		Category             respjson.Field
 		Cookies              respjson.Field
 		CoveredByVendorLabel respjson.Field
+		DataFlow             respjson.Field
 		DisplayName          respjson.Field
 		PrivacyKeywords      respjson.Field
 		Risk                 respjson.Field
@@ -1153,6 +1156,79 @@ type WebScannerFindingsResponseItemCookie struct {
 // Returns the unmodified JSON received from the API
 func (r WebScannerFindingsResponseItemCookie) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerFindingsResponseItemCookie) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerFindingsResponseItemDataFlow struct {
+	// Any of "credit_card", "date_of_birth", "diagnosis", "email", "health_condition",
+	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
+	// "ssn".
+	Categories   []string                                        `json:"categories" api:"required"`
+	Recipient    WebScannerFindingsResponseItemDataFlowRecipient `json:"recipient" api:"required"`
+	RequestCount int64                                           `json:"requestCount" api:"required"`
+	Signals      []WebScannerFindingsResponseItemDataFlowSignal  `json:"signals" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Categories   respjson.Field
+		Recipient    respjson.Field
+		RequestCount respjson.Field
+		Signals      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerFindingsResponseItemDataFlow) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerFindingsResponseItemDataFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerFindingsResponseItemDataFlowRecipient struct {
+	Hostname    string `json:"hostname" api:"required"`
+	Category    string `json:"category" api:"nullable"`
+	DisplayName string `json:"displayName" api:"nullable"`
+	Risk        string `json:"risk" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostname    respjson.Field
+		Category    respjson.Field
+		DisplayName respjson.Field
+		Risk        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerFindingsResponseItemDataFlowRecipient) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerFindingsResponseItemDataFlowRecipient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerFindingsResponseItemDataFlowSignal struct {
+	// Any of "credit_card", "date_of_birth", "diagnosis", "email", "health_condition",
+	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
+	// "ssn".
+	Category string `json:"category" api:"required"`
+	// Any of "query_parameter", "request_body".
+	Source   string `json:"source" api:"required"`
+	Encoding string `json:"encoding" api:"nullable"`
+	Field    string `json:"field" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Category    respjson.Field
+		Source      respjson.Field
+		Encoding    respjson.Field
+		Field       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerFindingsResponseItemDataFlowSignal) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerFindingsResponseItemDataFlowSignal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1407,6 +1483,7 @@ type WebScannerSummaryResponseTopUncoveredHost struct {
 	Category             string                                            `json:"category" api:"nullable"`
 	Cookies              []WebScannerSummaryResponseTopUncoveredHostCookie `json:"cookies" api:"nullable"`
 	CoveredByVendorLabel string                                            `json:"coveredByVendorLabel" api:"nullable"`
+	DataFlow             WebScannerSummaryResponseTopUncoveredHostDataFlow `json:"dataFlow" api:"nullable"`
 	DisplayName          string                                            `json:"displayName" api:"nullable"`
 	PrivacyKeywords      []string                                          `json:"privacyKeywords" api:"nullable"`
 	Risk                 string                                            `json:"risk" api:"nullable"`
@@ -1420,6 +1497,7 @@ type WebScannerSummaryResponseTopUncoveredHost struct {
 		Category             respjson.Field
 		Cookies              respjson.Field
 		CoveredByVendorLabel respjson.Field
+		DataFlow             respjson.Field
 		DisplayName          respjson.Field
 		PrivacyKeywords      respjson.Field
 		Risk                 respjson.Field
@@ -1453,6 +1531,81 @@ type WebScannerSummaryResponseTopUncoveredHostCookie struct {
 // Returns the unmodified JSON received from the API
 func (r WebScannerSummaryResponseTopUncoveredHostCookie) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerSummaryResponseTopUncoveredHostCookie) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseTopUncoveredHostDataFlow struct {
+	// Any of "credit_card", "date_of_birth", "diagnosis", "email", "health_condition",
+	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
+	// "ssn".
+	Categories   []string                                                   `json:"categories" api:"required"`
+	Recipient    WebScannerSummaryResponseTopUncoveredHostDataFlowRecipient `json:"recipient" api:"required"`
+	RequestCount int64                                                      `json:"requestCount" api:"required"`
+	Signals      []WebScannerSummaryResponseTopUncoveredHostDataFlowSignal  `json:"signals" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Categories   respjson.Field
+		Recipient    respjson.Field
+		RequestCount respjson.Field
+		Signals      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseTopUncoveredHostDataFlow) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseTopUncoveredHostDataFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseTopUncoveredHostDataFlowRecipient struct {
+	Hostname    string `json:"hostname" api:"required"`
+	Category    string `json:"category" api:"nullable"`
+	DisplayName string `json:"displayName" api:"nullable"`
+	Risk        string `json:"risk" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostname    respjson.Field
+		Category    respjson.Field
+		DisplayName respjson.Field
+		Risk        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseTopUncoveredHostDataFlowRecipient) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebScannerSummaryResponseTopUncoveredHostDataFlowRecipient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseTopUncoveredHostDataFlowSignal struct {
+	// Any of "credit_card", "date_of_birth", "diagnosis", "email", "health_condition",
+	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
+	// "ssn".
+	Category string `json:"category" api:"required"`
+	// Any of "query_parameter", "request_body".
+	Source   string `json:"source" api:"required"`
+	Encoding string `json:"encoding" api:"nullable"`
+	Field    string `json:"field" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Category    respjson.Field
+		Source      respjson.Field
+		Encoding    respjson.Field
+		Field       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseTopUncoveredHostDataFlowSignal) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseTopUncoveredHostDataFlowSignal) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
