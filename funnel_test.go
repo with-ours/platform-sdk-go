@@ -7,6 +7,7 @@ import (
 	"errors"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/with-ours/platform-sdk-go"
 	"github.com/with-ours/platform-sdk-go/internal/testutil"
@@ -48,55 +49,10 @@ func TestFunnelNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Funnels.New(context.TODO(), oursprivacy.FunnelNewParams{
-		Name: "x",
-		Steps: []oursprivacy.FunnelNewParamsStep{{
-			EventName: "x",
-			Name:      "x",
-			Order:     0,
-			Filters:   map[string]any{},
-			Logic: oursprivacy.FunnelNewParamsStepLogic{
-				And: []any{map[string]any{}},
-				Condition: oursprivacy.FunnelNewParamsStepLogicCondition{
-					Operator: "Is",
-					Property: "property",
-					Value:    "value",
-				},
-				Not: map[string]any{},
-				Or:  []any{map[string]any{}},
-			},
-		}, {
-			EventName: "x",
-			Name:      "x",
-			Order:     0,
-			Filters:   map[string]any{},
-			Logic: oursprivacy.FunnelNewParamsStepLogic{
-				And: []any{map[string]any{}},
-				Condition: oursprivacy.FunnelNewParamsStepLogicCondition{
-					Operator: "Is",
-					Property: "property",
-					Value:    "value",
-				},
-				Not: map[string]any{},
-				Or:  []any{map[string]any{}},
-			},
-		}},
-		ConversionWindow: map[string]any{},
-		CountingMethod:   oursprivacy.String("countingMethod"),
-		Description:      oursprivacy.String("description"),
-		FunnelType:       oursprivacy.FunnelNewParamsFunnelTypeSessionBased,
-		GlobalLogic: oursprivacy.FunnelNewParamsGlobalLogic{
-			And: []any{map[string]any{}},
-			Condition: oursprivacy.FunnelNewParamsGlobalLogicCondition{
-				Operator: "Is",
-				Property: "property",
-				Value:    "value",
-			},
-			Not: map[string]any{},
-			Or:  []any{map[string]any{}},
-		},
-		StepOrder:  oursprivacy.String("stepOrder"),
-		UtmFilters: map[string]any{},
-		Watched:    oursprivacy.Bool(true),
+		Name:            "x",
+		QueryDefinition: map[string]any{},
+		Description:     oursprivacy.String("description"),
+		Watched:         oursprivacy.Bool(true),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -145,55 +101,10 @@ func TestFunnelUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.FunnelUpdateParams{
-			ConversionWindow: map[string]any{},
-			CountingMethod:   oursprivacy.String("countingMethod"),
-			Description:      oursprivacy.String("description"),
-			FunnelType:       oursprivacy.FunnelUpdateParamsFunnelTypeSessionBased,
-			GlobalLogic: oursprivacy.FunnelUpdateParamsGlobalLogic{
-				And: []any{map[string]any{}},
-				Condition: oursprivacy.FunnelUpdateParamsGlobalLogicCondition{
-					Operator: "Is",
-					Property: "property",
-					Value:    "value",
-				},
-				Not: map[string]any{},
-				Or:  []any{map[string]any{}},
-			},
-			Name:      oursprivacy.String("x"),
-			StepOrder: oursprivacy.String("stepOrder"),
-			Steps: []oursprivacy.FunnelUpdateParamsStep{{
-				EventName: "x",
-				Name:      "x",
-				Order:     0,
-				Filters:   map[string]any{},
-				Logic: oursprivacy.FunnelUpdateParamsStepLogic{
-					And: []any{map[string]any{}},
-					Condition: oursprivacy.FunnelUpdateParamsStepLogicCondition{
-						Operator: "Is",
-						Property: "property",
-						Value:    "value",
-					},
-					Not: map[string]any{},
-					Or:  []any{map[string]any{}},
-				},
-			}, {
-				EventName: "x",
-				Name:      "x",
-				Order:     0,
-				Filters:   map[string]any{},
-				Logic: oursprivacy.FunnelUpdateParamsStepLogic{
-					And: []any{map[string]any{}},
-					Condition: oursprivacy.FunnelUpdateParamsStepLogicCondition{
-						Operator: "Is",
-						Property: "property",
-						Value:    "value",
-					},
-					Not: map[string]any{},
-					Or:  []any{map[string]any{}},
-				},
-			}},
-			UtmFilters: map[string]any{},
-			Watched:    oursprivacy.Bool(true),
+			Description:     oursprivacy.String("description"),
+			Name:            oursprivacy.String("x"),
+			QueryDefinition: map[string]any{},
+			Watched:         oursprivacy.Bool(true),
 		},
 	)
 	if err != nil {
@@ -265,16 +176,9 @@ func TestFunnelResultsWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.FunnelResultsParams{
-			From:            "2026-06-01",
-			To:              "2026-06-30",
-			AttributionType: oursprivacy.FunnelResultsParamsAttributionTypeInitial,
-			DeviceType:      oursprivacy.FunnelResultsParamsDeviceTypeDesktop,
-			UtmCampaign:     oursprivacy.String("spring-promo"),
-			UtmContent:      oursprivacy.String("x"),
-			UtmMedium:       oursprivacy.String("cpc"),
-			UtmName:         oursprivacy.String("x"),
-			UtmSource:       oursprivacy.String("google"),
-			UtmTerm:         oursprivacy.String("x"),
+			From:                        "2026-06-01",
+			To:                          "2026-06-30",
+			ExpectedDefinitionUpdatedAt: oursprivacy.Time(time.Now()),
 		},
 	)
 	if err != nil {

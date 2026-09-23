@@ -52,6 +52,7 @@ type Client struct {
 	WebScannerRules            WebScannerRuleService
 	WebScanners                WebScannerService
 	PersonalizationProperties  PersonalizationPropertyService
+	Analytics                  AnalyticsService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -118,6 +119,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
 	r.PersonalizationProperties = NewPersonalizationPropertyService(opts...)
+	r.Analytics = NewAnalyticsService(opts...)
 
 	return
 }
