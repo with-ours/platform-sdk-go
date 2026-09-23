@@ -359,7 +359,77 @@ func TestWebScannerSummaryWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.WebScannerSummaryParams{
-			Date: oursprivacy.Time(time.Now()),
+			CoverageRevision: oursprivacy.String("coverageRevision"),
+			Date:             oursprivacy.Time(time.Now()),
+			RunRevision:      oursprivacy.String("runRevision"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestWebScannerDecisionQueueWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.WebScanners.DecisionQueue(
+		context.TODO(),
+		"id",
+		oursprivacy.WebScannerDecisionQueueParams{
+			CoverageRevision: oursprivacy.String("coverageRevision"),
+			Cursor:           oursprivacy.String("cursor"),
+			Date:             oursprivacy.Time(time.Now()),
+			Limit:            oursprivacy.Int(25),
+			RunRevision:      oursprivacy.String("runRevision"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestWebScannerResolveCoverageGapWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.WebScanners.ResolveCoverageGap(
+		context.TODO(),
+		"id",
+		oursprivacy.WebScannerResolveCoverageGapParams{
+			CoverageRevision: "x",
+			Hostname:         "x",
+			IdempotencyKey:   "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			RunDate:          time.Now(),
+			RunRevision:      "x",
+			Suppression: oursprivacy.WebScannerResolveCoverageGapParamsSuppression{
+				Reason: "ignore",
+				Notes:  oursprivacy.String("notes"),
+			},
 		},
 	)
 	if err != nil {
