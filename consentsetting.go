@@ -10,12 +10,12 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/with-ours/platform-sdk-go/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/option"
-	"github.com/with-ours/platform-sdk-go/packages/param"
-	"github.com/with-ours/platform-sdk-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v2/option"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
 )
 
 // ConsentSettingService contains methods and other services that help with
@@ -2988,10 +2988,12 @@ type ConsentSettingAnalyticsResponse struct {
 	// One entry per time bucket (day or hour, depending on `granularity`) covering the
 	// full window — empty windows are zero-filled so callers can render contiguous
 	// time series without gap-handling logic.
-	Items []ConsentSettingAnalyticsResponseItem `json:"items" api:"required"`
+	Items  []ConsentSettingAnalyticsResponseItem `json:"items" api:"required"`
+	Totals ConsentSettingAnalyticsResponseTotals `json:"totals" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Items       respjson.Field
+		Totals      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -3048,6 +3050,32 @@ type ConsentSettingAnalyticsResponseItem struct {
 // Returns the unmodified JSON received from the API
 func (r ConsentSettingAnalyticsResponseItem) RawJSON() string { return r.JSON.raw }
 func (r *ConsentSettingAnalyticsResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsResponseTotals struct {
+	BannerViews     int64   `json:"bannerViews" api:"required"`
+	CloseIconClicks int64   `json:"closeIconClicks" api:"required"`
+	ExplicitOptIns  int64   `json:"explicitOptIns" api:"required"`
+	ExplicitOptOuts int64   `json:"explicitOptOuts" api:"required"`
+	OptInRate       float64 `json:"optInRate" api:"required"`
+	OptOutRate      float64 `json:"optOutRate" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews     respjson.Field
+		CloseIconClicks respjson.Field
+		ExplicitOptIns  respjson.Field
+		ExplicitOptOuts respjson.Field
+		OptInRate       respjson.Field
+		OptOutRate      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsResponseTotals) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsResponseTotals) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

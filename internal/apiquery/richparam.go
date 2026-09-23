@@ -1,7 +1,7 @@
 package apiquery
 
 import (
-	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"reflect"
 )
 

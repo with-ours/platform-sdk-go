@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

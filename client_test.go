@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go"
-	"github.com/with-ours/platform-sdk-go/internal"
-	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/v2"
+	"github.com/with-ours/platform-sdk-go/v2/internal"
+	"github.com/with-ours/platform-sdk-go/v2/option"
 )
 
 type closureTransport struct {

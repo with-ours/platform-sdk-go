@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/option"
-	"github.com/with-ours/platform-sdk-go/packages/param"
-	"github.com/with-ours/platform-sdk-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v2/option"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
 )
 
 // WebScannerService contains methods and other services that help with interacting
@@ -246,6 +246,38 @@ func (r *WebScannerService) Summary(ctx context.Context, id string, query WebSca
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/summary", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// List every normalized host in the selected scan run that is neither covered by a
+// current CMP consent service nor matched by an active suppression rule. Results
+// are sorted by risk and hostname. Continue with pagination.nextCursor while
+// preserving runRevision and coverageRevision; changed evidence returns HTTP 400
+// and requires restarting from the first page. Historical runs are evaluated
+// against current coverage configuration. Requires scope: webScanner:find
+func (r *WebScannerService) DecisionQueue(ctx context.Context, id string, query WebScannerDecisionQueueParams, opts ...option.RequestOption) (res *WebScannerDecisionQueueResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/decision-queue", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Resolve one hostname from a revision-bound Web Scanner decision queue by
+// creating an exact-host suppression rule. The request is bound to the reviewed
+// run, and retrying the same idempotency key returns the recorded outcome without
+// repeating the write. Requires scope: webScanner:update
+func (r *WebScannerService) ResolveCoverageGap(ctx context.Context, id string, body WebScannerResolveCoverageGapParams, opts ...option.RequestOption) (res *WebScannerResolveCoverageGapResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/resolve-coverage-gap", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -1331,9 +1363,11 @@ type WebScannerSummaryResponse struct {
 	// machine-detectable subset of WCAG (~30-40%) — a high score is not a
 	// certification of full conformance; manual audit is still required. Null when the
 	// run audited no pages.
-	Accessibility WebScannerSummaryResponseAccessibility `json:"accessibility" api:"nullable"`
-	Delta         WebScannerSummaryResponseDelta         `json:"delta" api:"nullable"`
-	RunDate       string                                 `json:"runDate" api:"nullable"`
+	Accessibility    WebScannerSummaryResponseAccessibility `json:"accessibility" api:"nullable"`
+	CoverageRevision string                                 `json:"coverageRevision" api:"nullable"`
+	Delta            WebScannerSummaryResponseDelta         `json:"delta" api:"nullable"`
+	RunDate          string                                 `json:"runDate" api:"nullable"`
+	RunRevision      string                                 `json:"runRevision" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ByCategory         respjson.Field
@@ -1351,8 +1385,10 @@ type WebScannerSummaryResponse struct {
 		TopUncoveredHosts  respjson.Field
 		VendorCount        respjson.Field
 		Accessibility      respjson.Field
+		CoverageRevision   respjson.Field
 		Delta              respjson.Field
 		RunDate            respjson.Field
+		RunRevision        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -1738,6 +1774,204 @@ func (r *WebScannerSummaryResponseDelta) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WebScannerDecisionQueueResponse struct {
+	Entities         []WebScannerDecisionQueueResponseEntity   `json:"entities" api:"required"`
+	Pagination       WebScannerDecisionQueueResponsePagination `json:"pagination" api:"required"`
+	ScannerID        string                                    `json:"scannerId" api:"required"`
+	Total            int64                                     `json:"total" api:"required"`
+	CoverageRevision string                                    `json:"coverageRevision" api:"nullable"`
+	RunDate          string                                    `json:"runDate" api:"nullable"`
+	RunRevision      string                                    `json:"runRevision" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities         respjson.Field
+		Pagination       respjson.Field
+		ScannerID        respjson.Field
+		Total            respjson.Field
+		CoverageRevision respjson.Field
+		RunDate          respjson.Field
+		RunRevision      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerDecisionQueueResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerDecisionQueueResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerDecisionQueueResponseEntity struct {
+	Hostname    string                                        `json:"hostname" api:"required"`
+	SeenOn      []string                                      `json:"seenOn" api:"required"`
+	Category    string                                        `json:"category" api:"nullable"`
+	DataFlow    WebScannerDecisionQueueResponseEntityDataFlow `json:"dataFlow" api:"nullable"`
+	DisplayName string                                        `json:"displayName" api:"nullable"`
+	Risk        string                                        `json:"risk" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostname    respjson.Field
+		SeenOn      respjson.Field
+		Category    respjson.Field
+		DataFlow    respjson.Field
+		DisplayName respjson.Field
+		Risk        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerDecisionQueueResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerDecisionQueueResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerDecisionQueueResponseEntityDataFlow struct {
+	// Any of "credit_card", "date_of_birth", "diagnosis", "email", "health_condition",
+	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
+	// "ssn".
+	Categories   []string                                               `json:"categories" api:"required"`
+	Recipient    WebScannerDecisionQueueResponseEntityDataFlowRecipient `json:"recipient" api:"required"`
+	RequestCount int64                                                  `json:"requestCount" api:"required"`
+	Signals      []WebScannerDecisionQueueResponseEntityDataFlowSignal  `json:"signals" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Categories   respjson.Field
+		Recipient    respjson.Field
+		RequestCount respjson.Field
+		Signals      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerDecisionQueueResponseEntityDataFlow) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerDecisionQueueResponseEntityDataFlow) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerDecisionQueueResponseEntityDataFlowRecipient struct {
+	Hostname    string `json:"hostname" api:"required"`
+	Category    string `json:"category" api:"nullable"`
+	DisplayName string `json:"displayName" api:"nullable"`
+	Risk        string `json:"risk" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostname    respjson.Field
+		Category    respjson.Field
+		DisplayName respjson.Field
+		Risk        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerDecisionQueueResponseEntityDataFlowRecipient) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerDecisionQueueResponseEntityDataFlowRecipient) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerDecisionQueueResponseEntityDataFlowSignal struct {
+	// Any of "credit_card", "date_of_birth", "diagnosis", "email", "health_condition",
+	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
+	// "ssn".
+	Category string `json:"category" api:"required"`
+	// Any of "query_parameter", "request_body".
+	Source   string `json:"source" api:"required"`
+	Encoding string `json:"encoding" api:"nullable"`
+	Field    string `json:"field" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Category    respjson.Field
+		Source      respjson.Field
+		Encoding    respjson.Field
+		Field       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerDecisionQueueResponseEntityDataFlowSignal) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerDecisionQueueResponseEntityDataFlowSignal) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerDecisionQueueResponsePagination struct {
+	HasMore    bool   `json:"hasMore" api:"required"`
+	NextCursor string `json:"nextCursor" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerDecisionQueueResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerDecisionQueueResponsePagination) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerResolveCoverageGapResponse struct {
+	CommittedCoverageRevision string `json:"committedCoverageRevision" api:"required"`
+	// Any of "cmp", "suppression".
+	CoverageSource WebScannerResolveCoverageGapResponseCoverageSource `json:"coverageSource" api:"required"`
+	// Any of "preexisting_coverage", "suppression_active".
+	EffectState WebScannerResolveCoverageGapResponseEffectState `json:"effectState" api:"required"`
+	Hostname    string                                          `json:"hostname" api:"required"`
+	// Any of "already_resolved", "applied", "replayed".
+	Status               WebScannerResolveCoverageGapResponseStatus `json:"status" api:"required"`
+	CoveredByVendorLabel string                                     `json:"coveredByVendorLabel" api:"nullable"`
+	SuppressionRuleID    string                                     `json:"suppressionRuleId" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CommittedCoverageRevision respjson.Field
+		CoverageSource            respjson.Field
+		EffectState               respjson.Field
+		Hostname                  respjson.Field
+		Status                    respjson.Field
+		CoveredByVendorLabel      respjson.Field
+		SuppressionRuleID         respjson.Field
+		ExtraFields               map[string]respjson.Field
+		raw                       string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerResolveCoverageGapResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerResolveCoverageGapResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerResolveCoverageGapResponseCoverageSource string
+
+const (
+	WebScannerResolveCoverageGapResponseCoverageSourceCmp         WebScannerResolveCoverageGapResponseCoverageSource = "cmp"
+	WebScannerResolveCoverageGapResponseCoverageSourceSuppression WebScannerResolveCoverageGapResponseCoverageSource = "suppression"
+)
+
+type WebScannerResolveCoverageGapResponseEffectState string
+
+const (
+	WebScannerResolveCoverageGapResponseEffectStatePreexistingCoverage WebScannerResolveCoverageGapResponseEffectState = "preexisting_coverage"
+	WebScannerResolveCoverageGapResponseEffectStateSuppressionActive   WebScannerResolveCoverageGapResponseEffectState = "suppression_active"
+)
+
+type WebScannerResolveCoverageGapResponseStatus string
+
+const (
+	WebScannerResolveCoverageGapResponseStatusAlreadyResolved WebScannerResolveCoverageGapResponseStatus = "already_resolved"
+	WebScannerResolveCoverageGapResponseStatusApplied         WebScannerResolveCoverageGapResponseStatus = "applied"
+	WebScannerResolveCoverageGapResponseStatusReplayed        WebScannerResolveCoverageGapResponseStatus = "replayed"
+)
+
 type WebScannerNewParams struct {
 	// Root domain to crawl (e.g. `example.com`). Required on create. Missing or empty
 	// values fail request validation as HTTP 400. Present-but-malformed values are
@@ -1973,10 +2207,12 @@ func (r WebScannerCookiesParams) URLQuery() (v url.Values, err error) {
 }
 
 type WebScannerSummaryParams struct {
+	CoverageRevision param.Opt[string] `query:"coverageRevision,omitzero" json:"-"`
 	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
 	// used to select the run; the time component is ignored. Defaults to the most
 	// recent run when omitted.
-	Date param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
+	Date        param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
+	RunRevision param.Opt[string]    `query:"runRevision,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1987,4 +2223,70 @@ func (r WebScannerSummaryParams) URLQuery() (v url.Values, err error) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type WebScannerDecisionQueueParams struct {
+	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
+	// 1 and values above 100 are clamped to 100.
+	Limit            param.Opt[int64]  `query:"limit,omitzero" json:"-"`
+	CoverageRevision param.Opt[string] `query:"coverageRevision,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
+	// used to select the run; the time component is ignored. Defaults to the most
+	// recent run when omitted.
+	Date        param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
+	RunRevision param.Opt[string]    `query:"runRevision,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [WebScannerDecisionQueueParams]'s query parameters as
+// `url.Values`.
+func (r WebScannerDecisionQueueParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type WebScannerResolveCoverageGapParams struct {
+	CoverageRevision string                                        `json:"coverageRevision" api:"required"`
+	Hostname         string                                        `json:"hostname" api:"required"`
+	IdempotencyKey   string                                        `json:"idempotencyKey" api:"required" format:"uuid"`
+	RunDate          time.Time                                     `json:"runDate" api:"required" format:"date-time"`
+	RunRevision      string                                        `json:"runRevision" api:"required"`
+	Suppression      WebScannerResolveCoverageGapParamsSuppression `json:"suppression,omitzero" api:"required"`
+	paramObj
+}
+
+func (r WebScannerResolveCoverageGapParams) MarshalJSON() (data []byte, err error) {
+	type shadow WebScannerResolveCoverageGapParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebScannerResolveCoverageGapParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Reason is required.
+type WebScannerResolveCoverageGapParamsSuppression struct {
+	// Any of "ignore", "baa", "internal", "approved", "compliant", "firstParty",
+	// "other".
+	Reason string            `json:"reason,omitzero" api:"required"`
+	Notes  param.Opt[string] `json:"notes,omitzero"`
+	paramObj
+}
+
+func (r WebScannerResolveCoverageGapParamsSuppression) MarshalJSON() (data []byte, err error) {
+	type shadow WebScannerResolveCoverageGapParamsSuppression
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WebScannerResolveCoverageGapParamsSuppression) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[WebScannerResolveCoverageGapParamsSuppression](
+		"reason", "ignore", "baa", "internal", "approved", "compliant", "firstParty", "other",
+	)
 }
