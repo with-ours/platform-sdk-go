@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go"
-	"github.com/with-ours/platform-sdk-go/internal/testutil"
-	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/v2"
+	"github.com/with-ours/platform-sdk-go/v2/internal/testutil"
+	"github.com/with-ours/platform-sdk-go/v2/option"
 )
 
 func TestTranslationWidgetList(t *testing.T) {

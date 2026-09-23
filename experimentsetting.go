@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/with-ours/platform-sdk-go/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/option"
-	"github.com/with-ours/platform-sdk-go/packages/param"
-	"github.com/with-ours/platform-sdk-go/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v2/option"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
 )
 
 // ExperimentSettingService contains methods and other services that help with

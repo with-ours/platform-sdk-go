@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/with-ours/platform-sdk-go/internal/encoding/json/sentinel"
-	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/internal/encoding/json/sentinel"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"reflect"
 	"slices"
 	"testing"

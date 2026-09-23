@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	shimjson "github.com/with-ours/platform-sdk-go/internal/encoding/json"
-	"github.com/with-ours/platform-sdk-go/packages/param"
+	shimjson "github.com/with-ours/platform-sdk-go/v2/internal/encoding/json"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 )
 
 type Struct struct {

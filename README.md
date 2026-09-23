@@ -2,7 +2,7 @@
 
 <!-- x-release-please-start-version -->
 
-<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go"><img src="https://pkg.go.dev/badge/github.com/with-ours/platform-sdk-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2"><img src="https://pkg.go.dev/badge/github.com/with-ours/platform-sdk-go/v2.svg" alt="Go Reference"></a>
 
 <!-- x-release-please-end -->
 
@@ -17,7 +17,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ```go
 import (
-	"github.com/with-ours/platform-sdk-go" // imported as oursprivacy
+	"github.com/with-ours/platform-sdk-go/v2" // imported as oursprivacy
 )
 ```
 
@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/with-ours/platform-sdk-go@v1.44.0'
+go get -u 'github.com/with-ours/platform-sdk-go/v2@v2.0.0'
 ```
 
 <!-- x-release-please-end -->
@@ -48,8 +48,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/with-ours/platform-sdk-go"
-	"github.com/with-ours/platform-sdk-go/option"
+	"github.com/with-ours/platform-sdk-go/v2"
+	"github.com/with-ours/platform-sdk-go/v2/option"
 )
 
 func main() {
@@ -276,7 +276,7 @@ client.Sources.List(context.TODO(), ...,
 
 The request option `option.WithDebugLog(nil)` may be helpful while debugging.
 
-See the [full list of request options](https://pkg.go.dev/github.com/with-ours/platform-sdk-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2/option).
 
 ### Pagination
 
