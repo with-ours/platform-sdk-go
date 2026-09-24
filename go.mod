@@ -1,4 +1,4 @@
-module github.com/with-ours/platform-sdk-go
+module github.com/with-ours/platform-sdk-go/v2
 
 go 1.22
 

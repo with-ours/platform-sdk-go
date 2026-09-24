@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/with-ours/platform-sdk-go/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"reflect"
 	"testing"
 )

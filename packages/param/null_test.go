@@ -2,7 +2,7 @@ package param_test
 
 import (
 	"encoding/json"
-	"github.com/with-ours/platform-sdk-go/packages/param"
+	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"testing"
 )
 
