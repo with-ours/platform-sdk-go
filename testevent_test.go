@@ -51,9 +51,12 @@ func TestTestEventNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.TestEvents.New(context.TODO(), oursprivacy.TestEventNewParams{
-		EventName:         "Purchase",
-		DefaultProperties: map[string]any{},
-		DistinctID:        oursprivacy.String("distinctId"),
+		EventName: "Purchase",
+		DefaultProperties: map[string]any{
+			"current_url": "https://example.com/checkout",
+			"referrer":    "https://example.com",
+		},
+		DistinctID: oursprivacy.String("distinctId"),
 		EventProperties: map[string]any{
 			"revenue":  42.5,
 			"currency": "USD",
