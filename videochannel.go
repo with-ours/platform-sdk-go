@@ -359,9 +359,10 @@ func (r *VideoChannelMediaResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VideoChannelMediaResponseEntity struct {
-	ID        string `json:"id" api:"required"`
-	AccountID string `json:"accountId" api:"required"`
-	CreatedAt string `json:"createdAt" api:"required"`
+	ID            string                                        `json:"id" api:"required"`
+	AccountID     string                                        `json:"accountId" api:"required"`
+	CaptionTracks []VideoChannelMediaResponseEntityCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt     string                                        `json:"createdAt" api:"required"`
 	// Any of "Video".
 	Type                  string  `json:"type" api:"required"`
 	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
@@ -371,12 +372,14 @@ type VideoChannelMediaResponseEntity struct {
 	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
 	Height                float64 `json:"height" api:"nullable"`
 	Name                  string  `json:"name" api:"nullable"`
+	SourceLanguageCode    string  `json:"sourceLanguageCode" api:"nullable"`
 	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
 	Width                 float64 `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
 		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
 		CreatedAt             respjson.Field
 		Type                  respjson.Field
 		CaptionsUpdatedAt     respjson.Field
@@ -386,6 +389,7 @@ type VideoChannelMediaResponseEntity struct {
 		HasVideoUpload        respjson.Field
 		Height                respjson.Field
 		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -396,6 +400,34 @@ type VideoChannelMediaResponseEntity struct {
 // Returns the unmodified JSON received from the API
 func (r VideoChannelMediaResponseEntity) RawJSON() string { return r.JSON.raw }
 func (r *VideoChannelMediaResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoChannelMediaResponseEntityCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoChannelMediaResponseEntityCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoChannelMediaResponseEntityCaptionTrack) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
