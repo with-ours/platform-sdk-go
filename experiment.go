@@ -39,11 +39,11 @@ func NewExperimentService(opts ...option.RequestOption) (r ExperimentService) {
 }
 
 // List experiments for this account. Each experiment includes its full `variants`
-// array (redirect URLs and DOM modifications), so a single paginated call returns
-// a complete client-side experiment config. Supports cursor pagination and
-// filtering by `status`, `type`, and free-text `search` matched against experiment
-// id, name, and description. Combine filters with AND semantics. Requires scope:
-// experiment:list
+// array and complete primary and secondary metric definitions with any filtered
+// event matchers, so a single paginated call returns a complete client-side
+// experiment config. Supports cursor pagination and filtering by `status`, `type`,
+// and free-text `search` matched against experiment id, name, and description.
+// Combine filters with AND semantics. Requires scope: experiment:list
 func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -62,11 +62,11 @@ func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams
 }
 
 // List experiments for this account. Each experiment includes its full `variants`
-// array (redirect URLs and DOM modifications), so a single paginated call returns
-// a complete client-side experiment config. Supports cursor pagination and
-// filtering by `status`, `type`, and free-text `search` matched against experiment
-// id, name, and description. Combine filters with AND semantics. Requires scope:
-// experiment:list
+// array and complete primary and secondary metric definitions with any filtered
+// event matchers, so a single paginated call returns a complete client-side
+// experiment config. Supports cursor pagination and filtering by `status`, `type`,
+// and free-text `search` matched against experiment id, name, and description.
+// Combine filters with AND semantics. Requires scope: experiment:list
 func (r *ExperimentService) ListAutoPaging(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExperimentListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -79,7 +79,9 @@ func (r *ExperimentService) New(ctx context.Context, body ExperimentNewParams, o
 	return res, err
 }
 
-// Find a single experiment by ID. Requires scope: experiment:find
+// Retrieve one experiment with its variants, lifecycle state, and complete primary
+// and secondary metric definitions, including any filtered event matchers.
+// Requires scope: experiment:find
 func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -92,9 +94,12 @@ func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.R
 }
 
 // Partially update an experiment. Only the fields you send are changed, except
-// renaming a non-draft legacy experiment with no stored key preserves its current
-// name-derived key. Edits are allowed on draft, running, and paused experiments
-// and are recorded in the change log. Only completed experiments return 409 with
+// `targetingRules` and `metrics`, which are full nested replacements. Preserve
+// every filtered matcher and condition returned by GET or the request returns
+// `FILTERED_EXPERIMENT_METRIC_REQUIRES_FULL_REPLACEMENT`. Renaming a non-draft
+// legacy experiment with no stored key preserves its current name-derived key.
+// Edits are allowed on draft, running, and paused experiments and are recorded in
+// the change log. Only completed experiments return 409 with
 // `A completed experiment can no longer be edited`. Use the lifecycle endpoints
 // (`/start`, `/pause`, `/resume`, `/stop`) to change status. Requires scope:
 // experiment:update
@@ -242,8 +247,9 @@ func (r *ExperimentService) Resume(ctx context.Context, id string, body Experime
 }
 
 // Aggregate per-variant impressions, conversions, conversion rate, and Bayesian
-// probability-to-be-best across the experiment runtime window. Requires scope:
-// experiment:find
+// probability-to-be-best across the experiment runtime window. Select a saved goal
+// with `goalId`; `eventName` remains available as a legacy selector. Requires
+// scope: experiment:find
 func (r *ExperimentService) Results(ctx context.Context, id string, query ExperimentResultsParams, opts ...option.RequestOption) (res *ExperimentResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -260,8 +266,9 @@ func (r *ExperimentService) Results(ctx context.Context, id string, query Experi
 // metrics. The response includes common visitor, impression, readiness, evidence,
 // and data-quality fields plus the applicable method-specific result block.
 // Visitors are the inferential unit; impressions remain a delivery diagnostic.
-// Secondary event overrides are labeled exploratory, and unsupported legacy plans
-// suppress official evidence. Requires scope: experiment:find
+// Select a saved goal with `goalId`; `eventName` remains available as a legacy
+// selector. Secondary event overrides are labeled exploratory, and unsupported
+// legacy plans suppress official evidence. Requires scope: experiment:find
 func (r *ExperimentService) Analysis(ctx context.Context, id string, query ExperimentAnalysisParams, opts ...option.RequestOption) (res *ExperimentAnalysisResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -275,12 +282,13 @@ func (r *ExperimentService) Analysis(ctx context.Context, id string, query Exper
 
 // Per-day per-variant impressions, conversions, and conversion rate, sliced to a
 // date range. Use this to chart trends, compare windows, or zoom in on a specific
-// period. Pass `startDate` / `endDate` (`YYYY-MM-DD`, UTC, both inclusive) to set
-// the window; both default to the full experiment runtime when omitted, so the
-// no-arg call returns every day from start to today (or to `stoppedAt` for
-// completed experiments). The response orders days oldest-first and omits days
-// with no impressions, so an empty `days` array means there was no measured
-// traffic in the window. Requires scope: experiment:find
+// period. Pass `goalId` to select a saved goal; `eventName` remains available as a
+// legacy selector. Pass `startDate` / `endDate` (`YYYY-MM-DD`, UTC, both
+// inclusive) to set the window; both default to the full experiment runtime when
+// omitted, so the no-arg call returns every day from start to today (or to
+// `stoppedAt` for completed experiments). The response orders days oldest-first
+// and omits days with no impressions, so an empty `days` array means there was no
+// measured traffic in the window. Requires scope: experiment:find
 func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, query ExperimentResultsTimeSeriesParams, opts ...option.RequestOption) (res *ExperimentResultsTimeSeriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -547,23 +555,78 @@ func (r *ExperimentListResponseMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentListResponseMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentListResponseMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentListResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentListResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentListResponseMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentListResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentListResponseMetricsSecondaryEventMatcher) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentListResponseMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentListResponseMetricsSecondaryEventMatcherFilter) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -892,23 +955,78 @@ func (r *ExperimentNewResponseMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentNewResponseMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentNewResponseMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentNewResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentNewResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentNewResponseMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentNewResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentNewResponseMetricsSecondaryEventMatcher) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentNewResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentNewResponseMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentNewResponseMetricsSecondaryEventMatcherFilter) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1237,23 +1355,78 @@ func (r *ExperimentGetResponseMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentGetResponseMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentGetResponseMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentGetResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentGetResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentGetResponseMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentGetResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentGetResponseMetricsSecondaryEventMatcher) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentGetResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentGetResponseMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentGetResponseMetricsSecondaryEventMatcherFilter) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1582,23 +1755,80 @@ func (r *ExperimentUpdateResponseMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentUpdateResponseMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentUpdateResponseMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentUpdateResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentUpdateResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentUpdateResponseMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentUpdateResponseMetricsSecondaryEventMatcher) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1927,23 +2157,80 @@ func (r *ExperimentDuplicateResponseMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentDuplicateResponseMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentDuplicateResponseMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentDuplicateResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentDuplicateResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentDuplicateResponseMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseMetricsSecondaryEventMatcher) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2176,23 +2463,82 @@ func (r *ExperimentStartResponseExperimentMetrics) UnmarshalJSON(data []byte) er
 }
 
 type ExperimentStartResponseExperimentMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentStartResponseExperimentMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentStartResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentStartResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentStartResponseExperimentMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentStartResponseExperimentMetricsSecondaryEventMatcher) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2426,23 +2772,82 @@ func (r *ExperimentStopResponseExperimentMetrics) UnmarshalJSON(data []byte) err
 }
 
 type ExperimentStopResponseExperimentMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentStopResponseExperimentMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentStopResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentStopResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentStopResponseExperimentMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentStopResponseExperimentMetricsSecondaryEventMatcher) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2674,23 +3079,82 @@ func (r *ExperimentRolloutResponseExperimentMetrics) UnmarshalJSON(data []byte) 
 }
 
 type ExperimentRolloutResponseExperimentMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentRolloutResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentRolloutResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2924,23 +3388,82 @@ func (r *ExperimentEndRolloutResponseExperimentMetrics) UnmarshalJSON(data []byt
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentEndRolloutResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentEndRolloutResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3158,23 +3681,80 @@ func (r *ExperimentWinnerResponseMetrics) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentWinnerResponseMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentWinnerResponseMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentWinnerResponseMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentWinnerResponseMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentWinnerResponseMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponseMetricsSecondaryEventMatcher) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3407,23 +3987,82 @@ func (r *ExperimentPauseResponseExperimentMetrics) UnmarshalJSON(data []byte) er
 }
 
 type ExperimentPauseResponseExperimentMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentPauseResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentPauseResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3657,23 +4296,82 @@ func (r *ExperimentResumeResponseExperimentMetrics) UnmarshalJSON(data []byte) e
 }
 
 type ExperimentResumeResponseExperimentMetricsSecondary struct {
+	// Stable identifier for selecting this saved goal in experiment results queries.
+	GoalID string `json:"goalId" api:"required"`
+	// Complete OR-list of event matchers. Each matcher is an event name plus an
+	// optional analytics filter.
+	EventMatchers []ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher `json:"eventMatchers" api:"nullable"`
 	// Name of the event used to measure success for this metric.
 	EventName string `json:"eventName" api:"nullable"`
 	// Optional funnel identifier when the metric is derived from an existing funnel
 	// definition.
-	FunnelID string `json:"funnelId" api:"nullable"`
+	FunnelID            string  `json:"funnelId" api:"nullable"`
+	ValueMode           bool    `json:"valueMode" api:"nullable"`
+	Winsorize           bool    `json:"winsorize" api:"nullable"`
+	WinsorizePercentile float64 `json:"winsorizePercentile" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		EventName   respjson.Field
-		FunnelID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		GoalID              respjson.Field
+		EventMatchers       respjson.Field
+		EventName           respjson.Field
+		FunnelID            respjson.Field
+		ValueMode           respjson.Field
+		Winsorize           respjson.Field
+		WinsorizePercentile respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ExperimentResumeResponseExperimentMetricsSecondary) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentResumeResponseExperimentMetricsSecondary) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -4195,7 +4893,8 @@ func (r *ExperimentNewParams) UnmarshalJSON(data []byte) error {
 // a non-blank string. A primary event is required to start `ab` and `multivariate`
 // experiments, but not always-on `personalization`.
 type ExperimentNewParamsMetrics struct {
-	// Primary success metric. When provided, `eventName` must be a non-blank string.
+	// Primary success metric. Filtered goals require an explicit stable `eventName`
+	// anchor plus the complete `eventMatchers` array.
 	Primary ExperimentNewParamsMetricsPrimary `json:"primary,omitzero"`
 	// Optional secondary metrics tracked alongside the primary goal.
 	Secondary []ExperimentNewParamsMetricsSecondary `json:"secondary,omitzero"`
@@ -4210,13 +4909,23 @@ func (r *ExperimentNewParamsMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Primary success metric. When provided, `eventName` must be a non-blank string.
+// Primary success metric. Filtered goals require an explicit stable `eventName`
+// anchor plus the complete `eventMatchers` array.
 type ExperimentNewParamsMetricsPrimary struct {
 	// Event name to use as the goal for this metric.
 	EventName param.Opt[string] `json:"eventName,omitzero"`
 	// Optional funnel identifier when the metric should be derived from an existing
 	// funnel definition.
 	FunnelID param.Opt[string] `json:"funnelId,omitzero"`
+	// Optional stable identifier for this goal. Use the returned identifier to select
+	// this saved goal in results queries.
+	GoalID              param.Opt[string]  `json:"goalId,omitzero"`
+	ValueMode           param.Opt[bool]    `json:"valueMode,omitzero"`
+	Winsorize           param.Opt[bool]    `json:"winsorize,omitzero"`
+	WinsorizePercentile param.Opt[float64] `json:"winsorizePercentile,omitzero"`
+	// Complete OR-list of event matchers. Filtered goals require the explicit stable
+	// `eventName` anchor and every matcher on replacement.
+	EventMatchers []ExperimentNewParamsMetricsPrimaryEventMatcher `json:"eventMatchers,omitzero"`
 	paramObj
 }
 
@@ -4228,12 +4937,64 @@ func (r *ExperimentNewParamsMetricsPrimary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property EventName is required.
+type ExperimentNewParamsMetricsPrimaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentNewParamsMetricsPrimaryEventMatcherFilter `json:"filter,omitzero"`
+	paramObj
+}
+
+func (r ExperimentNewParamsMetricsPrimaryEventMatcher) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentNewParamsMetricsPrimaryEventMatcher
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentNewParamsMetricsPrimaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+//
+// The properties Filter, Version are required.
+type ExperimentNewParamsMetricsPrimaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter,omitzero" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version,omitzero" api:"required"`
+	paramObj
+}
+
+func (r ExperimentNewParamsMetricsPrimaryEventMatcherFilter) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentNewParamsMetricsPrimaryEventMatcherFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilter](
+		"version", 1,
+	)
+}
+
 type ExperimentNewParamsMetricsSecondary struct {
 	// Event name to use as the goal for this metric.
 	EventName param.Opt[string] `json:"eventName,omitzero"`
 	// Optional funnel identifier when the metric should be derived from an existing
 	// funnel definition.
 	FunnelID param.Opt[string] `json:"funnelId,omitzero"`
+	// Optional stable identifier for this goal. Use the returned identifier to select
+	// this saved goal in results queries.
+	GoalID              param.Opt[string]  `json:"goalId,omitzero"`
+	ValueMode           param.Opt[bool]    `json:"valueMode,omitzero"`
+	Winsorize           param.Opt[bool]    `json:"winsorize,omitzero"`
+	WinsorizePercentile param.Opt[float64] `json:"winsorizePercentile,omitzero"`
+	// Complete OR-list of event matchers. Filtered goals require the explicit stable
+	// `eventName` anchor and every matcher on replacement.
+	EventMatchers []ExperimentNewParamsMetricsSecondaryEventMatcher `json:"eventMatchers,omitzero"`
 	paramObj
 }
 
@@ -4243,6 +5004,49 @@ func (r ExperimentNewParamsMetricsSecondary) MarshalJSON() (data []byte, err err
 }
 func (r *ExperimentNewParamsMetricsSecondary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property EventName is required.
+type ExperimentNewParamsMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentNewParamsMetricsSecondaryEventMatcherFilter `json:"filter,omitzero"`
+	paramObj
+}
+
+func (r ExperimentNewParamsMetricsSecondaryEventMatcher) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentNewParamsMetricsSecondaryEventMatcher
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentNewParamsMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+//
+// The properties Filter, Version are required.
+type ExperimentNewParamsMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter,omitzero" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version,omitzero" api:"required"`
+	paramObj
+}
+
+func (r ExperimentNewParamsMetricsSecondaryEventMatcherFilter) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentNewParamsMetricsSecondaryEventMatcherFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilter](
+		"version", 1,
+	)
 }
 
 // Eligibility rules — URL patterns, query-param conditions, visitor status, and
@@ -4344,9 +5148,9 @@ type ExperimentUpdateParams struct {
 	TrafficAllocation param.Opt[float64] `json:"trafficAllocation,omitzero"`
 	// Updated draft analysis method. This field is locked once an experiment starts.
 	AnalysisConfig any `json:"analysisConfig,omitzero"`
-	// Updated goal events. Send the full nested object — replaces the previous value,
-	// not merged. If you send `metrics.primary`, `metrics.primary.eventName` must be a
-	// non-blank string.
+	// Updated goal metrics. Send the full nested object — replaces the previous value,
+	// not merged. Preserve every filtered matcher and filter returned by GET or the
+	// request returns `FILTERED_EXPERIMENT_METRIC_REQUIRES_FULL_REPLACEMENT`.
 	Metrics ExperimentUpdateParamsMetrics `json:"metrics,omitzero"`
 	// Updated eligibility rules. Send the full nested object — replaces the previous
 	// value, not merged.
@@ -4362,11 +5166,12 @@ func (r *ExperimentUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Updated goal events. Send the full nested object — replaces the previous value,
-// not merged. If you send `metrics.primary`, `metrics.primary.eventName` must be a
-// non-blank string.
+// Updated goal metrics. Send the full nested object — replaces the previous value,
+// not merged. Preserve every filtered matcher and filter returned by GET or the
+// request returns `FILTERED_EXPERIMENT_METRIC_REQUIRES_FULL_REPLACEMENT`.
 type ExperimentUpdateParamsMetrics struct {
-	// Primary success metric. When provided, `eventName` must be a non-blank string.
+	// Primary success metric. Filtered goals require an explicit stable `eventName`
+	// anchor plus the complete `eventMatchers` array.
 	Primary ExperimentUpdateParamsMetricsPrimary `json:"primary,omitzero"`
 	// Optional secondary metrics tracked alongside the primary goal.
 	Secondary []ExperimentUpdateParamsMetricsSecondary `json:"secondary,omitzero"`
@@ -4381,13 +5186,23 @@ func (r *ExperimentUpdateParamsMetrics) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Primary success metric. When provided, `eventName` must be a non-blank string.
+// Primary success metric. Filtered goals require an explicit stable `eventName`
+// anchor plus the complete `eventMatchers` array.
 type ExperimentUpdateParamsMetricsPrimary struct {
 	// Event name to use as the goal for this metric.
 	EventName param.Opt[string] `json:"eventName,omitzero"`
 	// Optional funnel identifier when the metric should be derived from an existing
 	// funnel definition.
 	FunnelID param.Opt[string] `json:"funnelId,omitzero"`
+	// Optional stable identifier for this goal. Use the returned identifier to select
+	// this saved goal in results queries.
+	GoalID              param.Opt[string]  `json:"goalId,omitzero"`
+	ValueMode           param.Opt[bool]    `json:"valueMode,omitzero"`
+	Winsorize           param.Opt[bool]    `json:"winsorize,omitzero"`
+	WinsorizePercentile param.Opt[float64] `json:"winsorizePercentile,omitzero"`
+	// Complete OR-list of event matchers. Filtered goals require the explicit stable
+	// `eventName` anchor and every matcher on replacement.
+	EventMatchers []ExperimentUpdateParamsMetricsPrimaryEventMatcher `json:"eventMatchers,omitzero"`
 	paramObj
 }
 
@@ -4399,12 +5214,64 @@ func (r *ExperimentUpdateParamsMetricsPrimary) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property EventName is required.
+type ExperimentUpdateParamsMetricsPrimaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter `json:"filter,omitzero"`
+	paramObj
+}
+
+func (r ExperimentUpdateParamsMetricsPrimaryEventMatcher) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentUpdateParamsMetricsPrimaryEventMatcher
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+//
+// The properties Filter, Version are required.
+type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter,omitzero" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version,omitzero" api:"required"`
+	paramObj
+}
+
+func (r ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter](
+		"version", 1,
+	)
+}
+
 type ExperimentUpdateParamsMetricsSecondary struct {
 	// Event name to use as the goal for this metric.
 	EventName param.Opt[string] `json:"eventName,omitzero"`
 	// Optional funnel identifier when the metric should be derived from an existing
 	// funnel definition.
 	FunnelID param.Opt[string] `json:"funnelId,omitzero"`
+	// Optional stable identifier for this goal. Use the returned identifier to select
+	// this saved goal in results queries.
+	GoalID              param.Opt[string]  `json:"goalId,omitzero"`
+	ValueMode           param.Opt[bool]    `json:"valueMode,omitzero"`
+	Winsorize           param.Opt[bool]    `json:"winsorize,omitzero"`
+	WinsorizePercentile param.Opt[float64] `json:"winsorizePercentile,omitzero"`
+	// Complete OR-list of event matchers. Filtered goals require the explicit stable
+	// `eventName` anchor and every matcher on replacement.
+	EventMatchers []ExperimentUpdateParamsMetricsSecondaryEventMatcher `json:"eventMatchers,omitzero"`
 	paramObj
 }
 
@@ -4414,6 +5281,49 @@ func (r ExperimentUpdateParamsMetricsSecondary) MarshalJSON() (data []byte, err 
 }
 func (r *ExperimentUpdateParamsMetricsSecondary) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property EventName is required.
+type ExperimentUpdateParamsMetricsSecondaryEventMatcher struct {
+	// Event name required by this OR branch.
+	EventName string `json:"eventName" api:"required"`
+	// Optional analytics filter evaluated against the same event row as `eventName`.
+	Filter ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter `json:"filter,omitzero"`
+	paramObj
+}
+
+func (r ExperimentUpdateParamsMetricsSecondaryEventMatcher) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentUpdateParamsMetricsSecondaryEventMatcher
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcher) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional analytics filter evaluated against the same event row as `eventName`.
+//
+// The properties Filter, Version are required.
+type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter struct {
+	// Analytics predicate or and/or/not tree. Use the analytics query catalog for
+	// supported properties and operators.
+	Filter any `json:"filter,omitzero" api:"required"`
+	// Any of 1.
+	Version int64 `json:"version,omitzero" api:"required"`
+	paramObj
+}
+
+func (r ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter](
+		"version", 1,
+	)
 }
 
 // Updated eligibility rules. Send the full nested object — replaces the previous
@@ -4597,9 +5507,13 @@ func (r *ExperimentResumeParams) UnmarshalJSON(data []byte) error {
 }
 
 type ExperimentResultsParams struct {
-	// Optional override for the conversion event name. When omitted, the experiment
-	// primary metric event is used.
+	// Legacy selector or override for the conversion event name. Use `goalId` to
+	// select a specific saved goal when multiple goals share an event name. When both
+	// are omitted, the experiment primary metric is used.
 	EventName param.Opt[string] `query:"eventName,omitzero" json:"-"`
+	// Optional identifier of a saved goal to report. Use this to distinguish goals
+	// that share an event name.
+	GoalID param.Opt[string] `query:"goalId,omitzero" json:"-"`
 	paramObj
 }
 
@@ -4613,9 +5527,13 @@ func (r ExperimentResultsParams) URLQuery() (v url.Values, err error) {
 }
 
 type ExperimentAnalysisParams struct {
-	// Optional override for the conversion event name. When omitted, the experiment
-	// primary metric event is used.
+	// Legacy selector or override for the conversion event name. Use `goalId` to
+	// select a specific saved goal when multiple goals share an event name. When both
+	// are omitted, the experiment primary metric is used.
 	EventName param.Opt[string] `query:"eventName,omitzero" json:"-"`
+	// Optional identifier of a saved goal to report. Use this to distinguish goals
+	// that share an event name.
+	GoalID param.Opt[string] `query:"goalId,omitzero" json:"-"`
 	paramObj
 }
 
@@ -4634,9 +5552,13 @@ type ExperimentResultsTimeSeriesParams struct {
 	// experiments, or today for running experiments. Values after that are silently
 	// clamped. The window between `startDate` and `endDate` must be 366 days or fewer.
 	EndDate param.Opt[string] `query:"endDate,omitzero" json:"-"`
-	// Optional override for the conversion event name. When omitted, the experiment
-	// primary metric event is used.
+	// Legacy selector or override for the conversion event name. Use `goalId` to
+	// select a specific saved goal when multiple goals share an event name. When both
+	// are omitted, the experiment primary metric is used.
 	EventName param.Opt[string] `query:"eventName,omitzero" json:"-"`
+	// Optional identifier of a saved goal to report. Use this to distinguish goals
+	// that share an event name.
+	GoalID param.Opt[string] `query:"goalId,omitzero" json:"-"`
 	// Inclusive lower bound of the response window, as a UTC calendar day in
 	// `YYYY-MM-DD` format. Defaults to the experiment start date when omitted. Values
 	// before the experiment started are silently clamped to the experiment start.

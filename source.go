@@ -137,6 +137,9 @@ type SourceListResponse struct {
 	// Organization id that owns this source.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether published short-link campaign tags are forwarded to missing destination
+	// UTM keys. Existing sources default to false.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceListResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
@@ -172,26 +175,27 @@ type SourceListResponse struct {
 	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                    respjson.Field
-		AccountID             respjson.Field
-		CreatedAt             respjson.Field
-		Status                respjson.Field
-		Type                  respjson.Field
-		BotControlMode        respjson.Field
-		BotScoreThreshold     respjson.Field
-		ExcludeRequestContext respjson.Field
-		IsPublished           respjson.Field
-		LastDispatchedAt      respjson.Field
-		LastTriggeredAt       respjson.Field
-		Name                  respjson.Field
-		ProbabilisticIdentity respjson.Field
-		ProjectAPIKey         respjson.Field
-		RedirectURL           respjson.Field
-		SelectedAccountID     respjson.Field
-		WhitelistDomains      respjson.Field
-		WhitelistIPs          respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		Type                    respjson.Field
+		BotControlMode          respjson.Field
+		BotScoreThreshold       respjson.Field
+		ExcludeRequestContext   respjson.Field
+		IsPublished             respjson.Field
+		LastDispatchedAt        respjson.Field
+		LastTriggeredAt         respjson.Field
+		Name                    respjson.Field
+		ProbabilisticIdentity   respjson.Field
+		ProjectAPIKey           respjson.Field
+		RedirectURL             respjson.Field
+		SelectedAccountID       respjson.Field
+		WhitelistDomains        respjson.Field
+		WhitelistIPs            respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -251,6 +255,9 @@ type SourceNewResponse struct {
 	// Organization id that owns this source.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether published short-link campaign tags are forwarded to missing destination
+	// UTM keys. Existing sources default to false.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceNewResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
@@ -286,26 +293,27 @@ type SourceNewResponse struct {
 	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                    respjson.Field
-		AccountID             respjson.Field
-		CreatedAt             respjson.Field
-		Status                respjson.Field
-		Type                  respjson.Field
-		BotControlMode        respjson.Field
-		BotScoreThreshold     respjson.Field
-		ExcludeRequestContext respjson.Field
-		IsPublished           respjson.Field
-		LastDispatchedAt      respjson.Field
-		LastTriggeredAt       respjson.Field
-		Name                  respjson.Field
-		ProbabilisticIdentity respjson.Field
-		ProjectAPIKey         respjson.Field
-		RedirectURL           respjson.Field
-		SelectedAccountID     respjson.Field
-		WhitelistDomains      respjson.Field
-		WhitelistIPs          respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		Type                    respjson.Field
+		BotControlMode          respjson.Field
+		BotScoreThreshold       respjson.Field
+		ExcludeRequestContext   respjson.Field
+		IsPublished             respjson.Field
+		LastDispatchedAt        respjson.Field
+		LastTriggeredAt         respjson.Field
+		Name                    respjson.Field
+		ProbabilisticIdentity   respjson.Field
+		ProjectAPIKey           respjson.Field
+		RedirectURL             respjson.Field
+		SelectedAccountID       respjson.Field
+		WhitelistDomains        respjson.Field
+		WhitelistIPs            respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -365,6 +373,9 @@ type SourceGetResponse struct {
 	// Organization id that owns this source.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether published short-link campaign tags are forwarded to missing destination
+	// UTM keys. Existing sources default to false.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceGetResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
@@ -400,26 +411,27 @@ type SourceGetResponse struct {
 	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                    respjson.Field
-		AccountID             respjson.Field
-		CreatedAt             respjson.Field
-		Status                respjson.Field
-		Type                  respjson.Field
-		BotControlMode        respjson.Field
-		BotScoreThreshold     respjson.Field
-		ExcludeRequestContext respjson.Field
-		IsPublished           respjson.Field
-		LastDispatchedAt      respjson.Field
-		LastTriggeredAt       respjson.Field
-		Name                  respjson.Field
-		ProbabilisticIdentity respjson.Field
-		ProjectAPIKey         respjson.Field
-		RedirectURL           respjson.Field
-		SelectedAccountID     respjson.Field
-		WhitelistDomains      respjson.Field
-		WhitelistIPs          respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		Type                    respjson.Field
+		BotControlMode          respjson.Field
+		BotScoreThreshold       respjson.Field
+		ExcludeRequestContext   respjson.Field
+		IsPublished             respjson.Field
+		LastDispatchedAt        respjson.Field
+		LastTriggeredAt         respjson.Field
+		Name                    respjson.Field
+		ProbabilisticIdentity   respjson.Field
+		ProjectAPIKey           respjson.Field
+		RedirectURL             respjson.Field
+		SelectedAccountID       respjson.Field
+		WhitelistDomains        respjson.Field
+		WhitelistIPs            respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -479,6 +491,9 @@ type SourceUpdateResponse struct {
 	// Organization id that owns this source.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether published short-link campaign tags are forwarded to missing destination
+	// UTM keys. Existing sources default to false.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status SourceUpdateResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
@@ -514,26 +529,27 @@ type SourceUpdateResponse struct {
 	WhitelistIPs     []string `json:"whitelistIps" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                    respjson.Field
-		AccountID             respjson.Field
-		CreatedAt             respjson.Field
-		Status                respjson.Field
-		Type                  respjson.Field
-		BotControlMode        respjson.Field
-		BotScoreThreshold     respjson.Field
-		ExcludeRequestContext respjson.Field
-		IsPublished           respjson.Field
-		LastDispatchedAt      respjson.Field
-		LastTriggeredAt       respjson.Field
-		Name                  respjson.Field
-		ProbabilisticIdentity respjson.Field
-		ProjectAPIKey         respjson.Field
-		RedirectURL           respjson.Field
-		SelectedAccountID     respjson.Field
-		WhitelistDomains      respjson.Field
-		WhitelistIPs          respjson.Field
-		ExtraFields           map[string]respjson.Field
-		raw                   string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		Type                    respjson.Field
+		BotControlMode          respjson.Field
+		BotScoreThreshold       respjson.Field
+		ExcludeRequestContext   respjson.Field
+		IsPublished             respjson.Field
+		LastDispatchedAt        respjson.Field
+		LastTriggeredAt         respjson.Field
+		Name                    respjson.Field
+		ProbabilisticIdentity   respjson.Field
+		ProjectAPIKey           respjson.Field
+		RedirectURL             respjson.Field
+		SelectedAccountID       respjson.Field
+		WhitelistDomains        respjson.Field
+		WhitelistIPs            respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 

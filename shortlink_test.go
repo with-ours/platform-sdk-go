@@ -54,11 +54,12 @@ func TestShortLinkNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ShortLinks.New(context.TODO(), oursprivacy.ShortLinkNewParams{
-		Code:        oursprivacy.String("code"),
-		Name:        oursprivacy.String("Spring Sale QR"),
-		Qr:          map[string]any{},
-		RedirectURL: oursprivacy.String("https://example.com/spring"),
-		Utm:         map[string]any{},
+		Code:                    oursprivacy.String("code"),
+		ForwardUtmToDestination: oursprivacy.Bool(true),
+		Name:                    oursprivacy.String("Spring Sale QR"),
+		Qr:                      map[string]any{},
+		RedirectURL:             oursprivacy.String("https://example.com/spring"),
+		Utm:                     map[string]any{},
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -107,12 +108,13 @@ func TestShortLinkUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ShortLinkUpdateParams{
-			Code:        oursprivacy.String("code"),
-			Name:        oursprivacy.String("name"),
-			Qr:          map[string]any{},
-			RedirectURL: oursprivacy.String("redirectUrl"),
-			Status:      oursprivacy.String("status"),
-			Utm:         map[string]any{},
+			Code:                    oursprivacy.String("code"),
+			ForwardUtmToDestination: oursprivacy.Bool(true),
+			Name:                    oursprivacy.String("name"),
+			Qr:                      map[string]any{},
+			RedirectURL:             oursprivacy.String("redirectUrl"),
+			Status:                  oursprivacy.String("status"),
+			Utm:                     map[string]any{},
 		},
 	)
 	if err != nil {
