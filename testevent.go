@@ -39,8 +39,8 @@ func NewTestEventService(opts ...option.RequestOption) (r TestEventService) {
 }
 
 // List browser, server, and synthetic events captured with debug mode during the
-// last 48 hours, newest received first. Includes live-token events as well as
-// synthetic test events; `isTestEvent` distinguishes them. Returns full event
+// last 48 hours, newest received first. Includes live-token and test-token events;
+// `isTestEvent` indicates whether a test token was used. Returns full event
 // properties. Pass an entity id unchanged to the detail or dispatch endpoint. Use
 // `limit` (default 25, maximum 100) and `cursor` to page through results. Requires
 // scope: report:list-events
@@ -62,8 +62,8 @@ func (r *TestEventService) List(ctx context.Context, query TestEventListParams, 
 }
 
 // List browser, server, and synthetic events captured with debug mode during the
-// last 48 hours, newest received first. Includes live-token events as well as
-// synthetic test events; `isTestEvent` distinguishes them. Returns full event
+// last 48 hours, newest received first. Includes live-token and test-token events;
+// `isTestEvent` indicates whether a test token was used. Returns full event
 // properties. Pass an entity id unchanged to the detail or dispatch endpoint. Use
 // `limit` (default 25, maximum 100) and `cursor` to page through results. Requires
 // scope: report:list-events
@@ -72,8 +72,9 @@ func (r *TestEventService) ListAutoPaging(ctx context.Context, query TestEventLi
 }
 
 // Send a test event through the same processing your production events go through,
-// without delivering it to any destination. The response acknowledges acceptance
-// for processing; it does not contain processing results. The event is captured in
+// using the source’s live token with debug capture enabled. This can deliver real
+// data to configured destinations. The response acknowledges acceptance for
+// processing; it does not contain processing results. The event is captured in
 // Recent Events. Use the returned `id` with
 // `GET /rest/v1/test-events/{id}/dispatches` to retrieve recorded dispatches.
 // Supply `visitorId` and `distinctId` to choose the identity yourself; otherwise
@@ -237,7 +238,8 @@ func (r *TestEventGetResponse) UnmarshalJSON(data []byte) error {
 type TestEventDispatchesResponse struct {
 	ID string `json:"id" api:"required"`
 	// Dispatches recorded so far. Empty until dispatches arrive; no predicted
-	// destinations or completion signal. Synthetic events are never delivered live.
+	// destinations or completion signal. Events created through this API can be
+	// delivered to live destinations.
 	Entities []TestEventDispatchesResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -323,8 +325,8 @@ type TestEventNewParams struct {
 	// Visitor identity to send the event as. Generated when omitted. Letters, numbers,
 	// hyphens, and underscores only.
 	VisitorID param.Opt[string] `json:"visitorId,omitzero"`
-	// Context properties normally collected automatically, such as page URL or
-	// referrer.
+	// Known context properties used by ingest and destination mappings. Use
+	// current_url for the page URL. Unknown properties are ignored.
 	DefaultProperties any `json:"defaultProperties,omitzero"`
 	// Event-level properties available to destination mappings.
 	EventProperties any `json:"eventProperties,omitzero"`
