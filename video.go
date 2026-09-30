@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/v2/option"
-	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
-	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v3/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v3/option"
+	"github.com/with-ours/platform-sdk-go/v3/packages/pagination"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/packages/respjson"
 )
 
 // VideoService contains methods and other services that help with interacting with
@@ -131,14 +131,14 @@ func (r *VideoService) Upload(ctx context.Context, id string, body VideoUploadPa
 // Read the current WebVTT transcript. Transcript text is available wherever the
 // video is embedded, so do not include PHI or other confidential information.
 // Requires scope: media:find
-func (r *VideoService) Transcript(ctx context.Context, id string, opts ...option.RequestOption) (res *VideoTranscriptResponse, err error) {
+func (r *VideoService) Transcript(ctx context.Context, id string, query VideoTranscriptParams, opts ...option.RequestOption) (res *VideoTranscriptResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/transcript", url.PathEscape(id))
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -153,6 +153,32 @@ func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body Vid
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/transcript", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
+// Queue a target-language caption translation. Specify replace to explicitly
+// overwrite a track. Requires scope: media:update
+func (r *VideoService) RequestCaptionTranslation(ctx context.Context, id string, body VideoRequestCaptionTranslationParams, opts ...option.RequestOption) (res *VideoRequestCaptionTranslationResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/videos/%s/translate", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Cancel a queued or in-progress language translation without modifying other
+// tracks. Requires scope: media:update
+func (r *VideoService) CancelCaptionTranslation(ctx context.Context, id string, body VideoCancelCaptionTranslationParams, opts ...option.RequestOption) (res *VideoCancelCaptionTranslationResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/videos/%s/cancel-translation", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
@@ -183,23 +209,26 @@ func (r *VideoService) AnalyticsTimeseries(ctx context.Context, id string, query
 }
 
 type VideoListResponse struct {
-	ID                    string  `json:"id" api:"required"`
-	AccountID             string  `json:"accountId" api:"required"`
-	CreatedAt             string  `json:"createdAt" api:"required"`
-	Type                  string  `json:"type" api:"required"`
-	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string  `json:"description" api:"nullable"`
-	Duration              float64 `json:"duration" api:"nullable"`
-	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
-	Height                float64 `json:"height" api:"nullable"`
-	Name                  string  `json:"name" api:"nullable"`
-	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
-	Width                 float64 `json:"width" api:"nullable"`
+	ID                    string                          `json:"id" api:"required"`
+	AccountID             string                          `json:"accountId" api:"required"`
+	CaptionTracks         []VideoListResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt             string                          `json:"createdAt" api:"required"`
+	Type                  string                          `json:"type" api:"required"`
+	CaptionsUpdatedAt     string                          `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                          `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                          `json:"description" api:"nullable"`
+	Duration              float64                         `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                            `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                         `json:"height" api:"nullable"`
+	Name                  string                          `json:"name" api:"nullable"`
+	SourceLanguageCode    string                          `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                          `json:"updatedAt" api:"nullable"`
+	Width                 float64                         `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
 		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
 		CreatedAt             respjson.Field
 		Type                  respjson.Field
 		CaptionsUpdatedAt     respjson.Field
@@ -209,6 +238,7 @@ type VideoListResponse struct {
 		HasVideoUpload        respjson.Field
 		Height                respjson.Field
 		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -222,25 +252,56 @@ func (r *VideoListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VideoListResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoListResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoListResponseCaptionTrack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VideoNewResponse struct {
-	ID                    string                 `json:"id" api:"required"`
-	AccountID             string                 `json:"accountId" api:"required"`
-	CreatedAt             string                 `json:"createdAt" api:"required"`
-	Type                  string                 `json:"type" api:"required"`
-	Upload                VideoNewResponseUpload `json:"upload" api:"required"`
-	CaptionsUpdatedAt     string                 `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string                 `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string                 `json:"description" api:"nullable"`
-	Duration              float64                `json:"duration" api:"nullable"`
-	HasVideoUpload        bool                   `json:"hasVideoUpload" api:"nullable"`
-	Height                float64                `json:"height" api:"nullable"`
-	Name                  string                 `json:"name" api:"nullable"`
-	UpdatedAt             string                 `json:"updatedAt" api:"nullable"`
-	Width                 float64                `json:"width" api:"nullable"`
+	ID                    string                         `json:"id" api:"required"`
+	AccountID             string                         `json:"accountId" api:"required"`
+	CaptionTracks         []VideoNewResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt             string                         `json:"createdAt" api:"required"`
+	Type                  string                         `json:"type" api:"required"`
+	Upload                VideoNewResponseUpload         `json:"upload" api:"required"`
+	CaptionsUpdatedAt     string                         `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                         `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                         `json:"description" api:"nullable"`
+	Duration              float64                        `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                           `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                        `json:"height" api:"nullable"`
+	Name                  string                         `json:"name" api:"nullable"`
+	SourceLanguageCode    string                         `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                         `json:"updatedAt" api:"nullable"`
+	Width                 float64                        `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
 		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
 		CreatedAt             respjson.Field
 		Type                  respjson.Field
 		Upload                respjson.Field
@@ -251,6 +312,7 @@ type VideoNewResponse struct {
 		HasVideoUpload        respjson.Field
 		Height                respjson.Field
 		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -261,6 +323,34 @@ type VideoNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VideoNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoNewResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoNewResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoNewResponseCaptionTrack) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -291,24 +381,27 @@ const (
 )
 
 type VideoGetResponse struct {
-	ID                    string  `json:"id" api:"required"`
-	AccountID             string  `json:"accountId" api:"required"`
-	CreatedAt             string  `json:"createdAt" api:"required"`
-	Type                  string  `json:"type" api:"required"`
-	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string  `json:"description" api:"nullable"`
-	Duration              float64 `json:"duration" api:"nullable"`
-	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
-	Height                float64 `json:"height" api:"nullable"`
-	Name                  string  `json:"name" api:"nullable"`
-	ResolvedValues        any     `json:"resolvedValues" api:"nullable"`
-	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
-	Width                 float64 `json:"width" api:"nullable"`
+	ID                    string                         `json:"id" api:"required"`
+	AccountID             string                         `json:"accountId" api:"required"`
+	CaptionTracks         []VideoGetResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt             string                         `json:"createdAt" api:"required"`
+	Type                  string                         `json:"type" api:"required"`
+	CaptionsUpdatedAt     string                         `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                         `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                         `json:"description" api:"nullable"`
+	Duration              float64                        `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                           `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                        `json:"height" api:"nullable"`
+	Name                  string                         `json:"name" api:"nullable"`
+	ResolvedValues        any                            `json:"resolvedValues" api:"nullable"`
+	SourceLanguageCode    string                         `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                         `json:"updatedAt" api:"nullable"`
+	Width                 float64                        `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
 		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
 		CreatedAt             respjson.Field
 		Type                  respjson.Field
 		CaptionsUpdatedAt     respjson.Field
@@ -319,6 +412,7 @@ type VideoGetResponse struct {
 		Height                respjson.Field
 		Name                  respjson.Field
 		ResolvedValues        respjson.Field
+		SourceLanguageCode    respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -332,24 +426,55 @@ func (r *VideoGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VideoGetResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoGetResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoGetResponseCaptionTrack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VideoUpdateResponse struct {
-	ID                    string  `json:"id" api:"required"`
-	AccountID             string  `json:"accountId" api:"required"`
-	CreatedAt             string  `json:"createdAt" api:"required"`
-	Type                  string  `json:"type" api:"required"`
-	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string  `json:"description" api:"nullable"`
-	Duration              float64 `json:"duration" api:"nullable"`
-	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
-	Height                float64 `json:"height" api:"nullable"`
-	Name                  string  `json:"name" api:"nullable"`
-	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
-	Width                 float64 `json:"width" api:"nullable"`
+	ID                    string                            `json:"id" api:"required"`
+	AccountID             string                            `json:"accountId" api:"required"`
+	CaptionTracks         []VideoUpdateResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt             string                            `json:"createdAt" api:"required"`
+	Type                  string                            `json:"type" api:"required"`
+	CaptionsUpdatedAt     string                            `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                            `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                            `json:"description" api:"nullable"`
+	Duration              float64                           `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                              `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                           `json:"height" api:"nullable"`
+	Name                  string                            `json:"name" api:"nullable"`
+	SourceLanguageCode    string                            `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                            `json:"updatedAt" api:"nullable"`
+	Width                 float64                           `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
 		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
 		CreatedAt             respjson.Field
 		Type                  respjson.Field
 		CaptionsUpdatedAt     respjson.Field
@@ -359,6 +484,7 @@ type VideoUpdateResponse struct {
 		HasVideoUpload        respjson.Field
 		Height                respjson.Field
 		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -369,6 +495,34 @@ type VideoUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VideoUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoUpdateResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoUpdateResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoUpdateResponseCaptionTrack) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -434,23 +588,26 @@ func (r *VideoTranscriptResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VideoUpdateTranscriptResponse struct {
-	ID                    string  `json:"id" api:"required"`
-	AccountID             string  `json:"accountId" api:"required"`
-	CreatedAt             string  `json:"createdAt" api:"required"`
-	Type                  string  `json:"type" api:"required"`
-	CaptionsUpdatedAt     string  `json:"captionsUpdatedAt" api:"nullable"`
-	CaptionsUpdatedByName string  `json:"captionsUpdatedByName" api:"nullable"`
-	Description           string  `json:"description" api:"nullable"`
-	Duration              float64 `json:"duration" api:"nullable"`
-	HasVideoUpload        bool    `json:"hasVideoUpload" api:"nullable"`
-	Height                float64 `json:"height" api:"nullable"`
-	Name                  string  `json:"name" api:"nullable"`
-	UpdatedAt             string  `json:"updatedAt" api:"nullable"`
-	Width                 float64 `json:"width" api:"nullable"`
+	ID                    string                                      `json:"id" api:"required"`
+	AccountID             string                                      `json:"accountId" api:"required"`
+	CaptionTracks         []VideoUpdateTranscriptResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt             string                                      `json:"createdAt" api:"required"`
+	Type                  string                                      `json:"type" api:"required"`
+	CaptionsUpdatedAt     string                                      `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                                      `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                                      `json:"description" api:"nullable"`
+	Duration              float64                                     `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                                        `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                                     `json:"height" api:"nullable"`
+	Name                  string                                      `json:"name" api:"nullable"`
+	SourceLanguageCode    string                                      `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                                      `json:"updatedAt" api:"nullable"`
+	Width                 float64                                     `json:"width" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                    respjson.Field
 		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
 		CreatedAt             respjson.Field
 		Type                  respjson.Field
 		CaptionsUpdatedAt     respjson.Field
@@ -460,6 +617,7 @@ type VideoUpdateTranscriptResponse struct {
 		HasVideoUpload        respjson.Field
 		Height                respjson.Field
 		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
 		UpdatedAt             respjson.Field
 		Width                 respjson.Field
 		ExtraFields           map[string]respjson.Field
@@ -472,6 +630,192 @@ func (r VideoUpdateTranscriptResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoUpdateTranscriptResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type VideoUpdateTranscriptResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoUpdateTranscriptResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoUpdateTranscriptResponseCaptionTrack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoRequestCaptionTranslationResponse struct {
+	ID            string                                               `json:"id" api:"required"`
+	AccountID     string                                               `json:"accountId" api:"required"`
+	CaptionTracks []VideoRequestCaptionTranslationResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt     string                                               `json:"createdAt" api:"required"`
+	// Any of "Video".
+	Type                  VideoRequestCaptionTranslationResponseType `json:"type" api:"required"`
+	CaptionsUpdatedAt     string                                     `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                                     `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                                     `json:"description" api:"nullable"`
+	Duration              float64                                    `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                                       `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                                    `json:"height" api:"nullable"`
+	Name                  string                                     `json:"name" api:"nullable"`
+	SourceLanguageCode    string                                     `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                                     `json:"updatedAt" api:"nullable"`
+	Width                 float64                                    `json:"width" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
+		CreatedAt             respjson.Field
+		Type                  respjson.Field
+		CaptionsUpdatedAt     respjson.Field
+		CaptionsUpdatedByName respjson.Field
+		Description           respjson.Field
+		Duration              respjson.Field
+		HasVideoUpload        respjson.Field
+		Height                respjson.Field
+		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
+		UpdatedAt             respjson.Field
+		Width                 respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoRequestCaptionTranslationResponse) RawJSON() string { return r.JSON.raw }
+func (r *VideoRequestCaptionTranslationResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoRequestCaptionTranslationResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoRequestCaptionTranslationResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoRequestCaptionTranslationResponseCaptionTrack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoRequestCaptionTranslationResponseType string
+
+const (
+	VideoRequestCaptionTranslationResponseTypeVideo VideoRequestCaptionTranslationResponseType = "Video"
+)
+
+type VideoCancelCaptionTranslationResponse struct {
+	ID            string                                              `json:"id" api:"required"`
+	AccountID     string                                              `json:"accountId" api:"required"`
+	CaptionTracks []VideoCancelCaptionTranslationResponseCaptionTrack `json:"captionTracks" api:"required"`
+	CreatedAt     string                                              `json:"createdAt" api:"required"`
+	// Any of "Video".
+	Type                  VideoCancelCaptionTranslationResponseType `json:"type" api:"required"`
+	CaptionsUpdatedAt     string                                    `json:"captionsUpdatedAt" api:"nullable"`
+	CaptionsUpdatedByName string                                    `json:"captionsUpdatedByName" api:"nullable"`
+	Description           string                                    `json:"description" api:"nullable"`
+	Duration              float64                                   `json:"duration" api:"nullable"`
+	HasVideoUpload        bool                                      `json:"hasVideoUpload" api:"nullable"`
+	Height                float64                                   `json:"height" api:"nullable"`
+	Name                  string                                    `json:"name" api:"nullable"`
+	SourceLanguageCode    string                                    `json:"sourceLanguageCode" api:"nullable"`
+	UpdatedAt             string                                    `json:"updatedAt" api:"nullable"`
+	Width                 float64                                   `json:"width" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID                    respjson.Field
+		AccountID             respjson.Field
+		CaptionTracks         respjson.Field
+		CreatedAt             respjson.Field
+		Type                  respjson.Field
+		CaptionsUpdatedAt     respjson.Field
+		CaptionsUpdatedByName respjson.Field
+		Description           respjson.Field
+		Duration              respjson.Field
+		HasVideoUpload        respjson.Field
+		Height                respjson.Field
+		Name                  respjson.Field
+		SourceLanguageCode    respjson.Field
+		UpdatedAt             respjson.Field
+		Width                 respjson.Field
+		ExtraFields           map[string]respjson.Field
+		raw                   string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoCancelCaptionTranslationResponse) RawJSON() string { return r.JSON.raw }
+func (r *VideoCancelCaptionTranslationResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoCancelCaptionTranslationResponseCaptionTrack struct {
+	IsMachineTranslated bool   `json:"isMachineTranslated" api:"required"`
+	Label               string `json:"label" api:"required"`
+	LanguageCode        string `json:"languageCode" api:"required"`
+	Origin              string `json:"origin" api:"required"`
+	Status              string `json:"status" api:"required"`
+	URL                 string `json:"url" api:"required"`
+	HumanEditedAt       string `json:"humanEditedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		IsMachineTranslated respjson.Field
+		Label               respjson.Field
+		LanguageCode        respjson.Field
+		Origin              respjson.Field
+		Status              respjson.Field
+		URL                 respjson.Field
+		HumanEditedAt       respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoCancelCaptionTranslationResponseCaptionTrack) RawJSON() string { return r.JSON.raw }
+func (r *VideoCancelCaptionTranslationResponseCaptionTrack) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoCancelCaptionTranslationResponseType string
+
+const (
+	VideoCancelCaptionTranslationResponseTypeVideo VideoCancelCaptionTranslationResponseType = "Video"
+)
 
 type VideoAnalyticsResponse struct {
 	HasMore bool                         `json:"hasMore" api:"required"`
@@ -590,7 +934,8 @@ type VideoNewParams struct {
 	MimeType    VideoNewParamsMimeType `json:"mimeType,omitzero" api:"required"`
 	Description param.Opt[string]      `json:"description,omitzero"`
 	// Video title. Defaults to `New Video` when omitted.
-	Name param.Opt[string] `json:"name,omitzero"`
+	Name               param.Opt[string] `json:"name,omitzero"`
+	SourceLanguageCode param.Opt[string] `json:"sourceLanguageCode,omitzero"`
 	paramObj
 }
 
@@ -632,7 +977,8 @@ type VideoUploadParams struct {
 	// Content type for the replacement original video: `MP4` or `WEBM`.
 	//
 	// Any of "MP4", "WEBM".
-	MimeType VideoUploadParamsMimeType `json:"mimeType,omitzero" api:"required"`
+	MimeType           VideoUploadParamsMimeType `json:"mimeType,omitzero" api:"required"`
+	SourceLanguageCode param.Opt[string]         `json:"sourceLanguageCode,omitzero"`
 	paramObj
 }
 
@@ -652,6 +998,19 @@ const (
 	VideoUploadParamsMimeTypeWebm VideoUploadParamsMimeType = "WEBM"
 )
 
+type VideoTranscriptParams struct {
+	LanguageCode param.Opt[string] `query:"languageCode,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [VideoTranscriptParams]'s query parameters as `url.Values`.
+func (r VideoTranscriptParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type VideoUpdateTranscriptParams struct {
 	// Transcript text, limited to 1 MB.
 	Content string `json:"content" api:"required"`
@@ -659,7 +1018,8 @@ type VideoUpdateTranscriptParams struct {
 	// saved.
 	//
 	// Any of "SRT", "VTT".
-	Format VideoUpdateTranscriptParamsFormat `json:"format,omitzero" api:"required"`
+	Format       VideoUpdateTranscriptParamsFormat `json:"format,omitzero" api:"required"`
+	LanguageCode param.Opt[string]                 `json:"languageCode,omitzero"`
 	paramObj
 }
 
@@ -679,6 +1039,33 @@ const (
 	VideoUpdateTranscriptParamsFormatSrt VideoUpdateTranscriptParamsFormat = "SRT"
 	VideoUpdateTranscriptParamsFormatVtt VideoUpdateTranscriptParamsFormat = "VTT"
 )
+
+type VideoRequestCaptionTranslationParams struct {
+	LanguageCode string          `json:"languageCode" api:"required"`
+	Replace      param.Opt[bool] `json:"replace,omitzero"`
+	paramObj
+}
+
+func (r VideoRequestCaptionTranslationParams) MarshalJSON() (data []byte, err error) {
+	type shadow VideoRequestCaptionTranslationParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VideoRequestCaptionTranslationParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoCancelCaptionTranslationParams struct {
+	LanguageCode string `json:"languageCode" api:"required"`
+	paramObj
+}
+
+func (r VideoCancelCaptionTranslationParams) MarshalJSON() (data []byte, err error) {
+	type shadow VideoCancelCaptionTranslationParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *VideoCancelCaptionTranslationParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type VideoAnalyticsParams struct {
 	// Inclusive UTC start day in `YYYY-MM-DD` format.

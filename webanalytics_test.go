@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go/v2"
-	"github.com/with-ours/platform-sdk-go/v2/internal/testutil"
-	"github.com/with-ours/platform-sdk-go/v2/option"
+	"github.com/with-ours/platform-sdk-go/v3"
+	"github.com/with-ours/platform-sdk-go/v3/internal/testutil"
+	"github.com/with-ours/platform-sdk-go/v3/option"
 )
 
 func TestWebAnalyticsOverviewWithOptionalParams(t *testing.T) {
@@ -185,7 +185,7 @@ func TestWebAnalyticsCurrentVisitorsWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestWebAnalyticsJourneyWithOptionalParams(t *testing.T) {
+func TestWebAnalyticsPathExplorerWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -197,16 +197,16 @@ func TestWebAnalyticsJourneyWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebAnalytics.Journey(context.TODO(), oursprivacy.WebAnalyticsJourneyParams{
+	_, err := client.WebAnalytics.PathExplorer(context.TODO(), oursprivacy.WebAnalyticsPathExplorerParams{
 		From:        time.Now(),
 		Path:        "path",
 		To:          time.Now(),
-		Direction:   oursprivacy.WebAnalyticsJourneyParamsDirectionForward,
+		Direction:   oursprivacy.WebAnalyticsPathExplorerParamsDirectionForward,
 		ExcludeBots: oursprivacy.Bool(true),
 		Filters:     oursprivacy.String("filters"),
 		Limit:       oursprivacy.Int(1),
 		Search:      oursprivacy.String("search"),
-		StepKind:    oursprivacy.WebAnalyticsJourneyParamsStepKindPage,
+		StepKind:    oursprivacy.WebAnalyticsPathExplorerParamsStepKindPage,
 		WebSourceID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 	})
 	if err != nil {

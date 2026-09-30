@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/v2/option"
-	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
-	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v3/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v3/option"
+	"github.com/with-ours/platform-sdk-go/v3/packages/pagination"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/packages/respjson"
 )
 
 // TagManagerTriggerService contains methods and other services that help with

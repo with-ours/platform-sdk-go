@@ -13,7 +13,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v3/option"
 )
 
-func TestDefaultMappingList(t *testing.T) {
+func TestTestEventListWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,7 +25,10 @@ func TestDefaultMappingList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.DefaultMappings.List(context.TODO())
+	_, err := client.TestEvents.List(context.TODO(), oursprivacy.TestEventListParams{
+		Cursor: oursprivacy.String("cursor"),
+		Limit:  oursprivacy.Int(25),
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -35,7 +38,7 @@ func TestDefaultMappingList(t *testing.T) {
 	}
 }
 
-func TestDefaultMappingGet(t *testing.T) {
+func TestTestEventNewWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -47,40 +50,64 @@ func TestDefaultMappingGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.DefaultMappings.Get(context.TODO(), "id")
-	if err != nil {
-		var apierr *oursprivacy.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestDefaultMappingReplaceWithOptionalParams(t *testing.T) {
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := oursprivacy.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.DefaultMappings.Replace(
-		context.TODO(),
-		"id",
-		oursprivacy.DefaultMappingReplaceParams{
-			Mappings: []oursprivacy.DefaultMappingReplaceParamsMapping{{
-				Map:          "map",
-				Property:     "property",
-				Modification: "CamelCase",
-			}},
-			IsEnabled: oursprivacy.Bool(true),
+	_, err := client.TestEvents.New(context.TODO(), oursprivacy.TestEventNewParams{
+		EventName:         "Purchase",
+		DefaultProperties: map[string]any{},
+		DistinctID:        oursprivacy.String("distinctId"),
+		EventProperties: map[string]any{
+			"revenue":  42.5,
+			"currency": "USD",
 		},
+		SourceID: oursprivacy.String("sourceId"),
+		UserProperties: map[string]any{
+			"email": "test@example.com",
+		},
+		VisitorID: oursprivacy.String("visitorId"),
+	})
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTestEventGet(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
 	)
+	_, err := client.TestEvents.Get(context.TODO(), "a1b2c3d4:ck9x8y7z6w5v4u3t")
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestTestEventDispatches(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.TestEvents.Dispatches(context.TODO(), "a1b2c3d4:ck9x8y7z6w5v4u3t")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {

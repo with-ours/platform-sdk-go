@@ -3,8 +3,8 @@
 package oursprivacy
 
 import (
-	"github.com/with-ours/platform-sdk-go/v2/internal/apierror"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apierror"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding
