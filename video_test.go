@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/with-ours/platform-sdk-go/v2"
-	"github.com/with-ours/platform-sdk-go/v2/internal/testutil"
-	"github.com/with-ours/platform-sdk-go/v2/option"
+	"github.com/with-ours/platform-sdk-go/v3"
+	"github.com/with-ours/platform-sdk-go/v3/internal/testutil"
+	"github.com/with-ours/platform-sdk-go/v3/option"
 )
 
 func TestVideoListWithOptionalParams(t *testing.T) {
@@ -52,9 +52,10 @@ func TestVideoNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Videos.New(context.TODO(), oursprivacy.VideoNewParams{
-		MimeType:    oursprivacy.VideoNewParamsMimeTypeMP4,
-		Description: oursprivacy.String("description"),
-		Name:        oursprivacy.String("name"),
+		MimeType:           oursprivacy.VideoNewParamsMimeTypeMP4,
+		Description:        oursprivacy.String("description"),
+		Name:               oursprivacy.String("name"),
+		SourceLanguageCode: oursprivacy.String("sourceLanguageCode"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -142,7 +143,7 @@ func TestVideoDelete(t *testing.T) {
 	}
 }
 
-func TestVideoUpload(t *testing.T) {
+func TestVideoUploadWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -158,7 +159,8 @@ func TestVideoUpload(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.VideoUploadParams{
-			MimeType: oursprivacy.VideoUploadParamsMimeTypeMP4,
+			MimeType:           oursprivacy.VideoUploadParamsMimeTypeMP4,
+			SourceLanguageCode: oursprivacy.String("sourceLanguageCode"),
 		},
 	)
 	if err != nil {
@@ -170,7 +172,7 @@ func TestVideoUpload(t *testing.T) {
 	}
 }
 
-func TestVideoTranscript(t *testing.T) {
+func TestVideoTranscriptWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -182,7 +184,13 @@ func TestVideoTranscript(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Videos.Transcript(context.TODO(), "id")
+	_, err := client.Videos.Transcript(
+		context.TODO(),
+		"id",
+		oursprivacy.VideoTranscriptParams{
+			LanguageCode: oursprivacy.String("languageCode"),
+		},
+	)
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -192,7 +200,7 @@ func TestVideoTranscript(t *testing.T) {
 	}
 }
 
-func TestVideoUpdateTranscript(t *testing.T) {
+func TestVideoUpdateTranscriptWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -208,8 +216,66 @@ func TestVideoUpdateTranscript(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.VideoUpdateTranscriptParams{
-			Content: "x",
-			Format:  oursprivacy.VideoUpdateTranscriptParamsFormatSrt,
+			Content:      "x",
+			Format:       oursprivacy.VideoUpdateTranscriptParamsFormatSrt,
+			LanguageCode: oursprivacy.String("languageCode"),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVideoRequestCaptionTranslationWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Videos.RequestCaptionTranslation(
+		context.TODO(),
+		"id",
+		oursprivacy.VideoRequestCaptionTranslationParams{
+			LanguageCode: "languageCode",
+			Replace:      oursprivacy.Bool(true),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVideoCancelCaptionTranslation(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Videos.CancelCaptionTranslation(
+		context.TODO(),
+		"id",
+		oursprivacy.VideoCancelCaptionTranslationParams{
+			LanguageCode: "languageCode",
 		},
 	)
 	if err != nil {

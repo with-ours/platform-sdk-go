@@ -9,8 +9,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/v2/option"
+	"github.com/with-ours/platform-sdk-go/v3/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v3/option"
 )
 
 // Client creates a struct with services and top level methods that help with
@@ -53,6 +53,8 @@ type Client struct {
 	WebScanners                WebScannerService
 	PersonalizationProperties  PersonalizationPropertyService
 	Analytics                  AnalyticsService
+	JourneyFlows               JourneyFlowService
+	TestEvents                 TestEventService
 }
 
 // DefaultClientOptions read from the environment (OURS_PRIVACY_API_KEY,
@@ -120,6 +122,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WebScanners = NewWebScannerService(opts...)
 	r.PersonalizationProperties = NewPersonalizationPropertyService(opts...)
 	r.Analytics = NewAnalyticsService(opts...)
+	r.JourneyFlows = NewJourneyFlowService(opts...)
+	r.TestEvents = NewTestEventService(opts...)
 
 	return
 }

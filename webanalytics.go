@@ -9,12 +9,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/v2/option"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
-	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v3/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v3/option"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/packages/respjson"
 )
 
 // WebAnalyticsService contains methods and other services that help with
@@ -95,9 +95,9 @@ func (r *WebAnalyticsService) CurrentVisitors(ctx context.Context, query WebAnal
 // Return the next or previous journey steps for a pinned path. The `path` and
 // `filters` query parameters are JSON-encoded arrays. Requires scope:
 // web-analytics:view
-func (r *WebAnalyticsService) Journey(ctx context.Context, query WebAnalyticsJourneyParams, opts ...option.RequestOption) (res *WebAnalyticsJourneyResponse, err error) {
+func (r *WebAnalyticsService) PathExplorer(ctx context.Context, query WebAnalyticsPathExplorerParams, opts ...option.RequestOption) (res *WebAnalyticsPathExplorerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := "rest/v1/web-analytics/journey"
+	path := "rest/v1/web-analytics/path-explorer"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -356,10 +356,10 @@ func (r *WebAnalyticsCurrentVisitorsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WebAnalyticsJourneyResponse struct {
-	AnchorSessions int64                             `json:"anchorSessions" api:"required"`
-	HasMore        bool                              `json:"hasMore" api:"required"`
-	Steps          []WebAnalyticsJourneyResponseStep `json:"steps" api:"required"`
+type WebAnalyticsPathExplorerResponse struct {
+	AnchorSessions int64                                  `json:"anchorSessions" api:"required"`
+	HasMore        bool                                   `json:"hasMore" api:"required"`
+	Steps          []WebAnalyticsPathExplorerResponseStep `json:"steps" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AnchorSessions respjson.Field
@@ -371,12 +371,12 @@ type WebAnalyticsJourneyResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebAnalyticsJourneyResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebAnalyticsJourneyResponse) UnmarshalJSON(data []byte) error {
+func (r WebAnalyticsPathExplorerResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsPathExplorerResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WebAnalyticsJourneyResponseStep struct {
+type WebAnalyticsPathExplorerResponseStep struct {
 	IsOther    bool   `json:"isOther" api:"required"`
 	IsTerminal bool   `json:"isTerminal" api:"required"`
 	Key        string `json:"key" api:"required"`
@@ -398,8 +398,8 @@ type WebAnalyticsJourneyResponseStep struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebAnalyticsJourneyResponseStep) RawJSON() string { return r.JSON.raw }
-func (r *WebAnalyticsJourneyResponseStep) UnmarshalJSON(data []byte) error {
+func (r WebAnalyticsPathExplorerResponseStep) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsPathExplorerResponseStep) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -633,17 +633,17 @@ func (r WebAnalyticsCurrentVisitorsParams) URLQuery() (v url.Values, err error) 
 	})
 }
 
-type WebAnalyticsJourneyParams struct {
+type WebAnalyticsPathExplorerParams struct {
 	// Inclusive lower bound of the analysis window as `YYYY-MM-DD`.
 	From time.Time `query:"from" api:"required" format:"date" json:"-"`
-	// JSON-encoded ordered path of opaque journey step keys. Use an empty array to
-	// request first-column candidates.
+	// JSON-encoded ordered path of opaque path explorer step keys. Use an empty array
+	// to request first-column candidates.
 	Path string `query:"path" api:"required" json:"-"`
 	// Inclusive upper bound of the analysis window as `YYYY-MM-DD`.
 	To time.Time `query:"to" api:"required" format:"date" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 journey filters. Supports web analytics
+	// Optional JSON-encoded array of up to 20 cohort filters. Supports web analytics
 	// dimensions plus `event_name`, `ep_currency`, `ep_appointment_id`,
 	// `ep_appointment_status`, `ep_service_line`, `ep_provider_id`, `ep_location_id`,
 	// `ep_booking_channel`, `ep_revenue_type`, `ep_call_outcome`, and `ep_staff_id`.
@@ -655,31 +655,31 @@ type WebAnalyticsJourneyParams struct {
 	// Optional web source UUID. Omit to aggregate all web sources in the account.
 	WebSourceID param.Opt[string] `query:"webSourceId,omitzero" format:"uuid" json:"-"`
 	// Any of "forward", "reverse".
-	Direction WebAnalyticsJourneyParamsDirection `query:"direction,omitzero" json:"-"`
+	Direction WebAnalyticsPathExplorerParamsDirection `query:"direction,omitzero" json:"-"`
 	// Any of "PAGE", "EVENT".
-	StepKind WebAnalyticsJourneyParamsStepKind `query:"stepKind,omitzero" json:"-"`
+	StepKind WebAnalyticsPathExplorerParamsStepKind `query:"stepKind,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [WebAnalyticsJourneyParams]'s query parameters as
+// URLQuery serializes [WebAnalyticsPathExplorerParams]'s query parameters as
 // `url.Values`.
-func (r WebAnalyticsJourneyParams) URLQuery() (v url.Values, err error) {
+func (r WebAnalyticsPathExplorerParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
 
-type WebAnalyticsJourneyParamsDirection string
+type WebAnalyticsPathExplorerParamsDirection string
 
 const (
-	WebAnalyticsJourneyParamsDirectionForward WebAnalyticsJourneyParamsDirection = "forward"
-	WebAnalyticsJourneyParamsDirectionReverse WebAnalyticsJourneyParamsDirection = "reverse"
+	WebAnalyticsPathExplorerParamsDirectionForward WebAnalyticsPathExplorerParamsDirection = "forward"
+	WebAnalyticsPathExplorerParamsDirectionReverse WebAnalyticsPathExplorerParamsDirection = "reverse"
 )
 
-type WebAnalyticsJourneyParamsStepKind string
+type WebAnalyticsPathExplorerParamsStepKind string
 
 const (
-	WebAnalyticsJourneyParamsStepKindPage  WebAnalyticsJourneyParamsStepKind = "PAGE"
-	WebAnalyticsJourneyParamsStepKindEvent WebAnalyticsJourneyParamsStepKind = "EVENT"
+	WebAnalyticsPathExplorerParamsStepKindPage  WebAnalyticsPathExplorerParamsStepKind = "PAGE"
+	WebAnalyticsPathExplorerParamsStepKindEvent WebAnalyticsPathExplorerParamsStepKind = "EVENT"
 )

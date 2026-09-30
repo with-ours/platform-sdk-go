@@ -10,13 +10,13 @@ import (
 	"net/url"
 	"slices"
 
-	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/v2/option"
-	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
-	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v3/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v3/option"
+	"github.com/with-ours/platform-sdk-go/v3/packages/pagination"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/packages/respjson"
 )
 
 // ShortLinkService contains methods and other services that help with interacting
@@ -163,6 +163,10 @@ type ShortLinkListResponse struct {
 	// Organization id that owns this short link.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether saved published design campaign tags are added to the destination when
+	// enabled. Existing destination UTMs stay unchanged. Defaults to true for new
+	// short links and false for existing links without a stored setting.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkListResponseStatus `json:"status" api:"required"`
 	// Whether a user selected this code instead of using a generated code.
@@ -187,20 +191,21 @@ type ShortLinkListResponse struct {
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                     respjson.Field
-		AccountID              respjson.Field
-		CreatedAt              respjson.Field
-		Status                 respjson.Field
-		HasCustomShortLinkCode respjson.Field
-		IsPublished            respjson.Field
-		Name                   respjson.Field
-		Pixel                  respjson.Field
-		RedirectURL            respjson.Field
-		ShortLinkCode          respjson.Field
-		ShortLinkDesign        respjson.Field
-		ShortURL               respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		HasCustomShortLinkCode  respjson.Field
+		IsPublished             respjson.Field
+		Name                    respjson.Field
+		Pixel                   respjson.Field
+		RedirectURL             respjson.Field
+		ShortLinkCode           respjson.Field
+		ShortLinkDesign         respjson.Field
+		ShortURL                respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -222,6 +227,10 @@ type ShortLinkNewResponse struct {
 	// Organization id that owns this short link.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether saved published design campaign tags are added to the destination when
+	// enabled. Existing destination UTMs stay unchanged. Defaults to true for new
+	// short links and false for existing links without a stored setting.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkNewResponseStatus `json:"status" api:"required"`
 	// Whether a user selected this code instead of using a generated code.
@@ -246,20 +255,21 @@ type ShortLinkNewResponse struct {
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                     respjson.Field
-		AccountID              respjson.Field
-		CreatedAt              respjson.Field
-		Status                 respjson.Field
-		HasCustomShortLinkCode respjson.Field
-		IsPublished            respjson.Field
-		Name                   respjson.Field
-		Pixel                  respjson.Field
-		RedirectURL            respjson.Field
-		ShortLinkCode          respjson.Field
-		ShortLinkDesign        respjson.Field
-		ShortURL               respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		HasCustomShortLinkCode  respjson.Field
+		IsPublished             respjson.Field
+		Name                    respjson.Field
+		Pixel                   respjson.Field
+		RedirectURL             respjson.Field
+		ShortLinkCode           respjson.Field
+		ShortLinkDesign         respjson.Field
+		ShortURL                respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -281,6 +291,10 @@ type ShortLinkGetResponse struct {
 	// Organization id that owns this short link.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether saved published design campaign tags are added to the destination when
+	// enabled. Existing destination UTMs stay unchanged. Defaults to true for new
+	// short links and false for existing links without a stored setting.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkGetResponseStatus `json:"status" api:"required"`
 	// Whether a user selected this code instead of using a generated code.
@@ -305,20 +319,21 @@ type ShortLinkGetResponse struct {
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                     respjson.Field
-		AccountID              respjson.Field
-		CreatedAt              respjson.Field
-		Status                 respjson.Field
-		HasCustomShortLinkCode respjson.Field
-		IsPublished            respjson.Field
-		Name                   respjson.Field
-		Pixel                  respjson.Field
-		RedirectURL            respjson.Field
-		ShortLinkCode          respjson.Field
-		ShortLinkDesign        respjson.Field
-		ShortURL               respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		HasCustomShortLinkCode  respjson.Field
+		IsPublished             respjson.Field
+		Name                    respjson.Field
+		Pixel                   respjson.Field
+		RedirectURL             respjson.Field
+		ShortLinkCode           respjson.Field
+		ShortLinkDesign         respjson.Field
+		ShortURL                respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -340,6 +355,10 @@ type ShortLinkUpdateResponse struct {
 	// Organization id that owns this short link.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether saved published design campaign tags are added to the destination when
+	// enabled. Existing destination UTMs stay unchanged. Defaults to true for new
+	// short links and false for existing links without a stored setting.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkUpdateResponseStatus `json:"status" api:"required"`
 	// Whether a user selected this code instead of using a generated code.
@@ -364,20 +383,21 @@ type ShortLinkUpdateResponse struct {
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                     respjson.Field
-		AccountID              respjson.Field
-		CreatedAt              respjson.Field
-		Status                 respjson.Field
-		HasCustomShortLinkCode respjson.Field
-		IsPublished            respjson.Field
-		Name                   respjson.Field
-		Pixel                  respjson.Field
-		RedirectURL            respjson.Field
-		ShortLinkCode          respjson.Field
-		ShortLinkDesign        respjson.Field
-		ShortURL               respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		HasCustomShortLinkCode  respjson.Field
+		IsPublished             respjson.Field
+		Name                    respjson.Field
+		Pixel                   respjson.Field
+		RedirectURL             respjson.Field
+		ShortLinkCode           respjson.Field
+		ShortLinkDesign         respjson.Field
+		ShortURL                respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -416,6 +436,10 @@ type ShortLinkCloneResponse struct {
 	// Organization id that owns this short link.
 	AccountID string `json:"accountId" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
+	// Whether saved published design campaign tags are added to the destination when
+	// enabled. Existing destination UTMs stay unchanged. Defaults to true for new
+	// short links and false for existing links without a stored setting.
+	ForwardUtmToDestination bool `json:"forwardUtmToDestination" api:"required"`
 	// Any of "Disabled", "Enabled".
 	Status ShortLinkCloneResponseStatus `json:"status" api:"required"`
 	// Whether a user selected this code instead of using a generated code.
@@ -440,20 +464,21 @@ type ShortLinkCloneResponse struct {
 	ShortURL string `json:"shortUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID                     respjson.Field
-		AccountID              respjson.Field
-		CreatedAt              respjson.Field
-		Status                 respjson.Field
-		HasCustomShortLinkCode respjson.Field
-		IsPublished            respjson.Field
-		Name                   respjson.Field
-		Pixel                  respjson.Field
-		RedirectURL            respjson.Field
-		ShortLinkCode          respjson.Field
-		ShortLinkDesign        respjson.Field
-		ShortURL               respjson.Field
-		ExtraFields            map[string]respjson.Field
-		raw                    string
+		ID                      respjson.Field
+		AccountID               respjson.Field
+		CreatedAt               respjson.Field
+		ForwardUtmToDestination respjson.Field
+		Status                  respjson.Field
+		HasCustomShortLinkCode  respjson.Field
+		IsPublished             respjson.Field
+		Name                    respjson.Field
+		Pixel                   respjson.Field
+		RedirectURL             respjson.Field
+		ShortLinkCode           respjson.Field
+		ShortLinkDesign         respjson.Field
+		ShortURL                respjson.Field
+		ExtraFields             map[string]respjson.Field
+		raw                     string
 	} `json:"-"`
 }
 
@@ -617,6 +642,9 @@ type ShortLinkNewParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Destination URL the short link redirects to. Must be a valid URL.
 	RedirectURL param.Opt[string] `json:"redirectUrl,omitzero"`
+	// When enabled, add saved published design campaign tags to the destination after
+	// publishing. Defaults to true when omitted; null is rejected.
+	ForwardUtmToDestination param.Opt[bool] `json:"forwardUtmToDestination,omitzero"`
 	// QR code visual styling.
 	Qr any `json:"qr,omitzero"`
 	// Campaign / UTM tags appended to the tracked short-link URL.
@@ -641,8 +669,11 @@ type ShortLinkUpdateParams struct {
 	// Whether the short link resolves at the edge. Send `Enabled` or `Disabled`;
 	// `null` is rejected since storage cannot represent it.
 	Status param.Opt[string] `json:"status,omitzero"`
-	Qr     any               `json:"qr,omitzero"`
-	Utm    any               `json:"utm,omitzero"`
+	// When enabled, add saved published design campaign tags to the destination after
+	// publishing. Omit to leave unchanged; null is rejected.
+	ForwardUtmToDestination param.Opt[bool] `json:"forwardUtmToDestination,omitzero"`
+	Qr                      any             `json:"qr,omitzero"`
+	Utm                     any             `json:"utm,omitzero"`
 	paramObj
 }
 

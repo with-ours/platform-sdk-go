@@ -2,7 +2,7 @@ package paramutil
 
 import (
 	"fmt"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
 	"reflect"
 )
 

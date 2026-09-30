@@ -11,12 +11,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
-	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
-	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
-	"github.com/with-ours/platform-sdk-go/v2/option"
-	"github.com/with-ours/platform-sdk-go/v2/packages/param"
-	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v3/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v3/internal/requestconfig"
+	"github.com/with-ours/platform-sdk-go/v3/option"
+	"github.com/with-ours/platform-sdk-go/v3/packages/param"
+	"github.com/with-ours/platform-sdk-go/v3/packages/respjson"
 )
 
 // WebScannerService contains methods and other services that help with interacting
@@ -48,12 +48,16 @@ func (r *WebScannerService) List(ctx context.Context, opts ...option.RequestOpti
 	return res, err
 }
 
-// Create a new web scanner for a root domain. A first scan is enqueued
-// automatically after creation on a best-effort basis. `rootDomain` is required;
-// missing, empty, or malformed values are rejected as HTTP 400. Everything else
-// falls back to defaults (`status: Enabled`, `urlLimit: 100`, no excluded
-// patterns, no extra seed URLs). The returned entity is the created scanner row
-// and may not yet reflect async scan-state changes. Requires scope:
+// Create a new web scanner for a root domain. Call GET /rest/v1/web-scanners first
+// to check for an existing scanner: each successful request creates a new scanner,
+// even when the root domain is already used. If the response is ambiguous, check
+// the list before retrying to avoid creating a duplicate. A first scan is enqueued
+// automatically after creation on a best-effort basis; the returned entity may not
+// yet reflect asynchronous scan-state changes. `rootDomain` is required; missing,
+// empty, or malformed values are rejected as HTTP 400. Everything else falls back
+// to defaults (`status: Enabled`, `urlLimit: 100`, `scanSchedule: weekly`, no
+// excluded patterns, no extra seed URLs). Invalid configuration or account limits
+// return HTTP 409. Requires scope: `webScanner:create`. Requires scope:
 // webScanner:create
 func (r *WebScannerService) New(ctx context.Context, body WebScannerNewParams, opts ...option.RequestOption) (res *WebScannerNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -186,14 +190,15 @@ func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, que
 // List the third-party trackers (requests) found on a scan run, with their risk,
 // category, the pages they were seen on, redacted deterministic PII/PHI data-flow
 // metadata, and whether each host is already covered by a CMP consent service.
-// Data-flow findings include only recipient metadata, categories, safe field
-// names, and counts; query and body values are never returned. Defaults to the
-// latest run; pass `date` (an ISO-8601 timestamp; only the calendar day is used to
-// select the run) to read an earlier run. Documented exception to the
-// cursor-pagination standard: paginates with `limit` and `offset` because each run
-// is an immutable snapshot. A host that is neither covered (`coveredByCmp: false`)
-// nor matched by a suppression rule still needs a triage decision — resolve it by
-// adding the host to a CMP consent service or by creating a suppression rule with
+// Data-flow findings include only recipient metadata, categories, source
+// locations, safe query/body field names when available, and counts; matched
+// query, body, and pathname values are never returned. Defaults to the latest run;
+// pass `date` (an ISO-8601 timestamp; only the calendar day is used to select the
+// run) to read an earlier run. Documented exception to the cursor-pagination
+// standard: paginates with `limit` and `offset` because each run is an immutable
+// snapshot. A host that is neither covered (`coveredByCmp: false`) nor matched by
+// a suppression rule still needs a triage decision — resolve it by adding the host
+// to a CMP consent service or by creating a suppression rule with
 // `POST /rest/v1/web-scanner-rules`. Use `GET /rest/v1/web-scanners/{id}/summary`
 // for the rolled-up counts. Requires scope: webScanner:find
 func (r *WebScannerService) Findings(ctx context.Context, id string, query WebScannerFindingsParams, opts ...option.RequestOption) (res *WebScannerFindingsResponse, err error) {
@@ -1243,7 +1248,7 @@ type WebScannerFindingsResponseItemDataFlowSignal struct {
 	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
 	// "ssn".
 	Category string `json:"category" api:"required"`
-	// Any of "query_parameter", "request_body".
+	// Any of "query_parameter", "request_body", "url_path".
 	Source   string `json:"source" api:"required"`
 	Encoding string `json:"encoding" api:"nullable"`
 	Field    string `json:"field" api:"nullable"`
@@ -1624,7 +1629,7 @@ type WebScannerSummaryResponseTopUncoveredHostDataFlowSignal struct {
 	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
 	// "ssn".
 	Category string `json:"category" api:"required"`
-	// Any of "query_parameter", "request_body".
+	// Any of "query_parameter", "request_body", "url_path".
 	Source   string `json:"source" api:"required"`
 	Encoding string `json:"encoding" api:"nullable"`
 	Field    string `json:"field" api:"nullable"`
@@ -1880,7 +1885,7 @@ type WebScannerDecisionQueueResponseEntityDataFlowSignal struct {
 	// "health_plan_id", "ip_address", "medical_record_number", "medication", "phone",
 	// "ssn".
 	Category string `json:"category" api:"required"`
-	// Any of "query_parameter", "request_body".
+	// Any of "query_parameter", "request_body", "url_path".
 	Source   string `json:"source" api:"required"`
 	Encoding string `json:"encoding" api:"nullable"`
 	Field    string `json:"field" api:"nullable"`
@@ -1976,8 +1981,9 @@ type WebScannerNewParams struct {
 	// Root domain to crawl (e.g. `example.com`). Required on create. Missing or empty
 	// values fail request validation as HTTP 400. Present-but-malformed values are
 	// rejected as HTTP 400 with the validation reason in `details`.
-	RootDomain string            `json:"rootDomain" api:"required"`
-	Name       param.Opt[string] `json:"name,omitzero"`
+	RootDomain string `json:"rootDomain" api:"required"`
+	// Optional display name for this web scanner.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Maximum URLs to crawl per scan (1–20,000). Defaults to 100 when omitted.
 	URLLimit param.Opt[float64] `json:"urlLimit,omitzero"`
 	// URL glob patterns to skip during crawl. Max 100 entries.
@@ -1992,6 +1998,8 @@ type WebScannerNewParams struct {
 	//
 	// Any of "daily", "manual", "monthly", "weekly".
 	ScanSchedule WebScannerNewParamsScanSchedule `json:"scanSchedule,omitzero"`
+	// Whether this web scanner is enabled. Defaults to `Enabled`.
+	//
 	// Any of "Disabled", "Enabled".
 	Status WebScannerNewParamsStatus `json:"status,omitzero"`
 	paramObj
@@ -2018,6 +2026,7 @@ const (
 	WebScannerNewParamsScanScheduleWeekly  WebScannerNewParamsScanSchedule = "weekly"
 )
 
+// Whether this web scanner is enabled. Defaults to `Enabled`.
 type WebScannerNewParamsStatus string
 
 const (
