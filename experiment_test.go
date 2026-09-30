@@ -63,12 +63,34 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 		Key:                  oursprivacy.String("homepage-hero-headline-test"),
 		Metrics: oursprivacy.ExperimentNewParamsMetrics{
 			Primary: oursprivacy.ExperimentNewParamsMetricsPrimary{
-				EventName: oursprivacy.String("demo_requested"),
-				FunnelID:  oursprivacy.String("funnelId"),
+				EventMatchers: []oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcher{{
+					EventName: "x",
+					Filter: oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcherFilter{
+						Filter:  map[string]any{},
+						Version: 1,
+					},
+				}},
+				EventName:           oursprivacy.String("demo_requested"),
+				FunnelID:            oursprivacy.String("funnelId"),
+				GoalID:              oursprivacy.String("goalId"),
+				ValueMode:           oursprivacy.Bool(true),
+				Winsorize:           oursprivacy.Bool(true),
+				WinsorizePercentile: oursprivacy.Float(0),
 			},
 			Secondary: []oursprivacy.ExperimentNewParamsMetricsSecondary{{
-				EventName: oursprivacy.String("demo_requested"),
-				FunnelID:  oursprivacy.String("funnelId"),
+				EventMatchers: []oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcher{{
+					EventName: "x",
+					Filter: oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcherFilter{
+						Filter:  map[string]any{},
+						Version: 1,
+					},
+				}},
+				EventName:           oursprivacy.String("demo_requested"),
+				FunnelID:            oursprivacy.String("funnelId"),
+				GoalID:              oursprivacy.String("goalId"),
+				ValueMode:           oursprivacy.Bool(true),
+				Winsorize:           oursprivacy.Bool(true),
+				WinsorizePercentile: oursprivacy.Float(0),
 			}},
 		},
 		TargetingRules: oursprivacy.ExperimentNewParamsTargetingRules{
@@ -138,12 +160,34 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 			Key:                oursprivacy.String("key"),
 			Metrics: oursprivacy.ExperimentUpdateParamsMetrics{
 				Primary: oursprivacy.ExperimentUpdateParamsMetricsPrimary{
-					EventName: oursprivacy.String("demo_requested"),
-					FunnelID:  oursprivacy.String("funnelId"),
+					EventMatchers: []oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcher{{
+						EventName: "x",
+						Filter: oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter{
+							Filter:  map[string]any{},
+							Version: 1,
+						},
+					}},
+					EventName:           oursprivacy.String("demo_requested"),
+					FunnelID:            oursprivacy.String("funnelId"),
+					GoalID:              oursprivacy.String("goalId"),
+					ValueMode:           oursprivacy.Bool(true),
+					Winsorize:           oursprivacy.Bool(true),
+					WinsorizePercentile: oursprivacy.Float(0),
 				},
 				Secondary: []oursprivacy.ExperimentUpdateParamsMetricsSecondary{{
-					EventName: oursprivacy.String("demo_requested"),
-					FunnelID:  oursprivacy.String("funnelId"),
+					EventMatchers: []oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcher{{
+						EventName: "x",
+						Filter: oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter{
+							Filter:  map[string]any{},
+							Version: 1,
+						},
+					}},
+					EventName:           oursprivacy.String("demo_requested"),
+					FunnelID:            oursprivacy.String("funnelId"),
+					GoalID:              oursprivacy.String("goalId"),
+					ValueMode:           oursprivacy.Bool(true),
+					Winsorize:           oursprivacy.Bool(true),
+					WinsorizePercentile: oursprivacy.Float(0),
 				}},
 			},
 			Name: oursprivacy.String("name"),
@@ -422,6 +466,7 @@ func TestExperimentResultsWithOptionalParams(t *testing.T) {
 		"id",
 		oursprivacy.ExperimentResultsParams{
 			EventName: oursprivacy.String("demo_requested"),
+			GoalID:    oursprivacy.String("goal_checkout_complete"),
 		},
 	)
 	if err != nil {
@@ -450,6 +495,7 @@ func TestExperimentAnalysisWithOptionalParams(t *testing.T) {
 		"id",
 		oursprivacy.ExperimentAnalysisParams{
 			EventName: oursprivacy.String("demo_requested"),
+			GoalID:    oursprivacy.String("goal_checkout_complete"),
 		},
 	)
 	if err != nil {
@@ -479,6 +525,7 @@ func TestExperimentResultsTimeSeriesWithOptionalParams(t *testing.T) {
 		oursprivacy.ExperimentResultsTimeSeriesParams{
 			EndDate:   oursprivacy.String("2026-04-30"),
 			EventName: oursprivacy.String("demo_requested"),
+			GoalID:    oursprivacy.String("goal_checkout_complete"),
 			StartDate: oursprivacy.String("2026-04-01"),
 		},
 	)
