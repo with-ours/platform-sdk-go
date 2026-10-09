@@ -340,11 +340,64 @@ func TestConsentSettingAnalyticsWithOptionalParams(t *testing.T) {
 			CompareWithPreviousPeriod: oursprivacy.Bool(true),
 			ComparisonFrom:            oursprivacy.String("2026-03-01"),
 			ComparisonTo:              oursprivacy.String("2026-03-14"),
+			Filter:                    oursprivacy.String(`{"version":1,"filter":{"kind":"predicate","property":"event.source_id","operator":"eq","value":"source-1"}}`),
 			Granularity:               oursprivacy.ConsentSettingAnalyticsParamsGranularityDaily,
-			PagePath:                  oursprivacy.String("/pricing"),
-			Regions:                   oursprivacy.String("California"),
 		},
 	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConsentSettingAnalyticsMonthlyWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.ConsentSettings.AnalyticsMonthly(
+		context.TODO(),
+		"id",
+		oursprivacy.ConsentSettingAnalyticsMonthlyParams{
+			From:   "2026-04-01",
+			To:     "2026-04-30",
+			Filter: oursprivacy.String(`{"version":1,"filter":{"kind":"predicate","property":"event.source_id","operator":"eq","value":"source-1"}}`),
+		},
+	)
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestConsentSettingAnalyticsCapabilitiesWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.ConsentSettings.AnalyticsCapabilities(context.TODO(), oursprivacy.ConsentSettingAnalyticsCapabilitiesParams{
+		Kind: oursprivacy.ConsentSettingAnalyticsCapabilitiesParamsKindPages,
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -370,12 +423,13 @@ func TestConsentSettingPageAnalysisWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ConsentSettingPageAnalysisParams{
-			From:    "2026-04-01",
-			To:      "2026-04-30",
-			Limit:   oursprivacy.Int(1),
-			Offset:  oursprivacy.Int(0),
-			Regions: oursprivacy.String("California"),
-			Search:  oursprivacy.String("/checkout"),
+			From:        "2026-04-01",
+			To:          "2026-04-30",
+			Cursor:      oursprivacy.String("cursor"),
+			Filter:      oursprivacy.String(`{"version":1,"filter":{"kind":"predicate","property":"event.source_id","operator":"eq","value":"source-1"}}`),
+			Granularity: oursprivacy.ConsentSettingPageAnalysisParamsGranularityDaily,
+			Limit:       oursprivacy.Int(0),
+			Search:      oursprivacy.String("/checkout"),
 		},
 	)
 	if err != nil {
@@ -387,7 +441,7 @@ func TestConsentSettingPageAnalysisWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestConsentSettingAnalyticsByRegion(t *testing.T) {
+func TestConsentSettingAnalyticsByRegionWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -403,8 +457,10 @@ func TestConsentSettingAnalyticsByRegion(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ConsentSettingAnalyticsByRegionParams{
-			From: "2026-04-01",
-			To:   "2026-04-30",
+			From:        "2026-04-01",
+			To:          "2026-04-30",
+			Filter:      oursprivacy.String(`{"version":1,"filter":{"kind":"predicate","property":"event.source_id","operator":"eq","value":"source-1"}}`),
+			Granularity: oursprivacy.ConsentSettingAnalyticsByRegionParamsGranularityDaily,
 		},
 	)
 	if err != nil {

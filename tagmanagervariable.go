@@ -4,6 +4,7 @@ package oursprivacy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -42,7 +43,7 @@ func NewTagManagerVariableService(opts ...option.RequestOption) (r TagManagerVar
 // parameter — variables are always scoped to one parent container. Supports cursor
 // pagination via `limit` and `cursor`; the limit clamp is 1000 so a single request
 // can return the full set (the web-app workspace renders all variables in one
-// shot). Requires scope: tagManagers:find
+// shot). Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerVariableService) List(ctx context.Context, query TagManagerVariableListParams, opts ...option.RequestOption) (res *pagination.Cursor[TagManagerVariableListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -64,7 +65,7 @@ func (r *TagManagerVariableService) List(ctx context.Context, query TagManagerVa
 // parameter — variables are always scoped to one parent container. Supports cursor
 // pagination via `limit` and `cursor`; the limit clamp is 1000 so a single request
 // can return the full set (the web-app workspace renders all variables in one
-// shot). Requires scope: tagManagers:find
+// shot). Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerVariableService) ListAutoPaging(ctx context.Context, query TagManagerVariableListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TagManagerVariableListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -72,7 +73,7 @@ func (r *TagManagerVariableService) ListAutoPaging(ctx context.Context, query Ta
 // Create a new variable inside a tag manager. `tagManagerId` is required in the
 // body. Known input failures (e.g. duplicate variable name within the tag manager)
 // are returned as HTTP 409 with the reason in the response `error` field. Requires
-// scope: tagManagers:update
+// API-key scope or current OAuth user permission: tagManagers:update
 func (r *TagManagerVariableService) New(ctx context.Context, body TagManagerVariableNewParams, opts ...option.RequestOption) (res *TagManagerVariableNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-variables"
@@ -80,7 +81,8 @@ func (r *TagManagerVariableService) New(ctx context.Context, body TagManagerVari
 	return res, err
 }
 
-// Find a single tag manager variable by ID. Requires scope: tagManagers:find
+// Find a single tag manager variable by ID. Requires API-key scope or current
+// OAuth user permission: tagManagers:find
 func (r *TagManagerVariableService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerVariableGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -95,7 +97,8 @@ func (r *TagManagerVariableService) Get(ctx context.Context, id string, opts ...
 // Partially update a variable. Only the fields you send are changed. Name
 // collisions with other variables in the same tag manager return 409 with the
 // reason in the response `error` field. To assign a variable to a folder, use
-// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
+// `POST /rest/v1/tag-manager-asset-folders`. Requires API-key scope or current
+// OAuth user permission: tagManagers:update
 func (r *TagManagerVariableService) Update(ctx context.Context, id string, body TagManagerVariableUpdateParams, opts ...option.RequestOption) (res *TagManagerVariableUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -107,7 +110,8 @@ func (r *TagManagerVariableService) Update(ctx context.Context, id string, body 
 	return res, err
 }
 
-// Delete a tag manager variable. Requires scope: tagManagers:update
+// Delete a tag manager variable. Requires API-key scope or current OAuth user
+// permission: tagManagers:update
 func (r *TagManagerVariableService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerVariableDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -123,7 +127,8 @@ func (r *TagManagerVariableService) Delete(ctx context.Context, id string, opts 
 // to send on create/patch, the shape of the type-specific `parameters` payload,
 // and `supportsVariables` (whether the variable's own parameter fields may
 // reference `{{OtherVariable}}` at runtime). Account-agnostic: the response is the
-// same for every API key. Requires scope: tagManagers:find
+// same for every API key. Requires API-key scope or current OAuth user permission:
+// tagManagers:find
 func (r *TagManagerVariableService) Types(ctx context.Context, opts ...option.RequestOption) (res *TagManagerVariableTypesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-variables/types"
@@ -145,14 +150,14 @@ type TagManagerVariableListResponse struct {
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
-	DefaultValue map[string]any `json:"defaultValue"`
-	Enabled      bool           `json:"enabled" api:"nullable"`
+	DefaultValue TagManagerVariableListResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
+	Enabled      bool                                            `json:"enabled" api:"nullable"`
 	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
-	LookUpTable map[string]any `json:"lookUpTable"`
-	UpdatedAt   string         `json:"updatedAt" api:"nullable"`
+	LookUpTable TagManagerVariableListResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
+	UpdatedAt   string                                         `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -178,6 +183,128 @@ func (r *TagManagerVariableListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// TagManagerVariableListResponseDefaultValueUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableListResponseDefaultValueMapItem]
+type TagManagerVariableListResponseDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableListResponseDefaultValueMapItem any `json:",inline"`
+	JSON                                                struct {
+		OfString                                            respjson.Field
+		OfFloat                                             respjson.Field
+		OfBool                                              respjson.Field
+		OfAnyArray                                          respjson.Field
+		OfTagManagerVariableListResponseDefaultValueMapItem respjson.Field
+		raw                                                 string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableListResponseDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseDefaultValueUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseDefaultValueUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableListResponseDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableListResponseDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerVariableListResponseLookUpTableUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableListResponseLookUpTableMapItem]
+type TagManagerVariableListResponseLookUpTableUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableListResponseLookUpTableMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfTagManagerVariableListResponseLookUpTableMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableListResponseLookUpTableUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseLookUpTableUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseLookUpTableUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseLookUpTableUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableListResponseLookUpTableUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableListResponseLookUpTableUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableListResponseLookUpTableUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TagManagerVariableNewResponse struct {
 	ID        string `json:"id" api:"required"`
 	AccountID string `json:"accountId" api:"required"`
@@ -192,14 +319,14 @@ type TagManagerVariableNewResponse struct {
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
-	DefaultValue map[string]any `json:"defaultValue"`
-	Enabled      bool           `json:"enabled" api:"nullable"`
+	DefaultValue TagManagerVariableNewResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
+	Enabled      bool                                           `json:"enabled" api:"nullable"`
 	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
-	LookUpTable map[string]any `json:"lookUpTable"`
-	UpdatedAt   string         `json:"updatedAt" api:"nullable"`
+	LookUpTable TagManagerVariableNewResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
+	UpdatedAt   string                                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -225,6 +352,128 @@ func (r *TagManagerVariableNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// TagManagerVariableNewResponseDefaultValueUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableNewResponseDefaultValueMapItem]
+type TagManagerVariableNewResponseDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableNewResponseDefaultValueMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfTagManagerVariableNewResponseDefaultValueMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableNewResponseDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseDefaultValueUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseDefaultValueUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableNewResponseDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableNewResponseDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerVariableNewResponseLookUpTableUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableNewResponseLookUpTableMapItem]
+type TagManagerVariableNewResponseLookUpTableUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableNewResponseLookUpTableMapItem any `json:",inline"`
+	JSON                                              struct {
+		OfString                                          respjson.Field
+		OfFloat                                           respjson.Field
+		OfBool                                            respjson.Field
+		OfAnyArray                                        respjson.Field
+		OfTagManagerVariableNewResponseLookUpTableMapItem respjson.Field
+		raw                                               string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableNewResponseLookUpTableUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseLookUpTableUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseLookUpTableUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseLookUpTableUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableNewResponseLookUpTableUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableNewResponseLookUpTableUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableNewResponseLookUpTableUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TagManagerVariableGetResponse struct {
 	ID        string `json:"id" api:"required"`
 	AccountID string `json:"accountId" api:"required"`
@@ -239,14 +488,14 @@ type TagManagerVariableGetResponse struct {
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
-	DefaultValue map[string]any `json:"defaultValue"`
-	Enabled      bool           `json:"enabled" api:"nullable"`
+	DefaultValue TagManagerVariableGetResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
+	Enabled      bool                                           `json:"enabled" api:"nullable"`
 	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
-	LookUpTable map[string]any `json:"lookUpTable"`
-	UpdatedAt   string         `json:"updatedAt" api:"nullable"`
+	LookUpTable TagManagerVariableGetResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
+	UpdatedAt   string                                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -272,6 +521,128 @@ func (r *TagManagerVariableGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// TagManagerVariableGetResponseDefaultValueUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableGetResponseDefaultValueMapItem]
+type TagManagerVariableGetResponseDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableGetResponseDefaultValueMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfTagManagerVariableGetResponseDefaultValueMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableGetResponseDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseDefaultValueUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseDefaultValueUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableGetResponseDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableGetResponseDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerVariableGetResponseLookUpTableUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableGetResponseLookUpTableMapItem]
+type TagManagerVariableGetResponseLookUpTableUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableGetResponseLookUpTableMapItem any `json:",inline"`
+	JSON                                              struct {
+		OfString                                          respjson.Field
+		OfFloat                                           respjson.Field
+		OfBool                                            respjson.Field
+		OfAnyArray                                        respjson.Field
+		OfTagManagerVariableGetResponseLookUpTableMapItem respjson.Field
+		raw                                               string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableGetResponseLookUpTableUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseLookUpTableUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseLookUpTableUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseLookUpTableUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableGetResponseLookUpTableUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableGetResponseLookUpTableUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableGetResponseLookUpTableUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type TagManagerVariableUpdateResponse struct {
 	ID        string `json:"id" api:"required"`
 	AccountID string `json:"accountId" api:"required"`
@@ -286,14 +657,14 @@ type TagManagerVariableUpdateResponse struct {
 	CreatedAt string `json:"createdAt" api:"nullable"`
 	// Default value returned when no rule matches. JSON value — type depends on
 	// `type`.
-	DefaultValue map[string]any `json:"defaultValue"`
-	Enabled      bool           `json:"enabled" api:"nullable"`
+	DefaultValue TagManagerVariableUpdateResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
+	Enabled      bool                                              `json:"enabled" api:"nullable"`
 	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
 	// assign, or `null` to remove from its current folder.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
-	LookUpTable map[string]any `json:"lookUpTable"`
-	UpdatedAt   string         `json:"updatedAt" api:"nullable"`
+	LookUpTable TagManagerVariableUpdateResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
+	UpdatedAt   string                                           `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -316,6 +687,130 @@ type TagManagerVariableUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TagManagerVariableUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *TagManagerVariableUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerVariableUpdateResponseDefaultValueUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableUpdateResponseDefaultValueMapItem]
+type TagManagerVariableUpdateResponseDefaultValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableUpdateResponseDefaultValueMapItem any `json:",inline"`
+	JSON                                                  struct {
+		OfString                                              respjson.Field
+		OfFloat                                               respjson.Field
+		OfBool                                                respjson.Field
+		OfAnyArray                                            respjson.Field
+		OfTagManagerVariableUpdateResponseDefaultValueMapItem respjson.Field
+		raw                                                   string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableUpdateResponseDefaultValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseDefaultValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseDefaultValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseDefaultValueUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseDefaultValueUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableUpdateResponseDefaultValueUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableUpdateResponseDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerVariableUpdateResponseLookUpTableUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableUpdateResponseLookUpTableMapItem]
+type TagManagerVariableUpdateResponseLookUpTableUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableUpdateResponseLookUpTableMapItem any `json:",inline"`
+	JSON                                                 struct {
+		OfString                                             respjson.Field
+		OfFloat                                              respjson.Field
+		OfBool                                               respjson.Field
+		OfAnyArray                                           respjson.Field
+		OfTagManagerVariableUpdateResponseLookUpTableMapItem respjson.Field
+		raw                                                  string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableUpdateResponseLookUpTableUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseLookUpTableUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseLookUpTableUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseLookUpTableUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableUpdateResponseLookUpTableUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableUpdateResponseLookUpTableUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableUpdateResponseLookUpTableUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -399,8 +894,8 @@ type TagManagerVariableTypesResponseEntityField struct {
 	// string in `parameters`; the `label` is for display.
 	AvailableValues []TagManagerVariableTypesResponseEntityFieldAvailableValue `json:"availableValues" api:"nullable"`
 	// Default value when the caller omits the parameter on create.
-	Default     map[string]any `json:"default"`
-	Description string         `json:"description" api:"nullable"`
+	Default     TagManagerVariableTypesResponseEntityFieldDefaultUnion `json:"default" api:"nullable"`
+	Description string                                                 `json:"description" api:"nullable"`
 	// When `true`, omitting or sending an empty value for this parameter on
 	// create/patch returns HTTP 400.
 	Required bool `json:"required" api:"nullable"`
@@ -443,6 +938,68 @@ type TagManagerVariableTypesResponseEntityFieldAvailableValue struct {
 // Returns the unmodified JSON received from the API
 func (r TagManagerVariableTypesResponseEntityFieldAvailableValue) RawJSON() string { return r.JSON.raw }
 func (r *TagManagerVariableTypesResponseEntityFieldAvailableValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerVariableTypesResponseEntityFieldDefaultUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerVariableTypesResponseEntityFieldDefaultMapItem]
+type TagManagerVariableTypesResponseEntityFieldDefaultUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerVariableTypesResponseEntityFieldDefaultMapItem any `json:",inline"`
+	JSON                                                       struct {
+		OfString                                                   respjson.Field
+		OfFloat                                                    respjson.Field
+		OfBool                                                     respjson.Field
+		OfAnyArray                                                 respjson.Field
+		OfTagManagerVariableTypesResponseEntityFieldDefaultMapItem respjson.Field
+		raw                                                        string
+	} `json:"-"`
+}
+
+func (u TagManagerVariableTypesResponseEntityFieldDefaultUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableTypesResponseEntityFieldDefaultUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableTypesResponseEntityFieldDefaultUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableTypesResponseEntityFieldDefaultUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerVariableTypesResponseEntityFieldDefaultUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerVariableTypesResponseEntityFieldDefaultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerVariableTypesResponseEntityFieldDefaultUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -500,9 +1057,9 @@ type TagManagerVariableNewParams struct {
 	Type    string          `json:"type" api:"required"`
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
 	// Optional default value. JSON value of any type.
-	DefaultValue map[string]any `json:"defaultValue,omitzero"`
+	DefaultValue TagManagerVariableNewParamsDefaultValueUnion `json:"defaultValue,omitzero"`
 	// Optional lookup table for `LookUpTable` variables.
-	LookUpTable map[string]any `json:"lookUpTable,omitzero"`
+	LookUpTable TagManagerVariableNewParamsLookUpTableUnion `json:"lookUpTable,omitzero"`
 	paramObj
 }
 
@@ -514,6 +1071,52 @@ func (r *TagManagerVariableNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TagManagerVariableNewParamsDefaultValueUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TagManagerVariableNewParamsDefaultValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *TagManagerVariableNewParamsDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TagManagerVariableNewParamsLookUpTableUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TagManagerVariableNewParamsLookUpTableUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *TagManagerVariableNewParamsLookUpTableUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
 type TagManagerVariableUpdateParams struct {
 	// Pause/resume the variable without changing other fields.
 	Enabled param.Opt[bool] `json:"enabled,omitzero"`
@@ -522,9 +1125,9 @@ type TagManagerVariableUpdateParams struct {
 	// Updated variable type. Pick from `GET /tag-manager-variables/types`.
 	Type param.Opt[string] `json:"type,omitzero"`
 	// Updated default value. JSON value of any type.
-	DefaultValue map[string]any `json:"defaultValue,omitzero"`
+	DefaultValue TagManagerVariableUpdateParamsDefaultValueUnion `json:"defaultValue,omitzero"`
 	// Updated lookup table payload.
-	LookUpTable map[string]any `json:"lookUpTable,omitzero"`
+	LookUpTable TagManagerVariableUpdateParamsLookUpTableUnion `json:"lookUpTable,omitzero"`
 	// Updated type-specific JSON configuration.
 	Parameters map[string]any `json:"parameters,omitzero"`
 	paramObj
@@ -536,4 +1139,50 @@ func (r TagManagerVariableUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *TagManagerVariableUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TagManagerVariableUpdateParamsDefaultValueUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TagManagerVariableUpdateParamsDefaultValueUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *TagManagerVariableUpdateParamsDefaultValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TagManagerVariableUpdateParamsLookUpTableUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TagManagerVariableUpdateParamsLookUpTableUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *TagManagerVariableUpdateParamsLookUpTableUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }

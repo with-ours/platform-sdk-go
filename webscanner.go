@@ -40,7 +40,7 @@ func NewWebScannerService(opts ...option.RequestOption) (r WebScannerService) {
 
 // List every web scanner for this account. Not paginated — accounts have a small
 // number of scanners in practice, so the response always fits in a single page.
-// Requires scope: webScanner:list
+// Requires API-key scope or current OAuth user permission: webScanner:list
 func (r *WebScannerService) List(ctx context.Context, opts ...option.RequestOption) (res *WebScannerListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-scanners"
@@ -55,10 +55,10 @@ func (r *WebScannerService) List(ctx context.Context, opts ...option.RequestOpti
 // automatically after creation on a best-effort basis; the returned entity may not
 // yet reflect asynchronous scan-state changes. `rootDomain` is required; missing,
 // empty, or malformed values are rejected as HTTP 400. Everything else falls back
-// to defaults (`status: Enabled`, `urlLimit: 100`, `scanSchedule: weekly`, no
+// to defaults (`status: Enabled`, `urlLimit: 1000`, `scanSchedule: weekly`, no
 // excluded patterns, no extra seed URLs). Invalid configuration or account limits
-// return HTTP 409. Requires scope: `webScanner:create`. Requires scope:
-// webScanner:create
+// return HTTP 409. Requires scope: `webScanner:create`. Requires API-key scope or
+// current OAuth user permission: webScanner:create
 func (r *WebScannerService) New(ctx context.Context, body WebScannerNewParams, opts ...option.RequestOption) (res *WebScannerNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-scanners"
@@ -66,7 +66,8 @@ func (r *WebScannerService) New(ctx context.Context, body WebScannerNewParams, o
 	return res, err
 }
 
-// Find a single web scanner by ID. Requires scope: webScanner:find
+// Find a single web scanner by ID. Requires API-key scope or current OAuth user
+// permission: webScanner:find
 func (r *WebScannerService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -83,7 +84,7 @@ func (r *WebScannerService) Get(ctx context.Context, id string, opts ...option.R
 // `includedUrls`) are replaced wholesale when sent. If `rootDomain` is provided
 // and malformed, the request is rejected as HTTP 400. Use
 // `POST /rest/v1/web-scanners/{id}/trigger` to start a new scan after edits.
-// Requires scope: webScanner:update
+// Requires API-key scope or current OAuth user permission: webScanner:update
 func (r *WebScannerService) Update(ctx context.Context, id string, body WebScannerUpdateParams, opts ...option.RequestOption) (res *WebScannerUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -96,7 +97,8 @@ func (r *WebScannerService) Update(ctx context.Context, id string, body WebScann
 }
 
 // Delete a web scanner. Associated suppression rules are deleted in the same
-// operation. Requires scope: webScanner:delete
+// operation. Requires API-key scope or current OAuth user permission:
+// webScanner:delete
 func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -115,7 +117,7 @@ func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...optio
 // rate-limited: a 409 is returned if another scan is already in flight, or if this
 // production monitor has `urlLimit >= 5000` and its previous scan completed within
 // the last 10 minutes; the reason is in the response `error` field. Requires
-// scope: webScanner:trigger
+// API-key scope or current OAuth user permission: webScanner:trigger
 func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerTriggerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -131,7 +133,7 @@ func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...opti
 // scheduler. Every in-scope page in this scan uses the credentials. Set
 // `scanSchedule` to `manual` when your scheduler should be the only source of
 // scans. Credential values are not returned or included in scan results. Requires
-// scope: webScanner:trigger
+// API-key scope or current OAuth user permission: webScanner:trigger
 func (r *WebScannerService) AuthenticatedScan(ctx context.Context, id string, body WebScannerAuthenticatedScanParams, opts ...option.RequestOption) (res *WebScannerAuthenticatedScanResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -146,7 +148,8 @@ func (r *WebScannerService) AuthenticatedScan(ctx context.Context, id string, bo
 // Queue an isolated verification capture for one exact in-scope page. This does
 // not update monitor history, inventory counts, or the monitor-wide last-scanned
 // timestamp. Poll the verification-run endpoint with the returned id for terminal
-// evidence. Requires scope: webScanner:trigger
+// evidence. Requires API-key scope or current OAuth user permission:
+// webScanner:trigger
 func (r *WebScannerService) TargetedScan(ctx context.Context, id string, body WebScannerTargetedScanParams, opts ...option.RequestOption) (res *WebScannerTargetedScanResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -160,7 +163,7 @@ func (r *WebScannerService) TargetedScan(ctx context.Context, id string, body We
 
 // Read a UUID-addressed one-page verification run. The run is isolated from normal
 // monitor history and is returned only when it belongs to the requested scanner.
-// Requires scope: webScanner:find
+// Requires API-key scope or current OAuth user permission: webScanner:find
 func (r *WebScannerService) VerificationRun(ctx context.Context, id string, query WebScannerVerificationRunParams, opts ...option.RequestOption) (res *WebScannerVerificationRunResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -175,7 +178,8 @@ func (r *WebScannerService) VerificationRun(ctx context.Context, id string, quer
 // List the one-page verification runs recorded for this scanner, newest first,
 // each with its own capture counts. Verification runs are isolated from monitor
 // history and never affect inventory counts or the monitor-wide last-scanned
-// timestamp. Requires scope: webScanner:find
+// timestamp. Requires API-key scope or current OAuth user permission:
+// webScanner:find
 func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, query WebScannerVerificationRunsParams, opts ...option.RequestOption) (res *WebScannerVerificationRunsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -200,7 +204,8 @@ func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, que
 // a suppression rule still needs a triage decision — resolve it by adding the host
 // to a CMP consent service or by creating a suppression rule with
 // `POST /rest/v1/web-scanner-rules`. Use `GET /rest/v1/web-scanners/{id}/summary`
-// for the rolled-up counts. Requires scope: webScanner:find
+// for the rolled-up counts. Requires API-key scope or current OAuth user
+// permission: webScanner:find
 func (r *WebScannerService) Findings(ctx context.Context, id string, query WebScannerFindingsParams, opts ...option.RequestOption) (res *WebScannerFindingsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -217,7 +222,7 @@ func (r *WebScannerService) Findings(ctx context.Context, id string, query WebSc
 // used to select the run) to read an earlier run. Cookies paginate with `limit`
 // and `offset` (a documented exception to the cursor-pagination standard, since
 // each run is an immutable snapshot); local-storage entries are returned in full.
-// Requires scope: webScanner:find
+// Requires API-key scope or current OAuth user permission: webScanner:find
 func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebScannerCookiesParams, opts ...option.RequestOption) (res *WebScannerCookiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -241,8 +246,8 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 // the calendar day is used to select the run) to read an earlier run. Clear a host
 // that needs a decision by adding it to a CMP consent service or creating a
 // suppression rule with `POST /rest/v1/web-scanner-rules`. When the scanner has no
-// completed runs, every count is 0 and `runDate` is null. Requires scope:
-// webScanner:find
+// completed runs, every count is 0 and `runDate` is null. Requires API-key scope
+// or current OAuth user permission: webScanner:find
 func (r *WebScannerService) Summary(ctx context.Context, id string, query WebScannerSummaryParams, opts ...option.RequestOption) (res *WebScannerSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -259,7 +264,8 @@ func (r *WebScannerService) Summary(ctx context.Context, id string, query WebSca
 // are sorted by risk and hostname. Continue with pagination.nextCursor while
 // preserving runRevision and coverageRevision; changed evidence returns HTTP 400
 // and requires restarting from the first page. Historical runs are evaluated
-// against current coverage configuration. Requires scope: webScanner:find
+// against current coverage configuration. Requires API-key scope or current OAuth
+// user permission: webScanner:find
 func (r *WebScannerService) DecisionQueue(ctx context.Context, id string, query WebScannerDecisionQueueParams, opts ...option.RequestOption) (res *WebScannerDecisionQueueResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -274,7 +280,8 @@ func (r *WebScannerService) DecisionQueue(ctx context.Context, id string, query 
 // Resolve one hostname from a revision-bound Web Scanner decision queue by
 // creating an exact-host suppression rule. The request is bound to the reviewed
 // run, and retrying the same idempotency key returns the recorded outcome without
-// repeating the write. Requires scope: webScanner:update
+// repeating the write. Requires API-key scope or current OAuth user permission:
+// webScanner:update
 func (r *WebScannerService) ResolveCoverageGap(ctx context.Context, id string, body WebScannerResolveCoverageGapParams, opts ...option.RequestOption) (res *WebScannerResolveCoverageGapResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -1984,7 +1991,7 @@ type WebScannerNewParams struct {
 	RootDomain string `json:"rootDomain" api:"required"`
 	// Optional display name for this web scanner.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Maximum URLs to crawl per scan (1–20,000). Defaults to 100 when omitted.
+	// Maximum URLs to crawl per scan (1–20,000). Defaults to 1,000 when omitted.
 	URLLimit param.Opt[float64] `json:"urlLimit,omitzero"`
 	// URL glob patterns to skip during crawl. Max 100 entries.
 	ExcludedPatterns []string `json:"excludedPatterns,omitzero"`

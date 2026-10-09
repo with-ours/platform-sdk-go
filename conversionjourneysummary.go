@@ -41,7 +41,8 @@ func NewConversionJourneySummaryService(opts ...option.RequestOption) (r Convers
 // List saved Conversion Journey Summary configurations, most recently updated
 // first. Supports cursor pagination. Each result contains the conversion event,
 // analysis window, attribution window, filters, and bot/source settings needed to
-// reopen the saved analysis. Requires scope: web-analytics:view
+// reopen the saved analysis. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *ConversionJourneySummaryService) List(ctx context.Context, query ConversionJourneySummaryListParams, opts ...option.RequestOption) (res *pagination.Cursor[ConversionJourneySummaryListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -62,14 +63,16 @@ func (r *ConversionJourneySummaryService) List(ctx context.Context, query Conver
 // List saved Conversion Journey Summary configurations, most recently updated
 // first. Supports cursor pagination. Each result contains the conversion event,
 // analysis window, attribution window, filters, and bot/source settings needed to
-// reopen the saved analysis. Requires scope: web-analytics:view
+// reopen the saved analysis. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *ConversionJourneySummaryService) ListAutoPaging(ctx context.Context, query ConversionJourneySummaryListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ConversionJourneySummaryListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Save a named Conversion Journey Summary configuration. Returns the full saved
 // summary so callers can reopen the same analysis without a follow-up request.
-// Each account can save up to 100 summaries. Requires scope: web-analytics:write
+// Each account can save up to 100 summaries. Requires API-key scope or current
+// OAuth user permission: web-analytics:write
 func (r *ConversionJourneySummaryService) New(ctx context.Context, body ConversionJourneySummaryNewParams, opts ...option.RequestOption) (res *ConversionJourneySummaryNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/conversion-journey-summaries"
@@ -78,7 +81,8 @@ func (r *ConversionJourneySummaryService) New(ctx context.Context, body Conversi
 }
 
 // Fetch a saved Conversion Journey Summary by its id. Returns 404 when it does not
-// exist. Requires scope: web-analytics:view
+// exist. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *ConversionJourneySummaryService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConversionJourneySummaryGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -93,7 +97,8 @@ func (r *ConversionJourneySummaryService) Get(ctx context.Context, id string, op
 // Update one or more fields on a saved Conversion Journey Summary. Omitted fields
 // remain unchanged. When provided, `filters` replaces the complete saved filter
 // list. Send `null` for `webSourceId` or `excludeBots` to clear that optional
-// setting. Requires scope: web-analytics:write
+// setting. Requires API-key scope or current OAuth user permission:
+// web-analytics:write
 func (r *ConversionJourneySummaryService) Update(ctx context.Context, id string, body ConversionJourneySummaryUpdateParams, opts ...option.RequestOption) (res *ConversionJourneySummaryUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -106,7 +111,8 @@ func (r *ConversionJourneySummaryService) Update(ctx context.Context, id string,
 }
 
 // Delete a saved Conversion Journey Summary. The underlying analytics data is
-// unaffected. Requires scope: web-analytics:write
+// unaffected. Requires API-key scope or current OAuth user permission:
+// web-analytics:write
 func (r *ConversionJourneySummaryService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ConversionJourneySummaryDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

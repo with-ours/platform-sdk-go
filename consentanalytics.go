@@ -43,7 +43,8 @@ func NewConsentAnalyticsService(opts ...option.RequestOption) (r ConsentAnalytic
 // derived-read exception. Requires the API-key scope
 // `report:global-consent-center-analytics` (this is the account-wide consent
 // analytics report and is gated separately from consent-settings list). Requires
-// scope: report:global-consent-center-analytics
+// API-key scope or current OAuth user permission:
+// report:global-consent-center-analytics
 func (r *ConsentAnalyticsService) List(ctx context.Context, query ConsentAnalyticsListParams, opts ...option.RequestOption) (res *ConsentAnalyticsListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-analytics"

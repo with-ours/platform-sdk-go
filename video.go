@@ -39,7 +39,8 @@ func NewVideoService(opts ...option.RequestOption) (r VideoService) {
 }
 
 // List videos for the account, newest first. Supports cursor pagination and an
-// optional case-insensitive title filter. Requires scope: media:list
+// optional case-insensitive title filter. Requires API-key scope or current OAuth
+// user permission: media:list
 func (r *VideoService) List(ctx context.Context, query VideoListParams, opts ...option.RequestOption) (res *pagination.Cursor[VideoListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -58,7 +59,8 @@ func (r *VideoService) List(ctx context.Context, query VideoListParams, opts ...
 }
 
 // List videos for the account, newest first. Supports cursor pagination and an
-// optional case-insensitive title filter. Requires scope: media:list
+// optional case-insensitive title filter. Requires API-key scope or current OAuth
+// user permission: media:list
 func (r *VideoService) ListAutoPaging(ctx context.Context, query VideoListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[VideoListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -66,7 +68,7 @@ func (r *VideoService) ListAutoPaging(ctx context.Context, query VideoListParams
 // Create a video record and return a temporary upload target for the original MP4
 // or WebM file. Upload the file directly using the returned URL and matching
 // content type, then poll the video to observe processing progress. Requires
-// scope: media:create
+// API-key scope or current OAuth user permission: media:create
 func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...option.RequestOption) (res *VideoNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/videos"
@@ -75,8 +77,8 @@ func (r *VideoService) New(ctx context.Context, body VideoNewParams, opts ...opt
 }
 
 // Fetch a video and its current playback asset availability. The processed video,
-// poster, and transcript are prepared asynchronously after upload. Requires scope:
-// media:find
+// poster, and transcript are prepared asynchronously after upload. Requires
+// API-key scope or current OAuth user permission: media:find
 func (r *VideoService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VideoGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -89,7 +91,8 @@ func (r *VideoService) Get(ctx context.Context, id string, opts ...option.Reques
 }
 
 // Partially update video metadata. Only fields included in the body change; send
-// `null` to clear a nullable field. Requires scope: media:update
+// `null` to clear a nullable field. Requires API-key scope or current OAuth user
+// permission: media:update
 func (r *VideoService) Update(ctx context.Context, id string, body VideoUpdateParams, opts ...option.RequestOption) (res *VideoUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -101,7 +104,8 @@ func (r *VideoService) Update(ctx context.Context, id string, body VideoUpdatePa
 	return res, err
 }
 
-// Delete a video and its related assets. Requires scope: media:delete
+// Delete a video and its related assets. Requires API-key scope or current OAuth
+// user permission: media:delete
 func (r *VideoService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *VideoDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -115,8 +119,8 @@ func (r *VideoService) Delete(ctx context.Context, id string, opts ...option.Req
 
 // Return a temporary upload target for replacing this video’s original MP4 or WebM
 // source. Upload the file directly using the returned URL and matching content
-// type, then poll the video to observe processing progress. Requires scope:
-// media:update
+// type, then poll the video to observe processing progress. Requires API-key scope
+// or current OAuth user permission: media:update
 func (r *VideoService) Upload(ctx context.Context, id string, body VideoUploadParams, opts ...option.RequestOption) (res *VideoUploadResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -130,7 +134,7 @@ func (r *VideoService) Upload(ctx context.Context, id string, body VideoUploadPa
 
 // Read the current WebVTT transcript. Transcript text is available wherever the
 // video is embedded, so do not include PHI or other confidential information.
-// Requires scope: media:find
+// Requires API-key scope or current OAuth user permission: media:find
 func (r *VideoService) Transcript(ctx context.Context, id string, query VideoTranscriptParams, opts ...option.RequestOption) (res *VideoTranscriptResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -144,7 +148,8 @@ func (r *VideoService) Transcript(ctx context.Context, id string, query VideoTra
 
 // Replace the transcript with VTT or SRT text. SRT is normalized to WebVTT.
 // Transcript text is available wherever the video is embedded, so do not include
-// PHI or other confidential information. Requires scope: media:update
+// PHI or other confidential information. Requires API-key scope or current OAuth
+// user permission: media:update
 func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body VideoUpdateTranscriptParams, opts ...option.RequestOption) (res *VideoUpdateTranscriptResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -157,7 +162,8 @@ func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body Vid
 }
 
 // Queue a target-language caption translation. Specify replace to explicitly
-// overwrite a track. Requires scope: media:update
+// overwrite a track. Requires API-key scope or current OAuth user permission:
+// media:update
 func (r *VideoService) RequestCaptionTranslation(ctx context.Context, id string, body VideoRequestCaptionTranslationParams, opts ...option.RequestOption) (res *VideoRequestCaptionTranslationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -170,7 +176,7 @@ func (r *VideoService) RequestCaptionTranslation(ctx context.Context, id string,
 }
 
 // Cancel a queued or in-progress language translation without modifying other
-// tracks. Requires scope: media:update
+// tracks. Requires API-key scope or current OAuth user permission: media:update
 func (r *VideoService) CancelCaptionTranslation(ctx context.Context, id string, body VideoCancelCaptionTranslationParams, opts ...option.RequestOption) (res *VideoCancelCaptionTranslationResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -186,7 +192,8 @@ func (r *VideoService) CancelCaptionTranslation(ctx context.Context, id string, 
 // for a date window. Optionally filter to one video with `videoId`; omit it to
 // include all account videos. This derived report uses `limit` and `offset`
 // pagination; `total` is the number of rows returned through the current offset,
-// not a total match count. Requires scope: report:video-analytics
+// not a total match count. Requires API-key scope or current OAuth user
+// permission: report:video-analytics
 func (r *VideoService) Analytics(ctx context.Context, query VideoAnalyticsParams, opts ...option.RequestOption) (res *VideoAnalyticsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/videos/analytics"
@@ -196,7 +203,8 @@ func (r *VideoService) Analytics(ctx context.Context, query VideoAnalyticsParams
 
 // Return daily or hourly starts, unique viewers, completions, and completion rate
 // for one video. Daily windows support up to 90 days; hourly windows support up to
-// 14 days. Requires scope: report:video-analytics
+// 14 days. Requires API-key scope or current OAuth user permission:
+// report:video-analytics
 func (r *VideoService) AnalyticsTimeseries(ctx context.Context, id string, query VideoAnalyticsTimeseriesParams, opts ...option.RequestOption) (res *VideoAnalyticsTimeseriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

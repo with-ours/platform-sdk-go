@@ -4,6 +4,7 @@ package oursprivacy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -42,7 +43,7 @@ func NewTagManagerTriggerService(opts ...option.RequestOption) (r TagManagerTrig
 // parameter — triggers are always scoped to one parent container. Supports cursor
 // pagination via `limit` and `cursor`; the limit clamp is 1000 so a single request
 // can return the full set (the web-app workspace renders all triggers in one
-// shot). Requires scope: tagManagers:find
+// shot). Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerTriggerService) List(ctx context.Context, query TagManagerTriggerListParams, opts ...option.RequestOption) (res *pagination.Cursor[TagManagerTriggerListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -64,14 +65,15 @@ func (r *TagManagerTriggerService) List(ctx context.Context, query TagManagerTri
 // parameter — triggers are always scoped to one parent container. Supports cursor
 // pagination via `limit` and `cursor`; the limit clamp is 1000 so a single request
 // can return the full set (the web-app workspace renders all triggers in one
-// shot). Requires scope: tagManagers:find
+// shot). Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerTriggerService) ListAutoPaging(ctx context.Context, query TagManagerTriggerListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TagManagerTriggerListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new trigger inside a tag manager. `tagManagerId` is required in the
 // body. Send `conditions: []` for an unconditional trigger; otherwise supply
-// type-specific condition objects. Requires scope: tagManagers:update
+// type-specific condition objects. Requires API-key scope or current OAuth user
+// permission: tagManagers:update
 func (r *TagManagerTriggerService) New(ctx context.Context, body TagManagerTriggerNewParams, opts ...option.RequestOption) (res *TagManagerTriggerNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-triggers"
@@ -79,7 +81,8 @@ func (r *TagManagerTriggerService) New(ctx context.Context, body TagManagerTrigg
 	return res, err
 }
 
-// Find a single tag manager trigger by ID. Requires scope: tagManagers:find
+// Find a single tag manager trigger by ID. Requires API-key scope or current OAuth
+// user permission: tagManagers:find
 func (r *TagManagerTriggerService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerTriggerGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -93,7 +96,8 @@ func (r *TagManagerTriggerService) Get(ctx context.Context, id string, opts ...o
 
 // Partially update a trigger. Only the fields you send are changed. `conditions`
 // is replaced wholesale when sent. To assign a trigger to a folder, use
-// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
+// `POST /rest/v1/tag-manager-asset-folders`. Requires API-key scope or current
+// OAuth user permission: tagManagers:update
 func (r *TagManagerTriggerService) Update(ctx context.Context, id string, body TagManagerTriggerUpdateParams, opts ...option.RequestOption) (res *TagManagerTriggerUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -105,7 +109,8 @@ func (r *TagManagerTriggerService) Update(ctx context.Context, id string, body T
 	return res, err
 }
 
-// Delete a tag manager trigger. Requires scope: tagManagers:update
+// Delete a tag manager trigger. Requires API-key scope or current OAuth user
+// permission: tagManagers:update
 func (r *TagManagerTriggerService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerTriggerDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -121,7 +126,8 @@ func (r *TagManagerTriggerService) Delete(ctx context.Context, id string, opts .
 // to send on create/patch, and the shape of the type-specific `parameters`
 // payload. Trigger `conditions` are evaluated at runtime (per-trigger, see the
 // resource docs) and are not part of this descriptor. Account-agnostic: the
-// response is the same for every API key. Requires scope: tagManagers:find
+// response is the same for every API key. Requires API-key scope or current OAuth
+// user permission: tagManagers:find
 func (r *TagManagerTriggerService) Types(ctx context.Context, opts ...option.RequestOption) (res *TagManagerTriggerTypesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-triggers/types"
@@ -393,8 +399,8 @@ type TagManagerTriggerTypesResponseEntityField struct {
 	// string in `parameters`; the `label` is for display.
 	AvailableValues []TagManagerTriggerTypesResponseEntityFieldAvailableValue `json:"availableValues" api:"nullable"`
 	// Default value when the caller omits the parameter on create.
-	Default     map[string]any `json:"default"`
-	Description string         `json:"description" api:"nullable"`
+	Default     TagManagerTriggerTypesResponseEntityFieldDefaultUnion `json:"default" api:"nullable"`
+	Description string                                                `json:"description" api:"nullable"`
 	// When `true`, omitting or sending an empty value for this parameter on
 	// create/patch returns HTTP 400.
 	Required bool `json:"required" api:"nullable"`
@@ -437,6 +443,68 @@ type TagManagerTriggerTypesResponseEntityFieldAvailableValue struct {
 // Returns the unmodified JSON received from the API
 func (r TagManagerTriggerTypesResponseEntityFieldAvailableValue) RawJSON() string { return r.JSON.raw }
 func (r *TagManagerTriggerTypesResponseEntityFieldAvailableValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerTriggerTypesResponseEntityFieldDefaultUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerTriggerTypesResponseEntityFieldDefaultMapItem]
+type TagManagerTriggerTypesResponseEntityFieldDefaultUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerTriggerTypesResponseEntityFieldDefaultMapItem any `json:",inline"`
+	JSON                                                      struct {
+		OfString                                                  respjson.Field
+		OfFloat                                                   respjson.Field
+		OfBool                                                    respjson.Field
+		OfAnyArray                                                respjson.Field
+		OfTagManagerTriggerTypesResponseEntityFieldDefaultMapItem respjson.Field
+		raw                                                       string
+	} `json:"-"`
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerTriggerTypesResponseEntityFieldDefaultUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

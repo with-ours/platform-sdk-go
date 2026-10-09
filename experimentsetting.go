@@ -37,8 +37,8 @@ func NewExperimentSettingService(opts ...option.RequestOption) (r ExperimentSett
 }
 
 // List experiment settings records for the account. Use the returned `id` as
-// `experimentSettingsId` when creating an experiment. Requires scope:
-// experimentSettings:list
+// `experimentSettingsId` when creating an experiment. Requires API-key scope or
+// current OAuth user permission: experimentSettings:list
 func (r *ExperimentSettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ExperimentSettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiment-settings"
@@ -47,7 +47,8 @@ func (r *ExperimentSettingService) List(ctx context.Context, opts ...option.Requ
 }
 
 // Create the account-level experimentation bootstrap record. Most accounts should
-// only ever have one. Requires scope: experimentSettings:create
+// only ever have one. Requires API-key scope or current OAuth user permission:
+// experimentSettings:create
 func (r *ExperimentSettingService) New(ctx context.Context, body ExperimentSettingNewParams, opts ...option.RequestOption) (res *ExperimentSettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiment-settings"
@@ -56,7 +57,8 @@ func (r *ExperimentSettingService) New(ctx context.Context, body ExperimentSetti
 }
 
 // Find a single experiment settings record by ID. Returns 404 when no record
-// matches the supplied id. Requires scope: experimentSettings:find
+// matches the supplied id. Requires API-key scope or current OAuth user
+// permission: experimentSettings:find
 func (r *ExperimentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -69,7 +71,8 @@ func (r *ExperimentSettingService) Get(ctx context.Context, id string, opts ...o
 }
 
 // Partially update an experiment settings. Only the fields you send are changed.
-// Requires scope: experimentSettings:update
+// Requires API-key scope or current OAuth user permission:
+// experimentSettings:update
 func (r *ExperimentSettingService) Update(ctx context.Context, id string, body ExperimentSettingUpdateParams, opts ...option.RequestOption) (res *ExperimentSettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -83,7 +86,7 @@ func (r *ExperimentSettingService) Update(ctx context.Context, id string, body E
 
 // Delete the experimentation bootstrap record. This also deletes child
 // experiments, variants, and personalization properties owned by it. Requires
-// scope: experimentSettings:delete
+// API-key scope or current OAuth user permission: experimentSettings:delete
 func (r *ExperimentSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentSettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

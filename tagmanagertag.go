@@ -4,6 +4,7 @@ package oursprivacy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -42,7 +43,7 @@ func NewTagManagerTagService(opts ...option.RequestOption) (r TagManagerTagServi
 // parameter — tags are always scoped to one parent container. Supports cursor
 // pagination via `limit` and `cursor`; the limit clamp is 1000 so a single request
 // can return the full set (the web-app workspace renders all tags in one shot).
-// Requires scope: tagManagers:find
+// Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerTagService) List(ctx context.Context, query TagManagerTagListParams, opts ...option.RequestOption) (res *pagination.Cursor[TagManagerTagListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -64,14 +65,15 @@ func (r *TagManagerTagService) List(ctx context.Context, query TagManagerTagList
 // parameter — tags are always scoped to one parent container. Supports cursor
 // pagination via `limit` and `cursor`; the limit clamp is 1000 so a single request
 // can return the full set (the web-app workspace renders all tags in one shot).
-// Requires scope: tagManagers:find
+// Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerTagService) ListAutoPaging(ctx context.Context, query TagManagerTagListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TagManagerTagListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new tag inside a tag manager. `tagManagerId` is required in the body.
 // Newly created tags are not assigned to any folder — assign them with
-// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
+// `POST /rest/v1/tag-manager-asset-folders`. Requires API-key scope or current
+// OAuth user permission: tagManagers:update
 func (r *TagManagerTagService) New(ctx context.Context, body TagManagerTagNewParams, opts ...option.RequestOption) (res *TagManagerTagNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-tags"
@@ -80,7 +82,7 @@ func (r *TagManagerTagService) New(ctx context.Context, body TagManagerTagNewPar
 }
 
 // Fetch a single tag by id, including its `folderId` (read-only on this endpoint).
-// Requires scope: tagManagers:find
+// Requires API-key scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerTagService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerTagGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -94,7 +96,8 @@ func (r *TagManagerTagService) Get(ctx context.Context, id string, opts ...optio
 
 // Partially update a tag. Only the fields you send are changed. Tags cannot be
 // moved between tag managers. To assign a tag to a folder, use
-// `POST /rest/v1/tag-manager-asset-folders`. Requires scope: tagManagers:update
+// `POST /rest/v1/tag-manager-asset-folders`. Requires API-key scope or current
+// OAuth user permission: tagManagers:update
 func (r *TagManagerTagService) Update(ctx context.Context, id string, body TagManagerTagUpdateParams, opts ...option.RequestOption) (res *TagManagerTagUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -106,7 +109,8 @@ func (r *TagManagerTagService) Update(ctx context.Context, id string, body TagMa
 	return res, err
 }
 
-// Delete a tag manager tag. Requires scope: tagManagers:update
+// Delete a tag manager tag. Requires API-key scope or current OAuth user
+// permission: tagManagers:update
 func (r *TagManagerTagService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerTagDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -123,7 +127,8 @@ func (r *TagManagerTagService) Delete(ctx context.Context, id string, opts ...op
 // (fields, validators, required flags, available values for selects).
 // Account-agnostic: the response is the same for every API key. The same registry
 // powers server-side validation on `POST` / `PATCH` so what this endpoint
-// advertises matches what the server enforces. Requires scope: tagManagers:find
+// advertises matches what the server enforces. Requires API-key scope or current
+// OAuth user permission: tagManagers:find
 func (r *TagManagerTagService) Types(ctx context.Context, opts ...option.RequestOption) (res *TagManagerTagTypesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-tags/types"
@@ -431,8 +436,8 @@ type TagManagerTagTypesResponseEntityField struct {
 	// string in `parameters`; the `label` is for display.
 	AvailableValues []TagManagerTagTypesResponseEntityFieldAvailableValue `json:"availableValues" api:"nullable"`
 	// Default value when the caller omits the parameter on create.
-	Default     map[string]any `json:"default"`
-	Description string         `json:"description" api:"nullable"`
+	Default     TagManagerTagTypesResponseEntityFieldDefaultUnion `json:"default" api:"nullable"`
+	Description string                                            `json:"description" api:"nullable"`
 	// When `true`, omitting or sending an empty value for this parameter on
 	// create/patch returns HTTP 400.
 	Required bool `json:"required" api:"nullable"`
@@ -475,6 +480,68 @@ type TagManagerTagTypesResponseEntityFieldAvailableValue struct {
 // Returns the unmodified JSON received from the API
 func (r TagManagerTagTypesResponseEntityFieldAvailableValue) RawJSON() string { return r.JSON.raw }
 func (r *TagManagerTagTypesResponseEntityFieldAvailableValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerTagTypesResponseEntityFieldDefaultUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerTagTypesResponseEntityFieldDefaultMapItem]
+type TagManagerTagTypesResponseEntityFieldDefaultUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerTagTypesResponseEntityFieldDefaultMapItem any `json:",inline"`
+	JSON                                                  struct {
+		OfString                                              respjson.Field
+		OfFloat                                               respjson.Field
+		OfBool                                                respjson.Field
+		OfAnyArray                                            respjson.Field
+		OfTagManagerTagTypesResponseEntityFieldDefaultMapItem respjson.Field
+		raw                                                   string
+	} `json:"-"`
+}
+
+func (u TagManagerTagTypesResponseEntityFieldDefaultUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTagTypesResponseEntityFieldDefaultUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTagTypesResponseEntityFieldDefaultUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTagTypesResponseEntityFieldDefaultUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTagTypesResponseEntityFieldDefaultUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerTagTypesResponseEntityFieldDefaultUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *TagManagerTagTypesResponseEntityFieldDefaultUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
