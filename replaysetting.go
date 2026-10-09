@@ -40,8 +40,8 @@ func NewReplaySettingService(opts ...option.RequestOption) (r ReplaySettingServi
 
 // List the replay configurations on this account. Supports cursor pagination via
 // `limit` and `cursor`. Replay settings control which domains may capture session
-// replays and where the capture script is hosted. Requires scope:
-// replaySettings:list
+// replays and where the capture script is hosted. Requires API-key scope or
+// current OAuth user permission: replaySettings:list
 func (r *ReplaySettingService) List(ctx context.Context, query ReplaySettingListParams, opts ...option.RequestOption) (res *pagination.Cursor[ReplaySettingListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -61,15 +61,16 @@ func (r *ReplaySettingService) List(ctx context.Context, query ReplaySettingList
 
 // List the replay configurations on this account. Supports cursor pagination via
 // `limit` and `cursor`. Replay settings control which domains may capture session
-// replays and where the capture script is hosted. Requires scope:
-// replaySettings:list
+// replays and where the capture script is hosted. Requires API-key scope or
+// current OAuth user permission: replaySettings:list
 func (r *ReplaySettingService) ListAutoPaging(ctx context.Context, query ReplaySettingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ReplaySettingListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create the replay configuration for this account. Each account is limited to one
 // replay configuration — calls made when one already exists return HTTP 409 with
-// the reason in the response `error` field. Requires scope: replaySettings:create
+// the reason in the response `error` field. Requires API-key scope or current
+// OAuth user permission: replaySettings:create
 func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewParams, opts ...option.RequestOption) (res *ReplaySettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/replay-settings"
@@ -78,7 +79,8 @@ func (r *ReplaySettingService) New(ctx context.Context, body ReplaySettingNewPar
 }
 
 // Fetch a single replay configuration by ID, including its whitelisted domains and
-// custom domain. Requires scope: replaySettings:find
+// custom domain. Requires API-key scope or current OAuth user permission:
+// replaySettings:find
 func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -93,7 +95,7 @@ func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...optio
 // Update one or more fields on an existing replay configuration. Only the fields
 // you send are changed; omitted fields keep their current value. Note that
 // `whitelistDomains` is replaced wholesale (not merged with the existing list).
-// Requires scope: replaySettings:update
+// Requires API-key scope or current OAuth user permission: replaySettings:update
 func (r *ReplaySettingService) Update(ctx context.Context, id string, body ReplaySettingUpdateParams, opts ...option.RequestOption) (res *ReplaySettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -106,7 +108,8 @@ func (r *ReplaySettingService) Update(ctx context.Context, id string, body Repla
 }
 
 // Delete the replay configuration. Capture stops immediately for all whitelisted
-// domains. Requires scope: replaySettings:delete
+// domains. Requires API-key scope or current OAuth user permission:
+// replaySettings:delete
 func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

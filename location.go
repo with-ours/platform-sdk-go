@@ -39,7 +39,7 @@ func NewLocationService(opts ...option.RequestOption) (r LocationService) {
 
 // List every location for this account. Not paginated — each account has a small
 // map-count limit (single digits in practice) so the response always fits in a
-// single page. Requires scope: maps:list
+// single page. Requires API-key scope or current OAuth user permission: maps:list
 func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption) (res *LocationListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/locations"
@@ -50,7 +50,7 @@ func (r *LocationService) List(ctx context.Context, opts ...option.RequestOption
 // Create a new location (map embed). All address fields are optional and can be
 // filled in later via PATCH. Returns the slim entity with the server-assigned `id`
 // so callers can immediately request `GET /rest/v1/locations/{id}/embed-code`.
-// Requires scope: maps:create
+// Requires API-key scope or current OAuth user permission: maps:create
 func (r *LocationService) New(ctx context.Context, body LocationNewParams, opts ...option.RequestOption) (res *LocationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/locations"
@@ -61,7 +61,8 @@ func (r *LocationService) New(ctx context.Context, body LocationNewParams, opts 
 // Partially update a location. Only the fields you send are changed.
 // `additionalAddresses` is replaced wholesale when sent — partial item updates are
 // not merged. The map's computed center is recalculated on every PATCH from the
-// latest coordinates. Requires scope: maps:update
+// latest coordinates. Requires API-key scope or current OAuth user permission:
+// maps:update
 func (r *LocationService) Update(ctx context.Context, id string, body LocationUpdateParams, opts ...option.RequestOption) (res *LocationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -78,8 +79,8 @@ func (r *LocationService) Update(ctx context.Context, id string, body LocationUp
 // `<iframe>` pointed at the Ours Privacy maps CDN, plus an optional JSON-LD
 // `<script>`). Customize the render with the optional query params (`color`,
 // `theme`, `colorScheme`, `mapStyle`, `includeAddressBox`, `zoom`,
-// `includeControls`, `includeSEOSchema`); all have sane defaults. Requires scope:
-// maps:find
+// `includeControls`, `includeSEOSchema`); all have sane defaults. Requires API-key
+// scope or current OAuth user permission: maps:find
 func (r *LocationService) EmbedCode(ctx context.Context, id string, query LocationEmbedCodeParams, opts ...option.RequestOption) (res *LocationEmbedCodeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

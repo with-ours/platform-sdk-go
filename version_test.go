@@ -54,6 +54,7 @@ func TestVersionNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Versions.New(context.TODO(), oursprivacy.VersionNewParams{
+		BypassWebSourceDomainValidation: oursprivacy.Bool(true),
 		IncludeAllowedEvents:            []string{"string"},
 		IncludeConsentSettings:          []string{"string"},
 		IncludeDataGovernanceEvents:     []string{"string"},

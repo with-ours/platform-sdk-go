@@ -38,7 +38,8 @@ func NewAudienceConversionReportService(opts ...option.RequestOption) (r Audienc
 }
 
 // List saved Audience Performance report configurations, most recently updated
-// first. Requires scope: web-analytics:view
+// first. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *AudienceConversionReportService) List(ctx context.Context, opts ...option.RequestOption) (res *AudienceConversionReportListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/audience-conversion-reports"
@@ -47,8 +48,8 @@ func (r *AudienceConversionReportService) List(ctx context.Context, opts ...opti
 }
 
 // Save an Audience Performance report configuration. Returns the full report so
-// callers can run or update it without another request. Requires scope:
-// web-analytics:write
+// callers can run or update it without another request. Requires API-key scope or
+// current OAuth user permission: web-analytics:write
 func (r *AudienceConversionReportService) New(ctx context.Context, body AudienceConversionReportNewParams, opts ...option.RequestOption) (res *AudienceConversionReportNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/audience-conversion-reports"
@@ -56,8 +57,8 @@ func (r *AudienceConversionReportService) New(ctx context.Context, body Audience
 	return res, err
 }
 
-// Fetch a saved Audience Performance report by id. Requires scope:
-// web-analytics:view
+// Fetch a saved Audience Performance report by id. Requires API-key scope or
+// current OAuth user permission: web-analytics:view
 func (r *AudienceConversionReportService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *AudienceConversionReportGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -71,7 +72,7 @@ func (r *AudienceConversionReportService) Get(ctx context.Context, id string, op
 
 // Update a saved Audience Performance report. Omitted fields remain unchanged,
 // `filters: []` clears all filters, and dates must be sent or cleared as a pair.
-// Requires scope: web-analytics:write
+// Requires API-key scope or current OAuth user permission: web-analytics:write
 func (r *AudienceConversionReportService) Update(ctx context.Context, id string, body AudienceConversionReportUpdateParams, opts ...option.RequestOption) (res *AudienceConversionReportUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -83,8 +84,8 @@ func (r *AudienceConversionReportService) Update(ctx context.Context, id string,
 	return res, err
 }
 
-// Delete a saved Audience Performance report configuration. Requires scope:
-// web-analytics:write
+// Delete a saved Audience Performance report configuration. Requires API-key scope
+// or current OAuth user permission: web-analytics:write
 func (r *AudienceConversionReportService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *AudienceConversionReportDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -98,7 +99,8 @@ func (r *AudienceConversionReportService) Delete(ctx context.Context, id string,
 
 // Run a saved Audience Performance report. `from` and `to` override the saved date
 // range when provided together. Returns 400 when neither a saved range nor an
-// override is available. Requires scope: web-analytics:view
+// override is available. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *AudienceConversionReportService) Results(ctx context.Context, id string, query AudienceConversionReportResultsParams, opts ...option.RequestOption) (res *AudienceConversionReportResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

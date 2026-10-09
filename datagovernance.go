@@ -44,7 +44,8 @@ func NewDataGovernanceService(opts ...option.RequestOption) (r DataGovernanceSer
 // meaningful here. Data governance is the second stage of the dispatch flow
 // (Source → Allowed Events → Data Governance → Mappings → Destination) — it
 // evaluates each event against the configured category logic and stops dispatch to
-// the destinations on any matching category. Requires scope: globalDispatch:list
+// the destinations on any matching category. Requires API-key scope or current
+// OAuth user permission: globalDispatch:list
 func (r *DataGovernanceService) List(ctx context.Context, query DataGovernanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataGovernanceListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -68,7 +69,8 @@ func (r *DataGovernanceService) List(ctx context.Context, query DataGovernanceLi
 // meaningful here. Data governance is the second stage of the dispatch flow
 // (Source → Allowed Events → Data Governance → Mappings → Destination) — it
 // evaluates each event against the configured category logic and stops dispatch to
-// the destinations on any matching category. Requires scope: globalDispatch:list
+// the destinations on any matching category. Requires API-key scope or current
+// OAuth user permission: globalDispatch:list
 func (r *DataGovernanceService) ListAutoPaging(ctx context.Context, query DataGovernanceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DataGovernanceListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -76,7 +78,7 @@ func (r *DataGovernanceService) ListAutoPaging(ctx context.Context, query DataGo
 // Create the data-governance record for this account. Each account may have at
 // most one — a second POST returns 409. Body is optional; defaults are
 // `isEnabled: false` and no categories. Categories are added later via PATCH.
-// Requires scope: globalDispatch:create
+// Requires API-key scope or current OAuth user permission: globalDispatch:create
 func (r *DataGovernanceService) New(ctx context.Context, body DataGovernanceNewParams, opts ...option.RequestOption) (res *DataGovernanceNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/data-governance"
@@ -85,8 +87,8 @@ func (r *DataGovernanceService) New(ctx context.Context, body DataGovernanceNewP
 }
 
 // Fetch the data-governance record by id, including its categories (logic,
-// destinations, priority). Returns 404 when no record matches. Requires scope:
-// globalDispatch:find
+// destinations, priority). Returns 404 when no record matches. Requires API-key
+// scope or current OAuth user permission: globalDispatch:find
 func (r *DataGovernanceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DataGovernanceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -111,7 +113,7 @@ func (r *DataGovernanceService) Get(ctx context.Context, id string, opts ...opti
 // sequential with no gaps. Stale `destinationIds` (deleted destinations or
 // destinations on another account) are silently filtered out — the response echoes
 // the filtered list, so a follow-up GET is not required to see what was saved.
-// Requires scope: globalDispatch:update
+// Requires API-key scope or current OAuth user permission: globalDispatch:update
 func (r *DataGovernanceService) Update(ctx context.Context, id string, body DataGovernanceUpdateParams, opts ...option.RequestOption) (res *DataGovernanceUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -125,7 +127,8 @@ func (r *DataGovernanceService) Update(ctx context.Context, id string, body Data
 
 // Delete the data-governance record. After deletion, inbound events flow through
 // to destinations without category-level gating. Create a new record with POST to
-// reinstate governance. Requires scope: globalDispatch:delete
+// reinstate governance. Requires API-key scope or current OAuth user permission:
+// globalDispatch:delete
 func (r *DataGovernanceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *DataGovernanceDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

@@ -40,7 +40,8 @@ func NewVersionService(opts ...option.RequestOption) (r VersionService) {
 
 // List versions for this account, newest first. Supports cursor pagination and
 // filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
-// with AND semantics. Requires scope: version:list
+// with AND semantics. Requires API-key scope or current OAuth user permission:
+// version:list
 func (r *VersionService) List(ctx context.Context, query VersionListParams, opts ...option.RequestOption) (res *pagination.Cursor[VersionListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -60,7 +61,8 @@ func (r *VersionService) List(ctx context.Context, query VersionListParams, opts
 
 // List versions for this account, newest first. Supports cursor pagination and
 // filtering by `isPublished`, `nameContains`, and `notesContains`. Combine filters
-// with AND semantics. Requires scope: version:list
+// with AND semantics. Requires API-key scope or current OAuth user permission:
+// version:list
 func (r *VersionService) ListAutoPaging(ctx context.Context, query VersionListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[VersionListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -80,7 +82,8 @@ func (r *VersionService) ListAutoPaging(ctx context.Context, query VersionListPa
 // an entity-id allowlist for one collection — omit (or send `[]`) to include every
 // draft change in that collection, or send a non-empty array to whitelist only
 // those ids. Unlisted collections inherit wholesale from the latest published
-// version. Requires scope: version:publish
+// version. Requires API-key scope or current OAuth user permission:
+// version:publish
 func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ...option.RequestOption) (res *VersionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/versions"
@@ -88,7 +91,8 @@ func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ..
 	return res, err
 }
 
-// Find a single version by ID. Requires scope: version:find
+// Find a single version by ID. Requires API-key scope or current OAuth user
+// permission: version:find
 func (r *VersionService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -101,7 +105,7 @@ func (r *VersionService) Get(ctx context.Context, id string, opts ...option.Requ
 }
 
 // Partially update a version. Only the fields you send are changed. Requires
-// scope: version:update
+// API-key scope or current OAuth user permission: version:update
 func (r *VersionService) Update(ctx context.Context, id string, body VersionUpdateParams, opts ...option.RequestOption) (res *VersionUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -117,7 +121,7 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 // to an older snapshot. Returns 409 if the version is already published, was
 // created more than 45 days ago, or another publish is already in flight. To
 // create-and-publish from current draft state, use POST /rest/v1/versions instead.
-// Requires scope: version:publish
+// Requires API-key scope or current OAuth user permission: version:publish
 func (r *VersionService) Publish(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionPublishResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -132,8 +136,8 @@ func (r *VersionService) Publish(ctx context.Context, id string, opts ...option.
 // Retrieve the full JSON snapshot captured by a version — every entity
 // (destinations, sources, mappings, consent settings, etc.) as it existed when
 // this version was published. Sensitive fields (API keys, tokens, secrets) are
-// redacted. Useful for IaC export, audit, and backup workflows. Requires scope:
-// version:find
+// redacted. Useful for IaC export, audit, and backup workflows. Requires API-key
+// scope or current OAuth user permission: version:find
 func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option.RequestOption) (res *VersionSnapshotResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -163,7 +167,8 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 //     latest published version.
 //   - `GET /rest/v1/versions/{id}/diff?against={otherId}` — compare two specific
 //     versions. `otherId` may also be `draft` to diff a published snapshot against
-//     the live draft state. Requires scope: version:find
+//     the live draft state. Requires API-key scope or current OAuth user permission:
+//     version:find
 func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query VersionDiffParams, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/diff", id)
@@ -185,7 +190,7 @@ func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query
 // `GET /rest/v1/versions/draft/diff` when you need the full change set instead of
 // one entity. (`draft` is a literal path segment identifying the live draft as the
 // target, which is why the entity is passed as `entityId` rather than `id`.)
-// Requires scope: version:find
+// Requires API-key scope or current OAuth user permission: version:find
 func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, query VersionStatusParams, opts ...option.RequestOption) (res *VersionStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/status", id)
@@ -207,7 +212,8 @@ func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, q
 // use the experiment lifecycle endpoints (`/start`, `/stop`) for those — but
 // `experimentSettings` is supported. To discard every pending change at once, use
 // `POST /rest/v1/versions/draft/abandon`. (`draft` is a literal path segment
-// identifying the live draft as the target.) Requires scope: version:publish
+// identifying the live draft as the target.) Requires API-key scope or current
+// OAuth user permission: version:publish
 func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, body VersionRevertParams, opts ...option.RequestOption) (res *VersionRevertResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/revert", id)
@@ -222,7 +228,7 @@ func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, b
 // version to revert to, or when another publish or abandon is already in flight.
 // To revert only specific changes, use `POST /rest/v1/versions/draft/revert`.
 // (`draft` is a literal path segment identifying the live draft as the target.)
-// Requires scope: version:publish
+// Requires API-key scope or current OAuth user permission: version:publish
 func (r *VersionService) Abandon(ctx context.Context, id VersionAbandonParamsID, opts ...option.RequestOption) (res *VersionAbandonResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/abandon", id)
@@ -4010,8 +4016,11 @@ const (
 )
 
 type VersionNewParams struct {
-	Name  param.Opt[string] `json:"name,omitzero"`
-	Notes param.Opt[string] `json:"notes,omitzero"`
+	// Allow publishing web sources without allowed domains for this version. Defaults
+	// to false. Sources without allowed domains accept events from any domain.
+	BypassWebSourceDomainValidation param.Opt[bool]   `json:"bypassWebSourceDomainValidation,omitzero"`
+	Name                            param.Opt[string] `json:"name,omitzero"`
+	Notes                           param.Opt[string] `json:"notes,omitzero"`
 	// Cherry-pick: allowed event ids (slug-like strings) to include from the draft.
 	// Omit or send `[]` to include all draft changes in this collection.
 	IncludeAllowedEvents []string `json:"includeAllowedEvents,omitzero"`

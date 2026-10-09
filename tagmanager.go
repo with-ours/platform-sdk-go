@@ -39,7 +39,8 @@ func NewTagManagerService(opts ...option.RequestOption) (r TagManagerService) {
 // List every tag manager on this account. Each tag manager is a pixel-scoped
 // container of tags, triggers, variables, and folders. Not paginated — accounts
 // are capped at a small number of tag managers in practice, so the response fits
-// in a single page. Requires scope: tagManagers:list
+// in a single page. Requires API-key scope or current OAuth user permission:
+// tagManagers:list
 func (r *TagManagerService) List(ctx context.Context, opts ...option.RequestOption) (res *TagManagerListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-managers"
@@ -53,7 +54,8 @@ func (r *TagManagerService) List(ctx context.Context, opts ...option.RequestOpti
 // `GET /tag-manager-triggers?tagManagerId={id}` right after create to grab their
 // server-assigned ids so you can reuse them in `fireTriggerIds` instead of
 // redundantly creating a second `PageView`/`DomReady`/`Initialization`. Returns
-// the bare entity. Requires scope: tagManagers:create
+// the bare entity. Requires API-key scope or current OAuth user permission:
+// tagManagers:create
 func (r *TagManagerService) New(ctx context.Context, body TagManagerNewParams, opts ...option.RequestOption) (res *TagManagerNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-managers"
@@ -62,7 +64,8 @@ func (r *TagManagerService) New(ctx context.Context, body TagManagerNewParams, o
 }
 
 // Fetch a single tag manager by id, including its server-assigned `pixel` token
-// used by the install snippet. Requires scope: tagManagers:find
+// used by the install snippet. Requires API-key scope or current OAuth user
+// permission: tagManagers:find
 func (r *TagManagerService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -76,7 +79,8 @@ func (r *TagManagerService) Get(ctx context.Context, id string, opts ...option.R
 
 // Partially update a tag manager. Only the fields you send are changed; omitted
 // fields keep their current value. Send `dataLayerName: null` to clear the
-// override and fall back to the SDK default. Requires scope: tagManagers:update
+// override and fall back to the SDK default. Requires API-key scope or current
+// OAuth user permission: tagManagers:update
 func (r *TagManagerService) Update(ctx context.Context, id string, body TagManagerUpdateParams, opts ...option.RequestOption) (res *TagManagerUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -89,7 +93,8 @@ func (r *TagManagerService) Update(ctx context.Context, id string, body TagManag
 }
 
 // Delete a tag manager. Child tags, triggers, variables, and folders are
-// cascade-deleted with the container. Requires scope: tagManagers:delete
+// cascade-deleted with the container. Requires API-key scope or current OAuth user
+// permission: tagManagers:delete
 func (r *TagManagerService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

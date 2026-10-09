@@ -39,7 +39,8 @@ func NewDestinationService(opts ...option.RequestOption) (r DestinationService) 
 	return
 }
 
-// List all destinations. Requires scope: destination:list
+// List all destinations. Requires API-key scope or current OAuth user permission:
+// destination:list
 func (r *DestinationService) List(ctx context.Context, query DestinationListParams, opts ...option.RequestOption) (res *pagination.Cursor[DestinationListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -57,12 +58,14 @@ func (r *DestinationService) List(ctx context.Context, query DestinationListPara
 	return res, nil
 }
 
-// List all destinations. Requires scope: destination:list
+// List all destinations. Requires API-key scope or current OAuth user permission:
+// destination:list
 func (r *DestinationService) ListAutoPaging(ctx context.Context, query DestinationListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DestinationListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
-// Create a new destination. Requires scope: destination:create
+// Create a new destination. Requires API-key scope or current OAuth user
+// permission: destination:create
 func (r *DestinationService) New(ctx context.Context, body DestinationNewParams, opts ...option.RequestOption) (res *DestinationNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/destinations"
@@ -70,7 +73,8 @@ func (r *DestinationService) New(ctx context.Context, body DestinationNewParams,
 	return res, err
 }
 
-// Find a single destination by ID. Requires scope: destination:find
+// Find a single destination by ID. Requires API-key scope or current OAuth user
+// permission: destination:find
 func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -85,7 +89,7 @@ func (r *DestinationService) Get(ctx context.Context, id string, opts ...option.
 // Partially update a destination. Only the fields you send are changed; omitted
 // fields are unchanged. The `settings` object is patch-only: omitted keys keep
 // their current value, and send `null` to clear a specific setting. Requires
-// scope: destination:update
+// API-key scope or current OAuth user permission: destination:update
 func (r *DestinationService) Update(ctx context.Context, id string, body DestinationUpdateParams, opts ...option.RequestOption) (res *DestinationUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -97,7 +101,8 @@ func (r *DestinationService) Update(ctx context.Context, id string, body Destina
 	return res, err
 }
 
-// Delete a destination. Requires scope: destination:delete
+// Delete a destination. Requires API-key scope or current OAuth user permission:
+// destination:delete
 func (r *DestinationService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,7 +119,7 @@ func (r *DestinationService) Delete(ctx context.Context, id string, opts ...opti
 // settings descriptor used to configure a destination of that type.
 // Account-agnostic — the response is the same for every API key. Filter
 // client-side to find a specific type (e.g. `Klaviyo`, `Facebook`). Requires
-// scope: destination:list
+// API-key scope or current OAuth user permission: destination:list
 func (r *DestinationService) Types(ctx context.Context, opts ...option.RequestOption) (res *DestinationTypesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/destinations/types"
@@ -124,7 +129,8 @@ func (r *DestinationService) Types(ctx context.Context, opts ...option.RequestOp
 
 // Snapshot of dispatch health for this destination over the trailing 24 hours:
 // counts of succeeded, failed, and intentionally stopped/blocked dispatches, plus
-// a derived `status`. Requires scope: destination:find
+// a derived `status`. Requires API-key scope or current OAuth user permission:
+// destination:find
 func (r *DestinationService) Health(ctx context.Context, id string, opts ...option.RequestOption) (res *DestinationHealthResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -156,13 +162,13 @@ type DestinationListResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds",
-	// "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3",
-	// "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
-	// "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO",
-	// "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI",
-	// "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
+	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
+	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
+	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
+	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationListResponseType `json:"type" api:"required"`
 	HashingSalt        string                      `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                    `json:"limitedToSourceIds" api:"nullable"`
@@ -259,6 +265,7 @@ const (
 	DestinationListResponseTypeMntn                         DestinationListResponseType = "MNTN"
 	DestinationListResponseTypeMntnAudience                 DestinationListResponseType = "MNTNAudience"
 	DestinationListResponseTypeMailchimp                    DestinationListResponseType = "Mailchimp"
+	DestinationListResponseTypeMailchimpAudience            DestinationListResponseType = "MailchimpAudience"
 	DestinationListResponseTypeMicrosoftCapi                DestinationListResponseType = "MicrosoftCAPI"
 	DestinationListResponseTypeMixpanel                     DestinationListResponseType = "Mixpanel"
 	DestinationListResponseTypeNextdoorAds                  DestinationListResponseType = "NextdoorAds"
@@ -318,13 +325,13 @@ type DestinationNewResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds",
-	// "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3",
-	// "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
-	// "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO",
-	// "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI",
-	// "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
+	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
+	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
+	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
+	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationNewResponseType `json:"type" api:"required"`
 	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
@@ -421,6 +428,7 @@ const (
 	DestinationNewResponseTypeMntn                         DestinationNewResponseType = "MNTN"
 	DestinationNewResponseTypeMntnAudience                 DestinationNewResponseType = "MNTNAudience"
 	DestinationNewResponseTypeMailchimp                    DestinationNewResponseType = "Mailchimp"
+	DestinationNewResponseTypeMailchimpAudience            DestinationNewResponseType = "MailchimpAudience"
 	DestinationNewResponseTypeMicrosoftCapi                DestinationNewResponseType = "MicrosoftCAPI"
 	DestinationNewResponseTypeMixpanel                     DestinationNewResponseType = "Mixpanel"
 	DestinationNewResponseTypeNextdoorAds                  DestinationNewResponseType = "NextdoorAds"
@@ -480,13 +488,13 @@ type DestinationGetResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds",
-	// "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3",
-	// "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
-	// "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO",
-	// "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI",
-	// "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
+	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
+	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
+	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
+	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationGetResponseType `json:"type" api:"required"`
 	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
@@ -583,6 +591,7 @@ const (
 	DestinationGetResponseTypeMntn                         DestinationGetResponseType = "MNTN"
 	DestinationGetResponseTypeMntnAudience                 DestinationGetResponseType = "MNTNAudience"
 	DestinationGetResponseTypeMailchimp                    DestinationGetResponseType = "Mailchimp"
+	DestinationGetResponseTypeMailchimpAudience            DestinationGetResponseType = "MailchimpAudience"
 	DestinationGetResponseTypeMicrosoftCapi                DestinationGetResponseType = "MicrosoftCAPI"
 	DestinationGetResponseTypeMixpanel                     DestinationGetResponseType = "Mixpanel"
 	DestinationGetResponseTypeNextdoorAds                  DestinationGetResponseType = "NextdoorAds"
@@ -642,13 +651,13 @@ type DestinationUpdateResponse struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds",
-	// "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3",
-	// "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
-	// "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO",
-	// "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI",
-	// "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
+	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
+	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
+	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
+	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationUpdateResponseType `json:"type" api:"required"`
 	HashingSalt        string                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                      `json:"limitedToSourceIds" api:"nullable"`
@@ -745,6 +754,7 @@ const (
 	DestinationUpdateResponseTypeMntn                         DestinationUpdateResponseType = "MNTN"
 	DestinationUpdateResponseTypeMntnAudience                 DestinationUpdateResponseType = "MNTNAudience"
 	DestinationUpdateResponseTypeMailchimp                    DestinationUpdateResponseType = "Mailchimp"
+	DestinationUpdateResponseTypeMailchimpAudience            DestinationUpdateResponseType = "MailchimpAudience"
 	DestinationUpdateResponseTypeMicrosoftCapi                DestinationUpdateResponseType = "MicrosoftCAPI"
 	DestinationUpdateResponseTypeMixpanel                     DestinationUpdateResponseType = "Mixpanel"
 	DestinationUpdateResponseTypeNextdoorAds                  DestinationUpdateResponseType = "NextdoorAds"
@@ -1188,13 +1198,13 @@ type DestinationListParams struct {
 	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
 	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
 	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds",
-	// "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest", "Plausible",
-	// "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3",
-	// "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola",
-	// "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO",
-	// "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI",
-	// "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
+	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
+	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
+	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
+	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
+	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -1275,6 +1285,7 @@ const (
 	DestinationListParamsTypeMntn                         DestinationListParamsType = "MNTN"
 	DestinationListParamsTypeMntnAudience                 DestinationListParamsType = "MNTNAudience"
 	DestinationListParamsTypeMailchimp                    DestinationListParamsType = "Mailchimp"
+	DestinationListParamsTypeMailchimpAudience            DestinationListParamsType = "MailchimpAudience"
 	DestinationListParamsTypeMicrosoftCapi                DestinationListParamsType = "MicrosoftCAPI"
 	DestinationListParamsTypeMixpanel                     DestinationListParamsType = "Mixpanel"
 	DestinationListParamsTypeNextdoorAds                  DestinationListParamsType = "NextdoorAds"

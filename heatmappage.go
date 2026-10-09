@@ -44,7 +44,7 @@ func NewHeatmapPageService(opts ...option.RequestOption) (r HeatmapPageService) 
 // depth capped at roughly 10,000 entries; if you need pages beyond that, narrow
 // `from`/`to` or add filters rather than paginating further. `from`/`to` are UTC
 // calendar days in `YYYY-MM-DD`; the window must be 60 days or fewer. Requires
-// scope: web-analytics:view
+// API-key scope or current OAuth user permission: web-analytics:view
 func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) (res *pagination.Cursor[HeatmapPageListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -70,7 +70,7 @@ func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListPara
 // depth capped at roughly 10,000 entries; if you need pages beyond that, narrow
 // `from`/`to` or add filters rather than paginating further. `from`/`to` are UTC
 // calendar days in `YYYY-MM-DD`; the window must be 60 days or fewer. Requires
-// scope: web-analytics:view
+// API-key scope or current OAuth user permission: web-analytics:view
 func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[HeatmapPageListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -86,7 +86,8 @@ func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPa
 // `breakpoint` (weighted to cover multiple viewports) so callers can compare
 // devices. `clickGrid` always supplies fine click positions for rendering.
 // `clickBins` derives compatible 64×64 counts from the same grid; its totals must
-// not be added to them. Requires scope: web-analytics:view
+// not be added to them. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *HeatmapPageService) Summary(ctx context.Context, query HeatmapPageSummaryParams, opts ...option.RequestOption) (res *HeatmapPageSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/heatmap-pages/summary"

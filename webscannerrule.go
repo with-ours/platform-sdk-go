@@ -39,7 +39,8 @@ func NewWebScannerRuleService(opts ...option.RequestOption) (r WebScannerRuleSer
 
 // List suppression rules for a single web scanner. Requires the `scannerId` query
 // parameter — rules are always scoped to a parent scanner. Not paginated; the
-// per-scanner rule count is bounded. Requires scope: webScanner:find
+// per-scanner rule count is bounded. Requires API-key scope or current OAuth user
+// permission: webScanner:find
 func (r *WebScannerRuleService) List(ctx context.Context, query WebScannerRuleListParams, opts ...option.RequestOption) (res *WebScannerRuleListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-scanner-rules"
@@ -50,8 +51,8 @@ func (r *WebScannerRuleService) List(ctx context.Context, query WebScannerRuleLi
 // Create a suppression rule on a web scanner. Auth is enforced against the parent
 // scanner via `webScanner:update`. At least one of `cookiePatterns`,
 // `domainPatterns`, or `scriptPatterns` should be set for the rule to match
-// anything; omitted pattern arrays default to `[]`. Requires scope:
-// webScanner:update
+// anything; omitted pattern arrays default to `[]`. Requires API-key scope or
+// current OAuth user permission: webScanner:update
 func (r *WebScannerRuleService) New(ctx context.Context, body WebScannerRuleNewParams, opts ...option.RequestOption) (res *WebScannerRuleNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-scanner-rules"
@@ -59,7 +60,8 @@ func (r *WebScannerRuleService) New(ctx context.Context, body WebScannerRuleNewP
 	return res, err
 }
 
-// Find a single web scanner rule by ID. Requires scope: webScanner:find
+// Find a single web scanner rule by ID. Requires API-key scope or current OAuth
+// user permission: webScanner:find
 func (r *WebScannerRuleService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerRuleGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -73,7 +75,8 @@ func (r *WebScannerRuleService) Get(ctx context.Context, id string, opts ...opti
 
 // Partially update a suppression rule. Only the fields you send are changed.
 // List-valued fields (`cookiePatterns`, `domainPatterns`, `scriptPatterns`) are
-// replaced wholesale when sent. Requires scope: webScanner:update
+// replaced wholesale when sent. Requires API-key scope or current OAuth user
+// permission: webScanner:update
 func (r *WebScannerRuleService) Update(ctx context.Context, id string, body WebScannerRuleUpdateParams, opts ...option.RequestOption) (res *WebScannerRuleUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -85,7 +88,8 @@ func (r *WebScannerRuleService) Update(ctx context.Context, id string, body WebS
 	return res, err
 }
 
-// Delete a web scanner rule. Requires scope: webScanner:update
+// Delete a web scanner rule. Requires API-key scope or current OAuth user
+// permission: webScanner:update
 func (r *WebScannerRuleService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *WebScannerRuleDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

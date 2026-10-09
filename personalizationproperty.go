@@ -42,8 +42,8 @@ func NewPersonalizationPropertyService(opts ...option.RequestOption) (r Personal
 // `experimentSettingsId` query parameter — properties are always scoped to a
 // single record; list the records with `GET /rest/v1/experiment-settings`.
 // Supports cursor pagination via `limit` and `cursor`; the limit clamp is 1000 so
-// a single request can return the full set. Requires scope:
-// experimentSettings:list
+// a single request can return the full set. Requires API-key scope or current
+// OAuth user permission: experimentSettings:list
 func (r *PersonalizationPropertyService) List(ctx context.Context, query PersonalizationPropertyListParams, opts ...option.RequestOption) (res *pagination.Cursor[PersonalizationPropertyListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -65,8 +65,8 @@ func (r *PersonalizationPropertyService) List(ctx context.Context, query Persona
 // `experimentSettingsId` query parameter — properties are always scoped to a
 // single record; list the records with `GET /rest/v1/experiment-settings`.
 // Supports cursor pagination via `limit` and `cursor`; the limit clamp is 1000 so
-// a single request can return the full set. Requires scope:
-// experimentSettings:list
+// a single request can return the full set. Requires API-key scope or current
+// OAuth user permission: experimentSettings:list
 func (r *PersonalizationPropertyService) ListAutoPaging(ctx context.Context, query PersonalizationPropertyListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[PersonalizationPropertyListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -74,7 +74,8 @@ func (r *PersonalizationPropertyService) ListAutoPaging(ctx context.Context, que
 // Create a personalization property on an experiment settings record. The new rule
 // is published automatically and starts accumulating from the next matching event
 // — no separate publish call is needed. `propertyKey` must be unique within the
-// parent record. Requires scope: experimentSettings:update
+// parent record. Requires API-key scope or current OAuth user permission:
+// experimentSettings:update
 func (r *PersonalizationPropertyService) New(ctx context.Context, body PersonalizationPropertyNewParams, opts ...option.RequestOption) (res *PersonalizationPropertyNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/personalization-properties"
@@ -83,7 +84,8 @@ func (r *PersonalizationPropertyService) New(ctx context.Context, body Personali
 }
 
 // Find a single personalization property by ID. Returns 404 when no property
-// matches the supplied id. Requires scope: experimentSettings:find
+// matches the supplied id. Requires API-key scope or current OAuth user
+// permission: experimentSettings:find
 func (r *PersonalizationPropertyService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *PersonalizationPropertyGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -99,8 +101,8 @@ func (r *PersonalizationPropertyService) Get(ctx context.Context, id string, opt
 // changed, and the update is published automatically. Sending `triggerConditions`
 // replaces the prior list — partial-array merging is not supported. Values already
 // accumulated for visitors are kept; the new rule applies to events from here on.
-// Returns 404 when no property matches the supplied id. Requires scope:
-// experimentSettings:update
+// Returns 404 when no property matches the supplied id. Requires API-key scope or
+// current OAuth user permission: experimentSettings:update
 func (r *PersonalizationPropertyService) Update(ctx context.Context, id string, body PersonalizationPropertyUpdateParams, opts ...option.RequestOption) (res *PersonalizationPropertyUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,7 +116,8 @@ func (r *PersonalizationPropertyService) Update(ctx context.Context, id string, 
 
 // Delete a personalization property. The rule stops accumulating immediately;
 // values already recorded for visitors are no longer maintained. Returns 404 when
-// no property matches the supplied id. Requires scope: experimentSettings:update
+// no property matches the supplied id. Requires API-key scope or current OAuth
+// user permission: experimentSettings:update
 func (r *PersonalizationPropertyService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
