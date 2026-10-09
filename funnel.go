@@ -44,7 +44,7 @@ func NewFunnelService(opts ...option.RequestOption) (r FunnelService) {
 // funnels must not be treated as deleted. A complete list has
 // `unavailableCount: 0` and no warnings. Funnel results are computed on demand, so
 // `status` is always `READY` and `reportDateRange` is always `null`. Requires
-// scope: web-analytics:view
+// API-key scope or current OAuth user permission: web-analytics:view
 func (r *FunnelService) List(ctx context.Context, opts ...option.RequestOption) (res *FunnelListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/funnels"
@@ -53,7 +53,8 @@ func (r *FunnelService) List(ctx context.Context, opts ...option.RequestOption) 
 }
 
 // Create a funnel from a versioned definition. Returns the complete saved
-// configuration. Requires scope: web-analytics:write
+// configuration. Requires API-key scope or current OAuth user permission:
+// web-analytics:write
 func (r *FunnelService) New(ctx context.Context, body FunnelNewParams, opts ...option.RequestOption) (res *FunnelNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/funnels"
@@ -62,8 +63,8 @@ func (r *FunnelService) New(ctx context.Context, body FunnelNewParams, opts ...o
 }
 
 // Fetch a single funnel configuration by its id. Returns `404` when the funnel
-// does not exist or belongs to a different account. Requires scope:
-// web-analytics:view
+// does not exist or belongs to a different account. Requires API-key scope or
+// current OAuth user permission: web-analytics:view
 func (r *FunnelService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *FunnelGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -76,8 +77,8 @@ func (r *FunnelService) Get(ctx context.Context, id string, opts ...option.Reque
 }
 
 // Update one or more funnel fields. Omitted fields remain unchanged. The canonical
-// definition can be replaced by supplying `queryDefinition`. Requires scope:
-// web-analytics:write
+// definition can be replaced by supplying `queryDefinition`. Requires API-key
+// scope or current OAuth user permission: web-analytics:write
 func (r *FunnelService) Update(ctx context.Context, id string, body FunnelUpdateParams, opts ...option.RequestOption) (res *FunnelUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -90,7 +91,7 @@ func (r *FunnelService) Update(ctx context.Context, id string, body FunnelUpdate
 }
 
 // Delete a Funnel configuration. Existing analytics data is unaffected. Requires
-// scope: web-analytics:write
+// API-key scope or current OAuth user permission: web-analytics:write
 func (r *FunnelService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *FunnelDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -104,7 +105,7 @@ func (r *FunnelService) Delete(ctx context.Context, id string, opts ...option.Re
 
 // Duplicate a funnel configuration in the same account. The copy keeps the
 // canonical definition, receives a new ID, and is named `Copy of …`. Requires
-// scope: web-analytics:write
+// API-key scope or current OAuth user permission: web-analytics:write
 func (r *FunnelService) Duplicate(ctx context.Context, id string, opts ...option.RequestOption) (res *FunnelDuplicateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -123,8 +124,8 @@ func (r *FunnelService) Duplicate(ctx context.Context, id string, opts ...option
 // data at request time; ad hoc filter, saved-scope, and web-source overrides are
 // not accepted. Observation completeness is null when the source coverage
 // watermark is unavailable. `to` must be on or after `from`, and the window may
-// span at most 91 days including both endpoints. Requires scope:
-// web-analytics:view
+// span at most 91 days including both endpoints. Requires API-key scope or current
+// OAuth user permission: web-analytics:view
 func (r *FunnelService) Results(ctx context.Context, id string, query FunnelResultsParams, opts ...option.RequestOption) (res *FunnelResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

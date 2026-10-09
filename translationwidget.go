@@ -40,8 +40,8 @@ func NewTranslationWidgetService(opts ...option.RequestOption) (r TranslationWid
 
 // List every translation widget configured on the account, including the domains
 // it runs on, its appearance settings, and the languages it offers. Not paginated
-// — widgets are capped by the account's translation widget limit. Requires scope:
-// translationWidget:list
+// — widgets are capped by the account's translation widget limit. Requires API-key
+// scope or current OAuth user permission: translationWidget:list
 func (r *TranslationWidgetService) List(ctx context.Context, opts ...option.RequestOption) (res *TranslationWidgetListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/translation-widgets"
@@ -53,7 +53,8 @@ func (r *TranslationWidgetService) List(ctx context.Context, opts ...option.Requ
 // back as `null` and the widget falls back to its built-in appearance, and
 // omitting `enabledLanguages` offers every supported language. Returns the full
 // widget, including its id, so it can be installed without a follow-up request.
-// Requires scope: translationWidget:create
+// Requires API-key scope or current OAuth user permission:
+// translationWidget:create
 func (r *TranslationWidgetService) New(ctx context.Context, body TranslationWidgetNewParams, opts ...option.RequestOption) (res *TranslationWidgetNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/translation-widgets"
@@ -62,7 +63,7 @@ func (r *TranslationWidgetService) New(ctx context.Context, body TranslationWidg
 }
 
 // Fetch one translation widget by its id. Returns 404 when it does not exist.
-// Requires scope: translationWidget:find
+// Requires API-key scope or current OAuth user permission: translationWidget:find
 func (r *TranslationWidgetService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TranslationWidgetGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -75,8 +76,8 @@ func (r *TranslationWidgetService) Get(ctx context.Context, id string, opts ...o
 }
 
 // Return usage totals and language, host, and page breakdowns for one translation
-// widget over the requested date range. Requires scope:
-// report:translation-analytics
+// widget over the requested date range. Requires API-key scope or current OAuth
+// user permission: report:translation-analytics
 func (r *TranslationWidgetService) Analytics(ctx context.Context, id string, query TranslationWidgetAnalyticsParams, opts ...option.RequestOption) (res *TranslationWidgetAnalyticsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

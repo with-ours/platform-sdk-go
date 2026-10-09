@@ -58,12 +58,12 @@ func TestTagManagerVariableNewWithOptionalParams(t *testing.T) {
 		},
 		TagManagerID: "x",
 		Type:         "type",
-		DefaultValue: map[string]any{
-			"foo": "bar",
+		DefaultValue: oursprivacy.TagManagerVariableNewParamsDefaultValueUnion{
+			OfString: oursprivacy.String("string"),
 		},
 		Enabled: oursprivacy.Bool(true),
-		LookUpTable: map[string]any{
-			"foo": "bar",
+		LookUpTable: oursprivacy.TagManagerVariableNewParamsLookUpTableUnion{
+			OfString: oursprivacy.String("string"),
 		},
 	})
 	if err != nil {
@@ -113,12 +113,12 @@ func TestTagManagerVariableUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.TagManagerVariableUpdateParams{
-			DefaultValue: map[string]any{
-				"foo": "bar",
+			DefaultValue: oursprivacy.TagManagerVariableUpdateParamsDefaultValueUnion{
+				OfString: oursprivacy.String("string"),
 			},
 			Enabled: oursprivacy.Bool(true),
-			LookUpTable: map[string]any{
-				"foo": "bar",
+			LookUpTable: oursprivacy.TagManagerVariableUpdateParamsLookUpTableUnion{
+				OfString: oursprivacy.String("string"),
 			},
 			Name: oursprivacy.String("name"),
 			Parameters: map[string]any{

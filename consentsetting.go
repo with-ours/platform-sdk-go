@@ -37,7 +37,8 @@ func NewConsentSettingService(opts ...option.RequestOption) (r ConsentSettingSer
 	return
 }
 
-// List all consent settings. Requires scope: consentSettings:list
+// List all consent settings. Requires API-key scope or current OAuth user
+// permission: consentSettings:list
 func (r *ConsentSettingService) List(ctx context.Context, opts ...option.RequestOption) (res *ConsentSettingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
@@ -45,13 +46,12 @@ func (r *ConsentSettingService) List(ctx context.Context, opts ...option.Request
 	return res, err
 }
 
-// Create a new consent settings record. POST takes no request body — the server
-// initializes the record with defaults (Disabled status, opt-out default rule,
-// English translations, necessary/analytics/advertising categories, no regions, no
-// whitelisted domains). Configure the record afterward with PATCH (partial update)
-// or PUT (full replacement). Returns the same shape as GET so you can read the
-// server-assigned `id`, default rule, and categories without a follow-up fetch.
-// Requires scope: consentSettings:create
+// Create a new consent setting. POST takes no request body. The new draft is
+// Disabled with no allowed domains, an opt-out default rule, English translations,
+// necessary/analytics/advertising categories, and no regions. Configure it with
+// PATCH or PUT before enabling it. Returns the same fields as GET, including its
+// `id`, default rule, and categories. Requires API-key scope or current OAuth user
+// permission: consentSettings:create
 func (r *ConsentSettingService) New(ctx context.Context, opts ...option.RequestOption) (res *ConsentSettingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/consent-settings"
@@ -59,7 +59,8 @@ func (r *ConsentSettingService) New(ctx context.Context, opts ...option.RequestO
 	return res, err
 }
 
-// Find a single consent setting by ID. Requires scope: consentSettings:find
+// Find a single consent setting by ID. Requires API-key scope or current OAuth
+// user permission: consentSettings:find
 func (r *ConsentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ConsentSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -71,8 +72,13 @@ func (r *ConsentSettingService) Get(ctx context.Context, id string, opts ...opti
 	return res, err
 }
 
-// Replace a consent setting. Send the full ConsentSettingsInput body — omitted
-// optional fields are reset. Use PATCH for partial updates. Requires scope:
+// Update a consent setting with all required fields. Omitted optional top-level
+// fields retain their saved values; the required default rule and lists are
+// replaced by supplied values. Send null or [] to clear an optional field when
+// allowed. Enabled requires at least one allowed domain in this request. Omitting
+// or clearing `whitelistDomains` with null or [] while Enabled returns an HTTP 400
+// validation error. Disabled settings may have no allowed domains. Use PATCH for
+// partial updates. Requires API-key scope or current OAuth user permission:
 // consentSettings:update
 func (r *ConsentSettingService) Replace(ctx context.Context, id string, body ConsentSettingReplaceParams, opts ...option.RequestOption) (res *ConsentSettingReplaceResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -85,10 +91,14 @@ func (r *ConsentSettingService) Replace(ctx context.Context, id string, body Con
 	return res, err
 }
 
-// Partially update a consent setting. Send only the fields you want to change —
-// every field is optional and unspecified fields are preserved. List-valued fields
-// (services, categories, regions) are replaced wholesale when sent. Requires
-// scope: consentSettings:update
+// Partially update a consent setting. Omitted fields keep their saved values.
+// List-valued fields (services, categories, regions) are replaced in full when
+// sent. Omitting `whitelistDomains` preserves saved domains; sending it replaces
+// the list. Clear allowed domains with null or [] only when the resulting status
+// is Disabled. Enabled requires at least one allowed domain, either already saved
+// or sent with this request. Invalid combinations return HTTP 400 validation
+// errors. Requires API-key scope or current OAuth user permission:
+// consentSettings:update
 func (r *ConsentSettingService) Update(ctx context.Context, id string, body ConsentSettingUpdateParams, opts ...option.RequestOption) (res *ConsentSettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -100,7 +110,8 @@ func (r *ConsentSettingService) Update(ctx context.Context, id string, body Cons
 	return res, err
 }
 
-// Delete a consent setting. Requires scope: consentSettings:delete
+// Delete a consent setting. Requires API-key scope or current OAuth user
+// permission: consentSettings:delete
 func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ConsentSettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,15 +125,18 @@ func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...o
 
 // Time-series consent analytics for a single consent settings record: banner
 // views, opt-ins, opt-outs, close-icon clicks, and derived opt-in/out rates per
-// UTC day (or per UTC hour with `granularity=HOURLY`). The window is zero-filled
+// UTC hour, day, Monday-based week, or calendar month. The window is zero-filled
 // so callers get a contiguous series, and rates are person-level
-// (`COUNT(DISTINCT visitor_id)`). Use the optional `pagePath` and `region` filters
-// to scope to one page or one visitor region; use `compareWithPreviousPeriod=true`
-// to also receive the matching prior window. `DAILY` allows a 90-day window;
-// `HOURLY` is capped at 14 days. Requires the API-key scope
-// `report:consent-analytics` (this endpoint returns consent analytics report data,
-// which is PHI-bearing and gated separately from consent-settings management).
-// Requires scope: report:consent-analytics
+// (`COUNT(DISTINCT visitor_id)`). Use the JSON-encoded shared analytics `filter`
+// to scope events by source, page, visitor, or session properties; use
+// `compareWithPreviousPeriod=true` to also receive the matching prior window.
+// Included days: at most 180 days for `DAILY`, 365 for `WEEKLY`, 365 for
+// `MONTHLY`, or 14 for `HOURLY`. Partial buckets identify their actual selected
+// dates. Previous-period comparisons are supported for daily and hourly output.
+// Requires the API-key scope `report:consent-analytics` (this endpoint returns
+// consent analytics report data, which is PHI-bearing and gated separately from
+// consent-settings management). Requires API-key scope or current OAuth user
+// permission: report:consent-analytics
 func (r *ConsentSettingService) Analytics(ctx context.Context, id string, query ConsentSettingAnalyticsParams, opts ...option.RequestOption) (res *ConsentSettingAnalyticsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -134,13 +148,46 @@ func (r *ConsentSettingService) Analytics(ctx context.Context, id string, query 
 	return res, err
 }
 
+// Monthly consent trends over up to 365 included days. Returns unique visitor
+// counts within each UTC calendar month, event counts for dismissals, rates, and
+// partial-month bounds. Uses the same shared analytics filter as the other consent
+// reports. This series-only output omits whole-window totals and breakdowns.
+// Requires API-key scope or current OAuth user permission:
+// report:consent-analytics
+func (r *ConsentSettingService) AnalyticsMonthly(ctx context.Context, id string, query ConsentSettingAnalyticsMonthlyParams, opts ...option.RequestOption) (res *ConsentSettingAnalyticsMonthlyResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics-monthly", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns interval limits for a Consent report kind: SUMMARY, TRENDS, or PAGES.
+// The organization is determined by the API key. Default included days: at most
+// 180 days for `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`;
+// organization limits may narrow these allowances. TRENDS requires
+// report:consent-analytics, PAGES requires report:consent-page-analysis, and
+// SUMMARY requires both. Dates, filters, search and pagination are not part of
+// this request. Requires API-key scope or current OAuth user permission:
+// report:consent-analytics or report:consent-page-analysis
+func (r *ConsentSettingService) AnalyticsCapabilities(ctx context.Context, query ConsentSettingAnalyticsCapabilitiesParams, opts ...option.RequestOption) (res *ConsentSettingAnalyticsCapabilitiesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/consent-settings/analytics-capabilities"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Per-page consent breakdown for one consent settings record, ranked by opt-outs
 // (descending). Each row bundles banner views, opt-outs, close-icon clicks, and
-// the derived opt-out rate. Documented exception to the cursor-pagination
-// standard: this endpoint paginates with `limit` and `offset` rather than
-// `cursor`. `search` is a substring match against `pathname`; `region` filters to
-// one visitor region. Requires the API-key scope `report:consent-page-analysis`
-// (PHI-bearing report data). Requires scope: report:consent-page-analysis
+// the derived opt-out rate. Returns `{ entities, pagination }`. Continue with
+// `pagination.nextCursor`; results sort by opt-outs descending, then page path
+// ascending. `search` is a substring match against `pathname`; the JSON-encoded
+// shared analytics `filter` scopes the underlying events. Requires the API-key
+// scope `report:consent-page-analysis` (PHI-bearing report data). Requires API-key
+// scope or current OAuth user permission: report:consent-page-analysis
 func (r *ConsentSettingService) PageAnalysis(ctx context.Context, id string, query ConsentSettingPageAnalysisParams, opts ...option.RequestOption) (res *ConsentSettingPageAnalysisResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -156,11 +203,10 @@ func (r *ConsentSettingService) PageAnalysis(ctx context.Context, id string, que
 // close-icon clicks, and derived rates per visitor `country_region_name`, ranked
 // by banner views (descending). Visitors whose region cannot be resolved (e.g. bot
 // traffic, IP geo failure) are bucketed under the literal `Unknown` so per-region
-// counts always sum to the global totals. Use this to discover the region names
-// you can later pass to the `region` filter on
-// `GET /rest/v1/consent-settings/{id}/analytics`. Requires the API-key scope
-// `report:consent-analytics` (PHI-bearing report data). Requires scope:
-// report:consent-analytics
+// counts always sum to the global totals. Use the JSON-encoded shared analytics
+// `filter` to scope the underlying events. Requires the API-key scope
+// `report:consent-analytics` (PHI-bearing report data). Requires API-key scope or
+// current OAuth user permission: report:consent-analytics
 func (r *ConsentSettingService) AnalyticsByRegion(ctx context.Context, id string, query ConsentSettingAnalyticsByRegionParams, opts ...option.RequestOption) (res *ConsentSettingAnalyticsByRegionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -207,7 +253,8 @@ type ConsentSettingListResponseEntity struct {
 	Regions []ConsentSettingListResponseEntityRegion `json:"regions" api:"required"`
 	// Per-service entries powering "show vendors" and category-aware blocking.
 	Services []ConsentSettingListResponseEntityService `json:"services" api:"required"`
-	// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+	// Enabled serves the CMP on its allowed domains and requires at least one.
+	// Disabled does not serve the CMP and may have no allowed domains.
 	//
 	// Any of "Disabled", "Enabled".
 	Status string `json:"status" api:"required"`
@@ -232,9 +279,9 @@ type ConsentSettingListResponseEntity struct {
 	// Pixel of the WebSource that this CMP is wired into. Setting this to a token that
 	// is not a valid WebSource of yours is rejected; use null to clear the link.
 	WebSDKToken string `json:"webSDKToken" api:"nullable"`
-	// Allowlist of domains where this CMP configuration may run. Used at runtime to
-	// derive the broadest matching base domain so consent can persist across matching
-	// subdomains.
+	// Domains where this CMP may run. An Enabled CMP requires at least one allowed
+	// domain; with none configured, the CMP does not run. Matching domains may share
+	// consent across subdomains.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -668,7 +715,8 @@ type ConsentSettingNewResponse struct {
 	Regions []ConsentSettingNewResponseRegion `json:"regions" api:"required"`
 	// Per-service entries powering "show vendors" and category-aware blocking.
 	Services []ConsentSettingNewResponseService `json:"services" api:"required"`
-	// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+	// Enabled serves the CMP on its allowed domains and requires at least one.
+	// Disabled does not serve the CMP and may have no allowed domains.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingNewResponseStatus `json:"status" api:"required"`
@@ -693,9 +741,9 @@ type ConsentSettingNewResponse struct {
 	// Pixel of the WebSource that this CMP is wired into. Setting this to a token that
 	// is not a valid WebSource of yours is rejected; use null to clear the link.
 	WebSDKToken string `json:"webSDKToken" api:"nullable"`
-	// Allowlist of domains where this CMP configuration may run. Used at runtime to
-	// derive the broadest matching base domain so consent can persist across matching
-	// subdomains.
+	// Domains where this CMP may run. An Enabled CMP requires at least one allowed
+	// domain; with none configured, the CMP does not run. Matching domains may share
+	// consent across subdomains.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1108,7 +1156,8 @@ func (r *ConsentSettingNewResponseService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+// Enabled serves the CMP on its allowed domains and requires at least one.
+// Disabled does not serve the CMP and may have no allowed domains.
 type ConsentSettingNewResponseStatus string
 
 const (
@@ -1135,7 +1184,8 @@ type ConsentSettingGetResponse struct {
 	Regions []ConsentSettingGetResponseRegion `json:"regions" api:"required"`
 	// Per-service entries powering "show vendors" and category-aware blocking.
 	Services []ConsentSettingGetResponseService `json:"services" api:"required"`
-	// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+	// Enabled serves the CMP on its allowed domains and requires at least one.
+	// Disabled does not serve the CMP and may have no allowed domains.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingGetResponseStatus `json:"status" api:"required"`
@@ -1160,9 +1210,9 @@ type ConsentSettingGetResponse struct {
 	// Pixel of the WebSource that this CMP is wired into. Setting this to a token that
 	// is not a valid WebSource of yours is rejected; use null to clear the link.
 	WebSDKToken string `json:"webSDKToken" api:"nullable"`
-	// Allowlist of domains where this CMP configuration may run. Used at runtime to
-	// derive the broadest matching base domain so consent can persist across matching
-	// subdomains.
+	// Domains where this CMP may run. An Enabled CMP requires at least one allowed
+	// domain; with none configured, the CMP does not run. Matching domains may share
+	// consent across subdomains.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1575,7 +1625,8 @@ func (r *ConsentSettingGetResponseService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+// Enabled serves the CMP on its allowed domains and requires at least one.
+// Disabled does not serve the CMP and may have no allowed domains.
 type ConsentSettingGetResponseStatus string
 
 const (
@@ -1602,7 +1653,8 @@ type ConsentSettingReplaceResponse struct {
 	Regions []ConsentSettingReplaceResponseRegion `json:"regions" api:"required"`
 	// Per-service entries powering "show vendors" and category-aware blocking.
 	Services []ConsentSettingReplaceResponseService `json:"services" api:"required"`
-	// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+	// Enabled serves the CMP on its allowed domains and requires at least one.
+	// Disabled does not serve the CMP and may have no allowed domains.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingReplaceResponseStatus `json:"status" api:"required"`
@@ -1627,9 +1679,9 @@ type ConsentSettingReplaceResponse struct {
 	// Pixel of the WebSource that this CMP is wired into. Setting this to a token that
 	// is not a valid WebSource of yours is rejected; use null to clear the link.
 	WebSDKToken string `json:"webSDKToken" api:"nullable"`
-	// Allowlist of domains where this CMP configuration may run. Used at runtime to
-	// derive the broadest matching base domain so consent can persist across matching
-	// subdomains.
+	// Domains where this CMP may run. An Enabled CMP requires at least one allowed
+	// domain; with none configured, the CMP does not run. Matching domains may share
+	// consent across subdomains.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2042,7 +2094,8 @@ func (r *ConsentSettingReplaceResponseService) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+// Enabled serves the CMP on its allowed domains and requires at least one.
+// Disabled does not serve the CMP and may have no allowed domains.
 type ConsentSettingReplaceResponseStatus string
 
 const (
@@ -2069,7 +2122,8 @@ type ConsentSettingUpdateResponse struct {
 	Regions []ConsentSettingUpdateResponseRegion `json:"regions" api:"required"`
 	// Per-service entries powering "show vendors" and category-aware blocking.
 	Services []ConsentSettingUpdateResponseService `json:"services" api:"required"`
-	// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+	// Enabled serves the CMP on its allowed domains and requires at least one.
+	// Disabled does not serve the CMP and may have no allowed domains.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingUpdateResponseStatus `json:"status" api:"required"`
@@ -2094,9 +2148,9 @@ type ConsentSettingUpdateResponse struct {
 	// Pixel of the WebSource that this CMP is wired into. Setting this to a token that
 	// is not a valid WebSource of yours is rejected; use null to clear the link.
 	WebSDKToken string `json:"webSDKToken" api:"nullable"`
-	// Allowlist of domains where this CMP configuration may run. Used at runtime to
-	// derive the broadest matching base domain so consent can persist across matching
-	// subdomains.
+	// Domains where this CMP may run. An Enabled CMP requires at least one allowed
+	// domain; with none configured, the CMP does not run. Matching domains may share
+	// consent across subdomains.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2509,7 +2563,8 @@ func (r *ConsentSettingUpdateResponseService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+// Enabled serves the CMP on its allowed domains and requires at least one.
+// Disabled does not serve the CMP and may have no allowed domains.
 type ConsentSettingUpdateResponseStatus string
 
 const (
@@ -2536,7 +2591,8 @@ type ConsentSettingDeleteResponse struct {
 	Regions []ConsentSettingDeleteResponseRegion `json:"regions" api:"required"`
 	// Per-service entries powering "show vendors" and category-aware blocking.
 	Services []ConsentSettingDeleteResponseService `json:"services" api:"required"`
-	// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+	// Enabled serves the CMP on its allowed domains and requires at least one.
+	// Disabled does not serve the CMP and may have no allowed domains.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingDeleteResponseStatus `json:"status" api:"required"`
@@ -2561,9 +2617,9 @@ type ConsentSettingDeleteResponse struct {
 	// Pixel of the WebSource that this CMP is wired into. Setting this to a token that
 	// is not a valid WebSource of yours is rejected; use null to clear the link.
 	WebSDKToken string `json:"webSDKToken" api:"nullable"`
-	// Allowlist of domains where this CMP configuration may run. Used at runtime to
-	// derive the broadest matching base domain so consent can persist across matching
-	// subdomains.
+	// Domains where this CMP may run. An Enabled CMP requires at least one allowed
+	// domain; with none configured, the CMP does not run. Matching domains may share
+	// consent across subdomains.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2976,7 +3032,8 @@ func (r *ConsentSettingDeleteResponseService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Enabled means the CMP serves on whitelisted domains; Disabled means it does not.
+// Enabled serves the CMP on its allowed domains and requires at least one.
+// Disabled does not serve the CMP and may have no allowed domains.
 type ConsentSettingDeleteResponseStatus string
 
 const (
@@ -2985,9 +3042,9 @@ const (
 )
 
 type ConsentSettingAnalyticsResponse struct {
-	// One entry per time bucket (day or hour, depending on `granularity`) covering the
-	// full window — empty windows are zero-filled so callers can render contiguous
-	// time series without gap-handling logic.
+	// One entry per time bucket (hour, day, week, or month, depending on
+	// `granularity`) covering the full window — empty windows are zero-filled so
+	// callers can render contiguous time series without gap-handling logic.
 	Items  []ConsentSettingAnalyticsResponseItem `json:"items" api:"required"`
 	Totals ConsentSettingAnalyticsResponseTotals `json:"totals" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3013,6 +3070,9 @@ type ConsentSettingAnalyticsResponseItem struct {
 	ExplicitOptOuts                 int64   `json:"explicitOptOuts" api:"required"`
 	OptInRate                       float64 `json:"optInRate" api:"required"`
 	OptOutRate                      float64 `json:"optOutRate" api:"required"`
+	PartialPeriod                   bool    `json:"partialPeriod" api:"required"`
+	PeriodFrom                      string  `json:"periodFrom" api:"required"`
+	PeriodTo                        string  `json:"periodTo" api:"required"`
 	PercentageChangeBannerViews     float64 `json:"percentageChangeBannerViews" api:"nullable"`
 	PercentageChangeCloseIconClicks float64 `json:"percentageChangeCloseIconClicks" api:"nullable"`
 	PercentageChangeExplicitOptIns  float64 `json:"percentageChangeExplicitOptIns" api:"nullable"`
@@ -3032,6 +3092,9 @@ type ConsentSettingAnalyticsResponseItem struct {
 		ExplicitOptOuts                 respjson.Field
 		OptInRate                       respjson.Field
 		OptOutRate                      respjson.Field
+		PartialPeriod                   respjson.Field
+		PeriodFrom                      respjson.Field
+		PeriodTo                        respjson.Field
 		PercentageChangeBannerViews     respjson.Field
 		PercentageChangeCloseIconClicks respjson.Field
 		PercentageChangeExplicitOptIns  respjson.Field
@@ -3079,21 +3142,105 @@ func (r *ConsentSettingAnalyticsResponseTotals) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingPageAnalysisResponse struct {
-	// True when at least one more page is available beyond the current window.
-	HasMore bool `json:"hasMore" api:"required"`
-	// Pages with consent activity in the window, ranked by opt-outs (descending). Each
-	// page bundles banner views, opt-outs, close-icon clicks, and the derived opt-out
-	// rate.
-	Items []ConsentSettingPageAnalysisResponseItem `json:"items" api:"required"`
-	// Running count of pages loaded so far (`offset + items.length`). Approximate for
-	// load-more flows; query without `offset` to get the exact size of the first page.
-	Total int64 `json:"total" api:"required"`
+type ConsentSettingAnalyticsMonthlyResponse struct {
+	Items []ConsentSettingAnalyticsMonthlyResponseItem `json:"items" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		HasMore     respjson.Field
 		Items       respjson.Field
-		Total       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsMonthlyResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsMonthlyResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsMonthlyResponseItem struct {
+	BannerViews     int64   `json:"bannerViews" api:"required"`
+	CloseIconClicks int64   `json:"closeIconClicks" api:"required"`
+	DateTime        string  `json:"dateTime" api:"required"`
+	ExplicitOptIns  int64   `json:"explicitOptIns" api:"required"`
+	ExplicitOptOuts int64   `json:"explicitOptOuts" api:"required"`
+	OptInRate       float64 `json:"optInRate" api:"required"`
+	OptOutRate      float64 `json:"optOutRate" api:"required"`
+	PartialPeriod   bool    `json:"partialPeriod" api:"required"`
+	PeriodFrom      string  `json:"periodFrom" api:"required"`
+	PeriodTo        string  `json:"periodTo" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews     respjson.Field
+		CloseIconClicks respjson.Field
+		DateTime        respjson.Field
+		ExplicitOptIns  respjson.Field
+		ExplicitOptOuts respjson.Field
+		OptInRate       respjson.Field
+		OptOutRate      respjson.Field
+		PartialPeriod   respjson.Field
+		PeriodFrom      respjson.Field
+		PeriodTo        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsMonthlyResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsMonthlyResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsCapabilitiesResponse struct {
+	ExpiresAt     string                                                `json:"expiresAt" api:"required"`
+	Intervals     []ConsentSettingAnalyticsCapabilitiesResponseInterval `json:"intervals" api:"required"`
+	PolicyVersion string                                                `json:"policyVersion" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExpiresAt     respjson.Field
+		Intervals     respjson.Field
+		PolicyVersion respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsCapabilitiesResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsCapabilitiesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingAnalyticsCapabilitiesResponseInterval struct {
+	ComparisonSupported bool `json:"comparisonSupported" api:"required"`
+	// Any of "DAILY", "HOURLY", "MONTHLY", "WEEKLY".
+	Granularity     string `json:"granularity" api:"required"`
+	MaxIncludedDays int64  `json:"maxIncludedDays" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ComparisonSupported respjson.Field
+		Granularity         respjson.Field
+		MaxIncludedDays     respjson.Field
+		ExtraFields         map[string]respjson.Field
+		raw                 string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingAnalyticsCapabilitiesResponseInterval) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingAnalyticsCapabilitiesResponseInterval) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingPageAnalysisResponse struct {
+	// Pages ranked by opt-outs descending, then page path ascending.
+	Entities   []ConsentSettingPageAnalysisResponseEntity   `json:"entities" api:"required"`
+	Pagination ConsentSettingPageAnalysisResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Pagination  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -3105,7 +3252,7 @@ func (r *ConsentSettingPageAnalysisResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ConsentSettingPageAnalysisResponseItem struct {
+type ConsentSettingPageAnalysisResponseEntity struct {
 	BannerViews     int64   `json:"bannerViews" api:"required"`
 	CloseIconClicks int64   `json:"closeIconClicks" api:"required"`
 	OptOutRate      float64 `json:"optOutRate" api:"required"`
@@ -3124,8 +3271,26 @@ type ConsentSettingPageAnalysisResponseItem struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ConsentSettingPageAnalysisResponseItem) RawJSON() string { return r.JSON.raw }
-func (r *ConsentSettingPageAnalysisResponseItem) UnmarshalJSON(data []byte) error {
+func (r ConsentSettingPageAnalysisResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingPageAnalysisResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingPageAnalysisResponsePagination struct {
+	HasMore    bool   `json:"hasMore" api:"required"`
+	NextCursor string `json:"nextCursor" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingPageAnalysisResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingPageAnalysisResponsePagination) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -3190,7 +3355,7 @@ type ConsentSettingReplaceParams struct {
 	// Per-service entries powering "show vendors" and category-aware blocking. Empty
 	// array clears the list.
 	Services []ConsentSettingReplaceParamsService `json:"services,omitzero" api:"required"`
-	// Enabled to serve the CMP, Disabled to take it offline.
+	// Enabled requires at least one allowed domain. Disabled may have none.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingReplaceParamsStatus `json:"status,omitzero" api:"required"`
@@ -3209,7 +3374,9 @@ type ConsentSettingReplaceParams struct {
 	// CSS class names that opt scripts out of consent blocking. Each must be a single
 	// class token.
 	SkipBlockingClassNames []string `json:"skipBlockingClassNames,omitzero"`
-	// Allowlist of domains where this CMP runs. Pass null/[] to clear.
+	// Domains where this CMP may run. Enabled requires at least one allowed domain;
+	// omitting, null, or [] fails validation when status is Enabled. Disabled may have
+	// none.
 	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }
@@ -3545,7 +3712,7 @@ func (r *ConsentSettingReplaceParamsService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Enabled to serve the CMP, Disabled to take it offline.
+// Enabled requires at least one allowed domain. Disabled may have none.
 type ConsentSettingReplaceParamsStatus string
 
 const (
@@ -3570,7 +3737,8 @@ type ConsentSettingUpdateParams struct {
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Replace the skipBlockingClassNames list. Pass null/[] to clear.
 	SkipBlockingClassNames []string `json:"skipBlockingClassNames,omitzero"`
-	// Replace the allowlist. Pass null/[] to clear.
+	// Replace the allowed domains when sent. Omit to preserve saved domains. Pass null
+	// or [] to clear only when the resulting status is Disabled.
 	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	// Replace the entire categories list. Omit to leave existing categories untouched.
 	Categories []ConsentSettingUpdateParamsCategory `json:"categories,omitzero"`
@@ -3581,7 +3749,8 @@ type ConsentSettingUpdateParams struct {
 	Regions []ConsentSettingUpdateParamsRegion `json:"regions,omitzero"`
 	// Replace the entire services list. Omit to leave existing services untouched.
 	Services []ConsentSettingUpdateParamsService `json:"services,omitzero"`
-	// Toggle Enabled/Disabled without re-sending the rest of the config.
+	// Set Enabled or Disabled. Enabling requires at least one allowed domain, either
+	// already saved or sent with this request.
 	//
 	// Any of "Disabled", "Enabled".
 	Status ConsentSettingUpdateParamsStatus `json:"status,omitzero"`
@@ -3919,7 +4088,8 @@ func (r *ConsentSettingUpdateParamsService) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Toggle Enabled/Disabled without re-sending the rest of the config.
+// Set Enabled or Disabled. Enabling requires at least one allowed domain, either
+// already saved or sent with this request.
 type ConsentSettingUpdateParamsStatus string
 
 const (
@@ -3929,16 +4099,16 @@ const (
 
 type ConsentSettingAnalyticsParams struct {
 	// Inclusive lower bound of the analytics window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
-	// (14 for `HOURLY` granularity).
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
 	From string `query:"from" api:"required" json:"-"`
 	// Inclusive upper bound of the analytics window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
-	// (14 for `HOURLY` granularity).
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
 	To string `query:"to" api:"required" json:"-"`
-	// When `true`, each bucket also returns the matching bucket from the immediately
-	// preceding window of equal length (in `previous*` and `percentageChange*`
-	// fields). Defaults to `false`.
+	// Supported for DAILY and HOURLY. When `true`, each bucket also returns the
+	// matching bucket from the immediately preceding window of equal length (in
+	// `previous*` and `percentageChange*` fields). Defaults to `false`.
 	CompareWithPreviousPeriod param.Opt[bool] `query:"compareWithPreviousPeriod,omitzero" json:"-"`
 	// Optional custom comparison-window lower bound, as a UTC calendar day in
 	// `YYYY-MM-DD` format. Provide together with `comparisonTo`; the window between
@@ -3951,19 +4121,15 @@ type ConsentSettingAnalyticsParams struct {
 	// match the `from`–`to` length. Ignored unless both comparison bounds are
 	// supplied.
 	ComparisonTo param.Opt[string] `query:"comparisonTo,omitzero" json:"-"`
-	// Filter to events whose `default_properties.pathname` equals this value (exact
-	// match, case-sensitive). Use this to drill into a single page.
-	PagePath param.Opt[string] `query:"pagePath,omitzero" json:"-"`
-	// Filter results to events whose `request_context.country_region_name` is in this
-	// set. Pass a single region (e.g. `California`) or a comma-separated list
-	// (`California,Texas`). Case-sensitive. Use
-	// `GET /rest/v1/consent-settings/{id}/analytics-by-region` to discover the region
-	// names available for an account.
-	Regions param.Opt[string] `query:"regions,omitzero" json:"-"`
-	// Bucket size for the time-series rollup. `DAILY` (default) buckets per UTC day;
-	// `HOURLY` buckets per UTC hour and limits the window to 14 days.
+	// JSON-encoded versioned analytics filter. Uses the shared analytics catalog
+	// property IDs and operators, including event, session, and custom properties.
+	Filter param.Opt[string] `query:"filter,omitzero" json:"-"`
+	// Reporting interval: DAILY (default), WEEKLY (UTC weeks starting Monday), MONTHLY
+	// (UTC calendar months), or HOURLY. Included-day limits: at most 180 days for
+	// `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`. Breakdown
+	// reports aggregate the entire selected range.
 	//
-	// Any of "DAILY", "HOURLY".
+	// Any of "DAILY", "HOURLY", "MONTHLY", "WEEKLY".
 	Granularity ConsentSettingAnalyticsParamsGranularity `query:"granularity,omitzero" json:"-"`
 	paramObj
 }
@@ -3977,38 +4143,91 @@ func (r ConsentSettingAnalyticsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
-// Bucket size for the time-series rollup. `DAILY` (default) buckets per UTC day;
-// `HOURLY` buckets per UTC hour and limits the window to 14 days.
+// Reporting interval: DAILY (default), WEEKLY (UTC weeks starting Monday), MONTHLY
+// (UTC calendar months), or HOURLY. Included-day limits: at most 180 days for
+// `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`. Breakdown
+// reports aggregate the entire selected range.
 type ConsentSettingAnalyticsParamsGranularity string
 
 const (
-	ConsentSettingAnalyticsParamsGranularityDaily  ConsentSettingAnalyticsParamsGranularity = "DAILY"
-	ConsentSettingAnalyticsParamsGranularityHourly ConsentSettingAnalyticsParamsGranularity = "HOURLY"
+	ConsentSettingAnalyticsParamsGranularityDaily   ConsentSettingAnalyticsParamsGranularity = "DAILY"
+	ConsentSettingAnalyticsParamsGranularityHourly  ConsentSettingAnalyticsParamsGranularity = "HOURLY"
+	ConsentSettingAnalyticsParamsGranularityMonthly ConsentSettingAnalyticsParamsGranularity = "MONTHLY"
+	ConsentSettingAnalyticsParamsGranularityWeekly  ConsentSettingAnalyticsParamsGranularity = "WEEKLY"
+)
+
+type ConsentSettingAnalyticsMonthlyParams struct {
+	// Inclusive lower bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
+	From string `query:"from" api:"required" json:"-"`
+	// Inclusive upper bound of the analytics window, as a UTC calendar day in
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
+	To string `query:"to" api:"required" json:"-"`
+	// JSON-encoded versioned analytics filter. Uses the shared analytics catalog
+	// property IDs and operators, including event, session, and custom properties.
+	Filter param.Opt[string] `query:"filter,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConsentSettingAnalyticsMonthlyParams]'s query parameters as
+// `url.Values`.
+func (r ConsentSettingAnalyticsMonthlyParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type ConsentSettingAnalyticsCapabilitiesParams struct {
+	// Any of "PAGES", "SUMMARY", "TRENDS".
+	Kind ConsentSettingAnalyticsCapabilitiesParamsKind `query:"kind,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConsentSettingAnalyticsCapabilitiesParams]'s query
+// parameters as `url.Values`.
+func (r ConsentSettingAnalyticsCapabilitiesParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type ConsentSettingAnalyticsCapabilitiesParamsKind string
+
+const (
+	ConsentSettingAnalyticsCapabilitiesParamsKindPages   ConsentSettingAnalyticsCapabilitiesParamsKind = "PAGES"
+	ConsentSettingAnalyticsCapabilitiesParamsKindSummary ConsentSettingAnalyticsCapabilitiesParamsKind = "SUMMARY"
+	ConsentSettingAnalyticsCapabilitiesParamsKindTrends  ConsentSettingAnalyticsCapabilitiesParamsKind = "TRENDS"
 )
 
 type ConsentSettingPageAnalysisParams struct {
 	// Inclusive lower bound of the analytics window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
-	// (14 for `HOURLY` granularity).
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
 	From string `query:"from" api:"required" json:"-"`
 	// Inclusive upper bound of the analytics window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
-	// (14 for `HOURLY` granularity).
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
 	To string `query:"to" api:"required" json:"-"`
-	// Skip this many top-ranked pages before returning. Use together with `limit` for
-	// load-more pagination.
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Maximum number of pages to return. Defaults to 50.
+	// Maximum number of pages to return. Defaults to 50; clamped to 1–200.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter results to events whose `request_context.country_region_name` is in this
-	// set. Pass a single region (e.g. `California`) or a comma-separated list
-	// (`California,Texas`). Case-sensitive. Use
-	// `GET /rest/v1/consent-settings/{id}/analytics-by-region` to discover the region
-	// names available for an account.
-	Regions param.Opt[string] `query:"regions,omitzero" json:"-"`
-	// Case-sensitive substring match against `default_properties.pathname`. Wrapped in
-	// `%...%` server-side.
+	// Opaque cursor from pagination.nextCursor. Omit for the first page.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// JSON-encoded versioned analytics filter. Uses the shared analytics catalog
+	// property IDs and operators, including event, session, and custom properties.
+	Filter param.Opt[string] `query:"filter,omitzero" json:"-"`
+	// Case-sensitive substring match against the page path.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
+	// Reporting interval: DAILY (default), WEEKLY (UTC weeks starting Monday), MONTHLY
+	// (UTC calendar months), or HOURLY. Included-day limits: at most 180 days for
+	// `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`. Breakdown
+	// reports aggregate the entire selected range.
+	//
+	// Any of "DAILY", "HOURLY", "MONTHLY", "WEEKLY".
+	Granularity ConsentSettingPageAnalysisParamsGranularity `query:"granularity,omitzero" json:"-"`
 	paramObj
 }
 
@@ -4021,15 +4240,38 @@ func (r ConsentSettingPageAnalysisParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+// Reporting interval: DAILY (default), WEEKLY (UTC weeks starting Monday), MONTHLY
+// (UTC calendar months), or HOURLY. Included-day limits: at most 180 days for
+// `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`. Breakdown
+// reports aggregate the entire selected range.
+type ConsentSettingPageAnalysisParamsGranularity string
+
+const (
+	ConsentSettingPageAnalysisParamsGranularityDaily   ConsentSettingPageAnalysisParamsGranularity = "DAILY"
+	ConsentSettingPageAnalysisParamsGranularityHourly  ConsentSettingPageAnalysisParamsGranularity = "HOURLY"
+	ConsentSettingPageAnalysisParamsGranularityMonthly ConsentSettingPageAnalysisParamsGranularity = "MONTHLY"
+	ConsentSettingPageAnalysisParamsGranularityWeekly  ConsentSettingPageAnalysisParamsGranularity = "WEEKLY"
+)
+
 type ConsentSettingAnalyticsByRegionParams struct {
 	// Inclusive lower bound of the analytics window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
-	// (14 for `HOURLY` granularity).
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
 	From string `query:"from" api:"required" json:"-"`
 	// Inclusive upper bound of the analytics window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window between `from` and `to` must be 90 days or fewer
-	// (14 for `HOURLY` granularity).
+	// `YYYY-MM-DD` format. Count both selected dates: at most 180 days for `DAILY`,
+	// 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`.
 	To string `query:"to" api:"required" json:"-"`
+	// JSON-encoded versioned analytics filter. Uses the shared analytics catalog
+	// property IDs and operators, including event, session, and custom properties.
+	Filter param.Opt[string] `query:"filter,omitzero" json:"-"`
+	// Reporting interval: DAILY (default), WEEKLY (UTC weeks starting Monday), MONTHLY
+	// (UTC calendar months), or HOURLY. Included-day limits: at most 180 days for
+	// `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`. Breakdown
+	// reports aggregate the entire selected range.
+	//
+	// Any of "DAILY", "HOURLY", "MONTHLY", "WEEKLY".
+	Granularity ConsentSettingAnalyticsByRegionParamsGranularity `query:"granularity,omitzero" json:"-"`
 	paramObj
 }
 
@@ -4041,3 +4283,16 @@ func (r ConsentSettingAnalyticsByRegionParams) URLQuery() (v url.Values, err err
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Reporting interval: DAILY (default), WEEKLY (UTC weeks starting Monday), MONTHLY
+// (UTC calendar months), or HOURLY. Included-day limits: at most 180 days for
+// `DAILY`, 365 for `WEEKLY`, 365 for `MONTHLY`, or 14 for `HOURLY`. Breakdown
+// reports aggregate the entire selected range.
+type ConsentSettingAnalyticsByRegionParamsGranularity string
+
+const (
+	ConsentSettingAnalyticsByRegionParamsGranularityDaily   ConsentSettingAnalyticsByRegionParamsGranularity = "DAILY"
+	ConsentSettingAnalyticsByRegionParamsGranularityHourly  ConsentSettingAnalyticsByRegionParamsGranularity = "HOURLY"
+	ConsentSettingAnalyticsByRegionParamsGranularityMonthly ConsentSettingAnalyticsByRegionParamsGranularity = "MONTHLY"
+	ConsentSettingAnalyticsByRegionParamsGranularityWeekly  ConsentSettingAnalyticsByRegionParamsGranularity = "WEEKLY"
+)

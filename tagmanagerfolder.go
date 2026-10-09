@@ -42,8 +42,8 @@ func NewTagManagerFolderService(opts ...option.RequestOption) (r TagManagerFolde
 // organizational containers — they do not affect tag evaluation. Requires the
 // `tagManagerId` query parameter. Supports cursor pagination via `limit` and
 // `cursor`; the limit clamp is 1000 so a single request can return the full set
-// (the web-app workspace renders all folders in one shot). Requires scope:
-// tagManagers:find
+// (the web-app workspace renders all folders in one shot). Requires API-key scope
+// or current OAuth user permission: tagManagers:find
 func (r *TagManagerFolderService) List(ctx context.Context, query TagManagerFolderListParams, opts ...option.RequestOption) (res *pagination.Cursor[TagManagerFolderListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -65,16 +65,16 @@ func (r *TagManagerFolderService) List(ctx context.Context, query TagManagerFold
 // organizational containers — they do not affect tag evaluation. Requires the
 // `tagManagerId` query parameter. Supports cursor pagination via `limit` and
 // `cursor`; the limit clamp is 1000 so a single request can return the full set
-// (the web-app workspace renders all folders in one shot). Requires scope:
-// tagManagers:find
+// (the web-app workspace renders all folders in one shot). Requires API-key scope
+// or current OAuth user permission: tagManagers:find
 func (r *TagManagerFolderService) ListAutoPaging(ctx context.Context, query TagManagerFolderListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TagManagerFolderListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a folder inside a tag manager. `tagManagerId` is required in the body.
 // Names are case-insensitively unique within the tag manager — collisions return
-// 409 with the reason in the response `error` field. Requires scope:
-// tagManagers:update
+// 409 with the reason in the response `error` field. Requires API-key scope or
+// current OAuth user permission: tagManagers:update
 func (r *TagManagerFolderService) New(ctx context.Context, body TagManagerFolderNewParams, opts ...option.RequestOption) (res *TagManagerFolderNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-folders"
@@ -82,7 +82,8 @@ func (r *TagManagerFolderService) New(ctx context.Context, body TagManagerFolder
 	return res, err
 }
 
-// Find a single tag manager folder by ID. Requires scope: tagManagers:find
+// Find a single tag manager folder by ID. Requires API-key scope or current OAuth
+// user permission: tagManagers:find
 func (r *TagManagerFolderService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerFolderGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -95,7 +96,8 @@ func (r *TagManagerFolderService) Get(ctx context.Context, id string, opts ...op
 }
 
 // Rename a folder. The new name must be case-insensitively unique within the tag
-// manager; collisions return 409. Requires scope: tagManagers:update
+// manager; collisions return 409. Requires API-key scope or current OAuth user
+// permission: tagManagers:update
 func (r *TagManagerFolderService) Update(ctx context.Context, id string, body TagManagerFolderUpdateParams, opts ...option.RequestOption) (res *TagManagerFolderUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -109,7 +111,7 @@ func (r *TagManagerFolderService) Update(ctx context.Context, id string, body Ta
 
 // Delete a folder. Tags, triggers, and variables previously assigned to the folder
 // are no longer grouped under it; the assets themselves are not deleted. Requires
-// scope: tagManagers:update
+// API-key scope or current OAuth user permission: tagManagers:update
 func (r *TagManagerFolderService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerFolderDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
