@@ -42,8 +42,8 @@ func NewAllowedEventService(opts ...option.RequestOption) (r AllowedEventService
 // event's `destinationIds`. Events without a matching allowed event are dropped.
 // The list is not paginated; the per-account count is bounded. System events
 // (names beginning with `$`, e.g. `$heatmap_click`) are hidden from the response —
-// only `$identify` is creatable as an allowed event. Requires scope:
-// allowedEvent:list
+// only `$identify` is creatable as an allowed event. Requires API-key scope or
+// current OAuth user permission: allowedEvent:list
 func (r *AllowedEventService) List(ctx context.Context, opts ...option.RequestOption) (res *AllowedEventListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/allowed-events"
@@ -65,7 +65,7 @@ func (r *AllowedEventService) List(ctx context.Context, opts ...option.RequestOp
 // `createdAt`, and the filtered `destinationIds` without a follow-up GET. Known
 // input failures (duplicate name, name length, `$`-prefix reservation, empty name)
 // are returned as HTTP 409 with the reason in the response `error` field. Requires
-// scope: allowedEvent:create
+// API-key scope or current OAuth user permission: allowedEvent:create
 func (r *AllowedEventService) New(ctx context.Context, body AllowedEventNewParams, opts ...option.RequestOption) (res *AllowedEventNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/allowed-events"
@@ -74,8 +74,8 @@ func (r *AllowedEventService) New(ctx context.Context, body AllowedEventNewParam
 }
 
 // Fetch a single allowed event by id. Returns 404 when no record matches the
-// supplied id or it belongs to a different account. Requires scope:
-// allowedEvent:find
+// supplied id or it belongs to a different account. Requires API-key scope or
+// current OAuth user permission: allowedEvent:find
 func (r *AllowedEventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *AllowedEventGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -100,7 +100,8 @@ func (r *AllowedEventService) Get(ctx context.Context, id string, opts ...option
 //
 // Returns the full entity. Known input failures (duplicate name, length,
 // `$`-prefix, empty name) are returned as HTTP 409 with the reason in the response
-// `error` field. Requires scope: allowedEvent:update
+// `error` field. Requires API-key scope or current OAuth user permission:
+// allowedEvent:update
 func (r *AllowedEventService) Update(ctx context.Context, id string, body AllowedEventUpdateParams, opts ...option.RequestOption) (res *AllowedEventUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,7 +115,8 @@ func (r *AllowedEventService) Update(ctx context.Context, id string, body Allowe
 
 // Delete an allowed event. After deletion, inbound events whose `event` field
 // matches the deleted name are no longer routed and are dropped at the allow-list
-// stage of the dispatch flow. Requires scope: allowedEvent:delete
+// stage of the dispatch flow. Requires API-key scope or current OAuth user
+// permission: allowedEvent:delete
 func (r *AllowedEventService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

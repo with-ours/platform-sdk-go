@@ -41,7 +41,8 @@ func NewExperimentVariantService(opts ...option.RequestOption) (r ExperimentVari
 // List variants for a specific parent experiment. Requires the `experimentId`
 // query parameter — variants are always scoped to a single experiment. Supports
 // cursor pagination via `limit` and `cursor`; SDK runtimes that need the full set
-// in one request can pass `?limit=100`. Requires scope: experiment:find
+// in one request can pass `?limit=100`. Requires API-key scope or current OAuth
+// user permission: experiment:find
 func (r *ExperimentVariantService) List(ctx context.Context, query ExperimentVariantListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentVariantListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -62,12 +63,14 @@ func (r *ExperimentVariantService) List(ctx context.Context, query ExperimentVar
 // List variants for a specific parent experiment. Requires the `experimentId`
 // query parameter — variants are always scoped to a single experiment. Supports
 // cursor pagination via `limit` and `cursor`; SDK runtimes that need the full set
-// in one request can pass `?limit=100`. Requires scope: experiment:find
+// in one request can pass `?limit=100`. Requires API-key scope or current OAuth
+// user permission: experiment:find
 func (r *ExperimentVariantService) ListAutoPaging(ctx context.Context, query ExperimentVariantListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExperimentVariantListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
-// Create a new experiment variant. Requires scope: experiment:update
+// Create a new experiment variant. Requires API-key scope or current OAuth user
+// permission: experiment:update
 func (r *ExperimentVariantService) New(ctx context.Context, body ExperimentVariantNewParams, opts ...option.RequestOption) (res *ExperimentVariantNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiment-variants"
@@ -75,7 +78,8 @@ func (r *ExperimentVariantService) New(ctx context.Context, body ExperimentVaria
 	return res, err
 }
 
-// Find a single experiment variant by ID. Requires scope: experiment:find
+// Find a single experiment variant by ID. Requires API-key scope or current OAuth
+// user permission: experiment:find
 func (r *ExperimentVariantService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentVariantGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -88,7 +92,7 @@ func (r *ExperimentVariantService) Get(ctx context.Context, id string, opts ...o
 }
 
 // Partially update an experiment variant. Only the fields you send are changed.
-// Requires scope: experiment:update
+// Requires API-key scope or current OAuth user permission: experiment:update
 func (r *ExperimentVariantService) Update(ctx context.Context, id string, body ExperimentVariantUpdateParams, opts ...option.RequestOption) (res *ExperimentVariantUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -100,7 +104,8 @@ func (r *ExperimentVariantService) Update(ctx context.Context, id string, body E
 	return res, err
 }
 
-// Delete an experiment variant. Requires scope: experiment:update
+// Delete an experiment variant. Requires API-key scope or current OAuth user
+// permission: experiment:update
 func (r *ExperimentVariantService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentVariantDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

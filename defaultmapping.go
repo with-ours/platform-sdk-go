@@ -39,8 +39,8 @@ func NewDefaultMappingService(opts ...option.RequestOption) (r DefaultMappingSer
 // List every stored default mapping for the account, one per destination that has
 // ever written a default. Destinations that have not yet written a default mapping
 // do not appear here. Use `GET /rest/v1/default-mappings/{destinationId}` to fetch
-// the hydrated would-be row for a specific destination. Requires scope:
-// mapping:list
+// the hydrated would-be row for a specific destination. Requires API-key scope or
+// current OAuth user permission: mapping:list
 func (r *DefaultMappingService) List(ctx context.Context, opts ...option.RequestOption) (res *DefaultMappingListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/default-mappings"
@@ -51,7 +51,8 @@ func (r *DefaultMappingService) List(ctx context.Context, opts ...option.Request
 // Fetch the destination's default mapping by destination id. Returns a hydrated
 // row with empty `mappings[]` when no default mapping has been written yet (so
 // callers do not need to handle a 404-vs-200 branch). Each destination has at most
-// one default mapping. Requires scope: mapping:find
+// one default mapping. Requires API-key scope or current OAuth user permission:
+// mapping:find
 func (r *DefaultMappingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DefaultMappingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -65,8 +66,8 @@ func (r *DefaultMappingService) Get(ctx context.Context, id string, opts ...opti
 
 // Upsert the destination default mapping. Always replaces `mappings[]` wholesale
 // (default mappings have no merge-partial semantic). Default mappings cannot have
-// custom `logic`; the field is not accepted on this endpoint. Requires scope:
-// mapping:update
+// custom `logic`; the field is not accepted on this endpoint. Requires API-key
+// scope or current OAuth user permission: mapping:update
 func (r *DefaultMappingService) Replace(ctx context.Context, id string, body DefaultMappingReplaceParams, opts ...option.RequestOption) (res *DefaultMappingReplaceResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

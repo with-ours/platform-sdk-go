@@ -40,8 +40,8 @@ func NewMappingService(opts ...option.RequestOption) (r MappingService) {
 
 // List mappings for an entity (a source or destination). Requires the `entityId`
 // query parameter. Supports cursor pagination via `limit` and `cursor`. Sorted by
-// `priority` ascending, then by `id` for deterministic pagination. Requires scope:
-// mapping:list
+// `priority` ascending, then by `id` for deterministic pagination. Requires
+// API-key scope or current OAuth user permission: mapping:list
 func (r *MappingService) List(ctx context.Context, query MappingListParams, opts ...option.RequestOption) (res *pagination.Cursor[MappingListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -61,8 +61,8 @@ func (r *MappingService) List(ctx context.Context, query MappingListParams, opts
 
 // List mappings for an entity (a source or destination). Requires the `entityId`
 // query parameter. Supports cursor pagination via `limit` and `cursor`. Sorted by
-// `priority` ascending, then by `id` for deterministic pagination. Requires scope:
-// mapping:list
+// `priority` ascending, then by `id` for deterministic pagination. Requires
+// API-key scope or current OAuth user permission: mapping:list
 func (r *MappingService) ListAutoPaging(ctx context.Context, query MappingListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[MappingListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -78,8 +78,8 @@ func (r *MappingService) ListAutoPaging(ctx context.Context, query MappingListPa
 //     `GET /rest/v1/mapping-templates?entityId=...` to discover the valid
 //     `templateId` and `mappings[].property` values.
 //
-// Sending both `allowedEventId` and `templateId` returns 400. Requires scope:
-// mapping:create
+// Sending both `allowedEventId` and `templateId` returns 400. Requires API-key
+// scope or current OAuth user permission: mapping:create
 func (r *MappingService) New(ctx context.Context, body MappingNewParams, opts ...option.RequestOption) (res *MappingNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings"
@@ -87,7 +87,8 @@ func (r *MappingService) New(ctx context.Context, body MappingNewParams, opts ..
 	return res, err
 }
 
-// Find a single mapping by ID. Requires scope: mapping:find
+// Find a single mapping by ID. Requires API-key scope or current OAuth user
+// permission: mapping:find
 func (r *MappingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *MappingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -102,7 +103,7 @@ func (r *MappingService) Get(ctx context.Context, id string, opts ...option.Requ
 // Partially update a mapping. Only the fields you send are changed. Send
 // `isEnabled: false` to pause the mapping without changing other fields (mirrors
 // `status` on destinations). `mappings[]` is replaced wholesale when sent.
-// Requires scope: mapping:update
+// Requires API-key scope or current OAuth user permission: mapping:update
 func (r *MappingService) Update(ctx context.Context, id string, body MappingUpdateParams, opts ...option.RequestOption) (res *MappingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,7 +115,8 @@ func (r *MappingService) Update(ctx context.Context, id string, body MappingUpda
 	return res, err
 }
 
-// Delete a mapping. Requires scope: mapping:delete
+// Delete a mapping. Requires API-key scope or current OAuth user permission:
+// mapping:delete
 func (r *MappingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -129,7 +131,8 @@ func (r *MappingService) Delete(ctx context.Context, id string, opts ...option.R
 // Reassign `priority` for a set of mappings. Pass `{ uuids: [...] }` with the
 // mapping ids in their new order — index 0 becomes the highest-priority mapping.
 // All ids must belong to the same parent entity (source or destination); mixing
-// entities returns 400. Requires scope: mapping:update
+// entities returns 400. Requires API-key scope or current OAuth user permission:
+// mapping:update
 func (r *MappingService) Reorder(ctx context.Context, body MappingReorderParams, opts ...option.RequestOption) (res *MappingReorderResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/reorder"
@@ -143,7 +146,8 @@ func (r *MappingService) Reorder(ctx context.Context, body MappingReorderParams,
 // `mappings[]` to learn the valid `property`, `kind`, `modificationOptions`, and
 // any enforced `options`. The `isDefault: true` entry is the destination's
 // built-in default template, configured via
-// `PUT /rest/v1/default-mappings/{destinationId}`. Requires scope: mapping:find
+// `PUT /rest/v1/default-mappings/{destinationId}`. Requires API-key scope or
+// current OAuth user permission: mapping:find
 func (r *MappingService) Templates(ctx context.Context, query MappingTemplatesParams, opts ...option.RequestOption) (res *MappingTemplatesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/templates"
@@ -154,7 +158,7 @@ func (r *MappingService) Templates(ctx context.Context, query MappingTemplatesPa
 // Lists the platform-provided variables that any mapping `value` can reference
 // (e.g. `event.email`, `event.request_context.ip`, `visitor.id`). Account-agnostic
 // discovery — use these paths as the right-hand side of a mapping field. Requires
-// scope: variables:find-default
+// API-key scope or current OAuth user permission: variables:find-default
 func (r *MappingService) DefaultVariables(ctx context.Context, opts ...option.RequestOption) (res *MappingDefaultVariablesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/default-variables"
@@ -166,7 +170,8 @@ func (r *MappingService) DefaultVariables(ctx context.Context, opts ...option.Re
 // 14 days). These are dot-paths under `event.event_properties.*` that callers can
 // target in mapping `value` fields. Newly seen properties may take a few minutes
 // to appear; an empty list means no custom properties have been observed yet for
-// this account. Requires scope: variables:find-custom
+// this account. Requires API-key scope or current OAuth user permission:
+// variables:find-custom
 func (r *MappingService) CustomVariables(ctx context.Context, opts ...option.RequestOption) (res *MappingCustomVariablesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/custom-variables"
@@ -177,7 +182,8 @@ func (r *MappingService) CustomVariables(ctx context.Context, opts ...option.Req
 // Lists every value accepted on a mapping field’s `modification` property, with a
 // human-readable label and one-sentence description. Account-agnostic. Use this
 // alongside `GET /rest/v1/mapping-templates` to render a labelled modification
-// picker without hardcoding the enum. Requires scope: variables:find-default
+// picker without hardcoding the enum. Requires API-key scope or current OAuth user
+// permission: variables:find-default
 func (r *MappingService) Modifications(ctx context.Context, opts ...option.RequestOption) (res *MappingModificationsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/mappings/modifications"

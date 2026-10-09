@@ -43,7 +43,7 @@ func NewTestEventService(opts ...option.RequestOption) (r TestEventService) {
 // `isTestEvent` indicates whether a test token was used. Returns full event
 // properties. Pass an entity id unchanged to the detail or dispatch endpoint. Use
 // `limit` (default 25, maximum 100) and `cursor` to page through results. Requires
-// scope: report:list-events
+// API-key scope or current OAuth user permission: report:list-events
 func (r *TestEventService) List(ctx context.Context, query TestEventListParams, opts ...option.RequestOption) (res *pagination.Cursor[TestEventListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -66,7 +66,7 @@ func (r *TestEventService) List(ctx context.Context, query TestEventListParams, 
 // `isTestEvent` indicates whether a test token was used. Returns full event
 // properties. Pass an entity id unchanged to the detail or dispatch endpoint. Use
 // `limit` (default 25, maximum 100) and `cursor` to page through results. Requires
-// scope: report:list-events
+// API-key scope or current OAuth user permission: report:list-events
 func (r *TestEventService) ListAutoPaging(ctx context.Context, query TestEventListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[TestEventListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -78,7 +78,8 @@ func (r *TestEventService) ListAutoPaging(ctx context.Context, query TestEventLi
 // Recent Events. Use the returned `id` with
 // `GET /rest/v1/test-events/{id}/dispatches` to retrieve recorded dispatches.
 // Supply `visitorId` and `distinctId` to choose the identity yourself; otherwise
-// they are generated and returned. Requires scope: test-event:create
+// they are generated and returned. Requires API-key scope or current OAuth user
+// permission: test-event:create
 func (r *TestEventService) New(ctx context.Context, body TestEventNewParams, opts ...option.RequestOption) (res *TestEventNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/test-events"
@@ -89,7 +90,8 @@ func (r *TestEventService) New(ctx context.Context, body TestEventNewParams, opt
 // Retrieve one browser, server, or synthetic event captured in debug mode within
 // the last 48 hours. Use an id returned by the create or list endpoint. Events
 // that have not arrived, expired events, and events outside your account
-// return 404. Requires scope: report:view-event
+// return 404. Requires API-key scope or current OAuth user permission:
+// report:view-event
 func (r *TestEventService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TestEventGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -107,7 +109,7 @@ func (r *TestEventService) Get(ctx context.Context, id string, opts ...option.Re
 // until dispatch records arrive, and may remain empty when no dispatch occurs.
 // Results can grow as processing continues; this endpoint does not predict
 // destinations or signal completion. Requires the report:view-dispatch scope.
-// Requires scope: report:view-dispatch
+// Requires API-key scope or current OAuth user permission: report:view-dispatch
 func (r *TestEventService) Dispatches(ctx context.Context, id string, opts ...option.RequestOption) (res *TestEventDispatchesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

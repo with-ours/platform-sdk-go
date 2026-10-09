@@ -41,7 +41,7 @@ func NewAttributionService(opts ...option.RequestOption) (r AttributionService) 
 // analysis window (max 60 days). Optionally filter to a specific UTM combo with
 // `utmSource`, `utmMedium`, etc. The counts represent unique visitors who
 // performed the specified `eventName` and were attributed to each UTM value.
-// Requires scope: web-analytics:view
+// Requires API-key scope or current OAuth user permission: web-analytics:view
 func (r *AttributionService) Initial(ctx context.Context, query AttributionInitialParams, opts ...option.RequestOption) (res *AttributionInitialResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/attribution/initial"
@@ -54,7 +54,8 @@ func (r *AttributionService) Initial(ctx context.Context, query AttributionIniti
 // a last-touch basis for the given date window. Use `from`/`to` to set the
 // analysis window (max 60 days). The counts represent unique visitors who
 // performed the specified `eventName` and were attributed to each UTM value on
-// their most recent session. Requires scope: web-analytics:view
+// their most recent session. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *AttributionService) LastTouch(ctx context.Context, query AttributionLastTouchParams, opts ...option.RequestOption) (res *AttributionLastTouchResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/attribution/last-touch"
@@ -66,7 +67,8 @@ func (r *AttributionService) LastTouch(ctx context.Context, query AttributionLas
 // hierarchy with attributed converter credits distributed according to the
 // selected `attributionModel`. Scoped to all web sources by default; optionally
 // narrow to a single web source via `webSourceId`. Date range is capped at 31
-// days; lookback window is capped at 60 days. Requires scope: web-analytics:view
+// days; lookback window is capped at 60 days. Requires API-key scope or current
+// OAuth user permission: web-analytics:view
 func (r *AttributionService) Conversion(ctx context.Context, query AttributionConversionParams, opts ...option.RequestOption) (res *AttributionConversionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/attribution/conversion"
@@ -78,7 +80,8 @@ func (r *AttributionService) Conversion(ctx context.Context, query AttributionCo
 // conversion rate for the selected event and date window, a per-day timeseries,
 // and a UTM source/medium/campaign breakdown. Optionally compare against the
 // preceding period of equal length when `attributionWindow` is `IN_RANGE`. Date
-// range is capped at 60 days. Requires scope: web-analytics:view
+// range is capped at 60 days. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *AttributionService) AudienceConversion(ctx context.Context, query AttributionAudienceConversionParams, opts ...option.RequestOption) (res *AttributionAudienceConversionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/attribution/audience-conversion"
@@ -92,7 +95,7 @@ func (r *AttributionService) AudienceConversion(ctx context.Context, query Attri
 // `web-analytics:view` and `report:event-count-by-day` API-key scopes. Date range
 // is capped at 31 days. Pass `combos` as a single JSON-encoded array:
 // `combos=[{"utmSource":"google","utmMedium":"cpc"},{"utmSource":"meta"}]`.
-// Requires scope: web-analytics:view
+// Requires API-key scope or current OAuth user permission: web-analytics:view
 func (r *AttributionService) UtmComparison(ctx context.Context, query AttributionUtmComparisonParams, opts ...option.RequestOption) (res *AttributionUtmComparisonResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/attribution/utm-comparison"

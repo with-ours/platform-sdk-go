@@ -43,7 +43,7 @@ func NewShortLinkService(opts ...option.RequestOption) (r ShortLinkService) {
 // excluded. Supports cursor pagination and optional `status`, `nameContains`, and
 // `search` filters. Search matches names, destinations, and codes. Each entity
 // bundles the destination URL, immutable code, path format, and QR/campaign
-// design. Requires scope: source:list
+// design. Requires API-key scope or current OAuth user permission: source:list
 func (r *ShortLinkService) List(ctx context.Context, query ShortLinkListParams, opts ...option.RequestOption) (res *pagination.Cursor[ShortLinkListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -66,7 +66,7 @@ func (r *ShortLinkService) List(ctx context.Context, query ShortLinkListParams, 
 // excluded. Supports cursor pagination and optional `status`, `nameContains`, and
 // `search` filters. Search matches names, destinations, and codes. Each entity
 // bundles the destination URL, immutable code, path format, and QR/campaign
-// design. Requires scope: source:list
+// design. Requires API-key scope or current OAuth user permission: source:list
 func (r *ShortLinkService) ListAutoPaging(ctx context.Context, query ShortLinkListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ShortLinkListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -76,7 +76,8 @@ func (r *ShortLinkService) ListAutoPaging(ctx context.Context, query ShortLinkLi
 // compact code; `shortUrl` resolves as `/r/{pixel}` without tracking query
 // parameters. All body fields are optional: send `{}` to create an unconfigured
 // link and fill it in later with PATCH. A newly created short link only resolves
-// at the edge once a version is published. Requires scope: source:create
+// at the edge once a version is published. Requires API-key scope or current OAuth
+// user permission: source:create
 func (r *ShortLinkService) New(ctx context.Context, body ShortLinkNewParams, opts ...option.RequestOption) (res *ShortLinkNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/short-links"
@@ -86,7 +87,8 @@ func (r *ShortLinkService) New(ctx context.Context, body ShortLinkNewParams, opt
 
 // Fetch a single short link by id, including its destination, immutable code,
 // composed `shortUrl`, and QR/campaign design. Returns 404 when no short link
-// matches the id or it belongs to a different account. Requires scope: source:view
+// matches the id or it belongs to a different account. Requires API-key scope or
+// current OAuth user permission: source:view
 func (r *ShortLinkService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortLinkGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -101,7 +103,8 @@ func (r *ShortLinkService) Get(ctx context.Context, id string, opts ...option.Re
 // Partially update a short link. Only the fields you send are changed; omitted
 // fields are unchanged. Send explicit `null` to clear `redirectUrl`. The `utm` and
 // `qr` objects are replaced wholesale when sent. Returns the full short link
-// entity after the update. Requires scope: source:update
+// entity after the update. Requires API-key scope or current OAuth user
+// permission: source:update
 func (r *ShortLinkService) Update(ctx context.Context, id string, body ShortLinkUpdateParams, opts ...option.RequestOption) (res *ShortLinkUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,7 +117,8 @@ func (r *ShortLinkService) Update(ctx context.Context, id string, body ShortLink
 }
 
 // Delete a short link and its QR/campaign design. After deletion the short URL
-// stops resolving on the next publish. Requires scope: source:delete
+// stops resolving on the next publish. Requires API-key scope or current OAuth
+// user permission: source:delete
 func (r *ShortLinkService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortLinkDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -128,7 +132,7 @@ func (r *ShortLinkService) Delete(ctx context.Context, id string, opts ...option
 
 // Duplicate a short link with its campaign tags and QR styling. The copy starts
 // disabled with a new code. Requires permission to view the original and create a
-// source. Requires scope: source:create
+// source. Requires API-key scope or current OAuth user permission: source:create
 func (r *ShortLinkService) Clone(ctx context.Context, id string, opts ...option.RequestOption) (res *ShortLinkCloneResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -146,7 +150,7 @@ func (r *ShortLinkService) Clone(ctx context.Context, id string, opts ...option.
 // (`YYYY-MM-DD`); set `granularity=HOURLY` for hourly buckets and
 // `excludeBots=false` to include bot traffic. Requires the `shortlink:reporting`
 // scope, which is gated separately because analytics data is PHI-bearing. Requires
-// scope: shortlink:reporting
+// API-key scope or current OAuth user permission: shortlink:reporting
 func (r *ShortLinkService) Results(ctx context.Context, id string, query ShortLinkResultsParams, opts ...option.RequestOption) (res *ShortLinkResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

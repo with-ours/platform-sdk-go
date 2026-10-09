@@ -41,7 +41,8 @@ func NewSourceService(opts ...option.RequestOption) (r SourceService) {
 
 // List all sources for this account. Supports cursor pagination and optional
 // filters for `type`, `status`, and `nameContains`. Results are sorted by creation
-// date descending. Requires scope: source:list
+// date descending. Requires API-key scope or current OAuth user permission:
+// source:list
 func (r *SourceService) List(ctx context.Context, query SourceListParams, opts ...option.RequestOption) (res *pagination.Cursor[SourceListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -61,14 +62,16 @@ func (r *SourceService) List(ctx context.Context, query SourceListParams, opts .
 
 // List all sources for this account. Supports cursor pagination and optional
 // filters for `type`, `status`, and `nameContains`. Results are sorted by creation
-// date descending. Requires scope: source:list
+// date descending. Requires API-key scope or current OAuth user permission:
+// source:list
 func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[SourceListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Create a new source. Returns the full source entity (same shape as GET
 // /sources/{id}) so callers can read all server-assigned fields without a
-// follow-up GET. Requires scope: source:create
+// follow-up GET. Requires API-key scope or current OAuth user permission:
+// source:create
 func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...option.RequestOption) (res *SourceNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/sources"
@@ -76,7 +79,8 @@ func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...o
 	return res, err
 }
 
-// Find a single source by ID. Requires scope: source:view
+// Find a single source by ID. Requires API-key scope or current OAuth user
+// permission: source:view
 func (r *SourceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -90,7 +94,8 @@ func (r *SourceService) Get(ctx context.Context, id string, opts ...option.Reque
 
 // Partially update a source. Only the fields you send are changed; omitted fields
 // are unchanged. Send explicit `null` to clear a nullable field. Returns the full
-// source entity after the update. Requires scope: source:update
+// source entity after the update. Requires API-key scope or current OAuth user
+// permission: source:update
 func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdateParams, opts ...option.RequestOption) (res *SourceUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -102,7 +107,8 @@ func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdate
 	return res, err
 }
 
-// Delete a source. Requires scope: source:delete
+// Delete a source. Requires API-key scope or current OAuth user permission:
+// source:delete
 func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -120,7 +126,8 @@ func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.Re
 // and webhook sources return
 // `{ sourceType: "webhook", token, testToken, ingestUrl, testIngestUrl, sampleCurl }`.
 // Inspect the source's `type` field (`GET /rest/v1/sources/{id}`) to know which
-// variant to expect. Requires scope: source:view
+// variant to expect. Requires API-key scope or current OAuth user permission:
+// source:view
 func (r *SourceService) Tokens(ctx context.Context, id string, opts ...option.RequestOption) (res *SourceTokensResponseUnion, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

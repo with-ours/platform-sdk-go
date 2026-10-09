@@ -43,7 +43,8 @@ func NewExperimentService(opts ...option.RequestOption) (r ExperimentService) {
 // event matchers, so a single paginated call returns a complete client-side
 // experiment config. Supports cursor pagination and filtering by `status`, `type`,
 // and free-text `search` matched against experiment id, name, and description.
-// Combine filters with AND semantics. Requires scope: experiment:list
+// Combine filters with AND semantics. Requires API-key scope or current OAuth user
+// permission: experiment:list
 func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) (res *pagination.Cursor[ExperimentListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -66,12 +67,14 @@ func (r *ExperimentService) List(ctx context.Context, query ExperimentListParams
 // event matchers, so a single paginated call returns a complete client-side
 // experiment config. Supports cursor pagination and filtering by `status`, `type`,
 // and free-text `search` matched against experiment id, name, and description.
-// Combine filters with AND semantics. Requires scope: experiment:list
+// Combine filters with AND semantics. Requires API-key scope or current OAuth user
+// permission: experiment:list
 func (r *ExperimentService) ListAutoPaging(ctx context.Context, query ExperimentListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[ExperimentListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
-// Create a new experiment. Requires scope: experiment:create
+// Create a new experiment. Requires API-key scope or current OAuth user
+// permission: experiment:create
 func (r *ExperimentService) New(ctx context.Context, body ExperimentNewParams, opts ...option.RequestOption) (res *ExperimentNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/experiments"
@@ -81,7 +84,7 @@ func (r *ExperimentService) New(ctx context.Context, body ExperimentNewParams, o
 
 // Retrieve one experiment with its variants, lifecycle state, and complete primary
 // and secondary metric definitions, including any filtered event matchers.
-// Requires scope: experiment:find
+// Requires API-key scope or current OAuth user permission: experiment:find
 func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -101,8 +104,8 @@ func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.R
 // Edits are allowed on draft, running, and paused experiments and are recorded in
 // the change log. Only completed experiments return 409 with
 // `A completed experiment can no longer be edited`. Use the lifecycle endpoints
-// (`/start`, `/pause`, `/resume`, `/stop`) to change status. Requires scope:
-// experiment:update
+// (`/start`, `/pause`, `/resume`, `/stop`) to change status. Requires API-key
+// scope or current OAuth user permission: experiment:update
 func (r *ExperimentService) Update(ctx context.Context, id string, body ExperimentUpdateParams, opts ...option.RequestOption) (res *ExperimentUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -114,7 +117,8 @@ func (r *ExperimentService) Update(ctx context.Context, id string, body Experime
 	return res, err
 }
 
-// Delete an experiment. Requires scope: experiment:delete
+// Delete an experiment. Requires API-key scope or current OAuth user permission:
+// experiment:delete
 func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *bool, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -128,7 +132,8 @@ func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...optio
 
 // Create a draft copy of an experiment. The copy keeps its configuration and
 // variants, receives a new key, and does not retain lifecycle, rollout, or result
-// state. Requires scope: experiment:create
+// state. Requires API-key scope or current OAuth user permission:
+// experiment:create
 func (r *ExperimentService) Duplicate(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentDuplicateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -146,7 +151,8 @@ func (r *ExperimentService) Duplicate(ctx context.Context, id string, opts ...op
 // `POST /rest/v1/versions`. Pass `{ "publishAfterStart": false }` only if a
 // separate publish is desired (e.g. bundling with non-experiment edits via a
 // manual `POST /rest/v1/versions` afterwards). The request body is optional — send
-// `{}` to use defaults. Requires scope: experiment:start
+// `{}` to use defaults. Requires API-key scope or current OAuth user permission:
+// experiment:start
 func (r *ExperimentService) Start(ctx context.Context, id string, body ExperimentStartParams, opts ...option.RequestOption) (res *ExperimentStartResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -161,7 +167,8 @@ func (r *ExperimentService) Start(ctx context.Context, id string, body Experimen
 // Stop an experiment. The request body is optional — send `{}` to stop without
 // recording a winner. Optionally pass `winnerVariantId` to record the winner
 // (reporting only) and/or `rolloutVariantId` to keep that variant serving to all
-// traffic. Requires scope: experiment:stop
+// traffic. Requires API-key scope or current OAuth user permission:
+// experiment:stop
 func (r *ExperimentService) Stop(ctx context.Context, id string, body ExperimentStopParams, opts ...option.RequestOption) (res *ExperimentStopResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -177,7 +184,7 @@ func (r *ExperimentService) Stop(ctx context.Context, id string, body Experiment
 // experiment — the explicit, reversible serving decision that makes a winning
 // experience the ongoing default. Publishes. Reverse with `/end-rollout`. Returns
 // 409 if the experiment is not completed or the variant is the control. Requires
-// scope: experiment:stop
+// API-key scope or current OAuth user permission: experiment:stop
 func (r *ExperimentService) Rollout(ctx context.Context, id string, body ExperimentRolloutParams, opts ...option.RequestOption) (res *ExperimentRolloutResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -192,7 +199,7 @@ func (r *ExperimentService) Rollout(ctx context.Context, id string, body Experim
 // End an active rollout: stop serving the rolled-out variant so every matching
 // visitor reverts to the original experience. The declared winner is left intact.
 // Publishes. Returns 409 if the experiment is not currently rolled out. Requires
-// scope: experiment:stop
+// API-key scope or current OAuth user permission: experiment:stop
 func (r *ExperimentService) EndRollout(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentEndRolloutResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -207,7 +214,8 @@ func (r *ExperimentService) EndRollout(ctx context.Context, id string, opts ...o
 // Declare, change, or clear the winning variant on a completed experiment.
 // Reporting metadata only — it does not change what visitors see and does not
 // republish. Omit `winnerVariantId` to clear. To make the winner live, use
-// `/rollout`. Requires scope: experiment:stop
+// `/rollout`. Requires API-key scope or current OAuth user permission:
+// experiment:stop
 func (r *ExperimentService) Winner(ctx context.Context, id string, body ExperimentWinnerParams, opts ...option.RequestOption) (res *ExperimentWinnerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -221,7 +229,8 @@ func (r *ExperimentService) Winner(ctx context.Context, id string, body Experime
 
 // Pause a running experiment. Stops new variant assignments while preserving
 // existing ones; the experiment can later be resumed. The request body is
-// optional. Requires scope: experiment:stop
+// optional. Requires API-key scope or current OAuth user permission:
+// experiment:stop
 func (r *ExperimentService) Pause(ctx context.Context, id string, body ExperimentPauseParams, opts ...option.RequestOption) (res *ExperimentPauseResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -234,7 +243,8 @@ func (r *ExperimentService) Pause(ctx context.Context, id string, body Experimen
 }
 
 // Resume a previously-paused experiment so new visitors can be assigned again. The
-// request body is optional. Requires scope: experiment:start
+// request body is optional. Requires API-key scope or current OAuth user
+// permission: experiment:start
 func (r *ExperimentService) Resume(ctx context.Context, id string, body ExperimentResumeParams, opts ...option.RequestOption) (res *ExperimentResumeResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -249,7 +259,7 @@ func (r *ExperimentService) Resume(ctx context.Context, id string, body Experime
 // Aggregate per-variant impressions, conversions, conversion rate, and Bayesian
 // probability-to-be-best across the experiment runtime window. Select a saved goal
 // with `goalId`; `eventName` remains available as a legacy selector. Requires
-// scope: experiment:find
+// API-key scope or current OAuth user permission: experiment:find
 func (r *ExperimentService) Results(ctx context.Context, id string, query ExperimentResultsParams, opts ...option.RequestOption) (res *ExperimentResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -268,7 +278,8 @@ func (r *ExperimentService) Results(ctx context.Context, id string, query Experi
 // Visitors are the inferential unit; impressions remain a delivery diagnostic.
 // Select a saved goal with `goalId`; `eventName` remains available as a legacy
 // selector. Secondary event overrides are labeled exploratory, and unsupported
-// legacy plans suppress official evidence. Requires scope: experiment:find
+// legacy plans suppress official evidence. Requires API-key scope or current OAuth
+// user permission: experiment:find
 func (r *ExperimentService) Analysis(ctx context.Context, id string, query ExperimentAnalysisParams, opts ...option.RequestOption) (res *ExperimentAnalysisResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -288,7 +299,8 @@ func (r *ExperimentService) Analysis(ctx context.Context, id string, query Exper
 // omitted, so the no-arg call returns every day from start to today (or to
 // `stoppedAt` for completed experiments). The response orders days oldest-first
 // and omits days with no impressions, so an empty `days` array means there was no
-// measured traffic in the window. Requires scope: experiment:find
+// measured traffic in the window. Requires API-key scope or current OAuth user
+// permission: experiment:find
 func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, query ExperimentResultsTimeSeriesParams, opts ...option.RequestOption) (res *ExperimentResultsTimeSeriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -304,8 +316,8 @@ func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, qu
 // fired for this experiment. Each row is one session with the variant the visitor
 // was assigned for that impression. Sessions are ordered newest first by session
 // start. Filter to one variant with `variant_id`. Cursor pagination via `limit`
-// (1–100, default 25) and `cursor`; malformed cursors return 400. Requires scope:
-// experiment:find
+// (1–100, default 25) and `cursor`; malformed cursors return 400. Requires API-key
+// scope or current OAuth user permission: experiment:find
 func (r *ExperimentService) SessionReplays(ctx context.Context, id string, query ExperimentSessionReplaysParams, opts ...option.RequestOption) (res *ExperimentSessionReplaysResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
