@@ -38,8 +38,8 @@ func NewWebAnalyticsService(opts ...option.RequestOption) (r WebAnalyticsService
 
 // Return privacy-first traffic metrics and a timeseries for the requested date
 // range. Filter by source, geography, page, campaign, device, or other supported
-// dimensions with the JSON-encoded `filters` query parameter. Requires scope:
-// web-analytics:view
+// dimensions with the JSON-encoded `filters` query parameter. Requires API-key
+// scope or current OAuth user permission: web-analytics:view
 func (r *WebAnalyticsService) Overview(ctx context.Context, query WebAnalyticsOverviewParams, opts ...option.RequestOption) (res *WebAnalyticsOverviewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/overview"
@@ -48,7 +48,8 @@ func (r *WebAnalyticsService) Overview(ctx context.Context, query WebAnalyticsOv
 }
 
 // Return visitor counts grouped by referrer or UTM source dimension for the
-// requested date range. Requires scope: web-analytics:view
+// requested date range. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *WebAnalyticsService) Sources(ctx context.Context, query WebAnalyticsSourcesParams, opts ...option.RequestOption) (res *WebAnalyticsSourcesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/sources"
@@ -57,7 +58,8 @@ func (r *WebAnalyticsService) Sources(ctx context.Context, query WebAnalyticsSou
 }
 
 // Return page-level traffic metrics for top pages, entry pages, or exit pages in
-// the requested date range. Requires scope: web-analytics:view
+// the requested date range. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *WebAnalyticsService) Pages(ctx context.Context, query WebAnalyticsPagesParams, opts ...option.RequestOption) (res *WebAnalyticsPagesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/pages"
@@ -66,7 +68,8 @@ func (r *WebAnalyticsService) Pages(ctx context.Context, query WebAnalyticsPages
 }
 
 // Return visitor counts grouped by country, region, or city for the requested date
-// range. Requires scope: web-analytics:view
+// range. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *WebAnalyticsService) Locations(ctx context.Context, query WebAnalyticsLocationsParams, opts ...option.RequestOption) (res *WebAnalyticsLocationsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/locations"
@@ -75,7 +78,8 @@ func (r *WebAnalyticsService) Locations(ctx context.Context, query WebAnalyticsL
 }
 
 // Return visitor counts grouped by device type, browser, or operating system for
-// the requested date range. Requires scope: web-analytics:view
+// the requested date range. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *WebAnalyticsService) Devices(ctx context.Context, query WebAnalyticsDevicesParams, opts ...option.RequestOption) (res *WebAnalyticsDevicesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/devices"
@@ -84,7 +88,8 @@ func (r *WebAnalyticsService) Devices(ctx context.Context, query WebAnalyticsDev
 }
 
 // Return the distinct visitors active in the most recent 15-minute window,
-// optionally scoped to one web source. Requires scope: web-analytics:view
+// optionally scoped to one web source. Requires API-key scope or current OAuth
+// user permission: web-analytics:view
 func (r *WebAnalyticsService) CurrentVisitors(ctx context.Context, query WebAnalyticsCurrentVisitorsParams, opts ...option.RequestOption) (res *WebAnalyticsCurrentVisitorsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/current-visitors"
@@ -93,8 +98,8 @@ func (r *WebAnalyticsService) CurrentVisitors(ctx context.Context, query WebAnal
 }
 
 // Return the next or previous journey steps for a pinned path. The `path` and
-// `filters` query parameters are JSON-encoded arrays. Requires scope:
-// web-analytics:view
+// `filters` query parameters are JSON-encoded arrays. Requires API-key scope or
+// current OAuth user permission: web-analytics:view
 func (r *WebAnalyticsService) PathExplorer(ctx context.Context, query WebAnalyticsPathExplorerParams, opts ...option.RequestOption) (res *WebAnalyticsPathExplorerResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/web-analytics/path-explorer"

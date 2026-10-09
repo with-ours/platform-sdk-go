@@ -41,8 +41,8 @@ func NewJourneyFlowService(opts ...option.RequestOption) (r JourneyFlowService) 
 }
 
 // List saved Journey Flow configurations, most recently updated first. Supports
-// cursor pagination and name/description search. Requires scope:
-// web-analytics:view
+// cursor pagination and name/description search. Requires API-key scope or current
+// OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) List(ctx context.Context, query JourneyFlowListParams, opts ...option.RequestOption) (res *pagination.Cursor[JourneyFlowListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -61,15 +61,16 @@ func (r *JourneyFlowService) List(ctx context.Context, query JourneyFlowListPara
 }
 
 // List saved Journey Flow configurations, most recently updated first. Supports
-// cursor pagination and name/description search. Requires scope:
-// web-analytics:view
+// cursor pagination and name/description search. Requires API-key scope or current
+// OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) ListAutoPaging(ctx context.Context, query JourneyFlowListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[JourneyFlowListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
 // Save a validated Journey Flow configuration. Source ownership, UTC scope,
 // bounded entry dates, and compiler-supported semantics are enforced by the
-// GraphQL domain path. Requires scope: web-analytics:write
+// GraphQL domain path. Requires API-key scope or current OAuth user permission:
+// web-analytics:write
 func (r *JourneyFlowService) New(ctx context.Context, body JourneyFlowNewParams, opts ...option.RequestOption) (res *JourneyFlowNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/journey-flows"
@@ -78,7 +79,8 @@ func (r *JourneyFlowService) New(ctx context.Context, body JourneyFlowNewParams,
 }
 
 // Fetch a saved Journey Flow configuration by id. Returns 404 when it does not
-// exist or is not readable by this account. Requires scope: web-analytics:view
+// exist or is not readable by this account. Requires API-key scope or current
+// OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *JourneyFlowGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -92,7 +94,8 @@ func (r *JourneyFlowService) Get(ctx context.Context, id string, opts ...option.
 
 // Partially update a Journey Flow using expectedRevision for optimistic
 // concurrency. Omitted top-level fields remain unchanged; nested values replace
-// the complete nested value. Requires scope: web-analytics:write
+// the complete nested value. Requires API-key scope or current OAuth user
+// permission: web-analytics:write
 func (r *JourneyFlowService) Update(ctx context.Context, id string, body JourneyFlowUpdateParams, opts ...option.RequestOption) (res *JourneyFlowUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -105,7 +108,8 @@ func (r *JourneyFlowService) Update(ctx context.Context, id string, body Journey
 }
 
 // Delete a Journey Flow using expectedRevision for optimistic concurrency. The
-// response includes the deleted revision. Requires scope: web-analytics:write
+// response includes the deleted revision. Requires API-key scope or current OAuth
+// user permission: web-analytics:write
 func (r *JourneyFlowService) Delete(ctx context.Context, id string, body JourneyFlowDeleteParams, opts ...option.RequestOption) (res *JourneyFlowDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -118,8 +122,8 @@ func (r *JourneyFlowService) Delete(ctx context.Context, id string, body Journey
 }
 
 // Return the currently supported Journey Flow counting modes, visualizations,
-// matcher kinds, limits, and unsupported-feature flags. Requires scope:
-// web-analytics:view
+// matcher kinds, limits, and unsupported-feature flags. Requires API-key scope or
+// current OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Capabilities(ctx context.Context, opts ...option.RequestOption) (res *JourneyFlowCapabilitiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/journey-flows/capabilities"
@@ -128,8 +132,8 @@ func (r *JourneyFlowService) Capabilities(ctx context.Context, opts ...option.Re
 }
 
 // Compute a saved Journey Flow result on demand. Requires expectedRevision and
-// permits an optional complete report context override. Requires scope:
-// web-analytics:view
+// permits an optional complete report context override. Requires API-key scope or
+// current OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Results(ctx context.Context, id string, query JourneyFlowResultsParams, opts ...option.RequestOption) (res *JourneyFlowResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -145,7 +149,7 @@ func (r *JourneyFlowService) Results(ctx context.Context, id string, query Journ
 // counts, timing, graph and bounded Top Paths. Requires expectedRevision; display
 // limits and omitted path weight are included. The response contains the CSV
 // content and filename. Visitor and session samples are not included. Requires
-// scope: web-analytics:view
+// API-key scope or current OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Export(ctx context.Context, id string, query JourneyFlowExportParams, opts ...option.RequestOption) (res *JourneyFlowExportResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -159,7 +163,8 @@ func (r *JourneyFlowService) Export(ctx context.Context, id string, query Journe
 
 // Compute a bounded preview from a serialized Journey Flow definition, report
 // context, and view. Use GraphQL when the serialized input exceeds the HTTP URL
-// budget. Requires scope: web-analytics:view
+// budget. Requires API-key scope or current OAuth user permission:
+// web-analytics:view
 func (r *JourneyFlowService) Preview(ctx context.Context, query JourneyFlowPreviewParams, opts ...option.RequestOption) (res *JourneyFlowPreviewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/journey-flows/preview"
