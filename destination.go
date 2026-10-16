@@ -159,22 +159,22 @@ type DestinationListResponse struct {
 	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
 	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
-	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
-	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
-	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
+	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
+	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
+	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
 	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
-	Type               DestinationListResponseType `json:"type" api:"required"`
-	HashingSalt        string                      `json:"hashingSalt" api:"nullable"`
-	LimitedToSourceIDs []string                    `json:"limitedToSourceIds" api:"nullable"`
-	Name               string                      `json:"name" api:"nullable"`
-	Settings           any                         `json:"settings" api:"nullable"`
-	UpdatedAt          string                      `json:"updatedAt" api:"nullable"`
+	Type               DestinationListResponseType                    `json:"type" api:"required"`
+	HashingSalt        string                                         `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                                       `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                                         `json:"name" api:"nullable"`
+	Settings           map[string]DestinationListResponseSettingUnion `json:"settings" api:"nullable"`
+	UpdatedAt          string                                         `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -252,6 +252,7 @@ const (
 	DestinationListResponseTypeGoogleDataManagerEventIngest DestinationListResponseType = "GoogleDataManagerEventIngest"
 	DestinationListResponseTypeGooglePubSub                 DestinationListResponseType = "GooglePubSub"
 	DestinationListResponseTypeGoogleStorage                DestinationListResponseType = "GoogleStorage"
+	DestinationListResponseTypeGravityCapi                  DestinationListResponseType = "GravityCAPI"
 	DestinationListResponseTypeHTTPCustomRequest            DestinationListResponseType = "HTTPCustomRequest"
 	DestinationListResponseTypeHTTPDestination              DestinationListResponseType = "HTTPDestination"
 	DestinationListResponseTypeHubspot                      DestinationListResponseType = "Hubspot"
@@ -305,6 +306,67 @@ const (
 	DestinationListResponseTypeZoomInfo                     DestinationListResponseType = "ZoomInfo"
 )
 
+// DestinationListResponseSettingUnion contains all possible properties and values
+// from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDestinationListResponseSettingMapItem]
+type DestinationListResponseSettingUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDestinationListResponseSettingMapItem any `json:",inline"`
+	JSON                                    struct {
+		OfString                                respjson.Field
+		OfFloat                                 respjson.Field
+		OfBool                                  respjson.Field
+		OfAnyArray                              respjson.Field
+		OfDestinationListResponseSettingMapItem respjson.Field
+		raw                                     string
+	} `json:"-"`
+}
+
+func (u DestinationListResponseSettingUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationListResponseSettingUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationListResponseSettingUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationListResponseSettingUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationListResponseSettingUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DestinationListResponseSettingUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DestinationListResponseSettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DestinationNewResponse struct {
 	ID        string `json:"id" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
@@ -322,22 +384,22 @@ type DestinationNewResponse struct {
 	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
 	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
-	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
-	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
-	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
+	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
+	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
+	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
 	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
-	Type               DestinationNewResponseType `json:"type" api:"required"`
-	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
-	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
-	Name               string                     `json:"name" api:"nullable"`
-	Settings           any                        `json:"settings" api:"nullable"`
-	UpdatedAt          string                     `json:"updatedAt" api:"nullable"`
+	Type               DestinationNewResponseType                    `json:"type" api:"required"`
+	HashingSalt        string                                        `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                                      `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                                        `json:"name" api:"nullable"`
+	Settings           map[string]DestinationNewResponseSettingUnion `json:"settings" api:"nullable"`
+	UpdatedAt          string                                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -415,6 +477,7 @@ const (
 	DestinationNewResponseTypeGoogleDataManagerEventIngest DestinationNewResponseType = "GoogleDataManagerEventIngest"
 	DestinationNewResponseTypeGooglePubSub                 DestinationNewResponseType = "GooglePubSub"
 	DestinationNewResponseTypeGoogleStorage                DestinationNewResponseType = "GoogleStorage"
+	DestinationNewResponseTypeGravityCapi                  DestinationNewResponseType = "GravityCAPI"
 	DestinationNewResponseTypeHTTPCustomRequest            DestinationNewResponseType = "HTTPCustomRequest"
 	DestinationNewResponseTypeHTTPDestination              DestinationNewResponseType = "HTTPDestination"
 	DestinationNewResponseTypeHubspot                      DestinationNewResponseType = "Hubspot"
@@ -468,6 +531,67 @@ const (
 	DestinationNewResponseTypeZoomInfo                     DestinationNewResponseType = "ZoomInfo"
 )
 
+// DestinationNewResponseSettingUnion contains all possible properties and values
+// from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDestinationNewResponseSettingMapItem]
+type DestinationNewResponseSettingUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDestinationNewResponseSettingMapItem any `json:",inline"`
+	JSON                                   struct {
+		OfString                               respjson.Field
+		OfFloat                                respjson.Field
+		OfBool                                 respjson.Field
+		OfAnyArray                             respjson.Field
+		OfDestinationNewResponseSettingMapItem respjson.Field
+		raw                                    string
+	} `json:"-"`
+}
+
+func (u DestinationNewResponseSettingUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationNewResponseSettingUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationNewResponseSettingUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationNewResponseSettingUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationNewResponseSettingUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DestinationNewResponseSettingUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DestinationNewResponseSettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DestinationGetResponse struct {
 	ID        string `json:"id" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
@@ -485,22 +609,22 @@ type DestinationGetResponse struct {
 	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
 	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
-	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
-	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
-	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
+	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
+	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
+	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
 	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
-	Type               DestinationGetResponseType `json:"type" api:"required"`
-	HashingSalt        string                     `json:"hashingSalt" api:"nullable"`
-	LimitedToSourceIDs []string                   `json:"limitedToSourceIds" api:"nullable"`
-	Name               string                     `json:"name" api:"nullable"`
-	Settings           any                        `json:"settings" api:"nullable"`
-	UpdatedAt          string                     `json:"updatedAt" api:"nullable"`
+	Type               DestinationGetResponseType                    `json:"type" api:"required"`
+	HashingSalt        string                                        `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                                      `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                                        `json:"name" api:"nullable"`
+	Settings           map[string]DestinationGetResponseSettingUnion `json:"settings" api:"nullable"`
+	UpdatedAt          string                                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -578,6 +702,7 @@ const (
 	DestinationGetResponseTypeGoogleDataManagerEventIngest DestinationGetResponseType = "GoogleDataManagerEventIngest"
 	DestinationGetResponseTypeGooglePubSub                 DestinationGetResponseType = "GooglePubSub"
 	DestinationGetResponseTypeGoogleStorage                DestinationGetResponseType = "GoogleStorage"
+	DestinationGetResponseTypeGravityCapi                  DestinationGetResponseType = "GravityCAPI"
 	DestinationGetResponseTypeHTTPCustomRequest            DestinationGetResponseType = "HTTPCustomRequest"
 	DestinationGetResponseTypeHTTPDestination              DestinationGetResponseType = "HTTPDestination"
 	DestinationGetResponseTypeHubspot                      DestinationGetResponseType = "Hubspot"
@@ -631,6 +756,67 @@ const (
 	DestinationGetResponseTypeZoomInfo                     DestinationGetResponseType = "ZoomInfo"
 )
 
+// DestinationGetResponseSettingUnion contains all possible properties and values
+// from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDestinationGetResponseSettingMapItem]
+type DestinationGetResponseSettingUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDestinationGetResponseSettingMapItem any `json:",inline"`
+	JSON                                   struct {
+		OfString                               respjson.Field
+		OfFloat                                respjson.Field
+		OfBool                                 respjson.Field
+		OfAnyArray                             respjson.Field
+		OfDestinationGetResponseSettingMapItem respjson.Field
+		raw                                    string
+	} `json:"-"`
+}
+
+func (u DestinationGetResponseSettingUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationGetResponseSettingUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationGetResponseSettingUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationGetResponseSettingUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationGetResponseSettingUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DestinationGetResponseSettingUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DestinationGetResponseSettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DestinationUpdateResponse struct {
 	ID        string `json:"id" api:"required"`
 	CreatedAt string `json:"createdAt" api:"required"`
@@ -648,22 +834,22 @@ type DestinationUpdateResponse struct {
 	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
 	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
-	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
-	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
-	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
+	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
+	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
+	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
 	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
-	Type               DestinationUpdateResponseType `json:"type" api:"required"`
-	HashingSalt        string                        `json:"hashingSalt" api:"nullable"`
-	LimitedToSourceIDs []string                      `json:"limitedToSourceIds" api:"nullable"`
-	Name               string                        `json:"name" api:"nullable"`
-	Settings           any                           `json:"settings" api:"nullable"`
-	UpdatedAt          string                        `json:"updatedAt" api:"nullable"`
+	Type               DestinationUpdateResponseType                    `json:"type" api:"required"`
+	HashingSalt        string                                           `json:"hashingSalt" api:"nullable"`
+	LimitedToSourceIDs []string                                         `json:"limitedToSourceIds" api:"nullable"`
+	Name               string                                           `json:"name" api:"nullable"`
+	Settings           map[string]DestinationUpdateResponseSettingUnion `json:"settings" api:"nullable"`
+	UpdatedAt          string                                           `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -741,6 +927,7 @@ const (
 	DestinationUpdateResponseTypeGoogleDataManagerEventIngest DestinationUpdateResponseType = "GoogleDataManagerEventIngest"
 	DestinationUpdateResponseTypeGooglePubSub                 DestinationUpdateResponseType = "GooglePubSub"
 	DestinationUpdateResponseTypeGoogleStorage                DestinationUpdateResponseType = "GoogleStorage"
+	DestinationUpdateResponseTypeGravityCapi                  DestinationUpdateResponseType = "GravityCAPI"
 	DestinationUpdateResponseTypeHTTPCustomRequest            DestinationUpdateResponseType = "HTTPCustomRequest"
 	DestinationUpdateResponseTypeHTTPDestination              DestinationUpdateResponseType = "HTTPDestination"
 	DestinationUpdateResponseTypeHubspot                      DestinationUpdateResponseType = "Hubspot"
@@ -794,6 +981,67 @@ const (
 	DestinationUpdateResponseTypeZoomInfo                     DestinationUpdateResponseType = "ZoomInfo"
 )
 
+// DestinationUpdateResponseSettingUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDestinationUpdateResponseSettingMapItem]
+type DestinationUpdateResponseSettingUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDestinationUpdateResponseSettingMapItem any `json:",inline"`
+	JSON                                      struct {
+		OfString                                  respjson.Field
+		OfFloat                                   respjson.Field
+		OfBool                                    respjson.Field
+		OfAnyArray                                respjson.Field
+		OfDestinationUpdateResponseSettingMapItem respjson.Field
+		raw                                       string
+	} `json:"-"`
+}
+
+func (u DestinationUpdateResponseSettingUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationUpdateResponseSettingUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationUpdateResponseSettingUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationUpdateResponseSettingUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DestinationUpdateResponseSettingUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DestinationUpdateResponseSettingUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DestinationUpdateResponseSettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DestinationTypesResponse struct {
 	Entities []DestinationTypesResponseEntity `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -826,7 +1074,7 @@ type DestinationTypesResponseEntity struct {
 	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
 	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory".
+	// "Rokt", "Fullstory", "GravityCAPI".
 	ID           string                                       `json:"id" api:"required"`
 	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
 	Label        string                                       `json:"label" api:"required"`
@@ -1195,13 +1443,13 @@ type DestinationListParams struct {
 	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
 	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
 	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "HTTPCustomRequest", "HTTPDestination",
-	// "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable", "Klaviyo",
-	// "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN", "MNTNAudience",
-	// "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel", "NextdoorAds",
-	// "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize", "Pinterest",
-	// "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds", "Reddit",
-	// "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
+	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
+	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
+	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
+	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
+	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
+	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
+	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
 	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
@@ -1272,6 +1520,7 @@ const (
 	DestinationListParamsTypeGoogleDataManagerEventIngest DestinationListParamsType = "GoogleDataManagerEventIngest"
 	DestinationListParamsTypeGooglePubSub                 DestinationListParamsType = "GooglePubSub"
 	DestinationListParamsTypeGoogleStorage                DestinationListParamsType = "GoogleStorage"
+	DestinationListParamsTypeGravityCapi                  DestinationListParamsType = "GravityCAPI"
 	DestinationListParamsTypeHTTPCustomRequest            DestinationListParamsType = "HTTPCustomRequest"
 	DestinationListParamsTypeHTTPDestination              DestinationListParamsType = "HTTPDestination"
 	DestinationListParamsTypeHubspot                      DestinationListParamsType = "Hubspot"
@@ -1346,12 +1595,12 @@ type DestinationNewParams struct {
 	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
 	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory".
+	// "Rokt", "Fullstory", "GravityCAPI".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
 	// get the valid keys for your destination type.
-	Settings any `json:"settings,omitzero"`
+	Settings map[string]DestinationNewParamsSettingUnion `json:"settings,omitzero"`
 	paramObj
 }
 
@@ -1450,7 +1699,25 @@ const (
 	DestinationNewParamsTypeZohoCRM                      DestinationNewParamsType = "ZohoCRM"
 	DestinationNewParamsTypeRokt                         DestinationNewParamsType = "Rokt"
 	DestinationNewParamsTypeFullstory                    DestinationNewParamsType = "Fullstory"
+	DestinationNewParamsTypeGravityCapi                  DestinationNewParamsType = "GravityCAPI"
 )
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type DestinationNewParamsSettingUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u DestinationNewParamsSettingUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *DestinationNewParamsSettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
 
 type DestinationUpdateParams struct {
 	HashingSalt        param.Opt[string] `json:"hashingSalt,omitzero"`
@@ -1458,7 +1725,7 @@ type DestinationUpdateParams struct {
 	LimitedToSourceIDs []string          `json:"limitedToSourceIds,omitzero"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
 	// get the valid keys for your destination type.
-	Settings any `json:"settings,omitzero"`
+	Settings map[string]DestinationUpdateParamsSettingUnion `json:"settings,omitzero"`
 	// Any of "Disabled", "Enabled".
 	Status DestinationUpdateParamsStatus `json:"status,omitzero"`
 	paramObj
@@ -1470,6 +1737,23 @@ func (r DestinationUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *DestinationUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type DestinationUpdateParamsSettingUnion struct {
+	OfString param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat  param.Opt[float64] `json:",omitzero,inline"`
+	OfBool   param.Opt[bool]    `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u DestinationUpdateParamsSettingUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString, u.OfFloat, u.OfBool)
+}
+func (u *DestinationUpdateParamsSettingUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 type DestinationUpdateParamsStatus string

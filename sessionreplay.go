@@ -166,6 +166,9 @@ type SessionReplayListParams struct {
 	// not decode or modify it. Malformed cursors return 400 Bad Request.
 	Cursor    param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	EventName param.Opt[string] `query:"eventName,omitzero" json:"-"`
+	// JSON-encoded versioned analytics filter. Uses the shared analytics catalog
+	// property IDs and operators, including event, session, and custom properties.
+	Filter param.Opt[string] `query:"filter,omitzero" json:"-"`
 	// Maximum replay sessions to return. Defaults to the report default.
 	Limit    param.Opt[int64]  `query:"limit,omitzero" json:"-"`
 	Pathname param.Opt[string] `query:"pathname,omitzero" json:"-"`

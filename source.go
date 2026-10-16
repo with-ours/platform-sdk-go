@@ -157,10 +157,11 @@ type SourceListResponse struct {
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
 	// "iOSNativeApi".
-	Type                  SourceListResponseType `json:"type" api:"required"`
-	BotControlMode        string                 `json:"botControlMode" api:"nullable"`
-	BotScoreThreshold     float64                `json:"botScoreThreshold" api:"nullable"`
-	ExcludeRequestContext bool                   `json:"excludeRequestContext" api:"nullable"`
+	Type SourceListResponseType `json:"type" api:"required"`
+	// Any of "Allow", "Block", "Threshold".
+	BotControlMode        SourceListResponseBotControlMode `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64                          `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool                             `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
 	IsPublished bool `json:"isPublished" api:"nullable"`
@@ -169,12 +170,16 @@ type SourceListResponse struct {
 	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
 	// ISO-8601 timestamp of the most recent inbound request received by this source.
 	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string `json:"lastTriggeredAt" api:"nullable"`
-	Name                  string `json:"name" api:"nullable"`
-	ProbabilisticIdentity any    `json:"probabilisticIdentity" api:"nullable"`
-	ProjectAPIKey         string `json:"projectAPIKey" api:"nullable"`
-	RedirectURL           string `json:"redirectUrl" api:"nullable"`
-	SelectedAccountID     string `json:"selectedAccountId" api:"nullable"`
+	LastTriggeredAt       string                                  `json:"lastTriggeredAt" api:"nullable"`
+	Name                  string                                  `json:"name" api:"nullable"`
+	ProbabilisticIdentity SourceListResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string                                  `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string                                  `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string                                  `json:"selectedAccountId" api:"nullable"`
+	// Type-specific source settings. settings.dataImport contains a draft file,
+	// warehouse or HTTP import definition, with transformation, schedule and
+	// credential references. Account publication activates imports.
+	Settings map[string]any `json:"settings" api:"nullable"`
 	// Limits which domains can send events to the CDP. When set, only requests from
 	// these domains are accepted for this source. Separate from experiment settings
 	// `whitelistDomains`, which limits which domains can load your experiments.
@@ -199,6 +204,7 @@ type SourceListResponse struct {
 		ProjectAPIKey           respjson.Field
 		RedirectURL             respjson.Field
 		SelectedAccountID       respjson.Field
+		Settings                respjson.Field
 		WhitelistDomains        respjson.Field
 		WhitelistIPs            respjson.Field
 		ExtraFields             map[string]respjson.Field
@@ -257,6 +263,34 @@ const (
 	SourceListResponseTypeIOsNativeAPI        SourceListResponseType = "iOSNativeApi"
 )
 
+type SourceListResponseBotControlMode string
+
+const (
+	SourceListResponseBotControlModeAllow     SourceListResponseBotControlMode = "Allow"
+	SourceListResponseBotControlModeBlock     SourceListResponseBotControlMode = "Block"
+	SourceListResponseBotControlModeThreshold SourceListResponseBotControlMode = "Threshold"
+)
+
+type SourceListResponseProbabilisticIdentity struct {
+	Enabled            bool  `json:"enabled" api:"required"`
+	MatchWindowMinutes int64 `json:"matchWindowMinutes" api:"required"`
+	MaxMatchesPerIP    int64 `json:"maxMatchesPerIp" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled            respjson.Field
+		MatchWindowMinutes respjson.Field
+		MaxMatchesPerIP    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceListResponseProbabilisticIdentity) RawJSON() string { return r.JSON.raw }
+func (r *SourceListResponseProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SourceNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Organization id that owns this source.
@@ -275,10 +309,11 @@ type SourceNewResponse struct {
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
 	// "iOSNativeApi".
-	Type                  SourceNewResponseType `json:"type" api:"required"`
-	BotControlMode        string                `json:"botControlMode" api:"nullable"`
-	BotScoreThreshold     float64               `json:"botScoreThreshold" api:"nullable"`
-	ExcludeRequestContext bool                  `json:"excludeRequestContext" api:"nullable"`
+	Type SourceNewResponseType `json:"type" api:"required"`
+	// Any of "Allow", "Block", "Threshold".
+	BotControlMode        SourceNewResponseBotControlMode `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64                         `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool                            `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
 	IsPublished bool `json:"isPublished" api:"nullable"`
@@ -287,12 +322,16 @@ type SourceNewResponse struct {
 	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
 	// ISO-8601 timestamp of the most recent inbound request received by this source.
 	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string `json:"lastTriggeredAt" api:"nullable"`
-	Name                  string `json:"name" api:"nullable"`
-	ProbabilisticIdentity any    `json:"probabilisticIdentity" api:"nullable"`
-	ProjectAPIKey         string `json:"projectAPIKey" api:"nullable"`
-	RedirectURL           string `json:"redirectUrl" api:"nullable"`
-	SelectedAccountID     string `json:"selectedAccountId" api:"nullable"`
+	LastTriggeredAt       string                                 `json:"lastTriggeredAt" api:"nullable"`
+	Name                  string                                 `json:"name" api:"nullable"`
+	ProbabilisticIdentity SourceNewResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string                                 `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string                                 `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string                                 `json:"selectedAccountId" api:"nullable"`
+	// Type-specific source settings. settings.dataImport contains a draft file,
+	// warehouse or HTTP import definition, with transformation, schedule and
+	// credential references. Account publication activates imports.
+	Settings map[string]any `json:"settings" api:"nullable"`
 	// Limits which domains can send events to the CDP. When set, only requests from
 	// these domains are accepted for this source. Separate from experiment settings
 	// `whitelistDomains`, which limits which domains can load your experiments.
@@ -317,6 +356,7 @@ type SourceNewResponse struct {
 		ProjectAPIKey           respjson.Field
 		RedirectURL             respjson.Field
 		SelectedAccountID       respjson.Field
+		Settings                respjson.Field
 		WhitelistDomains        respjson.Field
 		WhitelistIPs            respjson.Field
 		ExtraFields             map[string]respjson.Field
@@ -375,6 +415,34 @@ const (
 	SourceNewResponseTypeIOsNativeAPI        SourceNewResponseType = "iOSNativeApi"
 )
 
+type SourceNewResponseBotControlMode string
+
+const (
+	SourceNewResponseBotControlModeAllow     SourceNewResponseBotControlMode = "Allow"
+	SourceNewResponseBotControlModeBlock     SourceNewResponseBotControlMode = "Block"
+	SourceNewResponseBotControlModeThreshold SourceNewResponseBotControlMode = "Threshold"
+)
+
+type SourceNewResponseProbabilisticIdentity struct {
+	Enabled            bool  `json:"enabled" api:"required"`
+	MatchWindowMinutes int64 `json:"matchWindowMinutes" api:"required"`
+	MaxMatchesPerIP    int64 `json:"maxMatchesPerIp" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled            respjson.Field
+		MatchWindowMinutes respjson.Field
+		MaxMatchesPerIP    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceNewResponseProbabilisticIdentity) RawJSON() string { return r.JSON.raw }
+func (r *SourceNewResponseProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SourceGetResponse struct {
 	ID string `json:"id" api:"required"`
 	// Organization id that owns this source.
@@ -393,10 +461,11 @@ type SourceGetResponse struct {
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
 	// "iOSNativeApi".
-	Type                  SourceGetResponseType `json:"type" api:"required"`
-	BotControlMode        string                `json:"botControlMode" api:"nullable"`
-	BotScoreThreshold     float64               `json:"botScoreThreshold" api:"nullable"`
-	ExcludeRequestContext bool                  `json:"excludeRequestContext" api:"nullable"`
+	Type SourceGetResponseType `json:"type" api:"required"`
+	// Any of "Allow", "Block", "Threshold".
+	BotControlMode        SourceGetResponseBotControlMode `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64                         `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool                            `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
 	IsPublished bool `json:"isPublished" api:"nullable"`
@@ -405,12 +474,16 @@ type SourceGetResponse struct {
 	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
 	// ISO-8601 timestamp of the most recent inbound request received by this source.
 	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string `json:"lastTriggeredAt" api:"nullable"`
-	Name                  string `json:"name" api:"nullable"`
-	ProbabilisticIdentity any    `json:"probabilisticIdentity" api:"nullable"`
-	ProjectAPIKey         string `json:"projectAPIKey" api:"nullable"`
-	RedirectURL           string `json:"redirectUrl" api:"nullable"`
-	SelectedAccountID     string `json:"selectedAccountId" api:"nullable"`
+	LastTriggeredAt       string                                 `json:"lastTriggeredAt" api:"nullable"`
+	Name                  string                                 `json:"name" api:"nullable"`
+	ProbabilisticIdentity SourceGetResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string                                 `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string                                 `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string                                 `json:"selectedAccountId" api:"nullable"`
+	// Type-specific source settings. settings.dataImport contains a draft file,
+	// warehouse or HTTP import definition, with transformation, schedule and
+	// credential references. Account publication activates imports.
+	Settings map[string]any `json:"settings" api:"nullable"`
 	// Limits which domains can send events to the CDP. When set, only requests from
 	// these domains are accepted for this source. Separate from experiment settings
 	// `whitelistDomains`, which limits which domains can load your experiments.
@@ -435,6 +508,7 @@ type SourceGetResponse struct {
 		ProjectAPIKey           respjson.Field
 		RedirectURL             respjson.Field
 		SelectedAccountID       respjson.Field
+		Settings                respjson.Field
 		WhitelistDomains        respjson.Field
 		WhitelistIPs            respjson.Field
 		ExtraFields             map[string]respjson.Field
@@ -493,6 +567,34 @@ const (
 	SourceGetResponseTypeIOsNativeAPI        SourceGetResponseType = "iOSNativeApi"
 )
 
+type SourceGetResponseBotControlMode string
+
+const (
+	SourceGetResponseBotControlModeAllow     SourceGetResponseBotControlMode = "Allow"
+	SourceGetResponseBotControlModeBlock     SourceGetResponseBotControlMode = "Block"
+	SourceGetResponseBotControlModeThreshold SourceGetResponseBotControlMode = "Threshold"
+)
+
+type SourceGetResponseProbabilisticIdentity struct {
+	Enabled            bool  `json:"enabled" api:"required"`
+	MatchWindowMinutes int64 `json:"matchWindowMinutes" api:"required"`
+	MaxMatchesPerIP    int64 `json:"maxMatchesPerIp" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled            respjson.Field
+		MatchWindowMinutes respjson.Field
+		MaxMatchesPerIP    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceGetResponseProbabilisticIdentity) RawJSON() string { return r.JSON.raw }
+func (r *SourceGetResponseProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type SourceUpdateResponse struct {
 	ID string `json:"id" api:"required"`
 	// Organization id that owns this source.
@@ -511,10 +613,11 @@ type SourceUpdateResponse struct {
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
 	// "iOSNativeApi".
-	Type                  SourceUpdateResponseType `json:"type" api:"required"`
-	BotControlMode        string                   `json:"botControlMode" api:"nullable"`
-	BotScoreThreshold     float64                  `json:"botScoreThreshold" api:"nullable"`
-	ExcludeRequestContext bool                     `json:"excludeRequestContext" api:"nullable"`
+	Type SourceUpdateResponseType `json:"type" api:"required"`
+	// Any of "Allow", "Block", "Threshold".
+	BotControlMode        SourceUpdateResponseBotControlMode `json:"botControlMode" api:"nullable"`
+	BotScoreThreshold     float64                            `json:"botScoreThreshold" api:"nullable"`
+	ExcludeRequestContext bool                               `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
 	IsPublished bool `json:"isPublished" api:"nullable"`
@@ -523,12 +626,16 @@ type SourceUpdateResponse struct {
 	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
 	// ISO-8601 timestamp of the most recent inbound request received by this source.
 	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string `json:"lastTriggeredAt" api:"nullable"`
-	Name                  string `json:"name" api:"nullable"`
-	ProbabilisticIdentity any    `json:"probabilisticIdentity" api:"nullable"`
-	ProjectAPIKey         string `json:"projectAPIKey" api:"nullable"`
-	RedirectURL           string `json:"redirectUrl" api:"nullable"`
-	SelectedAccountID     string `json:"selectedAccountId" api:"nullable"`
+	LastTriggeredAt       string                                    `json:"lastTriggeredAt" api:"nullable"`
+	Name                  string                                    `json:"name" api:"nullable"`
+	ProbabilisticIdentity SourceUpdateResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
+	ProjectAPIKey         string                                    `json:"projectAPIKey" api:"nullable"`
+	RedirectURL           string                                    `json:"redirectUrl" api:"nullable"`
+	SelectedAccountID     string                                    `json:"selectedAccountId" api:"nullable"`
+	// Type-specific source settings. settings.dataImport contains a draft file,
+	// warehouse or HTTP import definition, with transformation, schedule and
+	// credential references. Account publication activates imports.
+	Settings map[string]any `json:"settings" api:"nullable"`
 	// Limits which domains can send events to the CDP. When set, only requests from
 	// these domains are accepted for this source. Separate from experiment settings
 	// `whitelistDomains`, which limits which domains can load your experiments.
@@ -553,6 +660,7 @@ type SourceUpdateResponse struct {
 		ProjectAPIKey           respjson.Field
 		RedirectURL             respjson.Field
 		SelectedAccountID       respjson.Field
+		Settings                respjson.Field
 		WhitelistDomains        respjson.Field
 		WhitelistIPs            respjson.Field
 		ExtraFields             map[string]respjson.Field
@@ -610,6 +718,34 @@ const (
 	SourceUpdateResponseTypeWhatConverts        SourceUpdateResponseType = "WhatConverts"
 	SourceUpdateResponseTypeIOsNativeAPI        SourceUpdateResponseType = "iOSNativeApi"
 )
+
+type SourceUpdateResponseBotControlMode string
+
+const (
+	SourceUpdateResponseBotControlModeAllow     SourceUpdateResponseBotControlMode = "Allow"
+	SourceUpdateResponseBotControlModeBlock     SourceUpdateResponseBotControlMode = "Block"
+	SourceUpdateResponseBotControlModeThreshold SourceUpdateResponseBotControlMode = "Threshold"
+)
+
+type SourceUpdateResponseProbabilisticIdentity struct {
+	Enabled            bool  `json:"enabled" api:"required"`
+	MatchWindowMinutes int64 `json:"matchWindowMinutes" api:"required"`
+	MaxMatchesPerIP    int64 `json:"maxMatchesPerIp" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Enabled            respjson.Field
+		MatchWindowMinutes respjson.Field
+		MaxMatchesPerIP    respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceUpdateResponseProbabilisticIdentity) RawJSON() string { return r.JSON.raw }
+func (r *SourceUpdateResponseProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type SourceDeleteResponse struct {
 	// Any of true.
@@ -859,7 +995,7 @@ type SourceNewParams struct {
 	Name param.Opt[string]   `json:"name,omitzero"`
 	// Destination URL for a RedirectSource (short link). Ignored by other source
 	// types. Must be a valid http(s) URL.
-	RedirectURL param.Opt[string] `json:"redirectUrl,omitzero"`
+	RedirectURL param.Opt[string] `json:"redirectUrl,omitzero" format:"uri"`
 	paramObj
 }
 
@@ -910,17 +1046,23 @@ const (
 )
 
 type SourceUpdateParams struct {
-	BotControlMode        param.Opt[string]  `json:"botControlMode,omitzero"`
 	BotScoreThreshold     param.Opt[float64] `json:"botScoreThreshold,omitzero"`
 	ExcludeRequestContext param.Opt[bool]    `json:"excludeRequestContext,omitzero"`
 	Name                  param.Opt[string]  `json:"name,omitzero"`
 	ProjectAPIKey         param.Opt[string]  `json:"projectAPIKey,omitzero"`
-	RedirectURL           param.Opt[string]  `json:"redirectUrl,omitzero"`
+	RedirectURL           param.Opt[string]  `json:"redirectUrl,omitzero" format:"uri"`
 	SelectedAccountID     param.Opt[string]  `json:"selectedAccountId,omitzero"`
-	Status                param.Opt[string]  `json:"status,omitzero"`
-	ProbabilisticIdentity any                `json:"probabilisticIdentity,omitzero"`
-	WhitelistDomains      []string           `json:"whitelistDomains,omitzero"`
-	WhitelistIPs          []string           `json:"whitelistIps,omitzero"`
+	// Any of "Allow", "Block", "Threshold".
+	BotControlMode        SourceUpdateParamsBotControlMode        `json:"botControlMode,omitzero"`
+	ProbabilisticIdentity SourceUpdateParamsProbabilisticIdentity `json:"probabilisticIdentity,omitzero"`
+	// Type-specific source settings. Omitted keys remain unchanged; null clears all
+	// settings. settings.dataImport configures an import on an HTTP API source; null
+	// clears just that definition. Publish the source to activate import changes.
+	Settings map[string]any `json:"settings,omitzero"`
+	// Any of "Disabled", "Enabled".
+	Status           SourceUpdateParamsStatus `json:"status,omitzero"`
+	WhitelistDomains []string                 `json:"whitelistDomains,omitzero"`
+	WhitelistIPs     []string                 `json:"whitelistIps,omitzero"`
 	paramObj
 }
 
@@ -931,3 +1073,34 @@ func (r SourceUpdateParams) MarshalJSON() (data []byte, err error) {
 func (r *SourceUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+type SourceUpdateParamsBotControlMode string
+
+const (
+	SourceUpdateParamsBotControlModeAllow     SourceUpdateParamsBotControlMode = "Allow"
+	SourceUpdateParamsBotControlModeBlock     SourceUpdateParamsBotControlMode = "Block"
+	SourceUpdateParamsBotControlModeThreshold SourceUpdateParamsBotControlMode = "Threshold"
+)
+
+// The property Enabled is required.
+type SourceUpdateParamsProbabilisticIdentity struct {
+	Enabled            bool             `json:"enabled" api:"required"`
+	MatchWindowMinutes param.Opt[int64] `json:"matchWindowMinutes,omitzero"`
+	MaxMatchesPerIP    param.Opt[int64] `json:"maxMatchesPerIp,omitzero"`
+	paramObj
+}
+
+func (r SourceUpdateParamsProbabilisticIdentity) MarshalJSON() (data []byte, err error) {
+	type shadow SourceUpdateParamsProbabilisticIdentity
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SourceUpdateParamsProbabilisticIdentity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SourceUpdateParamsStatus string
+
+const (
+	SourceUpdateParamsStatusDisabled SourceUpdateParamsStatus = "Disabled"
+	SourceUpdateParamsStatusEnabled  SourceUpdateParamsStatus = "Enabled"
+)

@@ -31,6 +31,7 @@ func TestSessionReplayListWithOptionalParams(t *testing.T) {
 		To:          time.Now(),
 		Cursor:      oursprivacy.String("x"),
 		EventName:   oursprivacy.String("x"),
+		Filter:      oursprivacy.String(`{"version":1,"filter":{"kind":"predicate","property":"event.source_id","operator":"eq","value":"source-1"}}`),
 		Limit:       oursprivacy.Int(1),
 		Pathname:    oursprivacy.String("x"),
 		SessionIDs:  oursprivacy.String("sessionIds"),

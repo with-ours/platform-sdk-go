@@ -112,7 +112,7 @@ type LocationListResponseEntity struct {
 	ID                  string                                        `json:"id" api:"required"`
 	AccountID           string                                        `json:"accountId" api:"required"`
 	AdditionalAddresses []LocationListResponseEntityAdditionalAddress `json:"additionalAddresses" api:"nullable"`
-	Center              any                                           `json:"center" api:"nullable"`
+	Center              LocationListResponseEntityCenter              `json:"center" api:"nullable"`
 	City                string                                        `json:"city" api:"nullable"`
 	Country             string                                        `json:"country" api:"nullable"`
 	CreatedAt           string                                        `json:"createdAt" api:"nullable"`
@@ -200,11 +200,29 @@ func (r *LocationListResponseEntityAdditionalAddress) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LocationListResponseEntityCenter struct {
+	Latitude  float64 `json:"latitude" api:"required"`
+	Longitude float64 `json:"longitude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Latitude    respjson.Field
+		Longitude   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationListResponseEntityCenter) RawJSON() string { return r.JSON.raw }
+func (r *LocationListResponseEntityCenter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LocationNewResponse struct {
 	ID                  string                                 `json:"id" api:"required"`
 	AccountID           string                                 `json:"accountId" api:"required"`
 	AdditionalAddresses []LocationNewResponseAdditionalAddress `json:"additionalAddresses" api:"nullable"`
-	Center              any                                    `json:"center" api:"nullable"`
+	Center              LocationNewResponseCenter              `json:"center" api:"nullable"`
 	City                string                                 `json:"city" api:"nullable"`
 	Country             string                                 `json:"country" api:"nullable"`
 	CreatedAt           string                                 `json:"createdAt" api:"nullable"`
@@ -292,11 +310,29 @@ func (r *LocationNewResponseAdditionalAddress) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LocationNewResponseCenter struct {
+	Latitude  float64 `json:"latitude" api:"required"`
+	Longitude float64 `json:"longitude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Latitude    respjson.Field
+		Longitude   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationNewResponseCenter) RawJSON() string { return r.JSON.raw }
+func (r *LocationNewResponseCenter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LocationUpdateResponse struct {
 	ID                  string                                    `json:"id" api:"required"`
 	AccountID           string                                    `json:"accountId" api:"required"`
 	AdditionalAddresses []LocationUpdateResponseAdditionalAddress `json:"additionalAddresses" api:"nullable"`
-	Center              any                                       `json:"center" api:"nullable"`
+	Center              LocationUpdateResponseCenter              `json:"center" api:"nullable"`
 	City                string                                    `json:"city" api:"nullable"`
 	Country             string                                    `json:"country" api:"nullable"`
 	CreatedAt           string                                    `json:"createdAt" api:"nullable"`
@@ -384,6 +420,24 @@ func (r *LocationUpdateResponseAdditionalAddress) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type LocationUpdateResponseCenter struct {
+	Latitude  float64 `json:"latitude" api:"required"`
+	Longitude float64 `json:"longitude" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Latitude    respjson.Field
+		Longitude   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationUpdateResponseCenter) RawJSON() string { return r.JSON.raw }
+func (r *LocationUpdateResponseCenter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LocationEmbedCodeResponse struct {
 	// Self-contained HTML snippet (a `<style>` + `<div>` wrapping an `<iframe>`, plus
 	// an optional JSON-LD `<script>`) ready to paste into any page. The iframe `src`
@@ -419,7 +473,7 @@ type LocationNewParams struct {
 	WebsiteURL          param.Opt[string]                    `json:"websiteUrl,omitzero"`
 	Zip                 param.Opt[string]                    `json:"zip,omitzero"`
 	AdditionalAddresses []LocationNewParamsAdditionalAddress `json:"additionalAddresses,omitzero"`
-	Center              any                                  `json:"center,omitzero"`
+	Center              LocationNewParamsCenter              `json:"center,omitzero"`
 	paramObj
 }
 
@@ -456,6 +510,21 @@ func (r *LocationNewParamsAdditionalAddress) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Latitude, Longitude are required.
+type LocationNewParamsCenter struct {
+	Latitude  float64 `json:"latitude" api:"required"`
+	Longitude float64 `json:"longitude" api:"required"`
+	paramObj
+}
+
+func (r LocationNewParamsCenter) MarshalJSON() (data []byte, err error) {
+	type shadow LocationNewParamsCenter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LocationNewParamsCenter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type LocationUpdateParams struct {
 	City                param.Opt[string]                       `json:"city,omitzero"`
 	Country             param.Opt[string]                       `json:"country,omitzero"`
@@ -472,7 +541,7 @@ type LocationUpdateParams struct {
 	WebsiteURL          param.Opt[string]                       `json:"websiteUrl,omitzero"`
 	Zip                 param.Opt[string]                       `json:"zip,omitzero"`
 	AdditionalAddresses []LocationUpdateParamsAdditionalAddress `json:"additionalAddresses,omitzero"`
-	Center              any                                     `json:"center,omitzero"`
+	Center              LocationUpdateParamsCenter              `json:"center,omitzero"`
 	paramObj
 }
 
@@ -506,6 +575,21 @@ func (r LocationUpdateParamsAdditionalAddress) MarshalJSON() (data []byte, err e
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *LocationUpdateParamsAdditionalAddress) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Latitude, Longitude are required.
+type LocationUpdateParamsCenter struct {
+	Latitude  float64 `json:"latitude" api:"required"`
+	Longitude float64 `json:"longitude" api:"required"`
+	paramObj
+}
+
+func (r LocationUpdateParamsCenter) MarshalJSON() (data []byte, err error) {
+	type shadow LocationUpdateParamsCenter
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LocationUpdateParamsCenter) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
