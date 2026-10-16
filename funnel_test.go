@@ -49,10 +49,63 @@ func TestFunnelNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Funnels.New(context.TODO(), oursprivacy.FunnelNewParams{
-		Name:            "x",
-		QueryDefinition: map[string]any{},
-		Description:     oursprivacy.String("description"),
-		Watched:         oursprivacy.Bool(true),
+		Name: "x",
+		QueryDefinition: oursprivacy.FunnelNewParamsQueryDefinition{
+			Counting: "unique",
+			Identity: "session",
+			Kind:     "funnel",
+			Order:    "ordered",
+			Reentry:  "first",
+			Steps: []oursprivacy.FunnelNewParamsQueryDefinitionStep{{
+				ID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				EventName: "x",
+				Name:      "x",
+				Filter: oursprivacy.FunnelNewParamsQueryDefinitionStepFilter{
+					Filter: oursprivacy.FunnelNewParamsQueryDefinitionStepFilterFilterUnion{
+						OfFunnelNewsQueryDefinitionStepFilterFilterObject: &oursprivacy.FunnelNewParamsQueryDefinitionStepFilterFilterObject{
+							Children: []any{},
+							Kind:     "and",
+						},
+					},
+					Version: 1,
+				},
+			}, {
+				ID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+				EventName: "x",
+				Name:      "x",
+				Filter: oursprivacy.FunnelNewParamsQueryDefinitionStepFilter{
+					Filter: oursprivacy.FunnelNewParamsQueryDefinitionStepFilterFilterUnion{
+						OfFunnelNewsQueryDefinitionStepFilterFilterObject: &oursprivacy.FunnelNewParamsQueryDefinitionStepFilterFilterObject{
+							Children: []any{},
+							Kind:     "and",
+						},
+					},
+					Version: 1,
+				},
+			}},
+			Version:  1,
+			WindowMs: 1,
+			EntryFilter: oursprivacy.FunnelNewParamsQueryDefinitionEntryFilter{
+				Filter: oursprivacy.FunnelNewParamsQueryDefinitionEntryFilterFilterUnion{
+					OfFunnelNewsQueryDefinitionEntryFilterFilterObject: &oursprivacy.FunnelNewParamsQueryDefinitionEntryFilterFilterObject{
+						Children: []any{},
+						Kind:     "and",
+					},
+				},
+				Version: 1,
+			},
+			Filter: oursprivacy.FunnelNewParamsQueryDefinitionFilter{
+				Filter: oursprivacy.FunnelNewParamsQueryDefinitionFilterFilterUnion{
+					OfFunnelNewsQueryDefinitionFilterFilterObject: &oursprivacy.FunnelNewParamsQueryDefinitionFilterFilterObject{
+						Children: []any{},
+						Kind:     "and",
+					},
+				},
+				Version: 1,
+			},
+		},
+		Description: oursprivacy.String("description"),
+		Watched:     oursprivacy.Bool(true),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -101,10 +154,63 @@ func TestFunnelUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.FunnelUpdateParams{
-			Description:     oursprivacy.String("description"),
-			Name:            oursprivacy.String("x"),
-			QueryDefinition: map[string]any{},
-			Watched:         oursprivacy.Bool(true),
+			Description: oursprivacy.String("description"),
+			Name:        oursprivacy.String("x"),
+			QueryDefinition: oursprivacy.FunnelUpdateParamsQueryDefinition{
+				Counting: "unique",
+				Identity: "session",
+				Kind:     "funnel",
+				Order:    "ordered",
+				Reentry:  "first",
+				Steps: []oursprivacy.FunnelUpdateParamsQueryDefinitionStep{{
+					ID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+					EventName: "x",
+					Name:      "x",
+					Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionStepFilter{
+						Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionStepFilterFilterUnion{
+							OfFunnelUpdatesQueryDefinitionStepFilterFilterObject: &oursprivacy.FunnelUpdateParamsQueryDefinitionStepFilterFilterObject{
+								Children: []any{},
+								Kind:     "and",
+							},
+						},
+						Version: 1,
+					},
+				}, {
+					ID:        "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+					EventName: "x",
+					Name:      "x",
+					Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionStepFilter{
+						Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionStepFilterFilterUnion{
+							OfFunnelUpdatesQueryDefinitionStepFilterFilterObject: &oursprivacy.FunnelUpdateParamsQueryDefinitionStepFilterFilterObject{
+								Children: []any{},
+								Kind:     "and",
+							},
+						},
+						Version: 1,
+					},
+				}},
+				Version:  1,
+				WindowMs: 1,
+				EntryFilter: oursprivacy.FunnelUpdateParamsQueryDefinitionEntryFilter{
+					Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionEntryFilterFilterUnion{
+						OfFunnelUpdatesQueryDefinitionEntryFilterFilterObject: &oursprivacy.FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject{
+							Children: []any{},
+							Kind:     "and",
+						},
+					},
+					Version: 1,
+				},
+				Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionFilter{
+					Filter: oursprivacy.FunnelUpdateParamsQueryDefinitionFilterFilterUnion{
+						OfFunnelUpdatesQueryDefinitionFilterFilterObject: &oursprivacy.FunnelUpdateParamsQueryDefinitionFilterFilterObject{
+							Children: []any{},
+							Kind:     "and",
+						},
+					},
+					Version: 1,
+				},
+			},
+			Watched: oursprivacy.Bool(true),
 		},
 	)
 	if err != nil {

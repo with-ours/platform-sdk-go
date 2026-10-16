@@ -137,7 +137,9 @@ type ExperimentVariantListResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// How this variant changes the user experience. `dom_modifications` for on-page
 	// changes or `redirect` for redirect tests.
-	VariantType string `json:"variantType" api:"nullable"`
+	//
+	// Any of "dom_modifications", "redirect".
+	VariantType ExperimentVariantListResponseVariantType `json:"variantType" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -177,7 +179,7 @@ type ExperimentVariantListResponseDomModification struct {
 	// Populated on read for `setAttribute` modifications, parsed from `value`.
 	// Customers may also send this field instead of a JSON-stringified `value` on
 	// write — see `domModificationInputSchema`.
-	Attribute any `json:"attribute" api:"nullable"`
+	Attribute ExperimentVariantListResponseDomModificationAttribute `json:"attribute" api:"nullable"`
 	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
 	// may also send this field instead of a JSON-stringified `value` on write — see
 	// `domModificationInputSchema`.
@@ -197,6 +199,29 @@ type ExperimentVariantListResponseDomModification struct {
 // Returns the unmodified JSON received from the API
 func (r ExperimentVariantListResponseDomModification) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentVariantListResponseDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Populated on read for `setAttribute` modifications, parsed from `value`.
+// Customers may also send this field instead of a JSON-stringified `value` on
+// write — see `domModificationInputSchema`.
+type ExperimentVariantListResponseDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentVariantListResponseDomModificationAttribute) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantListResponseDomModificationAttribute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -220,6 +245,15 @@ func (r *ExperimentVariantListResponseDomModificationStyle) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// How this variant changes the user experience. `dom_modifications` for on-page
+// changes or `redirect` for redirect tests.
+type ExperimentVariantListResponseVariantType string
+
+const (
+	ExperimentVariantListResponseVariantTypeDomModifications ExperimentVariantListResponseVariantType = "dom_modifications"
+	ExperimentVariantListResponseVariantTypeRedirect         ExperimentVariantListResponseVariantType = "redirect"
+)
+
 type ExperimentVariantNewResponse struct {
 	// Unique identifier for this experiment variant.
 	ID string `json:"id" api:"required"`
@@ -240,7 +274,9 @@ type ExperimentVariantNewResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// How this variant changes the user experience. `dom_modifications` for on-page
 	// changes or `redirect` for redirect tests.
-	VariantType string `json:"variantType" api:"nullable"`
+	//
+	// Any of "dom_modifications", "redirect".
+	VariantType ExperimentVariantNewResponseVariantType `json:"variantType" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -280,7 +316,7 @@ type ExperimentVariantNewResponseDomModification struct {
 	// Populated on read for `setAttribute` modifications, parsed from `value`.
 	// Customers may also send this field instead of a JSON-stringified `value` on
 	// write — see `domModificationInputSchema`.
-	Attribute any `json:"attribute" api:"nullable"`
+	Attribute ExperimentVariantNewResponseDomModificationAttribute `json:"attribute" api:"nullable"`
 	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
 	// may also send this field instead of a JSON-stringified `value` on write — see
 	// `domModificationInputSchema`.
@@ -300,6 +336,29 @@ type ExperimentVariantNewResponseDomModification struct {
 // Returns the unmodified JSON received from the API
 func (r ExperimentVariantNewResponseDomModification) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentVariantNewResponseDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Populated on read for `setAttribute` modifications, parsed from `value`.
+// Customers may also send this field instead of a JSON-stringified `value` on
+// write — see `domModificationInputSchema`.
+type ExperimentVariantNewResponseDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentVariantNewResponseDomModificationAttribute) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantNewResponseDomModificationAttribute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -323,6 +382,15 @@ func (r *ExperimentVariantNewResponseDomModificationStyle) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// How this variant changes the user experience. `dom_modifications` for on-page
+// changes or `redirect` for redirect tests.
+type ExperimentVariantNewResponseVariantType string
+
+const (
+	ExperimentVariantNewResponseVariantTypeDomModifications ExperimentVariantNewResponseVariantType = "dom_modifications"
+	ExperimentVariantNewResponseVariantTypeRedirect         ExperimentVariantNewResponseVariantType = "redirect"
+)
+
 type ExperimentVariantGetResponse struct {
 	// Unique identifier for this experiment variant.
 	ID string `json:"id" api:"required"`
@@ -343,7 +411,9 @@ type ExperimentVariantGetResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// How this variant changes the user experience. `dom_modifications` for on-page
 	// changes or `redirect` for redirect tests.
-	VariantType string `json:"variantType" api:"nullable"`
+	//
+	// Any of "dom_modifications", "redirect".
+	VariantType ExperimentVariantGetResponseVariantType `json:"variantType" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -383,7 +453,7 @@ type ExperimentVariantGetResponseDomModification struct {
 	// Populated on read for `setAttribute` modifications, parsed from `value`.
 	// Customers may also send this field instead of a JSON-stringified `value` on
 	// write — see `domModificationInputSchema`.
-	Attribute any `json:"attribute" api:"nullable"`
+	Attribute ExperimentVariantGetResponseDomModificationAttribute `json:"attribute" api:"nullable"`
 	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
 	// may also send this field instead of a JSON-stringified `value` on write — see
 	// `domModificationInputSchema`.
@@ -403,6 +473,29 @@ type ExperimentVariantGetResponseDomModification struct {
 // Returns the unmodified JSON received from the API
 func (r ExperimentVariantGetResponseDomModification) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentVariantGetResponseDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Populated on read for `setAttribute` modifications, parsed from `value`.
+// Customers may also send this field instead of a JSON-stringified `value` on
+// write — see `domModificationInputSchema`.
+type ExperimentVariantGetResponseDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentVariantGetResponseDomModificationAttribute) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantGetResponseDomModificationAttribute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -426,6 +519,15 @@ func (r *ExperimentVariantGetResponseDomModificationStyle) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// How this variant changes the user experience. `dom_modifications` for on-page
+// changes or `redirect` for redirect tests.
+type ExperimentVariantGetResponseVariantType string
+
+const (
+	ExperimentVariantGetResponseVariantTypeDomModifications ExperimentVariantGetResponseVariantType = "dom_modifications"
+	ExperimentVariantGetResponseVariantTypeRedirect         ExperimentVariantGetResponseVariantType = "redirect"
+)
+
 type ExperimentVariantUpdateResponse struct {
 	// Unique identifier for this experiment variant.
 	ID string `json:"id" api:"required"`
@@ -446,7 +548,9 @@ type ExperimentVariantUpdateResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// How this variant changes the user experience. `dom_modifications` for on-page
 	// changes or `redirect` for redirect tests.
-	VariantType string `json:"variantType" api:"nullable"`
+	//
+	// Any of "dom_modifications", "redirect".
+	VariantType ExperimentVariantUpdateResponseVariantType `json:"variantType" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -486,7 +590,7 @@ type ExperimentVariantUpdateResponseDomModification struct {
 	// Populated on read for `setAttribute` modifications, parsed from `value`.
 	// Customers may also send this field instead of a JSON-stringified `value` on
 	// write — see `domModificationInputSchema`.
-	Attribute any `json:"attribute" api:"nullable"`
+	Attribute ExperimentVariantUpdateResponseDomModificationAttribute `json:"attribute" api:"nullable"`
 	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
 	// may also send this field instead of a JSON-stringified `value` on write — see
 	// `domModificationInputSchema`.
@@ -506,6 +610,29 @@ type ExperimentVariantUpdateResponseDomModification struct {
 // Returns the unmodified JSON received from the API
 func (r ExperimentVariantUpdateResponseDomModification) RawJSON() string { return r.JSON.raw }
 func (r *ExperimentVariantUpdateResponseDomModification) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Populated on read for `setAttribute` modifications, parsed from `value`.
+// Customers may also send this field instead of a JSON-stringified `value` on
+// write — see `domModificationInputSchema`.
+type ExperimentVariantUpdateResponseDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentVariantUpdateResponseDomModificationAttribute) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantUpdateResponseDomModificationAttribute) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -529,6 +656,15 @@ func (r *ExperimentVariantUpdateResponseDomModificationStyle) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// How this variant changes the user experience. `dom_modifications` for on-page
+// changes or `redirect` for redirect tests.
+type ExperimentVariantUpdateResponseVariantType string
+
+const (
+	ExperimentVariantUpdateResponseVariantTypeDomModifications ExperimentVariantUpdateResponseVariantType = "dom_modifications"
+	ExperimentVariantUpdateResponseVariantTypeRedirect         ExperimentVariantUpdateResponseVariantType = "redirect"
+)
+
 type ExperimentVariantDeleteResponse struct {
 	// Unique identifier for this experiment variant.
 	ID string `json:"id" api:"required"`
@@ -549,7 +685,9 @@ type ExperimentVariantDeleteResponse struct {
 	RedirectURL string `json:"redirectUrl" api:"nullable"`
 	// How this variant changes the user experience. `dom_modifications` for on-page
 	// changes or `redirect` for redirect tests.
-	VariantType string `json:"variantType" api:"nullable"`
+	//
+	// Any of "dom_modifications", "redirect".
+	VariantType ExperimentVariantDeleteResponseVariantType `json:"variantType" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -589,7 +727,7 @@ type ExperimentVariantDeleteResponseDomModification struct {
 	// Populated on read for `setAttribute` modifications, parsed from `value`.
 	// Customers may also send this field instead of a JSON-stringified `value` on
 	// write — see `domModificationInputSchema`.
-	Attribute any `json:"attribute" api:"nullable"`
+	Attribute ExperimentVariantDeleteResponseDomModificationAttribute `json:"attribute" api:"nullable"`
 	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
 	// may also send this field instead of a JSON-stringified `value` on write — see
 	// `domModificationInputSchema`.
@@ -612,6 +750,29 @@ func (r *ExperimentVariantDeleteResponseDomModification) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Populated on read for `setAttribute` modifications, parsed from `value`.
+// Customers may also send this field instead of a JSON-stringified `value` on
+// write — see `domModificationInputSchema`.
+type ExperimentVariantDeleteResponseDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ExperimentVariantDeleteResponseDomModificationAttribute) RawJSON() string { return r.JSON.raw }
+func (r *ExperimentVariantDeleteResponseDomModificationAttribute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ExperimentVariantDeleteResponseDomModificationStyle struct {
 	// CSS property name in camelCase or kebab-case.
 	Property string `json:"property" api:"required"`
@@ -631,6 +792,15 @@ func (r ExperimentVariantDeleteResponseDomModificationStyle) RawJSON() string { 
 func (r *ExperimentVariantDeleteResponseDomModificationStyle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// How this variant changes the user experience. `dom_modifications` for on-page
+// changes or `redirect` for redirect tests.
+type ExperimentVariantDeleteResponseVariantType string
+
+const (
+	ExperimentVariantDeleteResponseVariantTypeDomModifications ExperimentVariantDeleteResponseVariantType = "dom_modifications"
+	ExperimentVariantDeleteResponseVariantTypeRedirect         ExperimentVariantDeleteResponseVariantType = "redirect"
+)
 
 type ExperimentVariantListParams struct {
 	// Required. List variants belonging to this parent experiment.
@@ -726,7 +896,7 @@ type ExperimentVariantNewParamsDomModification struct {
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Use this for `setAttribute` to avoid JSON-stringifying `{name: value}` yourself.
 	// Ignored for other actions.
-	Attribute any `json:"attribute,omitzero"`
+	Attribute ExperimentVariantNewParamsDomModificationAttribute `json:"attribute,omitzero"`
 	// Use this for `setStyle` to avoid JSON-stringifying `{property: value}` yourself.
 	// Ignored for other actions.
 	Styles []ExperimentVariantNewParamsDomModificationStyle `json:"styles,omitzero"`
@@ -745,6 +915,26 @@ func init() {
 	apijson.RegisterFieldValidator[ExperimentVariantNewParamsDomModification](
 		"action", "customCss", "customJs", "insertAfter", "insertBefore", "remove", "setAttribute", "setHtml", "setImage", "setStyle", "setText",
 	)
+}
+
+// Use this for `setAttribute` to avoid JSON-stringifying `{name: value}` yourself.
+// Ignored for other actions.
+//
+// The properties Name, Value are required.
+type ExperimentVariantNewParamsDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r ExperimentVariantNewParamsDomModificationAttribute) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentVariantNewParamsDomModificationAttribute
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentVariantNewParamsDomModificationAttribute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Property, Value are required.
@@ -782,8 +972,8 @@ const (
 type ExperimentVariantUpdateParams struct {
 	// Promote or demote this variant as the control. Promoting a second variant while
 	// another already has `isControl: true` is rejected with 409. Demoting the control
-	// (`isControl: false`) is rejected when it would leave the treatments at 100% —
-	// there must always be room for a control.
+	// (`isControl: false`) is rejected — an experiment must always keep a control.
+	// Null leaves the control flag unchanged.
 	IsControl param.Opt[bool] `json:"isControl,omitzero"`
 	// Updated variant name.
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -840,7 +1030,7 @@ type ExperimentVariantUpdateParamsDomModification struct {
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Use this for `setAttribute` to avoid JSON-stringifying `{name: value}` yourself.
 	// Ignored for other actions.
-	Attribute any `json:"attribute,omitzero"`
+	Attribute ExperimentVariantUpdateParamsDomModificationAttribute `json:"attribute,omitzero"`
 	// Use this for `setStyle` to avoid JSON-stringifying `{property: value}` yourself.
 	// Ignored for other actions.
 	Styles []ExperimentVariantUpdateParamsDomModificationStyle `json:"styles,omitzero"`
@@ -859,6 +1049,26 @@ func init() {
 	apijson.RegisterFieldValidator[ExperimentVariantUpdateParamsDomModification](
 		"action", "customCss", "customJs", "insertAfter", "insertBefore", "remove", "setAttribute", "setHtml", "setImage", "setStyle", "setText",
 	)
+}
+
+// Use this for `setAttribute` to avoid JSON-stringifying `{name: value}` yourself.
+// Ignored for other actions.
+//
+// The properties Name, Value are required.
+type ExperimentVariantUpdateParamsDomModificationAttribute struct {
+	// HTML attribute name.
+	Name string `json:"name" api:"required"`
+	// Attribute value to assign.
+	Value string `json:"value" api:"required"`
+	paramObj
+}
+
+func (r ExperimentVariantUpdateParamsDomModificationAttribute) MarshalJSON() (data []byte, err error) {
+	type shadow ExperimentVariantUpdateParamsDomModificationAttribute
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ExperimentVariantUpdateParamsDomModificationAttribute) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Property, Value are required.

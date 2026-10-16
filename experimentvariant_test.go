@@ -56,9 +56,12 @@ func TestExperimentVariantNewWithOptionalParams(t *testing.T) {
 		Name:         "Variant B",
 		Weight:       50,
 		DomModifications: []oursprivacy.ExperimentVariantNewParamsDomModification{{
-			Action:    "customCss",
-			Selector:  "#hero-headline",
-			Attribute: map[string]any{},
+			Action:   "customCss",
+			Selector: "#hero-headline",
+			Attribute: oursprivacy.ExperimentVariantNewParamsDomModificationAttribute{
+				Name:  "class",
+				Value: "cta-active",
+			},
 			Styles: []oursprivacy.ExperimentVariantNewParamsDomModificationStyle{{
 				Property: "background-color",
 				Value:    "#10B981",
@@ -117,9 +120,12 @@ func TestExperimentVariantUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		oursprivacy.ExperimentVariantUpdateParams{
 			DomModifications: []oursprivacy.ExperimentVariantUpdateParamsDomModification{{
-				Action:    "customCss",
-				Selector:  "#hero-headline",
-				Attribute: map[string]any{},
+				Action:   "customCss",
+				Selector: "#hero-headline",
+				Attribute: oursprivacy.ExperimentVariantUpdateParamsDomModificationAttribute{
+					Name:  "class",
+					Value: "cta-active",
+				},
 				Styles: []oursprivacy.ExperimentVariantUpdateParamsDomModificationStyle{{
 					Property: "background-color",
 					Value:    "#10B981",

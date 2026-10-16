@@ -4,6 +4,7 @@ package oursprivacy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -246,13 +247,13 @@ func (r *DataGovernanceListResponseCategory) UnmarshalJSON(data []byte) error {
 type DataGovernanceListResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And       []any                                            `json:"AND" api:"nullable"`
-	Condition DataGovernanceListResponseCategoryLogicCondition `json:"condition" api:"nullable"`
+	And       []map[string]DataGovernanceListResponseCategoryLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DataGovernanceListResponseCategoryLogicCondition             `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
-	Not any `json:"NOT"`
+	Not map[string]DataGovernanceListResponseCategoryLogicNotUnion `json:"NOT" api:"nullable"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or []any `json:"OR" api:"nullable"`
+	Or []map[string]DataGovernanceListResponseCategoryLogicOrUnion `json:"OR" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		And         respjson.Field
@@ -267,6 +268,67 @@ type DataGovernanceListResponseCategoryLogic struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceListResponseCategoryLogic) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceListResponseCategoryLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceListResponseCategoryLogicAndUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceListResponseCategoryLogicAndMapItem]
+type DataGovernanceListResponseCategoryLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceListResponseCategoryLogicAndMapItem any `json:",inline"`
+	JSON                                                struct {
+		OfString                                            respjson.Field
+		OfFloat                                             respjson.Field
+		OfBool                                              respjson.Field
+		OfAnyArray                                          respjson.Field
+		OfDataGovernanceListResponseCategoryLogicAndMapItem respjson.Field
+		raw                                                 string
+	} `json:"-"`
+}
+
+func (u DataGovernanceListResponseCategoryLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceListResponseCategoryLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceListResponseCategoryLogicAndUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -310,6 +372,128 @@ type DataGovernanceListResponseCategoryLogicCondition struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceListResponseCategoryLogicCondition) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceListResponseCategoryLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceListResponseCategoryLogicNotUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceListResponseCategoryLogicNotMapItem]
+type DataGovernanceListResponseCategoryLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceListResponseCategoryLogicNotMapItem any `json:",inline"`
+	JSON                                                struct {
+		OfString                                            respjson.Field
+		OfFloat                                             respjson.Field
+		OfBool                                              respjson.Field
+		OfAnyArray                                          respjson.Field
+		OfDataGovernanceListResponseCategoryLogicNotMapItem respjson.Field
+		raw                                                 string
+	} `json:"-"`
+}
+
+func (u DataGovernanceListResponseCategoryLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceListResponseCategoryLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceListResponseCategoryLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceListResponseCategoryLogicOrUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceListResponseCategoryLogicOrMapItem]
+type DataGovernanceListResponseCategoryLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceListResponseCategoryLogicOrMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfDataGovernanceListResponseCategoryLogicOrMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u DataGovernanceListResponseCategoryLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceListResponseCategoryLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceListResponseCategoryLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceListResponseCategoryLogicOrUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -419,13 +603,13 @@ func (r *DataGovernanceNewResponseCategory) UnmarshalJSON(data []byte) error {
 type DataGovernanceNewResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And       []any                                           `json:"AND" api:"nullable"`
-	Condition DataGovernanceNewResponseCategoryLogicCondition `json:"condition" api:"nullable"`
+	And       []map[string]DataGovernanceNewResponseCategoryLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DataGovernanceNewResponseCategoryLogicCondition             `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
-	Not any `json:"NOT"`
+	Not map[string]DataGovernanceNewResponseCategoryLogicNotUnion `json:"NOT" api:"nullable"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or []any `json:"OR" api:"nullable"`
+	Or []map[string]DataGovernanceNewResponseCategoryLogicOrUnion `json:"OR" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		And         respjson.Field
@@ -440,6 +624,67 @@ type DataGovernanceNewResponseCategoryLogic struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceNewResponseCategoryLogic) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceNewResponseCategoryLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceNewResponseCategoryLogicAndUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceNewResponseCategoryLogicAndMapItem]
+type DataGovernanceNewResponseCategoryLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceNewResponseCategoryLogicAndMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfDataGovernanceNewResponseCategoryLogicAndMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u DataGovernanceNewResponseCategoryLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceNewResponseCategoryLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceNewResponseCategoryLogicAndUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -483,6 +728,128 @@ type DataGovernanceNewResponseCategoryLogicCondition struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceNewResponseCategoryLogicCondition) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceNewResponseCategoryLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceNewResponseCategoryLogicNotUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceNewResponseCategoryLogicNotMapItem]
+type DataGovernanceNewResponseCategoryLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceNewResponseCategoryLogicNotMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfDataGovernanceNewResponseCategoryLogicNotMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u DataGovernanceNewResponseCategoryLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceNewResponseCategoryLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceNewResponseCategoryLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceNewResponseCategoryLogicOrUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceNewResponseCategoryLogicOrMapItem]
+type DataGovernanceNewResponseCategoryLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceNewResponseCategoryLogicOrMapItem any `json:",inline"`
+	JSON                                              struct {
+		OfString                                          respjson.Field
+		OfFloat                                           respjson.Field
+		OfBool                                            respjson.Field
+		OfAnyArray                                        respjson.Field
+		OfDataGovernanceNewResponseCategoryLogicOrMapItem respjson.Field
+		raw                                               string
+	} `json:"-"`
+}
+
+func (u DataGovernanceNewResponseCategoryLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceNewResponseCategoryLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceNewResponseCategoryLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceNewResponseCategoryLogicOrUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -592,13 +959,13 @@ func (r *DataGovernanceGetResponseCategory) UnmarshalJSON(data []byte) error {
 type DataGovernanceGetResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And       []any                                           `json:"AND" api:"nullable"`
-	Condition DataGovernanceGetResponseCategoryLogicCondition `json:"condition" api:"nullable"`
+	And       []map[string]DataGovernanceGetResponseCategoryLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DataGovernanceGetResponseCategoryLogicCondition             `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
-	Not any `json:"NOT"`
+	Not map[string]DataGovernanceGetResponseCategoryLogicNotUnion `json:"NOT" api:"nullable"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or []any `json:"OR" api:"nullable"`
+	Or []map[string]DataGovernanceGetResponseCategoryLogicOrUnion `json:"OR" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		And         respjson.Field
@@ -613,6 +980,67 @@ type DataGovernanceGetResponseCategoryLogic struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceGetResponseCategoryLogic) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceGetResponseCategoryLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceGetResponseCategoryLogicAndUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceGetResponseCategoryLogicAndMapItem]
+type DataGovernanceGetResponseCategoryLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceGetResponseCategoryLogicAndMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfDataGovernanceGetResponseCategoryLogicAndMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u DataGovernanceGetResponseCategoryLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceGetResponseCategoryLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceGetResponseCategoryLogicAndUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -656,6 +1084,128 @@ type DataGovernanceGetResponseCategoryLogicCondition struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceGetResponseCategoryLogicCondition) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceGetResponseCategoryLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceGetResponseCategoryLogicNotUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceGetResponseCategoryLogicNotMapItem]
+type DataGovernanceGetResponseCategoryLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceGetResponseCategoryLogicNotMapItem any `json:",inline"`
+	JSON                                               struct {
+		OfString                                           respjson.Field
+		OfFloat                                            respjson.Field
+		OfBool                                             respjson.Field
+		OfAnyArray                                         respjson.Field
+		OfDataGovernanceGetResponseCategoryLogicNotMapItem respjson.Field
+		raw                                                string
+	} `json:"-"`
+}
+
+func (u DataGovernanceGetResponseCategoryLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceGetResponseCategoryLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceGetResponseCategoryLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceGetResponseCategoryLogicOrUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceGetResponseCategoryLogicOrMapItem]
+type DataGovernanceGetResponseCategoryLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceGetResponseCategoryLogicOrMapItem any `json:",inline"`
+	JSON                                              struct {
+		OfString                                          respjson.Field
+		OfFloat                                           respjson.Field
+		OfBool                                            respjson.Field
+		OfAnyArray                                        respjson.Field
+		OfDataGovernanceGetResponseCategoryLogicOrMapItem respjson.Field
+		raw                                               string
+	} `json:"-"`
+}
+
+func (u DataGovernanceGetResponseCategoryLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceGetResponseCategoryLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceGetResponseCategoryLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceGetResponseCategoryLogicOrUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -765,13 +1315,13 @@ func (r *DataGovernanceUpdateResponseCategory) UnmarshalJSON(data []byte) error 
 type DataGovernanceUpdateResponseCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And       []any                                              `json:"AND" api:"nullable"`
-	Condition DataGovernanceUpdateResponseCategoryLogicCondition `json:"condition" api:"nullable"`
+	And       []map[string]DataGovernanceUpdateResponseCategoryLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DataGovernanceUpdateResponseCategoryLogicCondition             `json:"condition" api:"nullable"`
 	// Negates a single child logic node.
-	Not any `json:"NOT"`
+	Not map[string]DataGovernanceUpdateResponseCategoryLogicNotUnion `json:"NOT" api:"nullable"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or []any `json:"OR" api:"nullable"`
+	Or []map[string]DataGovernanceUpdateResponseCategoryLogicOrUnion `json:"OR" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		And         respjson.Field
@@ -786,6 +1336,68 @@ type DataGovernanceUpdateResponseCategoryLogic struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceUpdateResponseCategoryLogic) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceUpdateResponseCategoryLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceUpdateResponseCategoryLogicAndUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceUpdateResponseCategoryLogicAndMapItem]
+type DataGovernanceUpdateResponseCategoryLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceUpdateResponseCategoryLogicAndMapItem any `json:",inline"`
+	JSON                                                  struct {
+		OfString                                              respjson.Field
+		OfFloat                                               respjson.Field
+		OfBool                                                respjson.Field
+		OfAnyArray                                            respjson.Field
+		OfDataGovernanceUpdateResponseCategoryLogicAndMapItem respjson.Field
+		raw                                                   string
+	} `json:"-"`
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceUpdateResponseCategoryLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceUpdateResponseCategoryLogicAndUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -829,6 +1441,130 @@ type DataGovernanceUpdateResponseCategoryLogicCondition struct {
 // Returns the unmodified JSON received from the API
 func (r DataGovernanceUpdateResponseCategoryLogicCondition) RawJSON() string { return r.JSON.raw }
 func (r *DataGovernanceUpdateResponseCategoryLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceUpdateResponseCategoryLogicNotUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceUpdateResponseCategoryLogicNotMapItem]
+type DataGovernanceUpdateResponseCategoryLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceUpdateResponseCategoryLogicNotMapItem any `json:",inline"`
+	JSON                                                  struct {
+		OfString                                              respjson.Field
+		OfFloat                                               respjson.Field
+		OfBool                                                respjson.Field
+		OfAnyArray                                            respjson.Field
+		OfDataGovernanceUpdateResponseCategoryLogicNotMapItem respjson.Field
+		raw                                                   string
+	} `json:"-"`
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceUpdateResponseCategoryLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceUpdateResponseCategoryLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DataGovernanceUpdateResponseCategoryLogicOrUnion contains all possible
+// properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDataGovernanceUpdateResponseCategoryLogicOrMapItem]
+type DataGovernanceUpdateResponseCategoryLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDataGovernanceUpdateResponseCategoryLogicOrMapItem any `json:",inline"`
+	JSON                                                 struct {
+		OfString                                             respjson.Field
+		OfFloat                                              respjson.Field
+		OfBool                                               respjson.Field
+		OfAnyArray                                           respjson.Field
+		OfDataGovernanceUpdateResponseCategoryLogicOrMapItem respjson.Field
+		raw                                                  string
+	} `json:"-"`
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DataGovernanceUpdateResponseCategoryLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DataGovernanceUpdateResponseCategoryLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DataGovernanceUpdateResponseCategoryLogicOrUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -976,13 +1712,13 @@ func (r *DataGovernanceUpdateParamsCategory) UnmarshalJSON(data []byte) error {
 type DataGovernanceUpdateParamsCategoryLogic struct {
 	// All child nodes must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	And       []any                                            `json:"AND,omitzero"`
-	Condition DataGovernanceUpdateParamsCategoryLogicCondition `json:"condition,omitzero"`
+	And       []map[string]DataGovernanceUpdateParamsCategoryLogicAndUnion `json:"AND,omitzero"`
+	Condition DataGovernanceUpdateParamsCategoryLogicCondition             `json:"condition,omitzero"`
+	// Negates a single child logic node.
+	Not map[string]DataGovernanceUpdateParamsCategoryLogicNotUnion `json:"NOT,omitzero"`
 	// Any child node must match. Each child is itself a logic node (leaf `condition`
 	// or combinator).
-	Or []any `json:"OR,omitzero"`
-	// Negates a single child logic node.
-	Not any `json:"NOT,omitzero"`
+	Or []map[string]DataGovernanceUpdateParamsCategoryLogicOrUnion `json:"OR,omitzero"`
 	paramObj
 }
 
@@ -992,6 +1728,29 @@ func (r DataGovernanceUpdateParamsCategoryLogic) MarshalJSON() (data []byte, err
 }
 func (r *DataGovernanceUpdateParamsCategoryLogic) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type DataGovernanceUpdateParamsCategoryLogicAndUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u DataGovernanceUpdateParamsCategoryLogicAndUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *DataGovernanceUpdateParamsCategoryLogicAndUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
 
 // The properties Operator, Property, Value are required.
@@ -1037,4 +1796,50 @@ func init() {
 	apijson.RegisterFieldValidator[DataGovernanceUpdateParamsCategoryLogicCondition](
 		"operator", "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith", "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined", "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual", "IsIn", "IsNotIn", "IsFoundIn", "IsNotFoundIn", "IsTrue", "IsFalse", "IsBefore", "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex", "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase",
 	)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type DataGovernanceUpdateParamsCategoryLogicNotUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u DataGovernanceUpdateParamsCategoryLogicNotUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *DataGovernanceUpdateParamsCategoryLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type DataGovernanceUpdateParamsCategoryLogicOrUnion struct {
+	OfString   param.Opt[string]  `json:",omitzero,inline"`
+	OfFloat    param.Opt[float64] `json:",omitzero,inline"`
+	OfBool     param.Opt[bool]    `json:",omitzero,inline"`
+	OfAnyArray []any              `json:",omitzero,inline"`
+	OfAnyMap   map[string]any     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u DataGovernanceUpdateParamsCategoryLogicOrUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfString,
+		u.OfFloat,
+		u.OfBool,
+		u.OfAnyArray,
+		u.OfAnyMap)
+}
+func (u *DataGovernanceUpdateParamsCategoryLogicOrUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
 }
