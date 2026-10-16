@@ -36,6 +36,20 @@ func NewTagManagerService(opts ...option.RequestOption) (r TagManagerService) {
 	return
 }
 
+// Create a one-hour link to preview this container’s unpublished tags on your
+// website. Requires permission to view the tag manager. Requires API-key scope or
+// current OAuth user permission: tagManagers:find
+func (r *TagManagerService) Preview(ctx context.Context, id string, body TagManagerPreviewParams, opts ...option.RequestOption) (res *TagManagerPreviewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/tag-managers/%s/preview", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // List every tag manager on this account. Each tag manager is a pixel-scoped
 // container of tags, triggers, variables, and folders. Not paginated — accounts
 // are capped at a small number of tag managers in practice, so the response fits
@@ -104,6 +118,24 @@ func (r *TagManagerService) Delete(ctx context.Context, id string, opts ...optio
 	path := fmt.Sprintf("rest/v1/tag-managers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+type TagManagerPreviewResponse struct {
+	ExpiresAt string `json:"expiresAt" api:"required"`
+	URL       string `json:"url" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExpiresAt   respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TagManagerPreviewResponse) RawJSON() string { return r.JSON.raw }
+func (r *TagManagerPreviewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type TagManagerListResponse struct {
@@ -291,6 +323,19 @@ type TagManagerDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r TagManagerDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *TagManagerDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TagManagerPreviewParams struct {
+	URL string `json:"url" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r TagManagerPreviewParams) MarshalJSON() (data []byte, err error) {
+	type shadow TagManagerPreviewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TagManagerPreviewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

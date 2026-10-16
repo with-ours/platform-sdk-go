@@ -59,7 +59,7 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 	_, err := client.Sources.New(context.TODO(), oursprivacy.SourceNewParams{
 		Type:        oursprivacy.SourceNewParamsTypeAlchemerWebhook,
 		Name:        oursprivacy.String("name"),
-		RedirectURL: oursprivacy.String("redirectUrl"),
+		RedirectURL: oursprivacy.String("https://example.com"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -108,17 +108,24 @@ func TestSourceUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.SourceUpdateParams{
-			BotControlMode:        oursprivacy.String("botControlMode"),
+			BotControlMode:        oursprivacy.SourceUpdateParamsBotControlModeAllow,
 			BotScoreThreshold:     oursprivacy.Float(0),
 			ExcludeRequestContext: oursprivacy.Bool(true),
 			Name:                  oursprivacy.String("name"),
-			ProbabilisticIdentity: map[string]any{},
-			ProjectAPIKey:         oursprivacy.String("projectAPIKey"),
-			RedirectURL:           oursprivacy.String("redirectUrl"),
-			SelectedAccountID:     oursprivacy.String("selectedAccountId"),
-			Status:                oursprivacy.String("status"),
-			WhitelistDomains:      []string{"string"},
-			WhitelistIPs:          []string{"string"},
+			ProbabilisticIdentity: oursprivacy.SourceUpdateParamsProbabilisticIdentity{
+				Enabled:            true,
+				MatchWindowMinutes: oursprivacy.Int(1),
+				MaxMatchesPerIP:    oursprivacy.Int(1),
+			},
+			ProjectAPIKey:     oursprivacy.String("projectAPIKey"),
+			RedirectURL:       oursprivacy.String("https://example.com"),
+			SelectedAccountID: oursprivacy.String("selectedAccountId"),
+			Settings: map[string]any{
+				"foo": "bar",
+			},
+			Status:           oursprivacy.SourceUpdateParamsStatusDisabled,
+			WhitelistDomains: []string{"string"},
+			WhitelistIPs:     []string{"string"},
 		},
 	)
 	if err != nil {

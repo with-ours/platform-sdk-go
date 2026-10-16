@@ -58,14 +58,26 @@ func TestMappingNewWithOptionalParams(t *testing.T) {
 		InsertAfterIdx: oursprivacy.Int(0),
 		IsEnabled:      oursprivacy.Bool(true),
 		Logic: oursprivacy.MappingNewParamsLogic{
-			And: []any{map[string]any{}},
+			And: []map[string]oursprivacy.MappingNewParamsLogicAndUnion{{
+				"foo": {
+					OfString: oursprivacy.String("string"),
+				},
+			}},
 			Condition: oursprivacy.MappingNewParamsLogicCondition{
 				Operator: "Is",
 				Property: "property",
 				Value:    "value",
 			},
-			Not: map[string]any{},
-			Or:  []any{map[string]any{}},
+			Not: map[string]oursprivacy.MappingNewParamsLogicNotUnion{
+				"foo": {
+					OfString: oursprivacy.String("string"),
+				},
+			},
+			Or: []map[string]oursprivacy.MappingNewParamsLogicOrUnion{{
+				"foo": {
+					OfString: oursprivacy.String("string"),
+				},
+			}},
 		},
 		Mappings: []oursprivacy.MappingNewParamsMapping{{
 			Map:          "map",
@@ -124,14 +136,26 @@ func TestMappingUpdateWithOptionalParams(t *testing.T) {
 		oursprivacy.MappingUpdateParams{
 			IsEnabled: oursprivacy.Bool(true),
 			Logic: oursprivacy.MappingUpdateParamsLogic{
-				And: []any{map[string]any{}},
+				And: []map[string]oursprivacy.MappingUpdateParamsLogicAndUnion{{
+					"foo": {
+						OfString: oursprivacy.String("string"),
+					},
+				}},
 				Condition: oursprivacy.MappingUpdateParamsLogicCondition{
 					Operator: "Is",
 					Property: "property",
 					Value:    "value",
 				},
-				Not: map[string]any{},
-				Or:  []any{map[string]any{}},
+				Not: map[string]oursprivacy.MappingUpdateParamsLogicNotUnion{
+					"foo": {
+						OfString: oursprivacy.String("string"),
+					},
+				},
+				Or: []map[string]oursprivacy.MappingUpdateParamsLogicOrUnion{{
+					"foo": {
+						OfString: oursprivacy.String("string"),
+					},
+				}},
 			},
 			Mappings: []oursprivacy.MappingUpdateParamsMapping{{
 				Map:          "map",
@@ -163,6 +187,58 @@ func TestMappingDelete(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Mappings.Delete(context.TODO(), "id")
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMappingRenamePreview(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Mappings.RenamePreview(context.TODO(), oursprivacy.MappingRenamePreviewParams{
+		AllowedEventID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		DestinationID:  "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+	})
+	if err != nil {
+		var apierr *oursprivacy.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMappingRenameWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := oursprivacy.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Mappings.Rename(context.TODO(), oursprivacy.MappingRenameParams{
+		AllowedEventID:   "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		DestinationID:    "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		RenamedEventName: oursprivacy.String("renamedEventName"),
+		ConfirmCascade:   oursprivacy.Bool(true),
+	})
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
