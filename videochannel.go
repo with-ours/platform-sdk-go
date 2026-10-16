@@ -259,17 +259,17 @@ func (r *VideoChannelNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VideoChannelGetResponse struct {
-	ID             string `json:"id" api:"required"`
-	AccountID      string `json:"accountId" api:"required"`
-	Name           string `json:"name" api:"required"`
-	BrandColor     string `json:"brandColor" api:"nullable"`
-	CreatedAt      string `json:"createdAt" api:"nullable"`
-	Description    string `json:"description" api:"nullable"`
-	FooterText     string `json:"footerText" api:"nullable"`
-	IsPublished    bool   `json:"isPublished" api:"nullable"`
-	LogoMediaID    string `json:"logoMediaId" api:"nullable"`
-	ResolvedValues any    `json:"resolvedValues" api:"nullable"`
-	UpdatedAt      string `json:"updatedAt" api:"nullable"`
+	ID             string                                `json:"id" api:"required"`
+	AccountID      string                                `json:"accountId" api:"required"`
+	Name           string                                `json:"name" api:"required"`
+	BrandColor     string                                `json:"brandColor" api:"nullable"`
+	CreatedAt      string                                `json:"createdAt" api:"nullable"`
+	Description    string                                `json:"description" api:"nullable"`
+	FooterText     string                                `json:"footerText" api:"nullable"`
+	IsPublished    bool                                  `json:"isPublished" api:"nullable"`
+	LogoMediaID    string                                `json:"logoMediaId" api:"nullable"`
+	ResolvedValues VideoChannelGetResponseResolvedValues `json:"resolvedValues" api:"nullable"`
+	UpdatedAt      string                                `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -294,18 +294,38 @@ func (r *VideoChannelGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VideoChannelGetResponseResolvedValues struct {
+	EmbedCode  string `json:"embedCode" api:"required"`
+	EmbedURL   string `json:"embedUrl" api:"required"`
+	MediaCount int64  `json:"mediaCount" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EmbedCode   respjson.Field
+		EmbedURL    respjson.Field
+		MediaCount  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoChannelGetResponseResolvedValues) RawJSON() string { return r.JSON.raw }
+func (r *VideoChannelGetResponseResolvedValues) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VideoChannelUpdateResponse struct {
-	ID             string `json:"id" api:"required"`
-	AccountID      string `json:"accountId" api:"required"`
-	Name           string `json:"name" api:"required"`
-	BrandColor     string `json:"brandColor" api:"nullable"`
-	CreatedAt      string `json:"createdAt" api:"nullable"`
-	Description    string `json:"description" api:"nullable"`
-	FooterText     string `json:"footerText" api:"nullable"`
-	IsPublished    bool   `json:"isPublished" api:"nullable"`
-	LogoMediaID    string `json:"logoMediaId" api:"nullable"`
-	ResolvedValues any    `json:"resolvedValues" api:"nullable"`
-	UpdatedAt      string `json:"updatedAt" api:"nullable"`
+	ID             string                                   `json:"id" api:"required"`
+	AccountID      string                                   `json:"accountId" api:"required"`
+	Name           string                                   `json:"name" api:"required"`
+	BrandColor     string                                   `json:"brandColor" api:"nullable"`
+	CreatedAt      string                                   `json:"createdAt" api:"nullable"`
+	Description    string                                   `json:"description" api:"nullable"`
+	FooterText     string                                   `json:"footerText" api:"nullable"`
+	IsPublished    bool                                     `json:"isPublished" api:"nullable"`
+	LogoMediaID    string                                   `json:"logoMediaId" api:"nullable"`
+	ResolvedValues VideoChannelUpdateResponseResolvedValues `json:"resolvedValues" api:"nullable"`
+	UpdatedAt      string                                   `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -327,6 +347,26 @@ type VideoChannelUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VideoChannelUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoChannelUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoChannelUpdateResponseResolvedValues struct {
+	EmbedCode  string `json:"embedCode" api:"required"`
+	EmbedURL   string `json:"embedUrl" api:"required"`
+	MediaCount int64  `json:"mediaCount" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EmbedCode   respjson.Field
+		EmbedURL    respjson.Field
+		MediaCount  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoChannelUpdateResponseResolvedValues) RawJSON() string { return r.JSON.raw }
+func (r *VideoChannelUpdateResponseResolvedValues) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -467,17 +507,17 @@ func (r *VideoChannelAssignMediaResponse) UnmarshalJSON(data []byte) error {
 }
 
 type VideoChannelRemoveMediaResponse struct {
-	ID             string `json:"id" api:"required"`
-	AccountID      string `json:"accountId" api:"required"`
-	Name           string `json:"name" api:"required"`
-	BrandColor     string `json:"brandColor" api:"nullable"`
-	CreatedAt      string `json:"createdAt" api:"nullable"`
-	Description    string `json:"description" api:"nullable"`
-	FooterText     string `json:"footerText" api:"nullable"`
-	IsPublished    bool   `json:"isPublished" api:"nullable"`
-	LogoMediaID    string `json:"logoMediaId" api:"nullable"`
-	ResolvedValues any    `json:"resolvedValues" api:"nullable"`
-	UpdatedAt      string `json:"updatedAt" api:"nullable"`
+	ID             string                                        `json:"id" api:"required"`
+	AccountID      string                                        `json:"accountId" api:"required"`
+	Name           string                                        `json:"name" api:"required"`
+	BrandColor     string                                        `json:"brandColor" api:"nullable"`
+	CreatedAt      string                                        `json:"createdAt" api:"nullable"`
+	Description    string                                        `json:"description" api:"nullable"`
+	FooterText     string                                        `json:"footerText" api:"nullable"`
+	IsPublished    bool                                          `json:"isPublished" api:"nullable"`
+	LogoMediaID    string                                        `json:"logoMediaId" api:"nullable"`
+	ResolvedValues VideoChannelRemoveMediaResponseResolvedValues `json:"resolvedValues" api:"nullable"`
+	UpdatedAt      string                                        `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -502,18 +542,38 @@ func (r *VideoChannelRemoveMediaResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type VideoChannelRemoveMediaResponseResolvedValues struct {
+	EmbedCode  string `json:"embedCode" api:"required"`
+	EmbedURL   string `json:"embedUrl" api:"required"`
+	MediaCount int64  `json:"mediaCount" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EmbedCode   respjson.Field
+		EmbedURL    respjson.Field
+		MediaCount  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoChannelRemoveMediaResponseResolvedValues) RawJSON() string { return r.JSON.raw }
+func (r *VideoChannelRemoveMediaResponseResolvedValues) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type VideoChannelReorderResponse struct {
-	ID             string `json:"id" api:"required"`
-	AccountID      string `json:"accountId" api:"required"`
-	Name           string `json:"name" api:"required"`
-	BrandColor     string `json:"brandColor" api:"nullable"`
-	CreatedAt      string `json:"createdAt" api:"nullable"`
-	Description    string `json:"description" api:"nullable"`
-	FooterText     string `json:"footerText" api:"nullable"`
-	IsPublished    bool   `json:"isPublished" api:"nullable"`
-	LogoMediaID    string `json:"logoMediaId" api:"nullable"`
-	ResolvedValues any    `json:"resolvedValues" api:"nullable"`
-	UpdatedAt      string `json:"updatedAt" api:"nullable"`
+	ID             string                                    `json:"id" api:"required"`
+	AccountID      string                                    `json:"accountId" api:"required"`
+	Name           string                                    `json:"name" api:"required"`
+	BrandColor     string                                    `json:"brandColor" api:"nullable"`
+	CreatedAt      string                                    `json:"createdAt" api:"nullable"`
+	Description    string                                    `json:"description" api:"nullable"`
+	FooterText     string                                    `json:"footerText" api:"nullable"`
+	IsPublished    bool                                      `json:"isPublished" api:"nullable"`
+	LogoMediaID    string                                    `json:"logoMediaId" api:"nullable"`
+	ResolvedValues VideoChannelReorderResponseResolvedValues `json:"resolvedValues" api:"nullable"`
+	UpdatedAt      string                                    `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -535,6 +595,26 @@ type VideoChannelReorderResponse struct {
 // Returns the unmodified JSON received from the API
 func (r VideoChannelReorderResponse) RawJSON() string { return r.JSON.raw }
 func (r *VideoChannelReorderResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type VideoChannelReorderResponseResolvedValues struct {
+	EmbedCode  string `json:"embedCode" api:"required"`
+	EmbedURL   string `json:"embedUrl" api:"required"`
+	MediaCount int64  `json:"mediaCount" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EmbedCode   respjson.Field
+		EmbedURL    respjson.Field
+		MediaCount  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r VideoChannelReorderResponseResolvedValues) RawJSON() string { return r.JSON.raw }
+func (r *VideoChannelReorderResponseResolvedValues) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

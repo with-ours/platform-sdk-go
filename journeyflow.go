@@ -23271,11 +23271,11 @@ func (r *JourneyFlowResultsResponseEffectiveContext) UnmarshalJSON(data []byte) 
 }
 
 type JourneyFlowResultsResponseEffectiveContextComparison struct {
-	ID            string `json:"id" api:"required"`
-	Label         string `json:"label" api:"required"`
-	DateRange     any    `json:"dateRange" api:"nullable"`
-	EntryFilter   any    `json:"entryFilter" api:"nullable"`
-	SessionFilter any    `json:"sessionFilter" api:"nullable"`
+	ID            string                                                            `json:"id" api:"required"`
+	Label         string                                                            `json:"label" api:"required"`
+	DateRange     JourneyFlowResultsResponseEffectiveContextComparisonDateRange     `json:"dateRange" api:"nullable"`
+	EntryFilter   JourneyFlowResultsResponseEffectiveContextComparisonEntryFilter   `json:"entryFilter" api:"nullable"`
+	SessionFilter JourneyFlowResultsResponseEffectiveContextComparisonSessionFilter `json:"sessionFilter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -23291,6 +23291,272 @@ type JourneyFlowResultsResponseEffectiveContextComparison struct {
 // Returns the unmodified JSON received from the API
 func (r JourneyFlowResultsResponseEffectiveContextComparison) RawJSON() string { return r.JSON.raw }
 func (r *JourneyFlowResultsResponseEffectiveContextComparison) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonDateRange struct {
+	From     string `json:"from" api:"required"`
+	TimeZone string `json:"timeZone" api:"required"`
+	To       string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		TimeZone    respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonDateRange) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonDateRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonEntryFilter struct {
+	Filter  JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilter `json:"filter" api:"required"`
+	Version int64                                                                 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonEntryFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonEntryFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilter struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind      string                                                                         `json:"kind" api:"required"`
+	Child     JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterChild     `json:"child" api:"nullable"`
+	Children  []JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterChild   `json:"children" api:"nullable"`
+	Predicate JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicate `json:"predicate" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Child       respjson.Field
+		Children    respjson.Field
+		Predicate   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterChild struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterChild) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicate struct {
+	// Any of "EQ", "NEQ", "GT", "GTE", "LT", "LTE", "CONTAINS", "NOT_CONTAINS",
+	// "CONTAINS_CI", "NOT_CONTAINS_CI", "STARTS_WITH", "ENDS_WITH", "IN", "NOT_IN",
+	// "EXISTS", "MISSING", "IS_NULL".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path" api:"nullable"`
+	// Any of "STRING", "NUMBER", "BOOLEAN".
+	Type  string                                                                              `json:"type" api:"nullable"`
+	Value JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicateValue `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicateValue struct {
+	BooleanValue  bool      `json:"booleanValue" api:"nullable"`
+	BooleanValues []bool    `json:"booleanValues" api:"nullable"`
+	NumberValue   float64   `json:"numberValue" api:"nullable"`
+	NumberValues  []float64 `json:"numberValues" api:"nullable"`
+	StringValue   string    `json:"stringValue" api:"nullable"`
+	StringValues  []string  `json:"stringValues" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BooleanValue  respjson.Field
+		BooleanValues respjson.Field
+		NumberValue   respjson.Field
+		NumberValues  respjson.Field
+		StringValue   respjson.Field
+		StringValues  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicateValue) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonEntryFilterFilterPredicateValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonSessionFilter struct {
+	Filter  JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilter `json:"filter" api:"required"`
+	Version int64                                                                   `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonSessionFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonSessionFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilter struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind      string                                                                           `json:"kind" api:"required"`
+	Child     JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterChild     `json:"child" api:"nullable"`
+	Children  []JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterChild   `json:"children" api:"nullable"`
+	Predicate JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicate `json:"predicate" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Child       respjson.Field
+		Children    respjson.Field
+		Predicate   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterChild struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterChild) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicate struct {
+	// Any of "EQ", "NEQ", "GT", "GTE", "LT", "LTE", "CONTAINS", "NOT_CONTAINS",
+	// "CONTAINS_CI", "NOT_CONTAINS_CI", "STARTS_WITH", "ENDS_WITH", "IN", "NOT_IN",
+	// "EXISTS", "MISSING", "IS_NULL".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path" api:"nullable"`
+	// Any of "STRING", "NUMBER", "BOOLEAN".
+	Type  string                                                                                `json:"type" api:"nullable"`
+	Value JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicateValue `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicateValue struct {
+	BooleanValue  bool      `json:"booleanValue" api:"nullable"`
+	BooleanValues []bool    `json:"booleanValues" api:"nullable"`
+	NumberValue   float64   `json:"numberValue" api:"nullable"`
+	NumberValues  []float64 `json:"numberValues" api:"nullable"`
+	StringValue   string    `json:"stringValue" api:"nullable"`
+	StringValues  []string  `json:"stringValues" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BooleanValue  respjson.Field
+		BooleanValues respjson.Field
+		NumberValue   respjson.Field
+		NumberValues  respjson.Field
+		StringValue   respjson.Field
+		StringValues  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicateValue) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseEffectiveContextComparisonSessionFilterFilterPredicateValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -23585,7 +23851,7 @@ type JourneyFlowResultsResponseSeriesSegmentEdge struct {
 	ShareOfPrevious JourneyFlowResultsResponseSeriesSegmentEdgeShareOfPrevious `json:"shareOfPrevious" api:"required"`
 	SourceNodeID    string                                                     `json:"sourceNodeId" api:"required"`
 	TargetNodeID    string                                                     `json:"targetNodeId" api:"required"`
-	ShareOfNext     any                                                        `json:"shareOfNext" api:"nullable"`
+	ShareOfNext     JourneyFlowResultsResponseSeriesSegmentEdgeShareOfNext     `json:"shareOfNext" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -23628,6 +23894,26 @@ func (r *JourneyFlowResultsResponseSeriesSegmentEdgeShareOfPrevious) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type JourneyFlowResultsResponseSeriesSegmentEdgeShareOfNext struct {
+	Denominator string  `json:"denominator" api:"required"`
+	Numerator   string  `json:"numerator" api:"required"`
+	Value       float64 `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Denominator respjson.Field
+		Numerator   respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentEdgeShareOfNext) RawJSON() string { return r.JSON.raw }
+func (r *JourneyFlowResultsResponseSeriesSegmentEdgeShareOfNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type JourneyFlowResultsResponseSeriesSegmentNode struct {
 	ID          string `json:"id" api:"required"`
 	AnchorID    string `json:"anchorId" api:"required"`
@@ -23635,14 +23921,14 @@ type JourneyFlowResultsResponseSeriesSegmentNode struct {
 	Denominator string `json:"denominator" api:"required"`
 	Key         string `json:"key" api:"required"`
 	// Any of "ANCHOR", "EVENT", "PAGE", "TERMINAL", "OMITTED_STEPS", "OTHER_EVENTS".
-	Kind            string                                                    `json:"kind" api:"required"`
-	Matcher         any                                                       `json:"matcher" api:"required"`
-	Position        JourneyFlowResultsResponseSeriesSegmentNodePosition       `json:"position" api:"required"`
-	ShareOfEntries  JourneyFlowResultsResponseSeriesSegmentNodeShareOfEntries `json:"shareOfEntries" api:"required"`
-	Value           string                                                    `json:"value" api:"required"`
-	ShareOfNext     any                                                       `json:"shareOfNext" api:"nullable"`
-	ShareOfPrevious any                                                       `json:"shareOfPrevious" api:"nullable"`
-	Source          string                                                    `json:"source" api:"nullable"`
+	Kind            string                                                     `json:"kind" api:"required"`
+	Matcher         JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion    `json:"matcher" api:"required"`
+	Position        JourneyFlowResultsResponseSeriesSegmentNodePosition        `json:"position" api:"required"`
+	ShareOfEntries  JourneyFlowResultsResponseSeriesSegmentNodeShareOfEntries  `json:"shareOfEntries" api:"required"`
+	Value           string                                                     `json:"value" api:"required"`
+	ShareOfNext     JourneyFlowResultsResponseSeriesSegmentNodeShareOfNext     `json:"shareOfNext" api:"nullable"`
+	ShareOfPrevious JourneyFlowResultsResponseSeriesSegmentNodeShareOfPrevious `json:"shareOfPrevious" api:"nullable"`
+	Source          string                                                     `json:"source" api:"nullable"`
 	// Any of "COMPLETED", "INCOMPLETE".
 	Terminal string `json:"terminal" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -23669,6 +23955,1306 @@ type JourneyFlowResultsResponseSeriesSegmentNode struct {
 // Returns the unmodified JSON received from the API
 func (r JourneyFlowResultsResponseSeriesSegmentNode) RawJSON() string { return r.JSON.raw }
 func (r *JourneyFlowResultsResponseSeriesSegmentNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion contains all possible
+// properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject].
+	EventName string `json:"eventName"`
+	Kind      string `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilter],
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2Filter]
+	Filter JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilter `json:"filter"`
+	JSON   struct {
+		EventName respjson.Field
+		Kind      respjson.Field
+		Filter    respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilter is an implicit
+// subunion of [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilter provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilter struct {
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion],
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion]
+	Filter  JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilter `json:"filter"`
+	Version float64                                                             `json:"version"`
+	JSON    struct {
+		Filter  respjson.Field
+		Version respjson.Field
+		raw     string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilter is an
+// implicit subunion of [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilter provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilter struct {
+	// This field is a union of
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion],
+	// [[]any]
+	Children JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren `json:"children"`
+	Kind     string                                                                      `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion],
+	// [any]
+	Child    JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChild `json:"child"`
+	Operator string                                                                   `json:"operator"`
+	Property string                                                                   `json:"property"`
+	Path     []string                                                                 `json:"path"`
+	Type     string                                                                   `json:"type"`
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion],
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion]
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterValue `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren is
+// an implicit subunion of
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildren
+// OfAnyArray]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren struct {
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildren []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildren respjson.Field
+		OfAnyArray                                                                           respjson.Field
+		raw                                                                                  string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChild is an
+// implicit subunion of [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChild
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2Child]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChild struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2Child any `json:",inline"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2Child respjson.Field
+		Children                                                                            respjson.Field
+		Kind                                                                                respjson.Field
+		Child                                                                               respjson.Field
+		Operator                                                                            respjson.Field
+		Property                                                                            respjson.Field
+		Path                                                                                respjson.Field
+		Type                                                                                respjson.Field
+		Value                                                                               respjson.Field
+		raw                                                                                 string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterValue is an
+// implicit subunion of [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                     struct {
+		OfString                                                                                 respjson.Field
+		OfFloat                                                                                  respjson.Field
+		OfBool                                                                                   respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray  respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                      string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherUnionFilterFilterValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject struct {
+	EventName string `json:"eventName" api:"required"`
+	// Any of "event".
+	Kind   string                                                         `json:"kind" api:"required"`
+	Filter JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject) RawJSON() string { return r.JSON.raw }
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilter struct {
+	Filter JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject].
+	Children []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion `json:"children"`
+	Kind     string                                                                                 `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2].
+	Child JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject struct {
+	Children []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                           `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                               struct {
+		OfString                                                                                           respjson.Field
+		OfFloat                                                                                            respjson.Field
+		OfBool                                                                                             respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray respjson.Field
+		raw                                                                                                string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2 struct {
+	Child JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                            `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                                struct {
+		OfString                                                                                            respjson.Field
+		OfFloat                                                                                             respjson.Field
+		OfBool                                                                                              respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray respjson.Field
+		raw                                                                                                 string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                    struct {
+		OfString                                                                                respjson.Field
+		OfFloat                                                                                 respjson.Field
+		OfBool                                                                                  respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray respjson.Field
+		raw                                                                                     string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2 struct {
+	// Any of "page".
+	Kind   string                                                          `json:"kind" api:"required"`
+	Filter JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2Filter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2Filter struct {
+	Filter JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2Filter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2Filter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2],
+// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3() (v JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                 `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                     struct {
+		OfString                                                                                 respjson.Field
+		OfFloat                                                                                  respjson.Field
+		OfBool                                                                                   respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -23716,6 +25302,48 @@ func (r JourneyFlowResultsResponseSeriesSegmentNodeShareOfEntries) RawJSON() str
 	return r.JSON.raw
 }
 func (r *JourneyFlowResultsResponseSeriesSegmentNodeShareOfEntries) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeShareOfNext struct {
+	Denominator string  `json:"denominator" api:"required"`
+	Numerator   string  `json:"numerator" api:"required"`
+	Value       float64 `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Denominator respjson.Field
+		Numerator   respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeShareOfNext) RawJSON() string { return r.JSON.raw }
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeShareOfNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentNodeShareOfPrevious struct {
+	Denominator string  `json:"denominator" api:"required"`
+	Numerator   string  `json:"numerator" api:"required"`
+	Value       float64 `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Denominator respjson.Field
+		Numerator   respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentNodeShareOfPrevious) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentNodeShareOfPrevious) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -23772,11 +25400,11 @@ func (r *JourneyFlowResultsResponseSeriesSegmentTopPathShareOfEntries) Unmarshal
 type JourneyFlowResultsResponseSeriesSegmentTopPathStep struct {
 	AnchorID string `json:"anchorId" api:"required"`
 	// Any of "ANCHOR", "EVENT", "PAGE", "TERMINAL", "OMITTED_STEPS", "OTHER_EVENTS".
-	Kind     string                                                     `json:"kind" api:"required"`
-	Matcher  any                                                        `json:"matcher" api:"required"`
-	Position JourneyFlowResultsResponseSeriesSegmentTopPathStepPosition `json:"position" api:"required"`
-	Value    string                                                     `json:"value" api:"required"`
-	Source   string                                                     `json:"source" api:"nullable"`
+	Kind     string                                                         `json:"kind" api:"required"`
+	Matcher  JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion `json:"matcher" api:"required"`
+	Position JourneyFlowResultsResponseSeriesSegmentTopPathStepPosition     `json:"position" api:"required"`
+	Value    string                                                         `json:"value" api:"required"`
+	Source   string                                                         `json:"source" api:"nullable"`
 	// Any of "COMPLETED", "INCOMPLETE".
 	Terminal string `json:"terminal" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -23796,6 +25424,1314 @@ type JourneyFlowResultsResponseSeriesSegmentTopPathStep struct {
 // Returns the unmodified JSON received from the API
 func (r JourneyFlowResultsResponseSeriesSegmentTopPathStep) RawJSON() string { return r.JSON.raw }
 func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStep) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion contains all
+// possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject].
+	EventName string `json:"eventName"`
+	Kind      string `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilter],
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2Filter]
+	Filter JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilter `json:"filter"`
+	JSON   struct {
+		EventName respjson.Field
+		Kind      respjson.Field
+		Filter    respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilter is an
+// implicit subunion of
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilter provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilter struct {
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion],
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion]
+	Filter  JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter `json:"filter"`
+	Version float64                                                                    `json:"version"`
+	JSON    struct {
+		Filter  respjson.Field
+		Version respjson.Field
+		raw     string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter is an
+// implicit subunion of
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter struct {
+	// This field is a union of
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion],
+	// [[]any]
+	Children JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren `json:"children"`
+	Kind     string                                                                             `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion],
+	// [any]
+	Child    JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild `json:"child"`
+	Operator string                                                                          `json:"operator"`
+	Property string                                                                          `json:"property"`
+	Path     []string                                                                        `json:"path"`
+	Type     string                                                                          `json:"type"`
+	// This field is a union of
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion],
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion]
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren
+// is an implicit subunion of
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildren
+// OfAnyArray]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren struct {
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildren []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildren respjson.Field
+		OfAnyArray                                                                                  respjson.Field
+		raw                                                                                         string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild
+// is an implicit subunion of
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2Child]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2Child any `json:",inline"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2Child respjson.Field
+		Children                                                                                   respjson.Field
+		Kind                                                                                       respjson.Field
+		Child                                                                                      respjson.Field
+		Operator                                                                                   respjson.Field
+		Property                                                                                   respjson.Field
+		Path                                                                                       respjson.Field
+		Type                                                                                       respjson.Field
+		Value                                                                                      respjson.Field
+		raw                                                                                        string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue
+// is an implicit subunion of
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                            struct {
+		OfString                                                                                        respjson.Field
+		OfFloat                                                                                         respjson.Field
+		OfBool                                                                                          respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray  respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                             string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject struct {
+	EventName string `json:"eventName" api:"required"`
+	// Any of "event".
+	Kind   string                                                                `json:"kind" api:"required"`
+	Filter JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilter struct {
+	Filter JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject].
+	Children []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion `json:"children"`
+	Kind     string                                                                                        `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2].
+	Child JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject struct {
+	Children []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                                  `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                                      struct {
+		OfString                                                                                                  respjson.Field
+		OfFloat                                                                                                   respjson.Field
+		OfBool                                                                                                    respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray respjson.Field
+		raw                                                                                                       string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2 struct {
+	Child JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                                   `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                                       struct {
+		OfString                                                                                                   respjson.Field
+		OfFloat                                                                                                    respjson.Field
+		OfBool                                                                                                     respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray respjson.Field
+		raw                                                                                                        string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                       `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                           struct {
+		OfString                                                                                       respjson.Field
+		OfFloat                                                                                        respjson.Field
+		OfBool                                                                                         respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray respjson.Field
+		raw                                                                                            string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2 struct {
+	// Any of "page".
+	Kind   string                                                                 `json:"kind" api:"required"`
+	Filter JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2Filter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2Filter struct {
+	Filter JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2Filter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2Filter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2],
+// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3() (v JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                        `json:"type"`
+	Value JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                            struct {
+		OfString                                                                                        respjson.Field
+		OfFloat                                                                                         respjson.Field
+		OfBool                                                                                          respjson.Field
+		OfJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                             string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsJourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray() (v []JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowResultsResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -23966,11 +26902,11 @@ func (r *JourneyFlowPreviewResponseEffectiveContext) UnmarshalJSON(data []byte) 
 }
 
 type JourneyFlowPreviewResponseEffectiveContextComparison struct {
-	ID            string `json:"id" api:"required"`
-	Label         string `json:"label" api:"required"`
-	DateRange     any    `json:"dateRange" api:"nullable"`
-	EntryFilter   any    `json:"entryFilter" api:"nullable"`
-	SessionFilter any    `json:"sessionFilter" api:"nullable"`
+	ID            string                                                            `json:"id" api:"required"`
+	Label         string                                                            `json:"label" api:"required"`
+	DateRange     JourneyFlowPreviewResponseEffectiveContextComparisonDateRange     `json:"dateRange" api:"nullable"`
+	EntryFilter   JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilter   `json:"entryFilter" api:"nullable"`
+	SessionFilter JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilter `json:"sessionFilter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -23986,6 +26922,272 @@ type JourneyFlowPreviewResponseEffectiveContextComparison struct {
 // Returns the unmodified JSON received from the API
 func (r JourneyFlowPreviewResponseEffectiveContextComparison) RawJSON() string { return r.JSON.raw }
 func (r *JourneyFlowPreviewResponseEffectiveContextComparison) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonDateRange struct {
+	From     string `json:"from" api:"required"`
+	TimeZone string `json:"timeZone" api:"required"`
+	To       string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		TimeZone    respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonDateRange) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonDateRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilter struct {
+	Filter  JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilter `json:"filter" api:"required"`
+	Version int64                                                                 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilter struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind      string                                                                         `json:"kind" api:"required"`
+	Child     JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterChild     `json:"child" api:"nullable"`
+	Children  []JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterChild   `json:"children" api:"nullable"`
+	Predicate JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicate `json:"predicate" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Child       respjson.Field
+		Children    respjson.Field
+		Predicate   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterChild struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterChild) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicate struct {
+	// Any of "EQ", "NEQ", "GT", "GTE", "LT", "LTE", "CONTAINS", "NOT_CONTAINS",
+	// "CONTAINS_CI", "NOT_CONTAINS_CI", "STARTS_WITH", "ENDS_WITH", "IN", "NOT_IN",
+	// "EXISTS", "MISSING", "IS_NULL".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path" api:"nullable"`
+	// Any of "STRING", "NUMBER", "BOOLEAN".
+	Type  string                                                                              `json:"type" api:"nullable"`
+	Value JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicateValue `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicateValue struct {
+	BooleanValue  bool      `json:"booleanValue" api:"nullable"`
+	BooleanValues []bool    `json:"booleanValues" api:"nullable"`
+	NumberValue   float64   `json:"numberValue" api:"nullable"`
+	NumberValues  []float64 `json:"numberValues" api:"nullable"`
+	StringValue   string    `json:"stringValue" api:"nullable"`
+	StringValues  []string  `json:"stringValues" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BooleanValue  respjson.Field
+		BooleanValues respjson.Field
+		NumberValue   respjson.Field
+		NumberValues  respjson.Field
+		StringValue   respjson.Field
+		StringValues  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicateValue) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonEntryFilterFilterPredicateValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilter struct {
+	Filter  JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilter `json:"filter" api:"required"`
+	Version int64                                                                   `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilter struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind      string                                                                           `json:"kind" api:"required"`
+	Child     JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterChild     `json:"child" api:"nullable"`
+	Children  []JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterChild   `json:"children" api:"nullable"`
+	Predicate JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicate `json:"predicate" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Child       respjson.Field
+		Children    respjson.Field
+		Predicate   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterChild struct {
+	// Any of "AND", "OR", "NOT", "PREDICATE".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterChild) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicate struct {
+	// Any of "EQ", "NEQ", "GT", "GTE", "LT", "LTE", "CONTAINS", "NOT_CONTAINS",
+	// "CONTAINS_CI", "NOT_CONTAINS_CI", "STARTS_WITH", "ENDS_WITH", "IN", "NOT_IN",
+	// "EXISTS", "MISSING", "IS_NULL".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path" api:"nullable"`
+	// Any of "STRING", "NUMBER", "BOOLEAN".
+	Type  string                                                                                `json:"type" api:"nullable"`
+	Value JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicateValue `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicate) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicate) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicateValue struct {
+	BooleanValue  bool      `json:"booleanValue" api:"nullable"`
+	BooleanValues []bool    `json:"booleanValues" api:"nullable"`
+	NumberValue   float64   `json:"numberValue" api:"nullable"`
+	NumberValues  []float64 `json:"numberValues" api:"nullable"`
+	StringValue   string    `json:"stringValue" api:"nullable"`
+	StringValues  []string  `json:"stringValues" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BooleanValue  respjson.Field
+		BooleanValues respjson.Field
+		NumberValue   respjson.Field
+		NumberValues  respjson.Field
+		StringValue   respjson.Field
+		StringValues  respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicateValue) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseEffectiveContextComparisonSessionFilterFilterPredicateValue) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -24280,7 +27482,7 @@ type JourneyFlowPreviewResponseSeriesSegmentEdge struct {
 	ShareOfPrevious JourneyFlowPreviewResponseSeriesSegmentEdgeShareOfPrevious `json:"shareOfPrevious" api:"required"`
 	SourceNodeID    string                                                     `json:"sourceNodeId" api:"required"`
 	TargetNodeID    string                                                     `json:"targetNodeId" api:"required"`
-	ShareOfNext     any                                                        `json:"shareOfNext" api:"nullable"`
+	ShareOfNext     JourneyFlowPreviewResponseSeriesSegmentEdgeShareOfNext     `json:"shareOfNext" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -24323,6 +27525,26 @@ func (r *JourneyFlowPreviewResponseSeriesSegmentEdgeShareOfPrevious) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type JourneyFlowPreviewResponseSeriesSegmentEdgeShareOfNext struct {
+	Denominator string  `json:"denominator" api:"required"`
+	Numerator   string  `json:"numerator" api:"required"`
+	Value       float64 `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Denominator respjson.Field
+		Numerator   respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentEdgeShareOfNext) RawJSON() string { return r.JSON.raw }
+func (r *JourneyFlowPreviewResponseSeriesSegmentEdgeShareOfNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type JourneyFlowPreviewResponseSeriesSegmentNode struct {
 	ID          string `json:"id" api:"required"`
 	AnchorID    string `json:"anchorId" api:"required"`
@@ -24330,14 +27552,14 @@ type JourneyFlowPreviewResponseSeriesSegmentNode struct {
 	Denominator string `json:"denominator" api:"required"`
 	Key         string `json:"key" api:"required"`
 	// Any of "ANCHOR", "EVENT", "PAGE", "TERMINAL", "OMITTED_STEPS", "OTHER_EVENTS".
-	Kind            string                                                    `json:"kind" api:"required"`
-	Matcher         any                                                       `json:"matcher" api:"required"`
-	Position        JourneyFlowPreviewResponseSeriesSegmentNodePosition       `json:"position" api:"required"`
-	ShareOfEntries  JourneyFlowPreviewResponseSeriesSegmentNodeShareOfEntries `json:"shareOfEntries" api:"required"`
-	Value           string                                                    `json:"value" api:"required"`
-	ShareOfNext     any                                                       `json:"shareOfNext" api:"nullable"`
-	ShareOfPrevious any                                                       `json:"shareOfPrevious" api:"nullable"`
-	Source          string                                                    `json:"source" api:"nullable"`
+	Kind            string                                                     `json:"kind" api:"required"`
+	Matcher         JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion    `json:"matcher" api:"required"`
+	Position        JourneyFlowPreviewResponseSeriesSegmentNodePosition        `json:"position" api:"required"`
+	ShareOfEntries  JourneyFlowPreviewResponseSeriesSegmentNodeShareOfEntries  `json:"shareOfEntries" api:"required"`
+	Value           string                                                     `json:"value" api:"required"`
+	ShareOfNext     JourneyFlowPreviewResponseSeriesSegmentNodeShareOfNext     `json:"shareOfNext" api:"nullable"`
+	ShareOfPrevious JourneyFlowPreviewResponseSeriesSegmentNodeShareOfPrevious `json:"shareOfPrevious" api:"nullable"`
+	Source          string                                                     `json:"source" api:"nullable"`
 	// Any of "COMPLETED", "INCOMPLETE".
 	Terminal string `json:"terminal" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -24364,6 +27586,1306 @@ type JourneyFlowPreviewResponseSeriesSegmentNode struct {
 // Returns the unmodified JSON received from the API
 func (r JourneyFlowPreviewResponseSeriesSegmentNode) RawJSON() string { return r.JSON.raw }
 func (r *JourneyFlowPreviewResponseSeriesSegmentNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion contains all possible
+// properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject].
+	EventName string `json:"eventName"`
+	Kind      string `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilter],
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2Filter]
+	Filter JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilter `json:"filter"`
+	JSON   struct {
+		EventName respjson.Field
+		Kind      respjson.Field
+		Filter    respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilter is an implicit
+// subunion of [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilter provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilter struct {
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion],
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion]
+	Filter  JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilter `json:"filter"`
+	Version float64                                                             `json:"version"`
+	JSON    struct {
+		Filter  respjson.Field
+		Version respjson.Field
+		raw     string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilter is an
+// implicit subunion of [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilter provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilter struct {
+	// This field is a union of
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion],
+	// [[]any]
+	Children JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren `json:"children"`
+	Kind     string                                                                      `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion],
+	// [any]
+	Child    JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChild `json:"child"`
+	Operator string                                                                   `json:"operator"`
+	Property string                                                                   `json:"property"`
+	Path     []string                                                                 `json:"path"`
+	Type     string                                                                   `json:"type"`
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion],
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion]
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterValue `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren is
+// an implicit subunion of
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildren
+// OfAnyArray]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren struct {
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildren []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildren respjson.Field
+		OfAnyArray                                                                           respjson.Field
+		raw                                                                                  string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChildren) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChild is an
+// implicit subunion of [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChild
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2Child]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChild struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2Child any `json:",inline"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion].
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2Child respjson.Field
+		Children                                                                            respjson.Field
+		Kind                                                                                respjson.Field
+		Child                                                                               respjson.Field
+		Operator                                                                            respjson.Field
+		Property                                                                            respjson.Field
+		Path                                                                                respjson.Field
+		Type                                                                                respjson.Field
+		Value                                                                               respjson.Field
+		raw                                                                                 string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterValue is an
+// implicit subunion of [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                     struct {
+		OfString                                                                                 respjson.Field
+		OfFloat                                                                                  respjson.Field
+		OfBool                                                                                   respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray  respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                      string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherUnionFilterFilterValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject struct {
+	EventName string `json:"eventName" api:"required"`
+	// Any of "event".
+	Kind   string                                                         `json:"kind" api:"required"`
+	Filter JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject) RawJSON() string { return r.JSON.raw }
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilter struct {
+	Filter JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject].
+	Children []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion `json:"children"`
+	Kind     string                                                                                 `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2].
+	Child JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject struct {
+	Children []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                           `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                               struct {
+		OfString                                                                                           respjson.Field
+		OfFloat                                                                                            respjson.Field
+		OfBool                                                                                             respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray respjson.Field
+		raw                                                                                                string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2 struct {
+	Child JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                            `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                                struct {
+		OfString                                                                                            respjson.Field
+		OfFloat                                                                                             respjson.Field
+		OfBool                                                                                              respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray respjson.Field
+		raw                                                                                                 string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                    struct {
+		OfString                                                                                respjson.Field
+		OfFloat                                                                                 respjson.Field
+		OfBool                                                                                  respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray respjson.Field
+		raw                                                                                     string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObjectFilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2 struct {
+	// Any of "page".
+	Kind   string                                                          `json:"kind" api:"required"`
+	Filter JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2Filter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2Filter struct {
+	Filter JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2Filter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2Filter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3() (v JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                 `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                     struct {
+		OfString                                                                                 respjson.Field
+		OfFloat                                                                                  respjson.Field
+		OfBool                                                                                   respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeMatcherObject2FilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -24411,6 +28933,48 @@ func (r JourneyFlowPreviewResponseSeriesSegmentNodeShareOfEntries) RawJSON() str
 	return r.JSON.raw
 }
 func (r *JourneyFlowPreviewResponseSeriesSegmentNodeShareOfEntries) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeShareOfNext struct {
+	Denominator string  `json:"denominator" api:"required"`
+	Numerator   string  `json:"numerator" api:"required"`
+	Value       float64 `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Denominator respjson.Field
+		Numerator   respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeShareOfNext) RawJSON() string { return r.JSON.raw }
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeShareOfNext) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentNodeShareOfPrevious struct {
+	Denominator string  `json:"denominator" api:"required"`
+	Numerator   string  `json:"numerator" api:"required"`
+	Value       float64 `json:"value" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Denominator respjson.Field
+		Numerator   respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentNodeShareOfPrevious) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentNodeShareOfPrevious) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -24467,11 +29031,11 @@ func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathShareOfEntries) Unmarshal
 type JourneyFlowPreviewResponseSeriesSegmentTopPathStep struct {
 	AnchorID string `json:"anchorId" api:"required"`
 	// Any of "ANCHOR", "EVENT", "PAGE", "TERMINAL", "OMITTED_STEPS", "OTHER_EVENTS".
-	Kind     string                                                     `json:"kind" api:"required"`
-	Matcher  any                                                        `json:"matcher" api:"required"`
-	Position JourneyFlowPreviewResponseSeriesSegmentTopPathStepPosition `json:"position" api:"required"`
-	Value    string                                                     `json:"value" api:"required"`
-	Source   string                                                     `json:"source" api:"nullable"`
+	Kind     string                                                         `json:"kind" api:"required"`
+	Matcher  JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion `json:"matcher" api:"required"`
+	Position JourneyFlowPreviewResponseSeriesSegmentTopPathStepPosition     `json:"position" api:"required"`
+	Value    string                                                         `json:"value" api:"required"`
+	Source   string                                                         `json:"source" api:"nullable"`
 	// Any of "COMPLETED", "INCOMPLETE".
 	Terminal string `json:"terminal" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -24491,6 +29055,1314 @@ type JourneyFlowPreviewResponseSeriesSegmentTopPathStep struct {
 // Returns the unmodified JSON received from the API
 func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStep) RawJSON() string { return r.JSON.raw }
 func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStep) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion contains all
+// possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject].
+	EventName string `json:"eventName"`
+	Kind      string `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilter],
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2Filter]
+	Filter JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilter `json:"filter"`
+	JSON   struct {
+		EventName respjson.Field
+		Kind      respjson.Field
+		Filter    respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilter is an
+// implicit subunion of
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilter provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilter struct {
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion],
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion]
+	Filter  JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter `json:"filter"`
+	Version float64                                                                    `json:"version"`
+	JSON    struct {
+		Filter  respjson.Field
+		Version respjson.Field
+		raw     string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter is an
+// implicit subunion of
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter struct {
+	// This field is a union of
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion],
+	// [[]any]
+	Children JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren `json:"children"`
+	Kind     string                                                                             `json:"kind"`
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion],
+	// [any]
+	Child    JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild `json:"child"`
+	Operator string                                                                          `json:"operator"`
+	Property string                                                                          `json:"property"`
+	Path     []string                                                                        `json:"path"`
+	Type     string                                                                          `json:"type"`
+	// This field is a union of
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion],
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion]
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren
+// is an implicit subunion of
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildren
+// OfAnyArray]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren struct {
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildren []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	JSON       struct {
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildren respjson.Field
+		OfAnyArray                                                                                  respjson.Field
+		raw                                                                                         string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChildren) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild
+// is an implicit subunion of
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid:
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2Child]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild struct {
+	// This field will be present if the value is a [any] instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2Child any `json:",inline"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion].
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2Child respjson.Field
+		Children                                                                                   respjson.Field
+		Kind                                                                                       respjson.Field
+		Child                                                                                      respjson.Field
+		Operator                                                                                   respjson.Field
+		Property                                                                                   respjson.Field
+		Path                                                                                       respjson.Field
+		Type                                                                                       respjson.Field
+		Value                                                                                      respjson.Field
+		raw                                                                                        string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterChild) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue
+// is an implicit subunion of
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue
+// provides convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                            struct {
+		OfString                                                                                        respjson.Field
+		OfFloat                                                                                         respjson.Field
+		OfBool                                                                                          respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray  respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                             string
+	} `json:"-"`
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherUnionFilterFilterValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject struct {
+	EventName string `json:"eventName" api:"required"`
+	// Any of "event".
+	Kind   string                                                                `json:"kind" api:"required"`
+	Filter JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		EventName   respjson.Field
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilter struct {
+	Filter JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject].
+	Children []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion `json:"children"`
+	Kind     string                                                                                        `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2].
+	Child JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject struct {
+	Children []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                                  `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                                      struct {
+		OfString                                                                                                  respjson.Field
+		OfFloat                                                                                                   respjson.Field
+		OfBool                                                                                                    respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray respjson.Field
+		raw                                                                                                       string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObjectChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2 struct {
+	Child JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                                   `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                                       struct {
+		OfString                                                                                                   respjson.Field
+		OfFloat                                                                                                    respjson.Field
+		OfBool                                                                                                     respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray respjson.Field
+		raw                                                                                                        string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject2ChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                       `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                           struct {
+		OfString                                                                                       respjson.Field
+		OfFloat                                                                                        respjson.Field
+		OfBool                                                                                         respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray respjson.Field
+		raw                                                                                            string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObjectFilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2 struct {
+	// Any of "page".
+	Kind   string                                                                 `json:"kind" api:"required"`
+	Filter JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2Filter `json:"filter"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Filter      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2Filter struct {
+	Filter JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Filter      respjson.Field
+		Version     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2Filter) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2Filter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion
+// contains all possible properties and values from
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2],
+// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion struct {
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3].
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3() (v JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                                                        `json:"type"`
+	Value JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion
+// contains all possible properties and values from [string], [float64], [bool],
+// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                                                            struct {
+		OfString                                                                                        respjson.Field
+		OfFloat                                                                                         respjson.Field
+		OfBool                                                                                          respjson.Field
+		OfJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray respjson.Field
+		raw                                                                                             string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) AsJourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArray() (v []JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion
+// contains all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *JourneyFlowPreviewResponseSeriesSegmentTopPathStepMatcherObject2FilterFilterObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

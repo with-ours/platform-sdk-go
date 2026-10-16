@@ -4,6 +4,7 @@ package oursprivacy
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -109,13 +110,13 @@ type DefaultMappingListResponseEntity struct {
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
 	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
-	Logic        any     `json:"logic"`
-	Name         string  `json:"name" api:"nullable"`
-	Priority     float64 `json:"priority" api:"nullable"`
-	SourceID     string  `json:"sourceId" api:"nullable"`
-	TemplateID   string  `json:"templateId" api:"nullable"`
-	TemplateName string  `json:"templateName" api:"nullable"`
-	UpdatedAt    string  `json:"updatedAt" api:"nullable"`
+	Logic        DefaultMappingListResponseEntityLogic `json:"logic" api:"nullable"`
+	Name         string                                `json:"name" api:"nullable"`
+	Priority     float64                               `json:"priority" api:"nullable"`
+	SourceID     string                                `json:"sourceId" api:"nullable"`
+	TemplateID   string                                `json:"templateId" api:"nullable"`
+	TemplateName string                                `json:"templateName" api:"nullable"`
+	UpdatedAt    string                                `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -175,6 +176,267 @@ func (r *DefaultMappingListResponseEntityMapping) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Condition tree gating when this mapping fires. A node is either a leaf
+// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
+// themselves logic nodes, so trees nest arbitrarily.
+//
+// Example leaf:
+// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+//
+// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
+type DefaultMappingListResponseEntityLogic struct {
+	// All child nodes must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
+	And       []map[string]DefaultMappingListResponseEntityLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DefaultMappingListResponseEntityLogicCondition             `json:"condition" api:"nullable"`
+	// Negates a single child logic node.
+	Not map[string]DefaultMappingListResponseEntityLogicNotUnion `json:"NOT" api:"nullable"`
+	// Any child node must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
+	Or []map[string]DefaultMappingListResponseEntityLogicOrUnion `json:"OR" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		And         respjson.Field
+		Condition   respjson.Field
+		Not         respjson.Field
+		Or          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultMappingListResponseEntityLogic) RawJSON() string { return r.JSON.raw }
+func (r *DefaultMappingListResponseEntityLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingListResponseEntityLogicAndUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingListResponseEntityLogicAndMapItem]
+type DefaultMappingListResponseEntityLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingListResponseEntityLogicAndMapItem any `json:",inline"`
+	JSON                                              struct {
+		OfString                                          respjson.Field
+		OfFloat                                           respjson.Field
+		OfBool                                            respjson.Field
+		OfAnyArray                                        respjson.Field
+		OfDefaultMappingListResponseEntityLogicAndMapItem respjson.Field
+		raw                                               string
+	} `json:"-"`
+}
+
+func (u DefaultMappingListResponseEntityLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingListResponseEntityLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingListResponseEntityLogicAndUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DefaultMappingListResponseEntityLogicCondition struct {
+	// Comparison verb in PascalCase. Equality/text: `Is`, `IsNot`, `Contains`,
+	// `DoesNotContain`, `StartsWith`, `EndsWith`. Truthiness/nullability: `IsFalsy`,
+	// `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`, `IsTrue`,
+	// `IsFalse`. Numeric: `IsGreaterThan`, `IsGreaterThanOrEqual`, `IsLessThan`,
+	// `IsLessThanOrEqual`. Set membership: `IsIn`, `IsNotIn`, `IsFoundIn`,
+	// `IsNotFoundIn`. Date: `IsBefore`, `IsAfter`, `IsBetween`, `IsOnOrBefore`,
+	// `IsOnOrAfter`. Regex: `MatchesRegex`, `MatchesRegexIgnoreCase`,
+	// `DoesNotMatchRegex`, `DoesNotMatchRegexIgnoreCase`.
+	//
+	// Any of "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith",
+	// "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined",
+	// "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual",
+	// "IsIn", "IsNotIn", "IsFoundIn", "IsNotFoundIn", "IsTrue", "IsFalse", "IsBefore",
+	// "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex",
+	// "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase".
+	Operator string `json:"operator" api:"required"`
+	// Bare dotted path into the event/visitor record. Examples: `$event.event`,
+	// `$event.event_properties.value`, `visitor.consent.marketing`. The leading `$` is
+	// optional and stripped before lookup. Do **not** use `{{...}}` here — that
+	// template syntax is for mapping values (`mappings[].map`), not logic conditions,
+	// and would be compared as a literal string.
+	Property string `json:"property" api:"required"`
+	// String compared against the resolved property. Operators that take no value
+	// (`IsFalsy`, `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`,
+	// `IsTrue`, `IsFalse`) ignore this field — send `""`.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultMappingListResponseEntityLogicCondition) RawJSON() string { return r.JSON.raw }
+func (r *DefaultMappingListResponseEntityLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingListResponseEntityLogicNotUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingListResponseEntityLogicNotMapItem]
+type DefaultMappingListResponseEntityLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingListResponseEntityLogicNotMapItem any `json:",inline"`
+	JSON                                              struct {
+		OfString                                          respjson.Field
+		OfFloat                                           respjson.Field
+		OfBool                                            respjson.Field
+		OfAnyArray                                        respjson.Field
+		OfDefaultMappingListResponseEntityLogicNotMapItem respjson.Field
+		raw                                               string
+	} `json:"-"`
+}
+
+func (u DefaultMappingListResponseEntityLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingListResponseEntityLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingListResponseEntityLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingListResponseEntityLogicOrUnion contains all possible properties
+// and values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingListResponseEntityLogicOrMapItem]
+type DefaultMappingListResponseEntityLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingListResponseEntityLogicOrMapItem any `json:",inline"`
+	JSON                                             struct {
+		OfString                                         respjson.Field
+		OfFloat                                          respjson.Field
+		OfBool                                           respjson.Field
+		OfAnyArray                                       respjson.Field
+		OfDefaultMappingListResponseEntityLogicOrMapItem respjson.Field
+		raw                                              string
+	} `json:"-"`
+}
+
+func (u DefaultMappingListResponseEntityLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingListResponseEntityLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingListResponseEntityLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingListResponseEntityLogicOrUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DefaultMappingGetResponse struct {
 	ID               string                             `json:"id" api:"required"`
 	IsEnabled        bool                               `json:"isEnabled" api:"required"`
@@ -189,13 +451,13 @@ type DefaultMappingGetResponse struct {
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
 	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
-	Logic        any     `json:"logic"`
-	Name         string  `json:"name" api:"nullable"`
-	Priority     float64 `json:"priority" api:"nullable"`
-	SourceID     string  `json:"sourceId" api:"nullable"`
-	TemplateID   string  `json:"templateId" api:"nullable"`
-	TemplateName string  `json:"templateName" api:"nullable"`
-	UpdatedAt    string  `json:"updatedAt" api:"nullable"`
+	Logic        DefaultMappingGetResponseLogic `json:"logic" api:"nullable"`
+	Name         string                         `json:"name" api:"nullable"`
+	Priority     float64                        `json:"priority" api:"nullable"`
+	SourceID     string                         `json:"sourceId" api:"nullable"`
+	TemplateID   string                         `json:"templateId" api:"nullable"`
+	TemplateName string                         `json:"templateName" api:"nullable"`
+	UpdatedAt    string                         `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -255,6 +517,267 @@ func (r *DefaultMappingGetResponseMapping) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Condition tree gating when this mapping fires. A node is either a leaf
+// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
+// themselves logic nodes, so trees nest arbitrarily.
+//
+// Example leaf:
+// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+//
+// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
+type DefaultMappingGetResponseLogic struct {
+	// All child nodes must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
+	And       []map[string]DefaultMappingGetResponseLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DefaultMappingGetResponseLogicCondition             `json:"condition" api:"nullable"`
+	// Negates a single child logic node.
+	Not map[string]DefaultMappingGetResponseLogicNotUnion `json:"NOT" api:"nullable"`
+	// Any child node must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
+	Or []map[string]DefaultMappingGetResponseLogicOrUnion `json:"OR" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		And         respjson.Field
+		Condition   respjson.Field
+		Not         respjson.Field
+		Or          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultMappingGetResponseLogic) RawJSON() string { return r.JSON.raw }
+func (r *DefaultMappingGetResponseLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingGetResponseLogicAndUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingGetResponseLogicAndMapItem]
+type DefaultMappingGetResponseLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingGetResponseLogicAndMapItem any `json:",inline"`
+	JSON                                       struct {
+		OfString                                   respjson.Field
+		OfFloat                                    respjson.Field
+		OfBool                                     respjson.Field
+		OfAnyArray                                 respjson.Field
+		OfDefaultMappingGetResponseLogicAndMapItem respjson.Field
+		raw                                        string
+	} `json:"-"`
+}
+
+func (u DefaultMappingGetResponseLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingGetResponseLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingGetResponseLogicAndUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DefaultMappingGetResponseLogicCondition struct {
+	// Comparison verb in PascalCase. Equality/text: `Is`, `IsNot`, `Contains`,
+	// `DoesNotContain`, `StartsWith`, `EndsWith`. Truthiness/nullability: `IsFalsy`,
+	// `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`, `IsTrue`,
+	// `IsFalse`. Numeric: `IsGreaterThan`, `IsGreaterThanOrEqual`, `IsLessThan`,
+	// `IsLessThanOrEqual`. Set membership: `IsIn`, `IsNotIn`, `IsFoundIn`,
+	// `IsNotFoundIn`. Date: `IsBefore`, `IsAfter`, `IsBetween`, `IsOnOrBefore`,
+	// `IsOnOrAfter`. Regex: `MatchesRegex`, `MatchesRegexIgnoreCase`,
+	// `DoesNotMatchRegex`, `DoesNotMatchRegexIgnoreCase`.
+	//
+	// Any of "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith",
+	// "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined",
+	// "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual",
+	// "IsIn", "IsNotIn", "IsFoundIn", "IsNotFoundIn", "IsTrue", "IsFalse", "IsBefore",
+	// "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex",
+	// "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase".
+	Operator string `json:"operator" api:"required"`
+	// Bare dotted path into the event/visitor record. Examples: `$event.event`,
+	// `$event.event_properties.value`, `visitor.consent.marketing`. The leading `$` is
+	// optional and stripped before lookup. Do **not** use `{{...}}` here — that
+	// template syntax is for mapping values (`mappings[].map`), not logic conditions,
+	// and would be compared as a literal string.
+	Property string `json:"property" api:"required"`
+	// String compared against the resolved property. Operators that take no value
+	// (`IsFalsy`, `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`,
+	// `IsTrue`, `IsFalse`) ignore this field — send `""`.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultMappingGetResponseLogicCondition) RawJSON() string { return r.JSON.raw }
+func (r *DefaultMappingGetResponseLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingGetResponseLogicNotUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingGetResponseLogicNotMapItem]
+type DefaultMappingGetResponseLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingGetResponseLogicNotMapItem any `json:",inline"`
+	JSON                                       struct {
+		OfString                                   respjson.Field
+		OfFloat                                    respjson.Field
+		OfBool                                     respjson.Field
+		OfAnyArray                                 respjson.Field
+		OfDefaultMappingGetResponseLogicNotMapItem respjson.Field
+		raw                                        string
+	} `json:"-"`
+}
+
+func (u DefaultMappingGetResponseLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingGetResponseLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingGetResponseLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingGetResponseLogicOrUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingGetResponseLogicOrMapItem]
+type DefaultMappingGetResponseLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingGetResponseLogicOrMapItem any `json:",inline"`
+	JSON                                      struct {
+		OfString                                  respjson.Field
+		OfFloat                                   respjson.Field
+		OfBool                                    respjson.Field
+		OfAnyArray                                respjson.Field
+		OfDefaultMappingGetResponseLogicOrMapItem respjson.Field
+		raw                                       string
+	} `json:"-"`
+}
+
+func (u DefaultMappingGetResponseLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingGetResponseLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingGetResponseLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingGetResponseLogicOrUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type DefaultMappingReplaceResponse struct {
 	ID               string                                 `json:"id" api:"required"`
 	IsEnabled        bool                                   `json:"isEnabled" api:"required"`
@@ -269,13 +792,13 @@ type DefaultMappingReplaceResponse struct {
 	// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
 	//
 	// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
-	Logic        any     `json:"logic"`
-	Name         string  `json:"name" api:"nullable"`
-	Priority     float64 `json:"priority" api:"nullable"`
-	SourceID     string  `json:"sourceId" api:"nullable"`
-	TemplateID   string  `json:"templateId" api:"nullable"`
-	TemplateName string  `json:"templateName" api:"nullable"`
-	UpdatedAt    string  `json:"updatedAt" api:"nullable"`
+	Logic        DefaultMappingReplaceResponseLogic `json:"logic" api:"nullable"`
+	Name         string                             `json:"name" api:"nullable"`
+	Priority     float64                            `json:"priority" api:"nullable"`
+	SourceID     string                             `json:"sourceId" api:"nullable"`
+	TemplateID   string                             `json:"templateId" api:"nullable"`
+	TemplateName string                             `json:"templateName" api:"nullable"`
+	UpdatedAt    string                             `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -332,6 +855,267 @@ type DefaultMappingReplaceResponseMapping struct {
 // Returns the unmodified JSON received from the API
 func (r DefaultMappingReplaceResponseMapping) RawJSON() string { return r.JSON.raw }
 func (r *DefaultMappingReplaceResponseMapping) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Condition tree gating when this mapping fires. A node is either a leaf
+// `condition` or a combinator (`AND`, `OR`, `NOT`). Combinator children are
+// themselves logic nodes, so trees nest arbitrarily.
+//
+// Example leaf:
+// `{ "condition": { "property": "$event.event", "operator": "Is", "value": "page_view" } }`.
+//
+// Example combinator: `{ "AND": [{ "condition": ... }, { "OR": [...] }] }`.
+type DefaultMappingReplaceResponseLogic struct {
+	// All child nodes must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
+	And       []map[string]DefaultMappingReplaceResponseLogicAndUnion `json:"AND" api:"nullable"`
+	Condition DefaultMappingReplaceResponseLogicCondition             `json:"condition" api:"nullable"`
+	// Negates a single child logic node.
+	Not map[string]DefaultMappingReplaceResponseLogicNotUnion `json:"NOT" api:"nullable"`
+	// Any child node must match. Each child is itself a logic node (leaf `condition`
+	// or combinator).
+	Or []map[string]DefaultMappingReplaceResponseLogicOrUnion `json:"OR" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		And         respjson.Field
+		Condition   respjson.Field
+		Not         respjson.Field
+		Or          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultMappingReplaceResponseLogic) RawJSON() string { return r.JSON.raw }
+func (r *DefaultMappingReplaceResponseLogic) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingReplaceResponseLogicAndUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingReplaceResponseLogicAndMapItem]
+type DefaultMappingReplaceResponseLogicAndUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingReplaceResponseLogicAndMapItem any `json:",inline"`
+	JSON                                           struct {
+		OfString                                       respjson.Field
+		OfFloat                                        respjson.Field
+		OfBool                                         respjson.Field
+		OfAnyArray                                     respjson.Field
+		OfDefaultMappingReplaceResponseLogicAndMapItem respjson.Field
+		raw                                            string
+	} `json:"-"`
+}
+
+func (u DefaultMappingReplaceResponseLogicAndUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicAndUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicAndUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicAndUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicAndUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingReplaceResponseLogicAndUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingReplaceResponseLogicAndUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DefaultMappingReplaceResponseLogicCondition struct {
+	// Comparison verb in PascalCase. Equality/text: `Is`, `IsNot`, `Contains`,
+	// `DoesNotContain`, `StartsWith`, `EndsWith`. Truthiness/nullability: `IsFalsy`,
+	// `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`, `IsTrue`,
+	// `IsFalse`. Numeric: `IsGreaterThan`, `IsGreaterThanOrEqual`, `IsLessThan`,
+	// `IsLessThanOrEqual`. Set membership: `IsIn`, `IsNotIn`, `IsFoundIn`,
+	// `IsNotFoundIn`. Date: `IsBefore`, `IsAfter`, `IsBetween`, `IsOnOrBefore`,
+	// `IsOnOrAfter`. Regex: `MatchesRegex`, `MatchesRegexIgnoreCase`,
+	// `DoesNotMatchRegex`, `DoesNotMatchRegexIgnoreCase`.
+	//
+	// Any of "Is", "IsNot", "Contains", "DoesNotContain", "StartsWith", "EndsWith",
+	// "IsFalsy", "IsTruthy", "IsNull", "IsNotNull", "IsUndefined", "IsNotUndefined",
+	// "IsGreaterThan", "IsGreaterThanOrEqual", "IsLessThan", "IsLessThanOrEqual",
+	// "IsIn", "IsNotIn", "IsFoundIn", "IsNotFoundIn", "IsTrue", "IsFalse", "IsBefore",
+	// "IsAfter", "IsBetween", "IsOnOrBefore", "IsOnOrAfter", "MatchesRegex",
+	// "MatchesRegexIgnoreCase", "DoesNotMatchRegex", "DoesNotMatchRegexIgnoreCase".
+	Operator string `json:"operator" api:"required"`
+	// Bare dotted path into the event/visitor record. Examples: `$event.event`,
+	// `$event.event_properties.value`, `visitor.consent.marketing`. The leading `$` is
+	// optional and stripped before lookup. Do **not** use `{{...}}` here — that
+	// template syntax is for mapping values (`mappings[].map`), not logic conditions,
+	// and would be compared as a literal string.
+	Property string `json:"property" api:"required"`
+	// String compared against the resolved property. Operators that take no value
+	// (`IsFalsy`, `IsTruthy`, `IsNull`, `IsNotNull`, `IsUndefined`, `IsNotUndefined`,
+	// `IsTrue`, `IsFalse`) ignore this field — send `""`.
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Operator    respjson.Field
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DefaultMappingReplaceResponseLogicCondition) RawJSON() string { return r.JSON.raw }
+func (r *DefaultMappingReplaceResponseLogicCondition) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingReplaceResponseLogicNotUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingReplaceResponseLogicNotMapItem]
+type DefaultMappingReplaceResponseLogicNotUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingReplaceResponseLogicNotMapItem any `json:",inline"`
+	JSON                                           struct {
+		OfString                                       respjson.Field
+		OfFloat                                        respjson.Field
+		OfBool                                         respjson.Field
+		OfAnyArray                                     respjson.Field
+		OfDefaultMappingReplaceResponseLogicNotMapItem respjson.Field
+		raw                                            string
+	} `json:"-"`
+}
+
+func (u DefaultMappingReplaceResponseLogicNotUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicNotUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicNotUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicNotUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicNotUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingReplaceResponseLogicNotUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingReplaceResponseLogicNotUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DefaultMappingReplaceResponseLogicOrUnion contains all possible properties and
+// values from [string], [float64], [bool], [[]any], [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfDefaultMappingReplaceResponseLogicOrMapItem]
+type DefaultMappingReplaceResponseLogicOrUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfDefaultMappingReplaceResponseLogicOrMapItem any `json:",inline"`
+	JSON                                          struct {
+		OfString                                      respjson.Field
+		OfFloat                                       respjson.Field
+		OfBool                                        respjson.Field
+		OfAnyArray                                    respjson.Field
+		OfDefaultMappingReplaceResponseLogicOrMapItem respjson.Field
+		raw                                           string
+	} `json:"-"`
+}
+
+func (u DefaultMappingReplaceResponseLogicOrUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicOrUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicOrUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicOrUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DefaultMappingReplaceResponseLogicOrUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DefaultMappingReplaceResponseLogicOrUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DefaultMappingReplaceResponseLogicOrUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

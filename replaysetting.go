@@ -175,9 +175,9 @@ const (
 )
 
 type ReplaySettingNewResponse struct {
-	IsSuccess      bool   `json:"isSuccess" api:"required"`
-	Cause          string `json:"cause" api:"nullable"`
-	ReplaySettings any    `json:"replaySettings" api:"nullable"`
+	IsSuccess      bool                                   `json:"isSuccess" api:"required"`
+	Cause          string                                 `json:"cause" api:"nullable"`
+	ReplaySettings ReplaySettingNewResponseReplaySettings `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -191,6 +191,49 @@ type ReplaySettingNewResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ReplaySettingNewResponse) RawJSON() string { return r.JSON.raw }
 func (r *ReplaySettingNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReplaySettingNewResponseReplaySettings struct {
+	// Stable identifier (UUID) for this replay configuration.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when this configuration was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name string `json:"name" api:"required"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
+	// Any of "Disabled", "Enabled".
+	Status string `json:"status" api:"required"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain string `json:"customDomain" api:"nullable"`
+	// ISO-8601 timestamp of the most recent update, or null if never updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
+	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		Name             respjson.Field
+		Status           respjson.Field
+		CustomDomain     respjson.Field
+		UpdatedAt        respjson.Field
+		WhitelistDomains respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReplaySettingNewResponseReplaySettings) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingNewResponseReplaySettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -248,9 +291,9 @@ const (
 )
 
 type ReplaySettingUpdateResponse struct {
-	IsSuccess      bool   `json:"isSuccess" api:"required"`
-	Cause          string `json:"cause" api:"nullable"`
-	ReplaySettings any    `json:"replaySettings" api:"nullable"`
+	IsSuccess      bool                                      `json:"isSuccess" api:"required"`
+	Cause          string                                    `json:"cause" api:"nullable"`
+	ReplaySettings ReplaySettingUpdateResponseReplaySettings `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -267,10 +310,53 @@ func (r *ReplaySettingUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ReplaySettingUpdateResponseReplaySettings struct {
+	// Stable identifier (UUID) for this replay configuration.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when this configuration was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name string `json:"name" api:"required"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
+	// Any of "Disabled", "Enabled".
+	Status string `json:"status" api:"required"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain string `json:"customDomain" api:"nullable"`
+	// ISO-8601 timestamp of the most recent update, or null if never updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
+	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		Name             respjson.Field
+		Status           respjson.Field
+		CustomDomain     respjson.Field
+		UpdatedAt        respjson.Field
+		WhitelistDomains respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReplaySettingUpdateResponseReplaySettings) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingUpdateResponseReplaySettings) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ReplaySettingDeleteResponse struct {
-	IsSuccess      bool   `json:"isSuccess" api:"required"`
-	Cause          string `json:"cause" api:"nullable"`
-	ReplaySettings any    `json:"replaySettings" api:"nullable"`
+	IsSuccess      bool                                      `json:"isSuccess" api:"required"`
+	Cause          string                                    `json:"cause" api:"nullable"`
+	ReplaySettings ReplaySettingDeleteResponseReplaySettings `json:"replaySettings" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		IsSuccess      respjson.Field
@@ -284,6 +370,49 @@ type ReplaySettingDeleteResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ReplaySettingDeleteResponse) RawJSON() string { return r.JSON.raw }
 func (r *ReplaySettingDeleteResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReplaySettingDeleteResponseReplaySettings struct {
+	// Stable identifier (UUID) for this replay configuration.
+	ID string `json:"id" api:"required"`
+	// ISO-8601 timestamp when this configuration was created.
+	CreatedAt string `json:"createdAt" api:"required"`
+	// Human-readable label for this replay configuration. Shown in the dashboard. May
+	// be empty.
+	Name string `json:"name" api:"required"`
+	// Whether session replay capture is currently active. Set to "Enabled" to start
+	// capturing replays from whitelisted domains, or "Disabled" to pause capture
+	// without losing the configuration.
+	//
+	// Any of "Disabled", "Enabled".
+	Status string `json:"status" api:"required"`
+	// Optional custom domain (CNAME) for hosting the replay capture script. Leave null
+	// to use the default Ours Privacy domain.
+	CustomDomain string `json:"customDomain" api:"nullable"`
+	// ISO-8601 timestamp of the most recent update, or null if never updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// Hostnames where session replay capture is permitted. Replays initiated from any
+	// host not in this list are dropped. PATCH replaces the list — partial updates are
+	// not merged.
+	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		Name             respjson.Field
+		Status           respjson.Field
+		CustomDomain     respjson.Field
+		UpdatedAt        respjson.Field
+		WhitelistDomains respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReplaySettingDeleteResponseReplaySettings) RawJSON() string { return r.JSON.raw }
+func (r *ReplaySettingDeleteResponseReplaySettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

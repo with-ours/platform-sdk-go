@@ -57,13 +57,19 @@ func TestTestEventNewWithOptionalParams(t *testing.T) {
 			"referrer":    "https://example.com",
 		},
 		DistinctID: oursprivacy.String("distinctId"),
-		EventProperties: map[string]any{
-			"revenue":  42.5,
-			"currency": "USD",
+		EventProperties: map[string]oursprivacy.TestEventNewParamsEventPropertyUnion{
+			"revenue": {
+				OfFloat: oursprivacy.Float(42.5),
+			},
+			"currency": {
+				OfString: oursprivacy.String("USD"),
+			},
 		},
-		SourceID: oursprivacy.String("sourceId"),
-		UserProperties: map[string]any{
-			"email": "test@example.com",
+		SourceID: oursprivacy.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		UserProperties: map[string]oursprivacy.TestEventNewParamsUserPropertyUnion{
+			"email": {
+				OfString: oursprivacy.String("test@example.com"),
+			},
 		},
 		VisitorID: oursprivacy.String("visitorId"),
 	})

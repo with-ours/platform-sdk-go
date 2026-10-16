@@ -106,14 +106,26 @@ func TestDataGovernanceUpdateWithOptionalParams(t *testing.T) {
 				Description:    oursprivacy.String("description"),
 				DestinationIDs: []string{"string"},
 				Logic: oursprivacy.DataGovernanceUpdateParamsCategoryLogic{
-					And: []any{map[string]any{}},
+					And: []map[string]oursprivacy.DataGovernanceUpdateParamsCategoryLogicAndUnion{{
+						"foo": {
+							OfString: oursprivacy.String("string"),
+						},
+					}},
 					Condition: oursprivacy.DataGovernanceUpdateParamsCategoryLogicCondition{
 						Operator: "Is",
 						Property: "property",
 						Value:    "value",
 					},
-					Not: map[string]any{},
-					Or:  []any{map[string]any{}},
+					Not: map[string]oursprivacy.DataGovernanceUpdateParamsCategoryLogicNotUnion{
+						"foo": {
+							OfString: oursprivacy.String("string"),
+						},
+					},
+					Or: []map[string]oursprivacy.DataGovernanceUpdateParamsCategoryLogicOrUnion{{
+						"foo": {
+							OfString: oursprivacy.String("string"),
+						},
+					}},
 				},
 				Name:     oursprivacy.String("name"),
 				Priority: oursprivacy.Float(0),

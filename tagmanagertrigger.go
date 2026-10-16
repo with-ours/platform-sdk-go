@@ -447,13 +447,15 @@ func (r *TagManagerTriggerTypesResponseEntityFieldAvailableValue) UnmarshalJSON(
 }
 
 // TagManagerTriggerTypesResponseEntityFieldDefaultUnion contains all possible
-// properties and values from [string], [float64], [bool], [[]any],
+// properties and values from [string], [float64], [bool],
+// [[]TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion],
 // [map[string]any].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 //
 // If the underlying value is not a json object, one of the following properties
-// will be valid: OfString OfFloat OfBool OfAnyArray
+// will be valid: OfString OfFloat OfBool
+// OfTagManagerTriggerTypesResponseEntityFieldDefaultArray
 // OfTagManagerTriggerTypesResponseEntityFieldDefaultMapItem]
 type TagManagerTriggerTypesResponseEntityFieldDefaultUnion struct {
 	// This field will be present if the value is a [string] instead of an object.
@@ -462,15 +464,17 @@ type TagManagerTriggerTypesResponseEntityFieldDefaultUnion struct {
 	OfFloat float64 `json:",inline"`
 	// This field will be present if the value is a [bool] instead of an object.
 	OfBool bool `json:",inline"`
-	// This field will be present if the value is a [[]any] instead of an object.
-	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a
+	// [[]TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion] instead of an
+	// object.
+	OfTagManagerTriggerTypesResponseEntityFieldDefaultArray []TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion `json:",inline"`
 	// This field will be present if the value is a [any] instead of an object.
 	OfTagManagerTriggerTypesResponseEntityFieldDefaultMapItem any `json:",inline"`
 	JSON                                                      struct {
 		OfString                                                  respjson.Field
 		OfFloat                                                   respjson.Field
 		OfBool                                                    respjson.Field
-		OfAnyArray                                                respjson.Field
+		OfTagManagerTriggerTypesResponseEntityFieldDefaultArray   respjson.Field
 		OfTagManagerTriggerTypesResponseEntityFieldDefaultMapItem respjson.Field
 		raw                                                       string
 	} `json:"-"`
@@ -491,7 +495,7 @@ func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsBool() (v bool)
 	return
 }
 
-func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsAnyArray() (v []any) {
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsTagManagerTriggerTypesResponseEntityFieldDefaultArray() (v []TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -505,6 +509,70 @@ func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) AsAnyMap() (v map
 func (u TagManagerTriggerTypesResponseEntityFieldDefaultUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *TagManagerTriggerTypesResponseEntityFieldDefaultUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion contains all
+// possible properties and values from [string], [float64], [bool], [[]any],
+// [map[string]any].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool OfAnyArray
+// OfTagManagerTriggerTypesResponseEntityFieldDefaultArrayItemMapItem]
+type TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a [[]any] instead of an object.
+	OfAnyArray []any `json:",inline"`
+	// This field will be present if the value is a [any] instead of an object.
+	OfTagManagerTriggerTypesResponseEntityFieldDefaultArrayItemMapItem any `json:",inline"`
+	JSON                                                               struct {
+		OfString                                                           respjson.Field
+		OfFloat                                                            respjson.Field
+		OfBool                                                             respjson.Field
+		OfAnyArray                                                         respjson.Field
+		OfTagManagerTriggerTypesResponseEntityFieldDefaultArrayItemMapItem respjson.Field
+		raw                                                                string
+	} `json:"-"`
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) AsAnyArray() (v []any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) AsAnyMap() (v map[string]any) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *TagManagerTriggerTypesResponseEntityFieldDefaultArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

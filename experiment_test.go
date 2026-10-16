@@ -56,17 +56,42 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 	_, err := client.Experiments.New(context.TODO(), oursprivacy.ExperimentNewParams{
 		ExperimentSettingsID: "settings_01HZX9BB73EY2Q37VGK5A0VW7A",
 		Name:                 "Homepage Hero Headline Test",
-		AnalysisConfig:       map[string]any{},
-		ControlWeight:        oursprivacy.Int(34),
-		Description:          oursprivacy.String("description"),
-		IncludeQueryString:   oursprivacy.Bool(true),
-		Key:                  oursprivacy.String("homepage-hero-headline-test"),
+		AnalysisConfig: oursprivacy.ExperimentNewParamsAnalysisConfig{
+			CupedEnabled:      oursprivacy.Bool(true),
+			Method:            "BAYESIAN",
+			OutcomeWindowDays: oursprivacy.Float(0),
+			Planning: oursprivacy.ExperimentNewParamsAnalysisConfigPlanning{
+				Mode: "MANUAL_TARGET",
+				TargetVisitorsByVariant: []oursprivacy.ExperimentNewParamsAnalysisConfigPlanningTargetVisitorsByVariant{{
+					VariantID: "variantId",
+					Visitors:  1,
+				}},
+				Baseline:                oursprivacy.Float(0),
+				MinimumDetectableEffect: oursprivacy.Float(0),
+				Power:                   oursprivacy.Float(0),
+			},
+			Sidedness: "GREATER_THAN_CONTROL",
+		},
+		ControlWeight:      oursprivacy.Int(34),
+		Description:        oursprivacy.String("description"),
+		IncludeQueryString: oursprivacy.Bool(true),
+		Key:                oursprivacy.String("homepage-hero-headline-test"),
 		Metrics: oursprivacy.ExperimentNewParamsMetrics{
 			Primary: oursprivacy.ExperimentNewParamsMetricsPrimary{
 				EventMatchers: []oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcher{{
 					EventName: "x",
 					Filter: oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcherFilter{
-						Filter:  map[string]any{},
+						Filter: oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterUnion{
+							OfExperimentNewsMetricsPrimaryEventMatcherFilterFilterObject: &oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject{
+								Children: []oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildUnion{{
+									OfExperimentNewsMetricsPrimaryEventMatcherFilterFilterObjectChildObject: &oursprivacy.ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject{
+										Children: []any{},
+										Kind:     "and",
+									},
+								}},
+								Kind: "and",
+							},
+						},
 						Version: 1,
 					},
 				}},
@@ -81,7 +106,17 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 				EventMatchers: []oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcher{{
 					EventName: "x",
 					Filter: oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcherFilter{
-						Filter:  map[string]any{},
+						Filter: oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterUnion{
+							OfExperimentNewsMetricsSecondaryEventMatcherFilterFilterObject: &oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject{
+								Children: []oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildUnion{{
+									OfExperimentNewsMetricsSecondaryEventMatcherFilterFilterObjectChildObject: &oursprivacy.ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject{
+										Children: []any{},
+										Kind:     "and",
+									},
+								}},
+								Kind: "and",
+							},
+						},
 						Version: 1,
 					},
 				}},
@@ -102,7 +137,7 @@ func TestExperimentNewWithOptionalParams(t *testing.T) {
 				Value:    oursprivacy.String("spring-launch"),
 			}},
 			VisitorProperties: map[string]any{},
-			VisitorStatus:     oursprivacy.String("visitorStatus"),
+			VisitorStatus:     "any",
 		},
 		TrafficAllocation: oursprivacy.Float(100),
 		Type:              oursprivacy.ExperimentNewParamsTypeAb,
@@ -154,7 +189,22 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.ExperimentUpdateParams{
-			AnalysisConfig:     map[string]any{},
+			AnalysisConfig: oursprivacy.ExperimentUpdateParamsAnalysisConfig{
+				CupedEnabled:      oursprivacy.Bool(true),
+				Method:            "BAYESIAN",
+				OutcomeWindowDays: oursprivacy.Float(0),
+				Planning: oursprivacy.ExperimentUpdateParamsAnalysisConfigPlanning{
+					Mode: "MANUAL_TARGET",
+					TargetVisitorsByVariant: []oursprivacy.ExperimentUpdateParamsAnalysisConfigPlanningTargetVisitorsByVariant{{
+						VariantID: "variantId",
+						Visitors:  1,
+					}},
+					Baseline:                oursprivacy.Float(0),
+					MinimumDetectableEffect: oursprivacy.Float(0),
+					Power:                   oursprivacy.Float(0),
+				},
+				Sidedness: "GREATER_THAN_CONTROL",
+			},
 			Description:        oursprivacy.String("description"),
 			IncludeQueryString: oursprivacy.Bool(true),
 			Key:                oursprivacy.String("key"),
@@ -163,7 +213,17 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 					EventMatchers: []oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcher{{
 						EventName: "x",
 						Filter: oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter{
-							Filter:  map[string]any{},
+							Filter: oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterUnion{
+								OfExperimentUpdatesMetricsPrimaryEventMatcherFilterFilterObject: &oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject{
+									Children: []oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildUnion{{
+										OfExperimentUpdatesMetricsPrimaryEventMatcherFilterFilterObjectChildObject: &oursprivacy.ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject{
+											Children: []any{},
+											Kind:     "and",
+										},
+									}},
+									Kind: "and",
+								},
+							},
 							Version: 1,
 						},
 					}},
@@ -178,7 +238,17 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 					EventMatchers: []oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcher{{
 						EventName: "x",
 						Filter: oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter{
-							Filter:  map[string]any{},
+							Filter: oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterUnion{
+								OfExperimentUpdatesMetricsSecondaryEventMatcherFilterFilterObject: &oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject{
+									Children: []oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildUnion{{
+										OfExperimentUpdatesMetricsSecondaryEventMatcherFilterFilterObjectChildObject: &oursprivacy.ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject{
+											Children: []any{},
+											Kind:     "and",
+										},
+									}},
+									Kind: "and",
+								},
+							},
 							Version: 1,
 						},
 					}},
@@ -200,7 +270,7 @@ func TestExperimentUpdateWithOptionalParams(t *testing.T) {
 					Value:    oursprivacy.String("spring-launch"),
 				}},
 				VisitorProperties: map[string]any{},
-				VisitorStatus:     oursprivacy.String("visitorStatus"),
+				VisitorStatus:     "any",
 			},
 			TrafficAllocation: oursprivacy.Float(0),
 		},

@@ -51,7 +51,9 @@ type Client struct {
 	WebAnalytics               WebAnalyticsService
 	WebScannerRules            WebScannerRuleService
 	WebScanners                WebScannerService
+	Me                         MeService
 	PersonalizationProperties  PersonalizationPropertyService
+	CustomDomains              CustomDomainService
 	Analytics                  AnalyticsService
 	JourneyFlows               JourneyFlowService
 	TestEvents                 TestEventService
@@ -120,7 +122,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WebAnalytics = NewWebAnalyticsService(opts...)
 	r.WebScannerRules = NewWebScannerRuleService(opts...)
 	r.WebScanners = NewWebScannerService(opts...)
+	r.Me = NewMeService(opts...)
 	r.PersonalizationProperties = NewPersonalizationPropertyService(opts...)
+	r.CustomDomains = NewCustomDomainService(opts...)
 	r.Analytics = NewAnalyticsService(opts...)
 	r.JourneyFlows = NewJourneyFlowService(opts...)
 	r.TestEvents = NewTestEventService(opts...)
