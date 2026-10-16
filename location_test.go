@@ -62,7 +62,10 @@ func TestLocationNewWithOptionalParams(t *testing.T) {
 			WebsiteURL:      oursprivacy.String("websiteUrl"),
 			Zip:             oursprivacy.String("zip"),
 		}},
-		Center:          map[string]any{},
+		Center: oursprivacy.LocationNewParamsCenter{
+			Latitude:  0,
+			Longitude: 0,
+		},
 		City:            oursprivacy.String("city"),
 		Country:         oursprivacy.String("country"),
 		CustomDomain:    oursprivacy.String("customDomain"),
@@ -117,7 +120,10 @@ func TestLocationUpdateWithOptionalParams(t *testing.T) {
 				WebsiteURL:      oursprivacy.String("websiteUrl"),
 				Zip:             oursprivacy.String("zip"),
 			}},
-			Center:          map[string]any{},
+			Center: oursprivacy.LocationUpdateParamsCenter{
+				Latitude:  0,
+				Longitude: 0,
+			},
 			City:            oursprivacy.String("city"),
 			Country:         oursprivacy.String("country"),
 			CustomDomain:    oursprivacy.String("customDomain"),

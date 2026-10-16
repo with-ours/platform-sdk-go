@@ -111,14 +111,14 @@ func TestPersonalizationPropertyUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		oursprivacy.PersonalizationPropertyUpdateParams{
 			Accumulator: oursprivacy.PersonalizationPropertyUpdateParamsAccumulatorIncrement,
-			PropertyKey: oursprivacy.String("propertyKey"),
+			PropertyKey: oursprivacy.String("x"),
 			Status:      oursprivacy.PersonalizationPropertyUpdateParamsStatusDisabled,
 			TriggerConditions: []oursprivacy.PersonalizationPropertyUpdateParamsTriggerCondition{{
 				Field:    "event.context.current_url",
 				Operator: "contains",
 				Value:    oursprivacy.String("/pricing"),
 			}},
-			TriggerEventName: oursprivacy.String("triggerEventName"),
+			TriggerEventName: oursprivacy.String("x"),
 			ValueField:       oursprivacy.String("event.context.utm_campaign"),
 		},
 	)

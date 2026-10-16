@@ -78,11 +78,11 @@ func (r *VersionService) ListAutoPaging(ctx context.Context, query VersionListPa
 // To re-publish an existing version, use POST /rest/v1/versions/{id}/publish
 // instead.
 //
-// Supports cherry-picking via the `include*` body fields. Each `include*` field is
-// an entity-id allowlist for one collection — omit (or send `[]`) to include every
-// draft change in that collection, or send a non-empty array to whitelist only
-// those ids. Unlisted collections inherit wholesale from the latest published
-// version. Requires API-key scope or current OAuth user permission:
+// Supports cherry-picking via the `include*` body fields, each an entity-id
+// allowlist for one collection. Omit every `include*` field (or send each as `[]`)
+// to publish all draft changes. Once any `include*` field lists ids, only the
+// listed changes publish, and every collection you omit or send as `[]` keeps its
+// published state. Requires API-key scope or current OAuth user permission:
 // version:publish
 func (r *VersionService) New(ctx context.Context, body VersionNewParams, opts ...option.RequestOption) (res *VersionNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -4022,53 +4022,96 @@ type VersionNewParams struct {
 	Name                            param.Opt[string] `json:"name,omitzero"`
 	Notes                           param.Opt[string] `json:"notes,omitzero"`
 	// Cherry-pick: allowed event ids (slug-like strings) to include from the draft.
-	// Omit or send `[]` to include all draft changes in this collection.
+	// Omit every `include*` field (or send each as `[]`) to publish all draft changes.
+	// Once any `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
 	IncludeAllowedEvents []string `json:"includeAllowedEvents,omitzero"`
-	// Cherry-pick: consent settings ids to include from the draft. Omit or send `[]`
-	// to include all draft changes in this collection.
+	// Cherry-pick: consent settings ids to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
 	IncludeConsentSettings []string `json:"includeConsentSettings,omitzero"`
-	// Cherry-pick: data governance event UUIDs to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
-	IncludeDataGovernanceEvents []string `json:"includeDataGovernanceEvents,omitzero"`
-	// Cherry-pick: data governance rule UUIDs to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
-	IncludeDataGovernanceRules []string `json:"includeDataGovernanceRules,omitzero"`
-	// Cherry-pick: destination UUIDs to include from the draft. Omit or send `[]` to
-	// include all draft changes in this collection.
-	IncludeDestinations []string `json:"includeDestinations,omitzero"`
-	// Cherry-pick: experiment UUIDs to include from the draft. Omit or send `[]` to
-	// include all draft changes in this collection.
-	IncludeExperiments []string `json:"includeExperiments,omitzero"`
-	// Cherry-pick: experiment settings UUIDs to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
-	IncludeExperimentSettings []string `json:"includeExperimentSettings,omitzero"`
-	// Cherry-pick: experiment variant UUIDs to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
-	IncludeExperimentVariants []string `json:"includeExperimentVariants,omitzero"`
-	// Cherry-pick: external allowed event data ids to include from the draft. Omit or
-	// send `[]` to include all draft changes in this collection.
+	// Cherry-pick: data governance event UUIDs to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeDataGovernanceEvents []string `json:"includeDataGovernanceEvents,omitzero" format:"uuid"`
+	// Cherry-pick: data governance rule UUIDs to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeDataGovernanceRules []string `json:"includeDataGovernanceRules,omitzero" format:"uuid"`
+	// Cherry-pick: destination UUIDs to include from the draft. Omit every `include*`
+	// field (or send each as `[]`) to publish all draft changes. Once any `include*`
+	// field lists ids, only the listed changes publish, and every collection you omit
+	// or send as `[]` keeps its published state.
+	IncludeDestinations []string `json:"includeDestinations,omitzero" format:"uuid"`
+	// Cherry-pick: experiment UUIDs to include from the draft. Omit every `include*`
+	// field (or send each as `[]`) to publish all draft changes. Once any `include*`
+	// field lists ids, only the listed changes publish, and every collection you omit
+	// or send as `[]` keeps its published state.
+	IncludeExperiments []string `json:"includeExperiments,omitzero" format:"uuid"`
+	// Cherry-pick: experiment settings UUIDs to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeExperimentSettings []string `json:"includeExperimentSettings,omitzero" format:"uuid"`
+	// Cherry-pick: experiment variant UUIDs to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeExperimentVariants []string `json:"includeExperimentVariants,omitzero" format:"uuid"`
+	// Cherry-pick: external allowed event data ids to include from the draft. Omit
+	// every `include*` field (or send each as `[]`) to publish all draft changes. Once
+	// any `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
 	IncludeExternalAllowedEventData []string `json:"includeExternalAllowedEventData,omitzero"`
-	// Cherry-pick: global dispatch center ids to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
+	// Cherry-pick: global dispatch center ids to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
 	IncludeGlobalDispatchCenters []string `json:"includeGlobalDispatchCenters,omitzero"`
-	// Cherry-pick: mapping ids to include from the draft. Omit or send `[]` to include
-	// all draft changes in this collection.
+	// Cherry-pick: mapping ids to include from the draft. Omit every `include*` field
+	// (or send each as `[]`) to publish all draft changes. Once any `include*` field
+	// lists ids, only the listed changes publish, and every collection you omit or
+	// send as `[]` keeps its published state.
 	IncludeMappings []string `json:"includeMappings,omitzero"`
-	// Cherry-pick: replay settings ids to include from the draft. Omit or send `[]` to
-	// include all draft changes in this collection.
+	// Cherry-pick: replay settings ids to include from the draft. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
 	IncludeReplaySettings []string `json:"includeReplaySettings,omitzero"`
-	// Cherry-pick: source UUIDs to include from the draft. Omit or send `[]` to
-	// include all draft changes in this collection.
-	IncludeSources []string `json:"includeSources,omitzero"`
-	// Cherry-pick: tag manager tag UUIDs to include from the draft. Omit or send `[]`
-	// to include all draft changes in this collection.
-	IncludeTagManagerTags []string `json:"includeTagManagerTags,omitzero"`
-	// Cherry-pick: tag manager trigger UUIDs to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
-	IncludeTagManagerTriggers []string `json:"includeTagManagerTriggers,omitzero"`
-	// Cherry-pick: tag manager variable UUIDs to include from the draft. Omit or send
-	// `[]` to include all draft changes in this collection.
-	IncludeTagManagerVariables []string `json:"includeTagManagerVariables,omitzero"`
+	// Cherry-pick: source UUIDs to include from the draft. Omit every `include*` field
+	// (or send each as `[]`) to publish all draft changes. Once any `include*` field
+	// lists ids, only the listed changes publish, and every collection you omit or
+	// send as `[]` keeps its published state.
+	IncludeSources []string `json:"includeSources,omitzero" format:"uuid"`
+	// Cherry-pick: tag manager container UUIDs to include from the draft. Selecting a
+	// container publishes its own settings only; list its tags, triggers, and
+	// variables to publish their changes. Selecting a container deleted from the draft
+	// also removes its tags, triggers, and variables. Omit every `include*` field (or
+	// send each as `[]`) to publish all draft changes. Once any `include*` field lists
+	// ids, only the listed changes publish, and every collection you omit or send as
+	// `[]` keeps its published state.
+	IncludeTagManagers []string `json:"includeTagManagers,omitzero" format:"uuid"`
+	// Cherry-pick: tag manager tag UUIDs to include from the draft. If the item's
+	// container has never been published, the container publishes with it. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeTagManagerTags []string `json:"includeTagManagerTags,omitzero" format:"uuid"`
+	// Cherry-pick: tag manager trigger UUIDs to include from the draft. If the item's
+	// container has never been published, the container publishes with it. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeTagManagerTriggers []string `json:"includeTagManagerTriggers,omitzero" format:"uuid"`
+	// Cherry-pick: tag manager variable UUIDs to include from the draft. If the item's
+	// container has never been published, the container publishes with it. Omit every
+	// `include*` field (or send each as `[]`) to publish all draft changes. Once any
+	// `include*` field lists ids, only the listed changes publish, and every
+	// collection you omit or send as `[]` keeps its published state.
+	IncludeTagManagerVariables []string `json:"includeTagManagerVariables,omitzero" format:"uuid"`
 	paramObj
 }
 
