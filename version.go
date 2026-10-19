@@ -166,9 +166,9 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 //   - `GET /rest/v1/versions/{id}/diff` — compare that specific version against the
 //     latest published version.
 //   - `GET /rest/v1/versions/{id}/diff?against={otherId}` — compare two specific
-//     versions. `otherId` may also be `draft` to diff a published snapshot against
-//     the live draft state. Requires API-key scope or current OAuth user permission:
-//     version:find
+//     versions. `otherId` must be a published version UUID. Use `draft` as the path
+//     id to compare the live draft against that version. Requires API-key scope or
+//     current OAuth user permission: version:find
 func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query VersionDiffParams, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/diff", id)

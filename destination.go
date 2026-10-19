@@ -154,21 +154,22 @@ type DestinationListResponse struct {
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
 	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse", "DomoWarehouse",
-	// "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM", "FullContact",
-	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
-	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
-	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
-	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
-	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
-	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
-	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
-	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
-	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
-	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "BrazeAudience", "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse",
+	// "DomoWarehouse", "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM",
+	// "FullContact", "Fullstory", "G4Analytics", "GA4MeasurementProtocol",
+	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
+	// "GoogleAudience", "GoogleBigQuery", "GoogleBigQueryWarehouse",
+	// "GoogleDataManagerEventIngest", "GooglePubSub", "GoogleStorage", "GravityCAPI",
+	// "HTTPCustomRequest", "HTTPDestination", "Hubspot", "IHeartMediaMagellan",
+	// "Impact", "Iterable", "Klaviyo", "LeadSquared", "LinkedInAdsCAPI", "LiveIntent",
+	// "LiveRampWarehouse", "MNTN", "MNTNAudience", "Mailchimp", "MailchimpAudience",
+	// "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds", "OursSyntheticData",
+	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
+	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
+	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationListResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                         `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                       `json:"limitedToSourceIds" api:"nullable"`
@@ -230,6 +231,7 @@ const (
 	DestinationListResponseTypeBingAdsWeb                   DestinationListResponseType = "BingAdsWeb"
 	DestinationListResponseTypeBingRest                     DestinationListResponseType = "BingRest"
 	DestinationListResponseTypeBraze                        DestinationListResponseType = "Braze"
+	DestinationListResponseTypeBrazeAudience                DestinationListResponseType = "BrazeAudience"
 	DestinationListResponseTypeConvertAbTestingEvent        DestinationListResponseType = "ConvertABTestingEvent"
 	DestinationListResponseTypeCustomerio                   DestinationListResponseType = "Customerio"
 	DestinationListResponseTypeDatabricksWarehouse          DestinationListResponseType = "DatabricksWarehouse"
@@ -260,6 +262,7 @@ const (
 	DestinationListResponseTypeImpact                       DestinationListResponseType = "Impact"
 	DestinationListResponseTypeIterable                     DestinationListResponseType = "Iterable"
 	DestinationListResponseTypeKlaviyo                      DestinationListResponseType = "Klaviyo"
+	DestinationListResponseTypeLeadSquared                  DestinationListResponseType = "LeadSquared"
 	DestinationListResponseTypeLinkedInAdsCapi              DestinationListResponseType = "LinkedInAdsCAPI"
 	DestinationListResponseTypeLiveIntent                   DestinationListResponseType = "LiveIntent"
 	DestinationListResponseTypeLiveRampWarehouse            DestinationListResponseType = "LiveRampWarehouse"
@@ -379,21 +382,22 @@ type DestinationNewResponse struct {
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
 	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse", "DomoWarehouse",
-	// "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM", "FullContact",
-	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
-	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
-	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
-	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
-	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
-	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
-	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
-	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
-	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
-	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "BrazeAudience", "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse",
+	// "DomoWarehouse", "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM",
+	// "FullContact", "Fullstory", "G4Analytics", "GA4MeasurementProtocol",
+	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
+	// "GoogleAudience", "GoogleBigQuery", "GoogleBigQueryWarehouse",
+	// "GoogleDataManagerEventIngest", "GooglePubSub", "GoogleStorage", "GravityCAPI",
+	// "HTTPCustomRequest", "HTTPDestination", "Hubspot", "IHeartMediaMagellan",
+	// "Impact", "Iterable", "Klaviyo", "LeadSquared", "LinkedInAdsCAPI", "LiveIntent",
+	// "LiveRampWarehouse", "MNTN", "MNTNAudience", "Mailchimp", "MailchimpAudience",
+	// "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds", "OursSyntheticData",
+	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
+	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
+	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationNewResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                      `json:"limitedToSourceIds" api:"nullable"`
@@ -455,6 +459,7 @@ const (
 	DestinationNewResponseTypeBingAdsWeb                   DestinationNewResponseType = "BingAdsWeb"
 	DestinationNewResponseTypeBingRest                     DestinationNewResponseType = "BingRest"
 	DestinationNewResponseTypeBraze                        DestinationNewResponseType = "Braze"
+	DestinationNewResponseTypeBrazeAudience                DestinationNewResponseType = "BrazeAudience"
 	DestinationNewResponseTypeConvertAbTestingEvent        DestinationNewResponseType = "ConvertABTestingEvent"
 	DestinationNewResponseTypeCustomerio                   DestinationNewResponseType = "Customerio"
 	DestinationNewResponseTypeDatabricksWarehouse          DestinationNewResponseType = "DatabricksWarehouse"
@@ -485,6 +490,7 @@ const (
 	DestinationNewResponseTypeImpact                       DestinationNewResponseType = "Impact"
 	DestinationNewResponseTypeIterable                     DestinationNewResponseType = "Iterable"
 	DestinationNewResponseTypeKlaviyo                      DestinationNewResponseType = "Klaviyo"
+	DestinationNewResponseTypeLeadSquared                  DestinationNewResponseType = "LeadSquared"
 	DestinationNewResponseTypeLinkedInAdsCapi              DestinationNewResponseType = "LinkedInAdsCAPI"
 	DestinationNewResponseTypeLiveIntent                   DestinationNewResponseType = "LiveIntent"
 	DestinationNewResponseTypeLiveRampWarehouse            DestinationNewResponseType = "LiveRampWarehouse"
@@ -604,21 +610,22 @@ type DestinationGetResponse struct {
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
 	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse", "DomoWarehouse",
-	// "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM", "FullContact",
-	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
-	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
-	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
-	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
-	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
-	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
-	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
-	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
-	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
-	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "BrazeAudience", "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse",
+	// "DomoWarehouse", "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM",
+	// "FullContact", "Fullstory", "G4Analytics", "GA4MeasurementProtocol",
+	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
+	// "GoogleAudience", "GoogleBigQuery", "GoogleBigQueryWarehouse",
+	// "GoogleDataManagerEventIngest", "GooglePubSub", "GoogleStorage", "GravityCAPI",
+	// "HTTPCustomRequest", "HTTPDestination", "Hubspot", "IHeartMediaMagellan",
+	// "Impact", "Iterable", "Klaviyo", "LeadSquared", "LinkedInAdsCAPI", "LiveIntent",
+	// "LiveRampWarehouse", "MNTN", "MNTNAudience", "Mailchimp", "MailchimpAudience",
+	// "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds", "OursSyntheticData",
+	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
+	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
+	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationGetResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                      `json:"limitedToSourceIds" api:"nullable"`
@@ -680,6 +687,7 @@ const (
 	DestinationGetResponseTypeBingAdsWeb                   DestinationGetResponseType = "BingAdsWeb"
 	DestinationGetResponseTypeBingRest                     DestinationGetResponseType = "BingRest"
 	DestinationGetResponseTypeBraze                        DestinationGetResponseType = "Braze"
+	DestinationGetResponseTypeBrazeAudience                DestinationGetResponseType = "BrazeAudience"
 	DestinationGetResponseTypeConvertAbTestingEvent        DestinationGetResponseType = "ConvertABTestingEvent"
 	DestinationGetResponseTypeCustomerio                   DestinationGetResponseType = "Customerio"
 	DestinationGetResponseTypeDatabricksWarehouse          DestinationGetResponseType = "DatabricksWarehouse"
@@ -710,6 +718,7 @@ const (
 	DestinationGetResponseTypeImpact                       DestinationGetResponseType = "Impact"
 	DestinationGetResponseTypeIterable                     DestinationGetResponseType = "Iterable"
 	DestinationGetResponseTypeKlaviyo                      DestinationGetResponseType = "Klaviyo"
+	DestinationGetResponseTypeLeadSquared                  DestinationGetResponseType = "LeadSquared"
 	DestinationGetResponseTypeLinkedInAdsCapi              DestinationGetResponseType = "LinkedInAdsCAPI"
 	DestinationGetResponseTypeLiveIntent                   DestinationGetResponseType = "LiveIntent"
 	DestinationGetResponseTypeLiveRampWarehouse            DestinationGetResponseType = "LiveRampWarehouse"
@@ -829,21 +838,22 @@ type DestinationUpdateResponse struct {
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
 	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse", "DomoWarehouse",
-	// "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM", "FullContact",
-	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
-	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
-	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
-	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
-	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
-	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
-	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
-	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
-	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
-	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "BrazeAudience", "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse",
+	// "DomoWarehouse", "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM",
+	// "FullContact", "Fullstory", "G4Analytics", "GA4MeasurementProtocol",
+	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
+	// "GoogleAudience", "GoogleBigQuery", "GoogleBigQueryWarehouse",
+	// "GoogleDataManagerEventIngest", "GooglePubSub", "GoogleStorage", "GravityCAPI",
+	// "HTTPCustomRequest", "HTTPDestination", "Hubspot", "IHeartMediaMagellan",
+	// "Impact", "Iterable", "Klaviyo", "LeadSquared", "LinkedInAdsCAPI", "LiveIntent",
+	// "LiveRampWarehouse", "MNTN", "MNTNAudience", "Mailchimp", "MailchimpAudience",
+	// "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds", "OursSyntheticData",
+	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
+	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
+	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationUpdateResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                           `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                         `json:"limitedToSourceIds" api:"nullable"`
@@ -905,6 +915,7 @@ const (
 	DestinationUpdateResponseTypeBingAdsWeb                   DestinationUpdateResponseType = "BingAdsWeb"
 	DestinationUpdateResponseTypeBingRest                     DestinationUpdateResponseType = "BingRest"
 	DestinationUpdateResponseTypeBraze                        DestinationUpdateResponseType = "Braze"
+	DestinationUpdateResponseTypeBrazeAudience                DestinationUpdateResponseType = "BrazeAudience"
 	DestinationUpdateResponseTypeConvertAbTestingEvent        DestinationUpdateResponseType = "ConvertABTestingEvent"
 	DestinationUpdateResponseTypeCustomerio                   DestinationUpdateResponseType = "Customerio"
 	DestinationUpdateResponseTypeDatabricksWarehouse          DestinationUpdateResponseType = "DatabricksWarehouse"
@@ -935,6 +946,7 @@ const (
 	DestinationUpdateResponseTypeImpact                       DestinationUpdateResponseType = "Impact"
 	DestinationUpdateResponseTypeIterable                     DestinationUpdateResponseType = "Iterable"
 	DestinationUpdateResponseTypeKlaviyo                      DestinationUpdateResponseType = "Klaviyo"
+	DestinationUpdateResponseTypeLeadSquared                  DestinationUpdateResponseType = "LeadSquared"
 	DestinationUpdateResponseTypeLinkedInAdsCapi              DestinationUpdateResponseType = "LinkedInAdsCAPI"
 	DestinationUpdateResponseTypeLiveIntent                   DestinationUpdateResponseType = "LiveIntent"
 	DestinationUpdateResponseTypeLiveRampWarehouse            DestinationUpdateResponseType = "LiveRampWarehouse"
@@ -1074,7 +1086,7 @@ type DestinationTypesResponseEntity struct {
 	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
 	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory", "GravityCAPI".
+	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared".
 	ID           string                                       `json:"id" api:"required"`
 	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
 	Label        string                                       `json:"label" api:"required"`
@@ -1438,21 +1450,22 @@ type DestinationListParams struct {
 	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "AmazonDSP", "Amplitude",
 	// "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob", "BasisPostback",
 	// "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest", "Braze",
-	// "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse", "DomoWarehouse",
-	// "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM", "FullContact",
-	// "Fullstory", "G4Analytics", "GA4MeasurementProtocol", "GA4ServerProxy",
-	// "Google", "GoogleAds360", "GoogleAdsServerContainer", "GoogleAudience",
-	// "GoogleBigQuery", "GoogleBigQueryWarehouse", "GoogleDataManagerEventIngest",
-	// "GooglePubSub", "GoogleStorage", "GravityCAPI", "HTTPCustomRequest",
-	// "HTTPDestination", "Hubspot", "IHeartMediaMagellan", "Impact", "Iterable",
-	// "Klaviyo", "LinkedInAdsCAPI", "LiveIntent", "LiveRampWarehouse", "MNTN",
-	// "MNTNAudience", "Mailchimp", "MailchimpAudience", "MicrosoftCAPI", "Mixpanel",
-	// "NextdoorAds", "OpenAIAds", "OursSyntheticData", "Outbrain", "Partnerize",
-	// "Pinterest", "Plausible", "Podscribe", "PostHog", "QuantcastCAPI", "QuoraAds",
-	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
-	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
-	// "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience", "Woopra",
-	// "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "BrazeAudience", "ConvertABTestingEvent", "Customerio", "DatabricksWarehouse",
+	// "DomoWarehouse", "Everflow", "Facebook", "FacebookAudience", "FloodlightSGTM",
+	// "FullContact", "Fullstory", "G4Analytics", "GA4MeasurementProtocol",
+	// "GA4ServerProxy", "Google", "GoogleAds360", "GoogleAdsServerContainer",
+	// "GoogleAudience", "GoogleBigQuery", "GoogleBigQueryWarehouse",
+	// "GoogleDataManagerEventIngest", "GooglePubSub", "GoogleStorage", "GravityCAPI",
+	// "HTTPCustomRequest", "HTTPDestination", "Hubspot", "IHeartMediaMagellan",
+	// "Impact", "Iterable", "Klaviyo", "LeadSquared", "LinkedInAdsCAPI", "LiveIntent",
+	// "LiveRampWarehouse", "MNTN", "MNTNAudience", "Mailchimp", "MailchimpAudience",
+	// "MicrosoftCAPI", "Mixpanel", "NextdoorAds", "OpenAIAds", "OursSyntheticData",
+	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
+	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
+	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
+	// "ZohoCRM", "ZoomInfo".
 	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -1498,6 +1511,7 @@ const (
 	DestinationListParamsTypeBingAdsWeb                   DestinationListParamsType = "BingAdsWeb"
 	DestinationListParamsTypeBingRest                     DestinationListParamsType = "BingRest"
 	DestinationListParamsTypeBraze                        DestinationListParamsType = "Braze"
+	DestinationListParamsTypeBrazeAudience                DestinationListParamsType = "BrazeAudience"
 	DestinationListParamsTypeConvertAbTestingEvent        DestinationListParamsType = "ConvertABTestingEvent"
 	DestinationListParamsTypeCustomerio                   DestinationListParamsType = "Customerio"
 	DestinationListParamsTypeDatabricksWarehouse          DestinationListParamsType = "DatabricksWarehouse"
@@ -1528,6 +1542,7 @@ const (
 	DestinationListParamsTypeImpact                       DestinationListParamsType = "Impact"
 	DestinationListParamsTypeIterable                     DestinationListParamsType = "Iterable"
 	DestinationListParamsTypeKlaviyo                      DestinationListParamsType = "Klaviyo"
+	DestinationListParamsTypeLeadSquared                  DestinationListParamsType = "LeadSquared"
 	DestinationListParamsTypeLinkedInAdsCapi              DestinationListParamsType = "LinkedInAdsCAPI"
 	DestinationListParamsTypeLiveIntent                   DestinationListParamsType = "LiveIntent"
 	DestinationListParamsTypeLiveRampWarehouse            DestinationListParamsType = "LiveRampWarehouse"
@@ -1595,7 +1610,7 @@ type DestinationNewParams struct {
 	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
 	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory", "GravityCAPI".
+	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	Name param.Opt[string]        `json:"name,omitzero"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
@@ -1700,6 +1715,7 @@ const (
 	DestinationNewParamsTypeRokt                         DestinationNewParamsType = "Rokt"
 	DestinationNewParamsTypeFullstory                    DestinationNewParamsType = "Fullstory"
 	DestinationNewParamsTypeGravityCapi                  DestinationNewParamsType = "GravityCAPI"
+	DestinationNewParamsTypeLeadSquared                  DestinationNewParamsType = "LeadSquared"
 )
 
 // Only one field can be non-zero.
