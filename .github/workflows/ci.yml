@@ -3,6 +3,10 @@ on: [push, pull_request]
 
 permissions: {}
 
+env:
+  GOFLAGS: -mod=readonly
+  GOTOOLCHAIN: local
+
 jobs:
   lint:
     permissions:
@@ -12,35 +16,45 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup go
-        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: ./go.mod
+          go-version: '1.27.x'
 
       - name: Run lints
         run: ./scripts/lint
+
+      - name: Run vet
+        run: go vet ./...
   test:
     permissions:
       contents: read
     timeout-minutes: 10
-    name: test
+    name: test (Go ${{ matrix.go-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        go-version: ['1.23.x', '1.26.x', '1.27.x']
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Setup go
-        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version-file: ./go.mod
+          go-version: ${{ matrix.go-version }}
 
-      - name: Bootstrap
-        run: ./scripts/bootstrap
+      - name: Verify dependencies
+        run: |
+          go mod download
+          go mod verify
+          git diff --exit-code -- go.mod go.sum
 
       - name: Run tests
         run: ./scripts/test
