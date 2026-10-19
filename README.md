@@ -33,7 +33,7 @@ go get -u 'github.com/with-ours/platform-sdk-go/v2@v2.3.0'
 
 ## Requirements
 
-This library requires Go 1.22+.
+This library requires Go 1.23+.
 
 ## Usage
 
