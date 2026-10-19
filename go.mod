@@ -1,9 +1,9 @@
 module github.com/with-ours/platform-sdk-go/v2
 
-go 1.22
+go 1.23
 
 require (
-	github.com/tidwall/gjson v1.18.0
+	github.com/tidwall/gjson v1.20.0
 	github.com/tidwall/sjson v1.2.5
 )
 
