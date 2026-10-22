@@ -27,7 +27,7 @@ func TestReplaySettingListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ReplaySettings.List(context.TODO(), oursprivacy.ReplaySettingListParams{
 		Cursor: oursprivacy.String("cursor"),
-		Limit:  oursprivacy.Int(25),
+		Limit:  oursprivacy.Int(0),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
