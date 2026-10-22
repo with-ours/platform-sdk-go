@@ -1590,7 +1590,8 @@ const (
 )
 
 type DestinationNewParams struct {
-	// Event-dispatch destination type to create. Warehouse, cloud-storage, and
+	// Event-dispatch destination type to create. Discover valid types and their
+	// settings via GET /rest/v1/destinations/types. Warehouse, cloud-storage, and
 	// audience-sync destination types may appear on read responses but are not
 	// creatable through POST. Audience destinations receive audience membership from
 	// Audience Builder on a daily schedule and are configured in the dashboard.
@@ -1612,10 +1613,23 @@ type DestinationNewParams struct {
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
 	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
-	Name param.Opt[string]        `json:"name,omitzero"`
+	// Human-readable label shown in dashboards. Defaults to the type name when
+	// omitted.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Restrict dispatch to these source IDs. Omit on create or send `null` to accept
+	// every source. Unknown or other-account source IDs are dropped and duplicates are
+	// removed. An empty list, including one left after filtering, receives events from
+	// no source.
+	LimitedToSourceIDs []string `json:"limitedToSourceIds,omitzero" format:"uuid"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
-	// get the valid keys for your destination type.
+	// discover valid keys. On PATCH, omitted keys are preserved and `null` clears a
+	// specific setting.
 	Settings map[string]DestinationNewParamsSettingUnion `json:"settings,omitzero"`
+	// Initial status. Omit or send `null` for `Enabled`; send `Disabled` to create
+	// paused.
+	//
+	// Any of "Enabled", "Disabled".
+	Status DestinationNewParamsStatus `json:"status,omitzero"`
 	paramObj
 }
 
@@ -1627,7 +1641,8 @@ func (r *DestinationNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Event-dispatch destination type to create. Warehouse, cloud-storage, and
+// Event-dispatch destination type to create. Discover valid types and their
+// settings via GET /rest/v1/destinations/types. Warehouse, cloud-storage, and
 // audience-sync destination types may appear on read responses but are not
 // creatable through POST. Audience destinations receive audience membership from
 // Audience Builder on a daily schedule and are configured in the dashboard.
@@ -1735,14 +1750,33 @@ func (u *DestinationNewParamsSettingUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
+// Initial status. Omit or send `null` for `Enabled`; send `Disabled` to create
+// paused.
+type DestinationNewParamsStatus string
+
+const (
+	DestinationNewParamsStatusEnabled  DestinationNewParamsStatus = "Enabled"
+	DestinationNewParamsStatusDisabled DestinationNewParamsStatus = "Disabled"
+)
+
 type DestinationUpdateParams struct {
-	HashingSalt        param.Opt[string] `json:"hashingSalt,omitzero"`
-	Name               param.Opt[string] `json:"name,omitzero"`
-	LimitedToSourceIDs []string          `json:"limitedToSourceIds,omitzero"`
+	// Optional salt used when hashing PII fields before dispatch.
+	HashingSalt param.Opt[string] `json:"hashingSalt,omitzero"`
+	// Updated human-readable label.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Restrict dispatch to these source IDs. Omit on create or send `null` to accept
+	// every source. Unknown or other-account source IDs are dropped and duplicates are
+	// removed. An empty list, including one left after filtering, receives events from
+	// no source.
+	LimitedToSourceIDs []string `json:"limitedToSourceIds,omitzero" format:"uuid"`
 	// Per-type configuration keys and values. Call GET /rest/v1/destinations/types to
-	// get the valid keys for your destination type.
+	// discover valid keys. On PATCH, omitted keys are preserved and `null` clears a
+	// specific setting.
 	Settings map[string]DestinationUpdateParamsSettingUnion `json:"settings,omitzero"`
-	// Any of "Disabled", "Enabled".
+	// Set `Enabled` to resume dispatch or `Disabled` to pause. Omit or send `null` to
+	// keep the current status.
+	//
+	// Any of "Enabled", "Disabled".
 	Status DestinationUpdateParamsStatus `json:"status,omitzero"`
 	paramObj
 }
@@ -1772,9 +1806,11 @@ func (u *DestinationUpdateParamsSettingUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
+// Set `Enabled` to resume dispatch or `Disabled` to pause. Omit or send `null` to
+// keep the current status.
 type DestinationUpdateParamsStatus string
 
 const (
-	DestinationUpdateParamsStatusDisabled DestinationUpdateParamsStatus = "Disabled"
 	DestinationUpdateParamsStatusEnabled  DestinationUpdateParamsStatus = "Enabled"
+	DestinationUpdateParamsStatusDisabled DestinationUpdateParamsStatus = "Disabled"
 )

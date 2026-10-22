@@ -53,13 +53,15 @@ func TestDestinationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Destinations.New(context.TODO(), oursprivacy.DestinationNewParams{
-		Type: oursprivacy.DestinationNewParamsTypeAudiohook,
-		Name: oursprivacy.String("name"),
+		Type:               oursprivacy.DestinationNewParamsTypeAudiohook,
+		LimitedToSourceIDs: []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
+		Name:               oursprivacy.String("name"),
 		Settings: map[string]oursprivacy.DestinationNewParamsSettingUnion{
 			"foo": {
 				OfString: oursprivacy.String("string"),
 			},
 		},
+		Status: oursprivacy.DestinationNewParamsStatusEnabled,
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -109,14 +111,14 @@ func TestDestinationUpdateWithOptionalParams(t *testing.T) {
 		"id",
 		oursprivacy.DestinationUpdateParams{
 			HashingSalt:        oursprivacy.String("hashingSalt"),
-			LimitedToSourceIDs: []string{"string"},
+			LimitedToSourceIDs: []string{"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"},
 			Name:               oursprivacy.String("name"),
 			Settings: map[string]oursprivacy.DestinationUpdateParamsSettingUnion{
 				"foo": {
 					OfString: oursprivacy.String("string"),
 				},
 			},
-			Status: oursprivacy.DestinationUpdateParamsStatusDisabled,
+			Status: oursprivacy.DestinationUpdateParamsStatusEnabled,
 		},
 	)
 	if err != nil {
