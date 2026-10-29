@@ -124,10 +124,12 @@ func (r *TagManagerTriggerService) Delete(ctx context.Context, id string, opts .
 
 // Lists every trigger template the platform supports — what `type` discriminator
 // to send on create/patch, and the shape of the type-specific `parameters`
-// payload. Trigger `conditions` are evaluated at runtime (per-trigger, see the
-// resource docs) and are not part of this descriptor. Account-agnostic: the
-// response is the same for every API key. Requires API-key scope or current OAuth
-// user permission: tagManagers:find
+// payload. Also returns `conditionOperators` (`id`, `name`, `takesExpected`) and
+// `builtInVariables` (`name`, `reference`, `description`, `category`). Use an
+// operator `id` for `comparison` and an exact built-in `reference` such as
+// `{{Page Path}}` for `actual`; built-ins need no variable creation.
+// Account-agnostic: the response is the same for every API key. Requires API-key
+// scope or current OAuth user permission: tagManagers:find
 func (r *TagManagerTriggerService) Types(ctx context.Context, opts ...option.RequestOption) (res *TagManagerTriggerTypesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/tag-manager-triggers/types"
@@ -342,18 +344,73 @@ func (r *TagManagerTriggerDeleteResponse) UnmarshalJSON(data []byte) error {
 }
 
 type TagManagerTriggerTypesResponse struct {
-	Entities []TagManagerTriggerTypesResponseEntity `json:"entities" api:"required"`
+	// Built-in variables available to tags, triggers, and variables.
+	BuiltInVariables []TagManagerTriggerTypesResponseBuiltInVariable `json:"builtInVariables" api:"required"`
+	// Supported comparisons for trigger conditions.
+	ConditionOperators []TagManagerTriggerTypesResponseConditionOperator `json:"conditionOperators" api:"required"`
+	Entities           []TagManagerTriggerTypesResponseEntity            `json:"entities" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Entities    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		BuiltInVariables   respjson.Field
+		ConditionOperators respjson.Field
+		Entities           respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r TagManagerTriggerTypesResponse) RawJSON() string { return r.JSON.raw }
 func (r *TagManagerTriggerTypesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TagManagerTriggerTypesResponseBuiltInVariable struct {
+	// Variable group, or null when uncategorized.
+	Category string `json:"category" api:"required"`
+	// Value supplied by this built-in variable.
+	Description string `json:"description" api:"required"`
+	// Case-sensitive built-in variable name. No variable creation is needed.
+	Name string `json:"name" api:"required"`
+	// Reference to use in conditions and template parameters, such as {{Page Path}}.
+	Reference string `json:"reference" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Category    respjson.Field
+		Description respjson.Field
+		Name        respjson.Field
+		Reference   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TagManagerTriggerTypesResponseBuiltInVariable) RawJSON() string { return r.JSON.raw }
+func (r *TagManagerTriggerTypesResponseBuiltInVariable) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type TagManagerTriggerTypesResponseConditionOperator struct {
+	// Exact comparison value for trigger conditions.
+	ID string `json:"id" api:"required"`
+	// Display name of the comparison.
+	Name string `json:"name" api:"required"`
+	// Whether this operator compares actual against an expected value.
+	TakesExpected bool `json:"takesExpected" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Name          respjson.Field
+		TakesExpected respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TagManagerTriggerTypesResponseConditionOperator) RawJSON() string { return r.JSON.raw }
+func (r *TagManagerTriggerTypesResponseConditionOperator) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -36,6 +36,22 @@ func NewTagManagerService(opts ...option.RequestOption) (r TagManagerService) {
 	return
 }
 
+// Return the HTML to install this tag manager in the page head. Uses its public
+// pixel and the first ready custom domain, or the default CDN. Find the container
+// with GET /rest/v1/tag-managers. Publish its configuration before expecting tags
+// to run. Returns 404 for an unavailable container. Requires API-key scope or
+// current OAuth user permission: tagManagers:find
+func (r *TagManagerService) InstallSnippet(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerInstallSnippetResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/tag-managers/%s/install-snippet", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 // Create a one-hour link to preview this container’s unpublished tags on your
 // website. Requires permission to view the tag manager. Requires API-key scope or
 // current OAuth user permission: tagManagers:find
@@ -118,6 +134,25 @@ func (r *TagManagerService) Delete(ctx context.Context, id string, opts ...optio
 	path := fmt.Sprintf("rest/v1/tag-managers/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
+}
+
+type TagManagerInstallSnippetResponse struct {
+	// Paste-ready HTML for the page head: main.js followed by tag-manager-init with
+	// this container’s public pixel. Uses the first ready custom domain, or the
+	// default CDN. Publish the container before expecting tags to run.
+	InstallScript string `json:"installScript" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		InstallScript respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TagManagerInstallSnippetResponse) RawJSON() string { return r.JSON.raw }
+func (r *TagManagerInstallSnippetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type TagManagerPreviewResponse struct {

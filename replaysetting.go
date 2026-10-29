@@ -112,15 +112,16 @@ func (r *ReplaySettingService) Update(ctx context.Context, id string, body Repla
 }
 
 // Delete the replay configuration from the draft. Publish with `POST /versions`
-// for capture to stop on all whitelisted domains. Requires API-key scope or
-// current OAuth user permission: replaySettings:delete
+// for capture to stop on all whitelisted domains. Returns the same HTTP 404 when
+// the configuration is missing or inaccessible. Requires API-key scope or current
+// OAuth user permission: replaySettings:delete
 func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *ReplaySettingDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/replay-settings/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

@@ -106,7 +106,8 @@ func (r *FunnelService) Delete(ctx context.Context, id string, opts ...option.Re
 
 // Duplicate a funnel configuration in the same account. The copy keeps the
 // canonical definition, receives a new ID, and is named `Copy of …`. Requires
-// API-key scope or current OAuth user permission: web-analytics:write
+// API-key scope or current OAuth user permission: web-analytics:write,
+// web-analytics:view
 func (r *FunnelService) Duplicate(ctx context.Context, id string, opts ...option.RequestOption) (res *FunnelDuplicateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -169,8 +170,9 @@ type FunnelListResponseEntity struct {
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelListResponseEntityQueryDefinition `json:"queryDefinition" api:"required"`
 	// Any of "READY", "PROCESSING".
-	Status          string                                  `json:"status" api:"required"`
-	UpdatedAt       string                                  `json:"updatedAt" api:"required"`
+	Status    string `json:"status" api:"required"`
+	UpdatedAt string `json:"updatedAt" api:"required"`
+	// Optional description; null clears it.
 	Description     string                                  `json:"description" api:"nullable"`
 	ReportDateRange FunnelListResponseEntityReportDateRange `json:"reportDateRange" api:"nullable"`
 	Watched         bool                                    `json:"watched" api:"nullable"`
@@ -1077,8 +1079,9 @@ type FunnelNewResponse struct {
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelNewResponseQueryDefinition `json:"queryDefinition" api:"required"`
 	// Any of "READY", "PROCESSING".
-	Status          FunnelNewResponseStatus          `json:"status" api:"required"`
-	UpdatedAt       string                           `json:"updatedAt" api:"required"`
+	Status    FunnelNewResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                  `json:"updatedAt" api:"required"`
+	// Optional description; null clears it.
 	Description     string                           `json:"description" api:"nullable"`
 	ReportDateRange FunnelNewResponseReportDateRange `json:"reportDateRange" api:"nullable"`
 	Watched         bool                             `json:"watched" api:"nullable"`
@@ -1969,8 +1972,9 @@ type FunnelGetResponse struct {
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelGetResponseQueryDefinition `json:"queryDefinition" api:"required"`
 	// Any of "READY", "PROCESSING".
-	Status          FunnelGetResponseStatus          `json:"status" api:"required"`
-	UpdatedAt       string                           `json:"updatedAt" api:"required"`
+	Status    FunnelGetResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                  `json:"updatedAt" api:"required"`
+	// Optional description; null clears it.
 	Description     string                           `json:"description" api:"nullable"`
 	ReportDateRange FunnelGetResponseReportDateRange `json:"reportDateRange" api:"nullable"`
 	Watched         bool                             `json:"watched" api:"nullable"`
@@ -2860,8 +2864,9 @@ type FunnelUpdateResponse struct {
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelUpdateResponseQueryDefinition `json:"queryDefinition" api:"required"`
 	// Any of "READY", "PROCESSING".
-	Status          FunnelUpdateResponseStatus          `json:"status" api:"required"`
-	UpdatedAt       string                              `json:"updatedAt" api:"required"`
+	Status    FunnelUpdateResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                     `json:"updatedAt" api:"required"`
+	// Optional description; null clears it.
 	Description     string                              `json:"description" api:"nullable"`
 	ReportDateRange FunnelUpdateResponseReportDateRange `json:"reportDateRange" api:"nullable"`
 	Watched         bool                                `json:"watched" api:"nullable"`
@@ -3786,8 +3791,9 @@ type FunnelDuplicateResponse struct {
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelDuplicateResponseQueryDefinition `json:"queryDefinition" api:"required"`
 	// Any of "READY", "PROCESSING".
-	Status          FunnelDuplicateResponseStatus          `json:"status" api:"required"`
-	UpdatedAt       string                                 `json:"updatedAt" api:"required"`
+	Status    FunnelDuplicateResponseStatus `json:"status" api:"required"`
+	UpdatedAt string                        `json:"updatedAt" api:"required"`
+	// Optional description; null clears it.
 	Description     string                                 `json:"description" api:"nullable"`
 	ReportDateRange FunnelDuplicateResponseReportDateRange `json:"reportDateRange" api:"nullable"`
 	Watched         bool                                   `json:"watched" api:"nullable"`
@@ -4695,13 +4701,14 @@ func (r *FunnelDuplicateResponseReportDateRange) UnmarshalJSON(data []byte) erro
 type FunnelResultsResponse struct {
 	DefinitionUpdatedAt time.Time `json:"definitionUpdatedAt" api:"required" format:"date-time"`
 	Engine              string    `json:"engine" api:"required"`
-	// Conversion rate from first step to last step as a percentage.
+	// Ratio of last-step to first-step volume as a percentage. Event-counting ratios
+	// may exceed 100%.
 	OverallConversionRate float64                    `json:"overallConversionRate" api:"required"`
 	Scope                 FunnelResultsResponseScope `json:"scope" api:"required"`
 	// Any of 1.
 	SemanticVersion float64 `json:"semanticVersion" api:"required"`
-	// Known Events v3 source limitations: equal-load conflicts, corrections that move
-	// across physical keys, and source completeness are unverified.
+	// Data quality limitations affecting these results. Source completeness and
+	// conflicting event corrections may be unverified.
 	//
 	// Any of "equal-load-conflicts-unverified", "cross-key-corrections-unverified",
 	// "source-completeness-unverified".
@@ -4710,7 +4717,8 @@ type FunnelResultsResponse struct {
 	SourcePolicy FunnelResultsResponseSourcePolicy `json:"sourcePolicy" api:"required"`
 	// Per-step funnel analytics, ordered by step number.
 	Steps []FunnelResultsResponseStep `json:"steps" api:"required"`
-	// Total number of visitors who entered the funnel (entered step 1).
+	// First-step volume using the saved counting method: unique people, sessions, or
+	// events.
 	TotalVisitors int64 `json:"totalVisitors" api:"required"`
 	// Average time from first step to last step in seconds. Null when no completions.
 	OverallAvgTimeToConversion float64 `json:"overallAvgTimeToConversion" api:"nullable"`
@@ -4779,17 +4787,24 @@ const (
 )
 
 type FunnelResultsResponseStep struct {
-	ConversionCount       int64    `json:"conversionCount" api:"required"`
-	ConversionRate        float64  `json:"conversionRate" api:"required"`
-	DropOffRate           float64  `json:"dropOffRate" api:"required"`
-	DropOffSessionIDs     []string `json:"dropOffSessionIds" api:"required"`
-	DropOffVisitorIDs     []string `json:"dropOffVisitorIds" api:"required"`
+	ConversionCount int64 `json:"conversionCount" api:"required"`
+	// Step ratio as a percentage. Event-counting ratios may exceed 100%.
+	ConversionRate float64 `json:"conversionRate" api:"required"`
+	// Drop-off percentage for participant counting; zero when the previous step volume
+	// is zero. Not a participant loss measure for event counting.
+	DropOffRate       float64  `json:"dropOffRate" api:"required"`
+	DropOffSessionIDs []string `json:"dropOffSessionIds" api:"required"`
+	DropOffVisitorIDs []string `json:"dropOffVisitorIds" api:"required"`
+	// Ratio to first-step volume as a percentage. Event-counting ratios may exceed
+	// 100%.
 	OverallConversionRate float64  `json:"overallConversionRate" api:"required"`
 	SessionIDs            []string `json:"sessionIds" api:"required"`
 	StepNumber            int64    `json:"stepNumber" api:"required"`
-	VisitorCount          int64    `json:"visitorCount" api:"required"`
-	VisitorIDs            []string `json:"visitorIds" api:"required"`
-	AvgTimeToNextStep     float64  `json:"avgTimeToNextStep" api:"nullable"`
+	// Step volume using the saved counting method: unique people, sessions, or events.
+	VisitorCount int64    `json:"visitorCount" api:"required"`
+	VisitorIDs   []string `json:"visitorIds" api:"required"`
+	// Average incoming hop time from the previous step to this step, in seconds.
+	AvgTimeToNextStep float64 `json:"avgTimeToNextStep" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ConversionCount       respjson.Field
@@ -4815,11 +4830,15 @@ func (r *FunnelResultsResponseStep) UnmarshalJSON(data []byte) error {
 }
 
 type FunnelNewParams struct {
+	// Display name for the saved funnel.
 	Name string `json:"name" api:"required"`
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelNewParamsQueryDefinition `json:"queryDefinition,omitzero" api:"required"`
-	Description     param.Opt[string]              `json:"description,omitzero"`
-	Watched         param.Opt[bool]                `json:"watched,omitzero"`
+	// Optional description; null clears it.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Whether funnel monitoring is enabled. Requires notifications to be enabled for
+	// this account.
+	Watched param.Opt[bool] `json:"watched,omitzero"`
 	paramObj
 }
 
@@ -5364,9 +5383,13 @@ func (u *FunnelNewParamsQueryDefinitionFilterFilterObject3ValueArrayItemUnion) U
 }
 
 type FunnelUpdateParams struct {
+	// Optional description; null clears it.
 	Description param.Opt[string] `json:"description,omitzero"`
-	Watched     param.Opt[bool]   `json:"watched,omitzero"`
-	Name        param.Opt[string] `json:"name,omitzero"`
+	// Whether funnel monitoring is enabled. Requires notifications to be enabled for
+	// this account.
+	Watched param.Opt[bool] `json:"watched,omitzero"`
+	// Display name for the saved funnel.
+	Name param.Opt[string] `json:"name,omitzero"`
 	// Versioned funnel definition with typed steps and filters.
 	QueryDefinition FunnelUpdateParamsQueryDefinition `json:"queryDefinition,omitzero"`
 	paramObj
@@ -5921,8 +5944,10 @@ type FunnelResultsParams struct {
 	// `YYYY-MM-DD` format. Must be on or after `from`, and the window may span at most
 	// 91 days including both endpoints.
 	To string `query:"to" api:"required" json:"-"`
-	// Require this saved definition revision. Returns a conflict if the funnel has
-	// changed.
+	// Use the saved funnel response's updatedAt from GET /funnels/{id} (MCP:
+	// get_funnel.updatedAt) to require that definition revision. Results return the
+	// same revision as definitionUpdatedAt. Returns a conflict if the funnel has
+	// changed; omit to use the latest saved definition.
 	ExpectedDefinitionUpdatedAt param.Opt[time.Time] `query:"expectedDefinitionUpdatedAt,omitzero" format:"date-time" json:"-"`
 	paramObj
 }

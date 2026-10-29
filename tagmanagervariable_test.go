@@ -87,7 +87,7 @@ func TestTagManagerVariableGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.TagManagerVariables.Get(context.TODO(), "id")
+	_, err := client.TagManagerVariables.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {
@@ -111,7 +111,7 @@ func TestTagManagerVariableUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.TagManagerVariables.Update(
 		context.TODO(),
-		"id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		oursprivacy.TagManagerVariableUpdateParams{
 			DefaultValue: oursprivacy.TagManagerVariableUpdateParamsDefaultValueUnion{
 				OfString: oursprivacy.String("string"),
@@ -148,7 +148,7 @@ func TestTagManagerVariableDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.TagManagerVariables.Delete(context.TODO(), "id")
+	_, err := client.TagManagerVariables.Delete(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
 		var apierr *oursprivacy.Error
 		if errors.As(err, &apierr) {

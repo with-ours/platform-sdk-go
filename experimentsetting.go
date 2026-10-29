@@ -56,16 +56,19 @@ func (r *ExperimentSettingService) New(ctx context.Context, body ExperimentSetti
 	return res, err
 }
 
-// Find a single experiment settings record by ID. Returns 404 when no record
-// matches the supplied id. Requires API-key scope or current OAuth user
-// permission: experimentSettings:find
+// Find an experiment settings record by ID, including its cookie name, public
+// pixel token, and domain allowlist. Discover the ID with GET
+// /rest/v1/experiment-settings. Returns 404 when the record is unavailable to this
+// account; returns 403 when Experimentation is disabled for an otherwise
+// authorized record. Requires API-key scope or current OAuth user permission:
+// experimentSettings:find
 func (r *ExperimentSettingService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *ExperimentSettingGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/experiment-settings/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/experiment-settings/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -122,22 +125,25 @@ type ExperimentSettingListResponseEntity struct {
 	ID string `json:"id" api:"required"`
 	// Account that owns this experiment settings record.
 	AccountID string `json:"accountId" api:"required"`
+	// ISO 8601 timestamp when this settings record was created.
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Human-readable name for this experimentation configuration.
 	Name string `json:"name" api:"required"`
-	// Pixel token used by the experiments runtime and CDN configuration. This is
-	// informative for REST clients; use the settings `id` for createExperiment.
+	// Public pixel token used by the experiments runtime. Use the settings id, rather
+	// than this token, when creating an experiment.
 	Pixel string `json:"pixel" api:"required"`
 	// Cookie name used to persist sticky variant assignments in the browser.
-	CookieName      string `json:"cookieName" api:"nullable"`
+	CookieName string `json:"cookieName" api:"nullable"`
+	// User who created this settings record.
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
-	UpdatedAt       string `json:"updatedAt" api:"nullable"`
+	// ISO 8601 timestamp when this settings record was last updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// User who last updated this settings record.
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
 	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// source whitelistDomains, which limits which domains can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -167,22 +173,25 @@ type ExperimentSettingNewResponse struct {
 	ID string `json:"id" api:"required"`
 	// Account that owns this experiment settings record.
 	AccountID string `json:"accountId" api:"required"`
+	// ISO 8601 timestamp when this settings record was created.
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Human-readable name for this experimentation configuration.
 	Name string `json:"name" api:"required"`
-	// Pixel token used by the experiments runtime and CDN configuration. This is
-	// informative for REST clients; use the settings `id` for createExperiment.
+	// Public pixel token used by the experiments runtime. Use the settings id, rather
+	// than this token, when creating an experiment.
 	Pixel string `json:"pixel" api:"required"`
 	// Cookie name used to persist sticky variant assignments in the browser.
-	CookieName      string `json:"cookieName" api:"nullable"`
+	CookieName string `json:"cookieName" api:"nullable"`
+	// User who created this settings record.
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
-	UpdatedAt       string `json:"updatedAt" api:"nullable"`
+	// ISO 8601 timestamp when this settings record was last updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// User who last updated this settings record.
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
 	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// source whitelistDomains, which limits which domains can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -212,22 +221,25 @@ type ExperimentSettingGetResponse struct {
 	ID string `json:"id" api:"required"`
 	// Account that owns this experiment settings record.
 	AccountID string `json:"accountId" api:"required"`
+	// ISO 8601 timestamp when this settings record was created.
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Human-readable name for this experimentation configuration.
 	Name string `json:"name" api:"required"`
-	// Pixel token used by the experiments runtime and CDN configuration. This is
-	// informative for REST clients; use the settings `id` for createExperiment.
+	// Public pixel token used by the experiments runtime. Use the settings id, rather
+	// than this token, when creating an experiment.
 	Pixel string `json:"pixel" api:"required"`
 	// Cookie name used to persist sticky variant assignments in the browser.
-	CookieName      string `json:"cookieName" api:"nullable"`
+	CookieName string `json:"cookieName" api:"nullable"`
+	// User who created this settings record.
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
-	UpdatedAt       string `json:"updatedAt" api:"nullable"`
+	// ISO 8601 timestamp when this settings record was last updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// User who last updated this settings record.
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
 	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// source whitelistDomains, which limits which domains can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -257,22 +269,25 @@ type ExperimentSettingUpdateResponse struct {
 	ID string `json:"id" api:"required"`
 	// Account that owns this experiment settings record.
 	AccountID string `json:"accountId" api:"required"`
+	// ISO 8601 timestamp when this settings record was created.
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Human-readable name for this experimentation configuration.
 	Name string `json:"name" api:"required"`
-	// Pixel token used by the experiments runtime and CDN configuration. This is
-	// informative for REST clients; use the settings `id` for createExperiment.
+	// Public pixel token used by the experiments runtime. Use the settings id, rather
+	// than this token, when creating an experiment.
 	Pixel string `json:"pixel" api:"required"`
 	// Cookie name used to persist sticky variant assignments in the browser.
-	CookieName      string `json:"cookieName" api:"nullable"`
+	CookieName string `json:"cookieName" api:"nullable"`
+	// User who created this settings record.
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
-	UpdatedAt       string `json:"updatedAt" api:"nullable"`
+	// ISO 8601 timestamp when this settings record was last updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// User who last updated this settings record.
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
 	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// source whitelistDomains, which limits which domains can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -302,22 +317,25 @@ type ExperimentSettingDeleteResponse struct {
 	ID string `json:"id" api:"required"`
 	// Account that owns this experiment settings record.
 	AccountID string `json:"accountId" api:"required"`
+	// ISO 8601 timestamp when this settings record was created.
 	CreatedAt string `json:"createdAt" api:"required"`
 	// Human-readable name for this experimentation configuration.
 	Name string `json:"name" api:"required"`
-	// Pixel token used by the experiments runtime and CDN configuration. This is
-	// informative for REST clients; use the settings `id` for createExperiment.
+	// Public pixel token used by the experiments runtime. Use the settings id, rather
+	// than this token, when creating an experiment.
 	Pixel string `json:"pixel" api:"required"`
 	// Cookie name used to persist sticky variant assignments in the browser.
-	CookieName      string `json:"cookieName" api:"nullable"`
+	CookieName string `json:"cookieName" api:"nullable"`
+	// User who created this settings record.
 	CreatedByUserID string `json:"createdByUserId" api:"nullable"`
-	UpdatedAt       string `json:"updatedAt" api:"nullable"`
+	// ISO 8601 timestamp when this settings record was last updated.
+	UpdatedAt string `json:"updatedAt" api:"nullable"`
+	// User who last updated this settings record.
 	UpdatedByUserID string `json:"updatedByUserId" api:"nullable"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
 	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// source whitelistDomains, which limits which domains can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

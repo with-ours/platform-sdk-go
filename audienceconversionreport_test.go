@@ -48,7 +48,7 @@ func TestAudienceConversionReportNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AudienceConversionReports.New(context.TODO(), oursprivacy.AudienceConversionReportNewParams{
-		AttributionWindow: "30",
+		AttributionWindow: "8",
 		EventName:         "x",
 		Name:              "x",
 		ValueProperty:     "x",
@@ -110,7 +110,7 @@ func TestAudienceConversionReportUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.AudienceConversionReportUpdateParams{
-			AttributionWindow: oursprivacy.String("30"),
+			AttributionWindow: oursprivacy.String("8"),
 			DateFrom:          oursprivacy.String("7321-69-10"),
 			DateTo:            oursprivacy.String("7321-69-10"),
 			EventName:         oursprivacy.String("x"),
