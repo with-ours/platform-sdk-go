@@ -167,7 +167,7 @@ type DestinationListResponse struct {
 	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "Trybe", "UniversalAds", "VWO", "Viant",
 	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
 	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationListResponseType                    `json:"type" api:"required"`
@@ -295,6 +295,7 @@ const (
 	DestinationListResponseTypeTatariCapi                   DestinationListResponseType = "TatariCAPI"
 	DestinationListResponseTypeTheTradeDesk                 DestinationListResponseType = "TheTradeDesk"
 	DestinationListResponseTypeTikTok                       DestinationListResponseType = "TikTok"
+	DestinationListResponseTypeTrybe                        DestinationListResponseType = "Trybe"
 	DestinationListResponseTypeUniversalAds                 DestinationListResponseType = "UniversalAds"
 	DestinationListResponseTypeVwo                          DestinationListResponseType = "VWO"
 	DestinationListResponseTypeViant                        DestinationListResponseType = "Viant"
@@ -395,7 +396,7 @@ type DestinationNewResponse struct {
 	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "Trybe", "UniversalAds", "VWO", "Viant",
 	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
 	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationNewResponseType                    `json:"type" api:"required"`
@@ -523,6 +524,7 @@ const (
 	DestinationNewResponseTypeTatariCapi                   DestinationNewResponseType = "TatariCAPI"
 	DestinationNewResponseTypeTheTradeDesk                 DestinationNewResponseType = "TheTradeDesk"
 	DestinationNewResponseTypeTikTok                       DestinationNewResponseType = "TikTok"
+	DestinationNewResponseTypeTrybe                        DestinationNewResponseType = "Trybe"
 	DestinationNewResponseTypeUniversalAds                 DestinationNewResponseType = "UniversalAds"
 	DestinationNewResponseTypeVwo                          DestinationNewResponseType = "VWO"
 	DestinationNewResponseTypeViant                        DestinationNewResponseType = "Viant"
@@ -623,7 +625,7 @@ type DestinationGetResponse struct {
 	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "Trybe", "UniversalAds", "VWO", "Viant",
 	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
 	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationGetResponseType                    `json:"type" api:"required"`
@@ -751,6 +753,7 @@ const (
 	DestinationGetResponseTypeTatariCapi                   DestinationGetResponseType = "TatariCAPI"
 	DestinationGetResponseTypeTheTradeDesk                 DestinationGetResponseType = "TheTradeDesk"
 	DestinationGetResponseTypeTikTok                       DestinationGetResponseType = "TikTok"
+	DestinationGetResponseTypeTrybe                        DestinationGetResponseType = "Trybe"
 	DestinationGetResponseTypeUniversalAds                 DestinationGetResponseType = "UniversalAds"
 	DestinationGetResponseTypeVwo                          DestinationGetResponseType = "VWO"
 	DestinationGetResponseTypeViant                        DestinationGetResponseType = "Viant"
@@ -851,7 +854,7 @@ type DestinationUpdateResponse struct {
 	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "Trybe", "UniversalAds", "VWO", "Viant",
 	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
 	// "ZohoCRM", "ZoomInfo".
 	Type               DestinationUpdateResponseType                    `json:"type" api:"required"`
@@ -979,6 +982,7 @@ const (
 	DestinationUpdateResponseTypeTatariCapi                   DestinationUpdateResponseType = "TatariCAPI"
 	DestinationUpdateResponseTypeTheTradeDesk                 DestinationUpdateResponseType = "TheTradeDesk"
 	DestinationUpdateResponseTypeTikTok                       DestinationUpdateResponseType = "TikTok"
+	DestinationUpdateResponseTypeTrybe                        DestinationUpdateResponseType = "Trybe"
 	DestinationUpdateResponseTypeUniversalAds                 DestinationUpdateResponseType = "UniversalAds"
 	DestinationUpdateResponseTypeVwo                          DestinationUpdateResponseType = "VWO"
 	DestinationUpdateResponseTypeViant                        DestinationUpdateResponseType = "Viant"
@@ -1086,7 +1090,7 @@ type DestinationTypesResponseEntity struct {
 	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
 	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared".
+	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared", "Trybe".
 	ID           string                                       `json:"id" api:"required"`
 	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
 	Label        string                                       `json:"label" api:"required"`
@@ -1463,7 +1467,7 @@ type DestinationListParams struct {
 	// "Outbrain", "Partnerize", "Pinterest", "Plausible", "Podscribe", "PostHog",
 	// "QuantcastCAPI", "QuoraAds", "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI",
 	// "SnapchatAdsCapi", "Spotify", "StackAdaptAPI", "Taboola", "Tatari",
-	// "TatariCAPI", "TheTradeDesk", "TikTok", "UniversalAds", "VWO", "Viant",
+	// "TatariCAPI", "TheTradeDesk", "TikTok", "Trybe", "UniversalAds", "VWO", "Viant",
 	// "ViantCAPI", "Vibe", "VibeAudience", "Woopra", "XAds", "YelpCAPI", "Zendesk",
 	// "ZohoCRM", "ZoomInfo".
 	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
@@ -1575,6 +1579,7 @@ const (
 	DestinationListParamsTypeTatariCapi                   DestinationListParamsType = "TatariCAPI"
 	DestinationListParamsTypeTheTradeDesk                 DestinationListParamsType = "TheTradeDesk"
 	DestinationListParamsTypeTikTok                       DestinationListParamsType = "TikTok"
+	DestinationListParamsTypeTrybe                        DestinationListParamsType = "Trybe"
 	DestinationListParamsTypeUniversalAds                 DestinationListParamsType = "UniversalAds"
 	DestinationListParamsTypeVwo                          DestinationListParamsType = "VWO"
 	DestinationListParamsTypeViant                        DestinationListParamsType = "Viant"
@@ -1611,7 +1616,7 @@ type DestinationNewParams struct {
 	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
 	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
 	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared".
+	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared", "Trybe".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	// Human-readable label shown in dashboards. Defaults to the type name when
 	// omitted.
@@ -1731,6 +1736,7 @@ const (
 	DestinationNewParamsTypeFullstory                    DestinationNewParamsType = "Fullstory"
 	DestinationNewParamsTypeGravityCapi                  DestinationNewParamsType = "GravityCAPI"
 	DestinationNewParamsTypeLeadSquared                  DestinationNewParamsType = "LeadSquared"
+	DestinationNewParamsTypeTrybe                        DestinationNewParamsType = "Trybe"
 )
 
 // Only one field can be non-zero.

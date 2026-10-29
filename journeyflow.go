@@ -67,10 +67,10 @@ func (r *JourneyFlowService) ListAutoPaging(ctx context.Context, query JourneyFl
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
 
-// Save a validated Journey Flow configuration. Source ownership, UTC scope,
-// bounded entry dates, and compiler-supported semantics are enforced by the
-// GraphQL domain path. Requires API-key scope or current OAuth user permission:
-// web-analytics:write
+// Save a validated Journey Flow configuration. Source ownership, UTC dates, and
+// supported journey settings are validated before saving. Reports selecting
+// specific sources also require source:view permission. Requires API-key scope or
+// current OAuth user permission: web-analytics:write
 func (r *JourneyFlowService) New(ctx context.Context, body JourneyFlowNewParams, opts ...option.RequestOption) (res *JourneyFlowNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/journey-flows"
@@ -94,8 +94,9 @@ func (r *JourneyFlowService) Get(ctx context.Context, id string, opts ...option.
 
 // Partially update a Journey Flow using expectedRevision for optimistic
 // concurrency. Omitted top-level fields remain unchanged; nested values replace
-// the complete nested value. Requires API-key scope or current OAuth user
-// permission: web-analytics:write
+// the complete nested value. Reports selecting specific sources also require
+// source:view permission. Requires API-key scope or current OAuth user permission:
+// web-analytics:write
 func (r *JourneyFlowService) Update(ctx context.Context, id string, body JourneyFlowUpdateParams, opts ...option.RequestOption) (res *JourneyFlowUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -131,9 +132,11 @@ func (r *JourneyFlowService) Capabilities(ctx context.Context, opts ...option.Re
 	return res, err
 }
 
-// Compute a saved Journey Flow result on demand. Requires expectedRevision and
-// permits an optional complete report context override. Requires API-key scope or
-// current OAuth user permission: web-analytics:view
+// Compute a saved Journey Flow result. Pass refresh=true to recompute instead of
+// serving a cached result for identical inputs. Requires expectedRevision and
+// permits an optional complete report context override. Reports selecting specific
+// sources also require source:view permission. Requires API-key scope or current
+// OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Results(ctx context.Context, id string, query JourneyFlowResultsParams, opts ...option.RequestOption) (res *JourneyFlowResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -148,8 +151,9 @@ func (r *JourneyFlowService) Results(ctx context.Context, id string, query Journ
 // Export the saved Journey Flow as CSV with its effective scope, exact aggregate
 // counts, timing, graph and bounded Top Paths. Requires expectedRevision; display
 // limits and omitted path weight are included. The response contains the CSV
-// content and filename. Visitor and session samples are not included. Requires
-// API-key scope or current OAuth user permission: web-analytics:view
+// content and filename. Visitor and session samples are not included. Reports
+// selecting specific sources also require source:view permission. Requires API-key
+// scope or current OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Export(ctx context.Context, id string, query JourneyFlowExportParams, opts ...option.RequestOption) (res *JourneyFlowExportResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -163,8 +167,8 @@ func (r *JourneyFlowService) Export(ctx context.Context, id string, query Journe
 
 // Compute a bounded preview from a serialized Journey Flow definition, report
 // context, and view. Use GraphQL when the serialized input exceeds the HTTP URL
-// budget. Requires API-key scope or current OAuth user permission:
-// web-analytics:view
+// budget. Reports selecting specific sources also require source:view permission.
+// Requires API-key scope or current OAuth user permission: web-analytics:view
 func (r *JourneyFlowService) Preview(ctx context.Context, query JourneyFlowPreviewParams, opts ...option.RequestOption) (res *JourneyFlowPreviewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/journey-flows/preview"
@@ -173,17 +177,24 @@ func (r *JourneyFlowService) Preview(ctx context.Context, query JourneyFlowPrevi
 }
 
 type JourneyFlowListResponse struct {
-	ID              string                               `json:"id" api:"required" format:"uuid"`
-	CreatedAt       string                               `json:"createdAt" api:"required"`
-	CreatedByUserID string                               `json:"createdByUserId" api:"required"`
-	Definition      JourneyFlowListResponseDefinition    `json:"definition" api:"required"`
-	Name            string                               `json:"name" api:"required"`
+	ID              string `json:"id" api:"required" format:"uuid"`
+	CreatedAt       string `json:"createdAt" api:"required"`
+	CreatedByUserID string `json:"createdByUserId" api:"required"`
+	// Version 1 Journey Flow definition with anchors, event or page matchers,
+	// counting, scope, and exploration settings. Selecting specific sourceIds also
+	// requires source:view permission.
+	Definition JourneyFlowListResponseDefinition `json:"definition" api:"required"`
+	Name       string                            `json:"name" api:"required"`
+	// Complete UTC date range and comparisons for this Journey Flow.
 	ReportContext   JourneyFlowListResponseReportContext `json:"reportContext" api:"required"`
 	Revision        string                               `json:"revision" api:"required" format:"uuid"`
 	UpdatedAt       string                               `json:"updatedAt" api:"required"`
 	UpdatedByUserID string                               `json:"updatedByUserId" api:"required"`
-	View            JourneyFlowListResponseView          `json:"view" api:"required"`
-	Description     string                               `json:"description" api:"nullable"`
+	// Complete visualization settings. Supplied view replaces the saved value on
+	// PATCH.
+	View JourneyFlowListResponseView `json:"view" api:"required"`
+	// Optional description; null clears it.
+	Description string `json:"description" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -208,6 +219,9 @@ func (r *JourneyFlowListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Version 1 Journey Flow definition with anchors, event or page matchers,
+// counting, scope, and exploration settings. Selecting specific sourceIds also
+// requires source:view permission.
 type JourneyFlowListResponseDefinition struct {
 	Anchors     []JourneyFlowListResponseDefinitionAnchor    `json:"anchors" api:"required"`
 	Exploration JourneyFlowListResponseDefinitionExploration `json:"exploration" api:"required"`
@@ -5258,6 +5272,7 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionProperty) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete UTC date range and comparisons for this Journey Flow.
 type JourneyFlowListResponseReportContext struct {
 	DateRange   JourneyFlowListResponseReportContextDateRange    `json:"dateRange" api:"required"`
 	Comparisons []JourneyFlowListResponseReportContextComparison `json:"comparisons"`
@@ -5874,6 +5889,8 @@ func (r *JourneyFlowListResponseReportContextComparisonSessionFilterFilterObject
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete visualization settings. Supplied view replaces the saved value on
+// PATCH.
 type JourneyFlowListResponseView struct {
 	ShowDropOff          bool  `json:"showDropOff"`
 	ShowElapsedTime      bool  `json:"showElapsedTime"`
@@ -5900,17 +5917,24 @@ func (r *JourneyFlowListResponseView) UnmarshalJSON(data []byte) error {
 }
 
 type JourneyFlowNewResponse struct {
-	ID              string                              `json:"id" api:"required" format:"uuid"`
-	CreatedAt       string                              `json:"createdAt" api:"required"`
-	CreatedByUserID string                              `json:"createdByUserId" api:"required"`
-	Definition      JourneyFlowNewResponseDefinition    `json:"definition" api:"required"`
-	Name            string                              `json:"name" api:"required"`
+	ID              string `json:"id" api:"required" format:"uuid"`
+	CreatedAt       string `json:"createdAt" api:"required"`
+	CreatedByUserID string `json:"createdByUserId" api:"required"`
+	// Version 1 Journey Flow definition with anchors, event or page matchers,
+	// counting, scope, and exploration settings. Selecting specific sourceIds also
+	// requires source:view permission.
+	Definition JourneyFlowNewResponseDefinition `json:"definition" api:"required"`
+	Name       string                           `json:"name" api:"required"`
+	// Complete UTC date range and comparisons for this Journey Flow.
 	ReportContext   JourneyFlowNewResponseReportContext `json:"reportContext" api:"required"`
 	Revision        string                              `json:"revision" api:"required" format:"uuid"`
 	UpdatedAt       string                              `json:"updatedAt" api:"required"`
 	UpdatedByUserID string                              `json:"updatedByUserId" api:"required"`
-	View            JourneyFlowNewResponseView          `json:"view" api:"required"`
-	Description     string                              `json:"description" api:"nullable"`
+	// Complete visualization settings. Supplied view replaces the saved value on
+	// PATCH.
+	View JourneyFlowNewResponseView `json:"view" api:"required"`
+	// Optional description; null clears it.
+	Description string `json:"description" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -5935,6 +5959,9 @@ func (r *JourneyFlowNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Version 1 Journey Flow definition with anchors, event or page matchers,
+// counting, scope, and exploration settings. Selecting specific sourceIds also
+// requires source:view permission.
 type JourneyFlowNewResponseDefinition struct {
 	Anchors     []JourneyFlowNewResponseDefinitionAnchor    `json:"anchors" api:"required"`
 	Exploration JourneyFlowNewResponseDefinitionExploration `json:"exploration" api:"required"`
@@ -10976,6 +11003,7 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionProperty) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete UTC date range and comparisons for this Journey Flow.
 type JourneyFlowNewResponseReportContext struct {
 	DateRange   JourneyFlowNewResponseReportContextDateRange    `json:"dateRange" api:"required"`
 	Comparisons []JourneyFlowNewResponseReportContextComparison `json:"comparisons"`
@@ -11590,6 +11618,8 @@ func (r *JourneyFlowNewResponseReportContextComparisonSessionFilterFilterObject3
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete visualization settings. Supplied view replaces the saved value on
+// PATCH.
 type JourneyFlowNewResponseView struct {
 	ShowDropOff          bool  `json:"showDropOff"`
 	ShowElapsedTime      bool  `json:"showElapsedTime"`
@@ -11616,17 +11646,24 @@ func (r *JourneyFlowNewResponseView) UnmarshalJSON(data []byte) error {
 }
 
 type JourneyFlowGetResponse struct {
-	ID              string                              `json:"id" api:"required" format:"uuid"`
-	CreatedAt       string                              `json:"createdAt" api:"required"`
-	CreatedByUserID string                              `json:"createdByUserId" api:"required"`
-	Definition      JourneyFlowGetResponseDefinition    `json:"definition" api:"required"`
-	Name            string                              `json:"name" api:"required"`
+	ID              string `json:"id" api:"required" format:"uuid"`
+	CreatedAt       string `json:"createdAt" api:"required"`
+	CreatedByUserID string `json:"createdByUserId" api:"required"`
+	// Version 1 Journey Flow definition with anchors, event or page matchers,
+	// counting, scope, and exploration settings. Selecting specific sourceIds also
+	// requires source:view permission.
+	Definition JourneyFlowGetResponseDefinition `json:"definition" api:"required"`
+	Name       string                           `json:"name" api:"required"`
+	// Complete UTC date range and comparisons for this Journey Flow.
 	ReportContext   JourneyFlowGetResponseReportContext `json:"reportContext" api:"required"`
 	Revision        string                              `json:"revision" api:"required" format:"uuid"`
 	UpdatedAt       string                              `json:"updatedAt" api:"required"`
 	UpdatedByUserID string                              `json:"updatedByUserId" api:"required"`
-	View            JourneyFlowGetResponseView          `json:"view" api:"required"`
-	Description     string                              `json:"description" api:"nullable"`
+	// Complete visualization settings. Supplied view replaces the saved value on
+	// PATCH.
+	View JourneyFlowGetResponseView `json:"view" api:"required"`
+	// Optional description; null clears it.
+	Description string `json:"description" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -11651,6 +11688,9 @@ func (r *JourneyFlowGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Version 1 Journey Flow definition with anchors, event or page matchers,
+// counting, scope, and exploration settings. Selecting specific sourceIds also
+// requires source:view permission.
 type JourneyFlowGetResponseDefinition struct {
 	Anchors     []JourneyFlowGetResponseDefinitionAnchor    `json:"anchors" api:"required"`
 	Exploration JourneyFlowGetResponseDefinitionExploration `json:"exploration" api:"required"`
@@ -16692,6 +16732,7 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionProperty) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete UTC date range and comparisons for this Journey Flow.
 type JourneyFlowGetResponseReportContext struct {
 	DateRange   JourneyFlowGetResponseReportContextDateRange    `json:"dateRange" api:"required"`
 	Comparisons []JourneyFlowGetResponseReportContextComparison `json:"comparisons"`
@@ -17306,6 +17347,8 @@ func (r *JourneyFlowGetResponseReportContextComparisonSessionFilterFilterObject3
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete visualization settings. Supplied view replaces the saved value on
+// PATCH.
 type JourneyFlowGetResponseView struct {
 	ShowDropOff          bool  `json:"showDropOff"`
 	ShowElapsedTime      bool  `json:"showElapsedTime"`
@@ -17332,17 +17375,24 @@ func (r *JourneyFlowGetResponseView) UnmarshalJSON(data []byte) error {
 }
 
 type JourneyFlowUpdateResponse struct {
-	ID              string                                 `json:"id" api:"required" format:"uuid"`
-	CreatedAt       string                                 `json:"createdAt" api:"required"`
-	CreatedByUserID string                                 `json:"createdByUserId" api:"required"`
-	Definition      JourneyFlowUpdateResponseDefinition    `json:"definition" api:"required"`
-	Name            string                                 `json:"name" api:"required"`
+	ID              string `json:"id" api:"required" format:"uuid"`
+	CreatedAt       string `json:"createdAt" api:"required"`
+	CreatedByUserID string `json:"createdByUserId" api:"required"`
+	// Version 1 Journey Flow definition with anchors, event or page matchers,
+	// counting, scope, and exploration settings. Selecting specific sourceIds also
+	// requires source:view permission.
+	Definition JourneyFlowUpdateResponseDefinition `json:"definition" api:"required"`
+	Name       string                              `json:"name" api:"required"`
+	// Complete UTC date range and comparisons for this Journey Flow.
 	ReportContext   JourneyFlowUpdateResponseReportContext `json:"reportContext" api:"required"`
 	Revision        string                                 `json:"revision" api:"required" format:"uuid"`
 	UpdatedAt       string                                 `json:"updatedAt" api:"required"`
 	UpdatedByUserID string                                 `json:"updatedByUserId" api:"required"`
-	View            JourneyFlowUpdateResponseView          `json:"view" api:"required"`
-	Description     string                                 `json:"description" api:"nullable"`
+	// Complete visualization settings. Supplied view replaces the saved value on
+	// PATCH.
+	View JourneyFlowUpdateResponseView `json:"view" api:"required"`
+	// Optional description; null clears it.
+	Description string `json:"description" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -17367,6 +17417,9 @@ func (r *JourneyFlowUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Version 1 Journey Flow definition with anchors, event or page matchers,
+// counting, scope, and exploration settings. Selecting specific sourceIds also
+// requires source:view permission.
 type JourneyFlowUpdateResponseDefinition struct {
 	Anchors     []JourneyFlowUpdateResponseDefinitionAnchor    `json:"anchors" api:"required"`
 	Exploration JourneyFlowUpdateResponseDefinitionExploration `json:"exploration" api:"required"`
@@ -22438,6 +22491,7 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionProperty) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete UTC date range and comparisons for this Journey Flow.
 type JourneyFlowUpdateResponseReportContext struct {
 	DateRange   JourneyFlowUpdateResponseReportContextDateRange    `json:"dateRange" api:"required"`
 	Comparisons []JourneyFlowUpdateResponseReportContextComparison `json:"comparisons"`
@@ -23056,6 +23110,8 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterObje
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete visualization settings. Supplied view replaces the saved value on
+// PATCH.
 type JourneyFlowUpdateResponseView struct {
 	ShowDropOff          bool  `json:"showDropOff"`
 	ShowElapsedTime      bool  `json:"showElapsedTime"`
@@ -30438,6 +30494,7 @@ type JourneyFlowListParams struct {
 	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
 	// not decode or modify it. Malformed cursors return 400 Bad Request.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Case-insensitive search in the name and description.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	paramObj
 }
@@ -30451,11 +30508,19 @@ func (r JourneyFlowListParams) URLQuery() (v url.Values, err error) {
 }
 
 type JourneyFlowNewParams struct {
-	Definition    JourneyFlowNewParamsDefinition    `json:"definition,omitzero" api:"required"`
-	Name          string                            `json:"name" api:"required"`
+	// Version 1 Journey Flow definition with anchors, event or page matchers,
+	// counting, scope, and exploration settings. Selecting specific sourceIds also
+	// requires source:view permission.
+	Definition JourneyFlowNewParamsDefinition `json:"definition,omitzero" api:"required"`
+	// Display name for the saved Journey Flow.
+	Name string `json:"name" api:"required"`
+	// Complete UTC date range and comparisons for this Journey Flow.
 	ReportContext JourneyFlowNewParamsReportContext `json:"reportContext,omitzero" api:"required"`
-	View          JourneyFlowNewParamsView          `json:"view,omitzero" api:"required"`
-	Description   param.Opt[string]                 `json:"description,omitzero"`
+	// Complete visualization settings. Supplied view replaces the saved value on
+	// PATCH.
+	View JourneyFlowNewParamsView `json:"view,omitzero" api:"required"`
+	// Optional description; null clears it.
+	Description param.Opt[string] `json:"description,omitzero"`
 	paramObj
 }
 
@@ -30467,6 +30532,10 @@ func (r *JourneyFlowNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Version 1 Journey Flow definition with anchors, event or page matchers,
+// counting, scope, and exploration settings. Selecting specific sourceIds also
+// requires source:view permission.
+//
 // The properties Anchors, Exploration, Kind, Scope, Version are required.
 type JourneyFlowNewParamsDefinition struct {
 	Anchors     []JourneyFlowNewParamsDefinitionAnchor    `json:"anchors,omitzero" api:"required"`
@@ -33271,6 +33340,8 @@ func init() {
 	)
 }
 
+// Complete UTC date range and comparisons for this Journey Flow.
+//
 // The property DateRange is required.
 type JourneyFlowNewParamsReportContext struct {
 	DateRange   JourneyFlowNewParamsReportContextDateRange    `json:"dateRange,omitzero" api:"required"`
@@ -33644,6 +33715,8 @@ func (u *JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3Va
 	return apijson.UnmarshalRoot(data, u)
 }
 
+// Complete visualization settings. Supplied view replaces the saved value on
+// PATCH.
 type JourneyFlowNewParamsView struct {
 	ShowDropOff          param.Opt[bool]  `json:"showDropOff,omitzero"`
 	ShowElapsedTime      param.Opt[bool]  `json:"showElapsedTime,omitzero"`
@@ -33669,12 +33742,22 @@ func init() {
 }
 
 type JourneyFlowUpdateParams struct {
-	ExpectedRevision string                               `json:"expectedRevision" api:"required" format:"uuid"`
-	Description      param.Opt[string]                    `json:"description,omitzero"`
-	Name             param.Opt[string]                    `json:"name,omitzero"`
-	Definition       JourneyFlowUpdateParamsDefinition    `json:"definition,omitzero"`
-	ReportContext    JourneyFlowUpdateParamsReportContext `json:"reportContext,omitzero"`
-	View             JourneyFlowUpdateParamsView          `json:"view,omitzero"`
+	// Revision returned by get/list or the last write. A stale revision returns 409;
+	// reload before retrying.
+	ExpectedRevision string `json:"expectedRevision" api:"required" format:"uuid"`
+	// Optional description; null clears it.
+	Description param.Opt[string] `json:"description,omitzero"`
+	// Display name for the saved Journey Flow.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Version 1 Journey Flow definition with anchors, event or page matchers,
+	// counting, scope, and exploration settings. Selecting specific sourceIds also
+	// requires source:view permission.
+	Definition JourneyFlowUpdateParamsDefinition `json:"definition,omitzero"`
+	// Complete UTC date range and comparisons for this Journey Flow.
+	ReportContext JourneyFlowUpdateParamsReportContext `json:"reportContext,omitzero"`
+	// Complete visualization settings. Supplied view replaces the saved value on
+	// PATCH.
+	View JourneyFlowUpdateParamsView `json:"view,omitzero"`
 	paramObj
 }
 
@@ -33686,6 +33769,10 @@ func (r *JourneyFlowUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Version 1 Journey Flow definition with anchors, event or page matchers,
+// counting, scope, and exploration settings. Selecting specific sourceIds also
+// requires source:view permission.
+//
 // The properties Anchors, Exploration, Kind, Scope, Version are required.
 type JourneyFlowUpdateParamsDefinition struct {
 	Anchors     []JourneyFlowUpdateParamsDefinitionAnchor    `json:"anchors,omitzero" api:"required"`
@@ -36490,6 +36577,8 @@ func init() {
 	)
 }
 
+// Complete UTC date range and comparisons for this Journey Flow.
+//
 // The property DateRange is required.
 type JourneyFlowUpdateParamsReportContext struct {
 	DateRange   JourneyFlowUpdateParamsReportContextDateRange    `json:"dateRange,omitzero" api:"required"`
@@ -36863,6 +36952,8 @@ func (u *JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject
 	return apijson.UnmarshalRoot(data, u)
 }
 
+// Complete visualization settings. Supplied view replaces the saved value on
+// PATCH.
 type JourneyFlowUpdateParamsView struct {
 	ShowDropOff          param.Opt[bool]  `json:"showDropOff,omitzero"`
 	ShowElapsedTime      param.Opt[bool]  `json:"showElapsedTime,omitzero"`
@@ -36888,6 +36979,8 @@ func init() {
 }
 
 type JourneyFlowDeleteParams struct {
+	// Revision returned by get/list or the last write. A stale revision returns 409;
+	// reload before retrying.
 	ExpectedRevision string `query:"expectedRevision" api:"required" format:"uuid" json:"-"`
 	paramObj
 }
@@ -36902,9 +36995,12 @@ func (r JourneyFlowDeleteParams) URLQuery() (v url.Values, err error) {
 }
 
 type JourneyFlowResultsParams struct {
-	ExpectedRevision string          `query:"expectedRevision" api:"required" format:"uuid" json:"-"`
-	Refresh          param.Opt[bool] `query:"refresh,omitzero" json:"-"`
-	// Optional JSON-encoded complete report context override.
+	// Revision returned by get/list or the last write. A stale revision returns 409;
+	// reload before retrying.
+	ExpectedRevision string `query:"expectedRevision" api:"required" format:"uuid" json:"-"`
+	// Recompute instead of serving a cached result for identical inputs.
+	Refresh param.Opt[bool] `query:"refresh,omitzero" json:"-"`
+	// Complete report context override; JSON-encoded in the REST query string.
 	ReportContextOverride param.Opt[string] `query:"reportContextOverride,omitzero" json:"-"`
 	paramObj
 }
@@ -36919,9 +37015,12 @@ func (r JourneyFlowResultsParams) URLQuery() (v url.Values, err error) {
 }
 
 type JourneyFlowExportParams struct {
-	ExpectedRevision string          `query:"expectedRevision" api:"required" format:"uuid" json:"-"`
-	Refresh          param.Opt[bool] `query:"refresh,omitzero" json:"-"`
-	// Optional JSON-encoded complete report context override.
+	// Revision returned by get/list or the last write. A stale revision returns 409;
+	// reload before retrying.
+	ExpectedRevision string `query:"expectedRevision" api:"required" format:"uuid" json:"-"`
+	// Recompute instead of serving a cached result for identical inputs.
+	Refresh param.Opt[bool] `query:"refresh,omitzero" json:"-"`
+	// Complete report context override; JSON-encoded in the REST query string.
 	ReportContextOverride param.Opt[string] `query:"reportContextOverride,omitzero" json:"-"`
 	paramObj
 }
@@ -36936,8 +37035,8 @@ func (r JourneyFlowExportParams) URLQuery() (v url.Values, err error) {
 }
 
 type JourneyFlowPreviewParams struct {
-	// JSON-encoded Journey Flow preview input. Use GraphQL when this exceeds the URL
-	// budget.
+	// Object with required definition, reportContext, and view, plus optional refresh.
+	// JSON-encode input in the REST query string; maximum 16384 bytes.
 	Input string `query:"input" api:"required" json:"-"`
 	paramObj
 }

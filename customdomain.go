@@ -62,8 +62,9 @@ func (r *CustomDomainService) New(ctx context.Context, opts ...option.RequestOpt
 }
 
 // Replaces the full custom-domain list for this account and returns `setupStatus`
-// lifecycle guidance. The setup `id` is the path identifier. Each account can have
-// up to 10 custom domains. An empty `domains` list removes all custom domains.
+// lifecycle guidance. The setup `id` is the path identifier. The account allowance
+// is returned as `domainLimit` in the setup response (10 by default, up to 99 with
+// an increased allowance). An empty `domains` list removes all custom domains.
 // Duplicate domains are rejected. Domains under `oursprivacy.com` are rejected.
 // Domain delivery and certificate settings are managed by Ours Privacy; DNS
 // changes are customer-managed. Requires scope: `distributionTenant:update`.
@@ -121,6 +122,7 @@ type CustomDomainStatusResponseSetup struct {
 	// Managed certificate issuance status.
 	CertificateStatus string                                  `json:"certificateStatus" api:"required"`
 	CreatedAt         string                                  `json:"createdAt" api:"required"`
+	DomainLimit       int64                                   `json:"domainLimit" api:"required"`
 	Domains           []CustomDomainStatusResponseSetupDomain `json:"domains" api:"required"`
 	Enabled           bool                                    `json:"enabled" api:"required"`
 	// Current custom-domain setup progress and next action.
@@ -133,6 +135,7 @@ type CustomDomainStatusResponseSetup struct {
 		CertificateActive respjson.Field
 		CertificateStatus respjson.Field
 		CreatedAt         respjson.Field
+		DomainLimit       respjson.Field
 		Domains           respjson.Field
 		Enabled           respjson.Field
 		SetupStatus       respjson.Field
@@ -236,6 +239,7 @@ type CustomDomainNewResponseSetup struct {
 	// Managed certificate issuance status.
 	CertificateStatus string                               `json:"certificateStatus" api:"required"`
 	CreatedAt         string                               `json:"createdAt" api:"required"`
+	DomainLimit       int64                                `json:"domainLimit" api:"required"`
 	Domains           []CustomDomainNewResponseSetupDomain `json:"domains" api:"required"`
 	Enabled           bool                                 `json:"enabled" api:"required"`
 	// Current custom-domain setup progress and next action.
@@ -248,6 +252,7 @@ type CustomDomainNewResponseSetup struct {
 		CertificateActive respjson.Field
 		CertificateStatus respjson.Field
 		CreatedAt         respjson.Field
+		DomainLimit       respjson.Field
 		Domains           respjson.Field
 		Enabled           respjson.Field
 		SetupStatus       respjson.Field
@@ -351,6 +356,7 @@ type CustomDomainReplaceResponseSetup struct {
 	// Managed certificate issuance status.
 	CertificateStatus string                                   `json:"certificateStatus" api:"required"`
 	CreatedAt         string                                   `json:"createdAt" api:"required"`
+	DomainLimit       int64                                    `json:"domainLimit" api:"required"`
 	Domains           []CustomDomainReplaceResponseSetupDomain `json:"domains" api:"required"`
 	Enabled           bool                                     `json:"enabled" api:"required"`
 	// Current custom-domain setup progress and next action.
@@ -363,6 +369,7 @@ type CustomDomainReplaceResponseSetup struct {
 		CertificateActive respjson.Field
 		CertificateStatus respjson.Field
 		CreatedAt         respjson.Field
+		DomainLimit       respjson.Field
 		Domains           respjson.Field
 		Enabled           respjson.Field
 		SetupStatus       respjson.Field
@@ -466,6 +473,7 @@ type CustomDomainReconcileCertificateResponseSetup struct {
 	// Managed certificate issuance status.
 	CertificateStatus string                                                `json:"certificateStatus" api:"required"`
 	CreatedAt         string                                                `json:"createdAt" api:"required"`
+	DomainLimit       int64                                                 `json:"domainLimit" api:"required"`
 	Domains           []CustomDomainReconcileCertificateResponseSetupDomain `json:"domains" api:"required"`
 	Enabled           bool                                                  `json:"enabled" api:"required"`
 	// Current custom-domain setup progress and next action.
@@ -478,6 +486,7 @@ type CustomDomainReconcileCertificateResponseSetup struct {
 		CertificateActive respjson.Field
 		CertificateStatus respjson.Field
 		CreatedAt         respjson.Field
+		DomainLimit       respjson.Field
 		Domains           respjson.Field
 		Enabled           respjson.Field
 		SetupStatus       respjson.Field
@@ -558,8 +567,9 @@ func (r *CustomDomainReconcileCertificateResponseSetupSetupStatus) UnmarshalJSON
 }
 
 type CustomDomainReplaceParams struct {
-	// Replacement list of up to 10 custom domains. An empty list removes all custom
-	// domains. Domains under oursprivacy.com are rejected.
+	// Replacement list of up to 99 custom domains, subject to the account's
+	// domainLimit (10 by default). An empty list removes all custom domains. Domains
+	// under oursprivacy.com are rejected.
 	Domains []string `json:"domains,omitzero" api:"required"`
 	paramObj
 }

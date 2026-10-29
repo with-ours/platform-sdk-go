@@ -36,6 +36,19 @@ func NewWebAnalyticsService(opts ...option.RequestOption) (r WebAnalyticsService
 	return
 }
 
+// Read a fixed Overview report for up to 60 inclusive UTC days. TRAFFIC measures
+// visitors with page views and page views; BEHAVIOR measures tracked clicks, dead
+// clicks, and rage clicks. Both include web sources only and use the same counting
+// and bot/test exclusions as Insights. Requires Analytics access and
+// web-analytics:view; no custom-variable permission is required. Requires API-key
+// scope or current OAuth user permission: web-analytics:view
+func (r *WebAnalyticsService) OverviewInsight(ctx context.Context, query WebAnalyticsOverviewInsightParams, opts ...option.RequestOption) (res *WebAnalyticsOverviewInsightResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/web-analytics/overview-insight"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
 // Return privacy-first traffic metrics and a timeseries for the requested date
 // range. Filter by source, geography, page, campaign, device, or other supported
 // dimensions with the JSON-encoded `filters` query parameter. Requires API-key
@@ -105,6 +118,178 @@ func (r *WebAnalyticsService) PathExplorer(ctx context.Context, query WebAnalyti
 	path := "rest/v1/web-analytics/path-explorer"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
+}
+
+type WebAnalyticsOverviewInsightResponse struct {
+	// Any of "clickhouse".
+	Engine WebAnalyticsOverviewInsightResponseEngine `json:"engine" api:"required"`
+	// Saved report identifier; null for previews.
+	ReportID string `json:"reportId" api:"required" format:"uuid"`
+	// Saved report revision; null for previews.
+	Revision string                                   `json:"revision" api:"required" format:"uuid"`
+	Scope    WebAnalyticsOverviewInsightResponseScope `json:"scope" api:"required"`
+	// Any of 1.
+	SemanticVersion   float64                                     `json:"semanticVersion" api:"required"`
+	Series            []WebAnalyticsOverviewInsightResponseSeries `json:"series" api:"required"`
+	SourceLimitations []string                                    `json:"sourceLimitations" api:"required"`
+	SourcePolicy      string                                      `json:"sourcePolicy" api:"required"`
+	SourceRevision    string                                      `json:"sourceRevision" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Engine            respjson.Field
+		ReportID          respjson.Field
+		Revision          respjson.Field
+		Scope             respjson.Field
+		SemanticVersion   respjson.Field
+		Series            respjson.Field
+		SourceLimitations respjson.Field
+		SourcePolicy      respjson.Field
+		SourceRevision    respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebAnalyticsOverviewInsightResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsOverviewInsightResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebAnalyticsOverviewInsightResponseEngine string
+
+const (
+	WebAnalyticsOverviewInsightResponseEngineClickhouse WebAnalyticsOverviewInsightResponseEngine = "clickhouse"
+)
+
+type WebAnalyticsOverviewInsightResponseScope struct {
+	Cumulative bool      `json:"cumulative" api:"required"`
+	ExecutedAt time.Time `json:"executedAt" api:"required" format:"date-time"`
+	From       string    `json:"from" api:"required"`
+	// Any of "day", "week", "month".
+	Interval string `json:"interval" api:"required"`
+	// Any of "unknown".
+	SourceCompleteness string `json:"sourceCompleteness" api:"required"`
+	// Any of "UTC".
+	TimeZone   string                                             `json:"timeZone" api:"required"`
+	To         string                                             `json:"to" api:"required"`
+	Comparison WebAnalyticsOverviewInsightResponseScopeComparison `json:"comparison" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Cumulative         respjson.Field
+		ExecutedAt         respjson.Field
+		From               respjson.Field
+		Interval           respjson.Field
+		SourceCompleteness respjson.Field
+		TimeZone           respjson.Field
+		To                 respjson.Field
+		Comparison         respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebAnalyticsOverviewInsightResponseScope) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsOverviewInsightResponseScope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebAnalyticsOverviewInsightResponseScopeComparison struct {
+	From string `json:"from" api:"required"`
+	// Any of "previous_period", "previous_year", "custom".
+	Kind string `json:"kind" api:"required"`
+	To   string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		Kind        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebAnalyticsOverviewInsightResponseScopeComparison) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsOverviewInsightResponseScopeComparison) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebAnalyticsOverviewInsightResponseSeries struct {
+	// Any of "event_count", "unique_visitors", "sum", "average".
+	Aggregation     string                                                    `json:"aggregation" api:"required"`
+	BreakdownValues []WebAnalyticsOverviewInsightResponseSeriesBreakdownValue `json:"breakdownValues" api:"required"`
+	// Any of "previous_period", "previous_year", "custom".
+	Comparison string                                           `json:"comparison" api:"required"`
+	Key        string                                           `json:"key" api:"required"`
+	Label      string                                           `json:"label" api:"required"`
+	MetricID   string                                           `json:"metricId" api:"required" format:"uuid"`
+	Points     []WebAnalyticsOverviewInsightResponseSeriesPoint `json:"points" api:"required"`
+	RangeValue float64                                          `json:"rangeValue" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Aggregation     respjson.Field
+		BreakdownValues respjson.Field
+		Comparison      respjson.Field
+		Key             respjson.Field
+		Label           respjson.Field
+		MetricID        respjson.Field
+		Points          respjson.Field
+		RangeValue      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebAnalyticsOverviewInsightResponseSeries) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsOverviewInsightResponseSeries) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebAnalyticsOverviewInsightResponseSeriesBreakdownValue struct {
+	Property string `json:"property" api:"required"`
+	Value    string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Property    respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebAnalyticsOverviewInsightResponseSeriesBreakdownValue) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsOverviewInsightResponseSeriesBreakdownValue) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebAnalyticsOverviewInsightResponseSeriesPoint struct {
+	BucketEnd   time.Time `json:"bucketEnd" api:"required" format:"date-time"`
+	BucketStart time.Time `json:"bucketStart" api:"required" format:"date-time"`
+	Cumulative  float64   `json:"cumulative" api:"required"`
+	IsPartial   bool      `json:"isPartial" api:"required"`
+	Raw         float64   `json:"raw" api:"required"`
+	Smoothed    float64   `json:"smoothed" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BucketEnd   respjson.Field
+		BucketStart respjson.Field
+		Cumulative  respjson.Field
+		IsPartial   respjson.Field
+		Raw         respjson.Field
+		Smoothed    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebAnalyticsOverviewInsightResponseSeriesPoint) RawJSON() string { return r.JSON.raw }
+func (r *WebAnalyticsOverviewInsightResponseSeriesPoint) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type WebAnalyticsOverviewResponse struct {
@@ -408,6 +593,35 @@ func (r *WebAnalyticsPathExplorerResponseStep) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WebAnalyticsOverviewInsightParams struct {
+	// First included UTC calendar day (YYYY-MM-DD).
+	From time.Time `query:"from" api:"required" format:"date" json:"-"`
+	// Built-in traffic or click-behavior report.
+	//
+	// Any of "TRAFFIC", "BEHAVIOR".
+	Preset WebAnalyticsOverviewInsightParamsPreset `query:"preset,omitzero" api:"required" json:"-"`
+	// Last included UTC calendar day, at most 60 days including from.
+	To time.Time `query:"to" api:"required" format:"date" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [WebAnalyticsOverviewInsightParams]'s query parameters as
+// `url.Values`.
+func (r WebAnalyticsOverviewInsightParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// Built-in traffic or click-behavior report.
+type WebAnalyticsOverviewInsightParamsPreset string
+
+const (
+	WebAnalyticsOverviewInsightParamsPresetTraffic  WebAnalyticsOverviewInsightParamsPreset = "TRAFFIC"
+	WebAnalyticsOverviewInsightParamsPresetBehavior WebAnalyticsOverviewInsightParamsPreset = "BEHAVIOR"
+)
+
 type WebAnalyticsOverviewParams struct {
 	// Inclusive lower bound of the analysis window as `YYYY-MM-DD`.
 	From time.Time `query:"from" api:"required" format:"date" json:"-"`
@@ -423,12 +637,7 @@ type WebAnalyticsOverviewParams struct {
 	To time.Time `query:"to" api:"required" format:"date" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 filters. Dimensions: `page`,
-	// `entry_page`, `exit_page`, `source`, `medium`, `campaign`, `content`, `term`,
-	// `referrer`, `country`, `region`, `city`, `device`, `browser`, `os`. Each filter
-	// has a dimension, optional operator (`IS`, `IS_NOT`, `CONTAINS`, `NOT_CONTAINS`;
-	// defaults to `IS`), and one or more values. Example:
-	// `[{"dimension":"country","values":["United States"]}]`.
+	// JSON-encoded query input.
 	Filters param.Opt[string] `query:"filters,omitzero" json:"-"`
 	// Optional ISO timestamp used as the lower bound for realtime queries.
 	RealtimeFrom param.Opt[time.Time] `query:"realtimeFrom,omitzero" format:"date-time" json:"-"`
@@ -477,12 +686,7 @@ type WebAnalyticsSourcesParams struct {
 	To time.Time `query:"to" api:"required" format:"date" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 filters. Dimensions: `page`,
-	// `entry_page`, `exit_page`, `source`, `medium`, `campaign`, `content`, `term`,
-	// `referrer`, `country`, `region`, `city`, `device`, `browser`, `os`. Each filter
-	// has a dimension, optional operator (`IS`, `IS_NOT`, `CONTAINS`, `NOT_CONTAINS`;
-	// defaults to `IS`), and one or more values. Example:
-	// `[{"dimension":"country","values":["United States"]}]`.
+	// JSON-encoded query input.
 	Filters param.Opt[string] `query:"filters,omitzero" json:"-"`
 	// Optional web source UUID. Omit to aggregate all web sources in the account.
 	WebSourceID param.Opt[string] `query:"webSourceId,omitzero" format:"uuid" json:"-"`
@@ -518,12 +722,7 @@ type WebAnalyticsPagesParams struct {
 	View WebAnalyticsPagesParamsView `query:"view,omitzero" api:"required" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 filters. Dimensions: `page`,
-	// `entry_page`, `exit_page`, `source`, `medium`, `campaign`, `content`, `term`,
-	// `referrer`, `country`, `region`, `city`, `device`, `browser`, `os`. Each filter
-	// has a dimension, optional operator (`IS`, `IS_NOT`, `CONTAINS`, `NOT_CONTAINS`;
-	// defaults to `IS`), and one or more values. Example:
-	// `[{"dimension":"country","values":["United States"]}]`.
+	// JSON-encoded query input.
 	Filters param.Opt[string] `query:"filters,omitzero" json:"-"`
 	// Optional web source UUID. Omit to aggregate all web sources in the account.
 	WebSourceID param.Opt[string] `query:"webSourceId,omitzero" format:"uuid" json:"-"`
@@ -556,12 +755,7 @@ type WebAnalyticsLocationsParams struct {
 	To time.Time `query:"to" api:"required" format:"date" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 filters. Dimensions: `page`,
-	// `entry_page`, `exit_page`, `source`, `medium`, `campaign`, `content`, `term`,
-	// `referrer`, `country`, `region`, `city`, `device`, `browser`, `os`. Each filter
-	// has a dimension, optional operator (`IS`, `IS_NOT`, `CONTAINS`, `NOT_CONTAINS`;
-	// defaults to `IS`), and one or more values. Example:
-	// `[{"dimension":"country","values":["United States"]}]`.
+	// JSON-encoded query input.
 	Filters param.Opt[string] `query:"filters,omitzero" json:"-"`
 	// Optional web source UUID. Omit to aggregate all web sources in the account.
 	WebSourceID param.Opt[string] `query:"webSourceId,omitzero" format:"uuid" json:"-"`
@@ -594,12 +788,7 @@ type WebAnalyticsDevicesParams struct {
 	To time.Time `query:"to" api:"required" format:"date" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 filters. Dimensions: `page`,
-	// `entry_page`, `exit_page`, `source`, `medium`, `campaign`, `content`, `term`,
-	// `referrer`, `country`, `region`, `city`, `device`, `browser`, `os`. Each filter
-	// has a dimension, optional operator (`IS`, `IS_NOT`, `CONTAINS`, `NOT_CONTAINS`;
-	// defaults to `IS`), and one or more values. Example:
-	// `[{"dimension":"country","values":["United States"]}]`.
+	// JSON-encoded query input.
 	Filters param.Opt[string] `query:"filters,omitzero" json:"-"`
 	// Optional web source UUID. Omit to aggregate all web sources in the account.
 	WebSourceID param.Opt[string] `query:"webSourceId,omitzero" format:"uuid" json:"-"`
@@ -641,19 +830,13 @@ func (r WebAnalyticsCurrentVisitorsParams) URLQuery() (v url.Values, err error) 
 type WebAnalyticsPathExplorerParams struct {
 	// Inclusive lower bound of the analysis window as `YYYY-MM-DD`.
 	From time.Time `query:"from" api:"required" format:"date" json:"-"`
-	// JSON-encoded ordered path of opaque path explorer step keys. Use an empty array
-	// to request first-column candidates.
+	// JSON-encoded query input.
 	Path string `query:"path" api:"required" json:"-"`
 	// Inclusive upper bound of the analysis window as `YYYY-MM-DD`.
 	To time.Time `query:"to" api:"required" format:"date" json:"-"`
 	// Exclude detected bot sessions. Defaults to true.
 	ExcludeBots param.Opt[bool] `query:"excludeBots,omitzero" json:"-"`
-	// Optional JSON-encoded array of up to 20 cohort filters. Supports web analytics
-	// dimensions plus `event_name`, `ep_currency`, `ep_appointment_id`,
-	// `ep_appointment_status`, `ep_service_line`, `ep_provider_id`, `ep_location_id`,
-	// `ep_booking_channel`, `ep_revenue_type`, `ep_call_outcome`, and `ep_staff_id`.
-	// Each filter has a dimension, optional operator (`IS`, `IS_NOT`, `CONTAINS`,
-	// `NOT_CONTAINS`; defaults to `IS`), and one or more values.
+	// JSON-encoded query input.
 	Filters param.Opt[string] `query:"filters,omitzero" json:"-"`
 	Limit   param.Opt[int64]  `query:"limit,omitzero" json:"-"`
 	Search  param.Opt[string] `query:"search,omitzero" json:"-"`

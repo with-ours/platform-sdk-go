@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
 	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
@@ -144,6 +145,21 @@ func (r *ConsentSettingService) Analytics(ctx context.Context, id string, query 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics", url.PathEscape(id))
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// Returns daily banner reach, explicit opt-ins and opt-outs, dismissal events, and
+// consent rates across the account. Includes historical events without a
+// consent-setting ID. Visitor totals are deduplicated across settings and dates;
+// dismissals count events. Rates use the larger of banner reach or opt-ins plus
+// opt-outs plus dismissals as their denominator, matching Consent Analytics.
+// Requires Analytics access and report:consent-analytics. Limited to 60 included
+// UTC calendar days. Requires API-key scope or current OAuth user permission:
+// report:consent-analytics
+func (r *ConsentSettingService) Overview(ctx context.Context, query ConsentSettingOverviewParams, opts ...option.RequestOption) (res *ConsentSettingOverviewResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/consent-settings/analytics-overview"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -8366,6 +8382,98 @@ func (r *ConsentSettingAnalyticsResponseTotals) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ConsentSettingOverviewResponse struct {
+	Items []ConsentSettingOverviewResponseItem `json:"items" api:"required"`
+	// Whole-window counts; do not sum daily unique visitors.
+	Totals ConsentSettingOverviewResponseTotals `json:"totals" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Items       respjson.Field
+		Totals      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingOverviewResponse) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingOverviewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConsentSettingOverviewResponseItem struct {
+	// Unique visitors shown the banner.
+	BannerViews int64 `json:"bannerViews" api:"required"`
+	// Banner dismissal events.
+	CloseIconClicks int64     `json:"closeIconClicks" api:"required"`
+	DateTime        time.Time `json:"dateTime" api:"required" format:"date-time"`
+	// Unique visitors who accepted all.
+	ExplicitOptIns int64 `json:"explicitOptIns" api:"required"`
+	// Unique visitors who accepted necessary categories only.
+	ExplicitOptOuts int64 `json:"explicitOptOuts" api:"required"`
+	// Opt-in percentage using the Consent Analytics denominator.
+	OptInRate float64 `json:"optInRate" api:"required"`
+	// Opt-out percentage using the Consent Analytics denominator.
+	OptOutRate    float64   `json:"optOutRate" api:"required"`
+	PartialPeriod bool      `json:"partialPeriod" api:"required"`
+	PeriodFrom    time.Time `json:"periodFrom" api:"required" format:"date"`
+	PeriodTo      time.Time `json:"periodTo" api:"required" format:"date"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews     respjson.Field
+		CloseIconClicks respjson.Field
+		DateTime        respjson.Field
+		ExplicitOptIns  respjson.Field
+		ExplicitOptOuts respjson.Field
+		OptInRate       respjson.Field
+		OptOutRate      respjson.Field
+		PartialPeriod   respjson.Field
+		PeriodFrom      respjson.Field
+		PeriodTo        respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingOverviewResponseItem) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingOverviewResponseItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Whole-window counts; do not sum daily unique visitors.
+type ConsentSettingOverviewResponseTotals struct {
+	// Unique visitors shown the banner.
+	BannerViews int64 `json:"bannerViews" api:"required"`
+	// Banner dismissal events.
+	CloseIconClicks int64 `json:"closeIconClicks" api:"required"`
+	// Unique visitors who accepted all.
+	ExplicitOptIns int64 `json:"explicitOptIns" api:"required"`
+	// Unique visitors who accepted necessary categories only.
+	ExplicitOptOuts int64 `json:"explicitOptOuts" api:"required"`
+	// Opt-in percentage using the Consent Analytics denominator.
+	OptInRate float64 `json:"optInRate" api:"required"`
+	// Opt-out percentage using the Consent Analytics denominator.
+	OptOutRate float64 `json:"optOutRate" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BannerViews     respjson.Field
+		CloseIconClicks respjson.Field
+		ExplicitOptIns  respjson.Field
+		ExplicitOptOuts respjson.Field
+		OptInRate       respjson.Field
+		OptOutRate      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConsentSettingOverviewResponseTotals) RawJSON() string { return r.JSON.raw }
+func (r *ConsentSettingOverviewResponseTotals) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ConsentSettingAnalyticsMonthlyResponse struct {
 	Items []ConsentSettingAnalyticsMonthlyResponseItem `json:"items" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -10823,6 +10931,23 @@ const (
 	ConsentSettingAnalyticsParamsGranularityMonthly ConsentSettingAnalyticsParamsGranularity = "MONTHLY"
 	ConsentSettingAnalyticsParamsGranularityWeekly  ConsentSettingAnalyticsParamsGranularity = "WEEKLY"
 )
+
+type ConsentSettingOverviewParams struct {
+	// First included UTC calendar day (YYYY-MM-DD).
+	From time.Time `query:"from" api:"required" format:"date" json:"-"`
+	// Last included UTC calendar day, at most 60 days including from.
+	To time.Time `query:"to" api:"required" format:"date" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [ConsentSettingOverviewParams]'s query parameters as
+// `url.Values`.
+func (r ConsentSettingOverviewParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
 
 type ConsentSettingAnalyticsMonthlyParams struct {
 	// Inclusive lower bound of the analytics window, as a UTC calendar day in
