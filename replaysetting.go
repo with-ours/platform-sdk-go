@@ -121,7 +121,7 @@ func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...op
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/replay-settings/%s", id)
+	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
