@@ -196,7 +196,7 @@ func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query
 // Requires API-key scope or current OAuth user permission: version:find
 func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, query VersionStatusParams, opts ...option.RequestOption) (res *VersionStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("rest/v1/versions/%v/status", id)
+	path := fmt.Sprintf("rest/v1/versions/%v/status", url.PathEscape(string(id)))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -219,7 +219,7 @@ func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, q
 // OAuth user permission: version:publish
 func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, body VersionRevertParams, opts ...option.RequestOption) (res *VersionRevertResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("rest/v1/versions/%v/revert", id)
+	path := fmt.Sprintf("rest/v1/versions/%v/revert", url.PathEscape(string(id)))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -234,7 +234,7 @@ func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, b
 // Requires API-key scope or current OAuth user permission: version:publish
 func (r *VersionService) Abandon(ctx context.Context, id VersionAbandonParamsID, opts ...option.RequestOption) (res *VersionAbandonResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("rest/v1/versions/%v/abandon", id)
+	path := fmt.Sprintf("rest/v1/versions/%v/abandon", url.PathEscape(string(id)))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
