@@ -703,7 +703,7 @@ type ExperimentListResponseAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -1540,7 +1540,7 @@ type ExperimentListResponseMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentListResponseMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentListResponseMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -2352,7 +2352,7 @@ type ExperimentListResponseMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentListResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentListResponseMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -3588,7 +3588,7 @@ type ExperimentNewResponseAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -4425,7 +4425,7 @@ type ExperimentNewResponseMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentNewResponseMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentNewResponseMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -5237,7 +5237,7 @@ type ExperimentNewResponseMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentNewResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentNewResponseMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -6473,7 +6473,7 @@ type ExperimentGetResponseAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -7310,7 +7310,7 @@ type ExperimentGetResponseMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentGetResponseMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentGetResponseMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -8122,7 +8122,7 @@ type ExperimentGetResponseMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentGetResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentGetResponseMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -9358,7 +9358,7 @@ type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -10197,7 +10197,7 @@ type ExperimentUpdateResponseMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentUpdateResponseMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentUpdateResponseMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -11009,7 +11009,7 @@ type ExperimentUpdateResponseMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -12249,7 +12249,7 @@ type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -13088,7 +13088,7 @@ type ExperimentDuplicateResponseMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -13902,7 +13902,7 @@ type ExperimentDuplicateResponseMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -15020,7 +15020,7 @@ type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcher struct 
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -15859,7 +15859,7 @@ type ExperimentStartResponseExperimentMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -16675,7 +16675,7 @@ type ExperimentStartResponseExperimentMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -17796,7 +17796,7 @@ type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -18635,7 +18635,7 @@ type ExperimentStopResponseExperimentMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -19451,7 +19451,7 @@ type ExperimentStopResponseExperimentMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -20574,7 +20574,7 @@ type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcher struc
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -21413,7 +21413,7 @@ type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -22229,7 +22229,7 @@ type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -23356,7 +23356,7 @@ type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcher st
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -24195,7 +24195,7 @@ type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -25011,7 +25011,7 @@ type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -26115,7 +26115,7 @@ type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -26954,7 +26954,7 @@ type ExperimentWinnerResponseMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentWinnerResponseMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentWinnerResponseMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -27766,7 +27766,7 @@ type ExperimentWinnerResponseMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -28884,7 +28884,7 @@ type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcher struct 
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -29723,7 +29723,7 @@ type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -30539,7 +30539,7 @@ type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -31660,7 +31660,7 @@ type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcher struct
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter"`
+	Filter ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -32499,7 +32499,7 @@ type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -33315,7 +33315,7 @@ type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher struct {
 	// Event name required by this OR branch.
 	EventName string `json:"eventName" api:"required"`
 	// Versioned analytics filter using catalog property IDs and operators.
-	Filter ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter"`
+	Filter ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field

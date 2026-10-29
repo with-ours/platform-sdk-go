@@ -1146,7 +1146,7 @@ type DashboardNewResponse struct {
 	Description string `json:"description" api:"nullable"`
 	// Shared analytics filter, combined with Insight report filters or Funnel and
 	// Journey entry filters. Null clears it; report-specific filters remain in effect.
-	Filter DashboardNewResponseFilter `json:"filter"`
+	Filter DashboardNewResponseFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -2515,7 +2515,7 @@ type DashboardGetResponse struct {
 	Description string `json:"description" api:"nullable"`
 	// Shared analytics filter, combined with Insight report filters or Funnel and
 	// Journey entry filters. Null clears it; report-specific filters remain in effect.
-	Filter DashboardGetResponseFilter `json:"filter"`
+	Filter DashboardGetResponseFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -3884,7 +3884,7 @@ type DashboardUpdateResponse struct {
 	Description string `json:"description" api:"nullable"`
 	// Shared analytics filter, combined with Insight report filters or Funnel and
 	// Journey entry filters. Null clears it; report-specific filters remain in effect.
-	Filter DashboardUpdateResponseFilter `json:"filter"`
+	Filter DashboardUpdateResponseFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -5293,7 +5293,7 @@ type DashboardDuplicateResponse struct {
 	Description string `json:"description" api:"nullable"`
 	// Shared analytics filter, combined with Insight report filters or Funnel and
 	// Journey entry filters. Null clears it; report-specific filters remain in effect.
-	Filter DashboardDuplicateResponseFilter `json:"filter"`
+	Filter DashboardDuplicateResponseFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
