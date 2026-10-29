@@ -95,7 +95,7 @@ func (r *DataGovernanceService) Get(ctx context.Context, id string, opts ...opti
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/data-governance/%s", id)
+	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -136,7 +136,7 @@ func (r *DataGovernanceService) Delete(ctx context.Context, id string, opts ...o
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/data-governance/%s", id)
+	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

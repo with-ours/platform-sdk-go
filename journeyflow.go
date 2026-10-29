@@ -87,7 +87,7 @@ func (r *JourneyFlowService) Get(ctx context.Context, id string, opts ...option.
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/journey-flows/%s", id)
+	path := fmt.Sprintf("rest/v1/journey-flows/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -103,7 +103,7 @@ func (r *JourneyFlowService) Update(ctx context.Context, id string, body Journey
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/journey-flows/%s", id)
+	path := fmt.Sprintf("rest/v1/journey-flows/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -117,7 +117,7 @@ func (r *JourneyFlowService) Delete(ctx context.Context, id string, body Journey
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/journey-flows/%s", id)
+	path := fmt.Sprintf("rest/v1/journey-flows/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -143,7 +143,7 @@ func (r *JourneyFlowService) Results(ctx context.Context, id string, query Journ
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/journey-flows/%s/result", id)
+	path := fmt.Sprintf("rest/v1/journey-flows/%s/result", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -160,7 +160,7 @@ func (r *JourneyFlowService) Export(ctx context.Context, id string, query Journe
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/journey-flows/%s/export", id)
+	path := fmt.Sprintf("rest/v1/journey-flows/%s/export", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

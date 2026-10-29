@@ -89,7 +89,7 @@ func (r *InsightService) Get(ctx context.Context, id string, opts ...option.Requ
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/insights/%s", id)
+	path := fmt.Sprintf("rest/v1/insights/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -104,7 +104,7 @@ func (r *InsightService) Update(ctx context.Context, id string, body InsightUpda
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/insights/%s", id)
+	path := fmt.Sprintf("rest/v1/insights/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -118,7 +118,7 @@ func (r *InsightService) Delete(ctx context.Context, id string, body InsightDele
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/insights/%s", id)
+	path := fmt.Sprintf("rest/v1/insights/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -143,7 +143,7 @@ func (r *InsightService) Results(ctx context.Context, id string, query InsightRe
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/insights/%s/result", id)
+	path := fmt.Sprintf("rest/v1/insights/%s/result", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
