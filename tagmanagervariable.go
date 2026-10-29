@@ -91,7 +91,7 @@ func (r *TagManagerVariableService) Get(ctx context.Context, id string, opts ...
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", id)
+	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -107,7 +107,7 @@ func (r *TagManagerVariableService) Update(ctx context.Context, id string, body 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", id)
+	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -123,7 +123,7 @@ func (r *TagManagerVariableService) Delete(ctx context.Context, id string, opts 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", id)
+	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", url.PathEscape(id))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
