@@ -174,7 +174,7 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 //     current OAuth user permission: version:find
 func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query VersionDiffParams, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
-	path := fmt.Sprintf("rest/v1/versions/%v/diff", id)
+	path := fmt.Sprintf("rest/v1/versions/%v/diff", url.PathEscape(string(id)))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
