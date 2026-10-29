@@ -39,14 +39,13 @@ func NewDataGovernanceService(opts ...option.RequestOption) (r DataGovernanceSer
 	return
 }
 
-// List the data-governance record(s) on this account. Each account has at most one
-// record, so this list returns either an empty array or a single entity. Cursor
-// pagination is exposed for consistency with other list endpoints but is rarely
-// meaningful here. Data governance is the second stage of the dispatch flow
-// (Source → Allowed Events → Data Governance → Mappings → Destination) — it
-// evaluates each event against the configured category logic and stops dispatch to
-// the destinations on any matching category. Requires API-key scope or current
-// OAuth user permission: globalDispatch:list
+// List data-governance records as { entities, pagination }. Supports limit and
+// cursor; pass pagination.nextCursor to retrieve the next page. Records are
+// ordered newest first, with stable id ordering for equal creation times. Each
+// account currently has at most one record, so entities is empty or contains one
+// record. Categories stop dispatch to their destinationIds when their logic
+// matches. Requires API-key scope or current OAuth user permission:
+// globalDispatch:list
 func (r *DataGovernanceService) List(ctx context.Context, query DataGovernanceListParams, opts ...option.RequestOption) (res *pagination.Cursor[DataGovernanceListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -64,14 +63,13 @@ func (r *DataGovernanceService) List(ctx context.Context, query DataGovernanceLi
 	return res, nil
 }
 
-// List the data-governance record(s) on this account. Each account has at most one
-// record, so this list returns either an empty array or a single entity. Cursor
-// pagination is exposed for consistency with other list endpoints but is rarely
-// meaningful here. Data governance is the second stage of the dispatch flow
-// (Source → Allowed Events → Data Governance → Mappings → Destination) — it
-// evaluates each event against the configured category logic and stops dispatch to
-// the destinations on any matching category. Requires API-key scope or current
-// OAuth user permission: globalDispatch:list
+// List data-governance records as { entities, pagination }. Supports limit and
+// cursor; pass pagination.nextCursor to retrieve the next page. Records are
+// ordered newest first, with stable id ordering for equal creation times. Each
+// account currently has at most one record, so entities is empty or contains one
+// record. Categories stop dispatch to their destinationIds when their logic
+// matches. Requires API-key scope or current OAuth user permission:
+// globalDispatch:list
 func (r *DataGovernanceService) ListAutoPaging(ctx context.Context, query DataGovernanceListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[DataGovernanceListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -88,15 +86,16 @@ func (r *DataGovernanceService) New(ctx context.Context, body DataGovernanceNewP
 }
 
 // Fetch the data-governance record by id, including its categories (logic,
-// destinations, priority). Returns 404 when no record matches. Requires API-key
-// scope or current OAuth user permission: globalDispatch:find
+// destinations, priority). Returns the same 404 when the record is missing or
+// inaccessible. Requires API-key scope or current OAuth user permission:
+// globalDispatch:find
 func (r *DataGovernanceService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *DataGovernanceGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/data-governance/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -126,9 +125,10 @@ func (r *DataGovernanceService) Update(ctx context.Context, id string, body Data
 	return res, err
 }
 
-// Delete the data-governance record. After deletion, inbound events flow through
-// to destinations without category-level gating. Create a new record with POST to
-// reinstate governance. Requires API-key scope or current OAuth user permission:
+// Delete the data-governance record from the draft. Publish a version for inbound
+// events to flow through without category-level gating. Create a new record with
+// POST to reinstate governance. Returns the same 404 when the record is missing or
+// inaccessible. Requires API-key scope or current OAuth user permission:
 // globalDispatch:delete
 func (r *DataGovernanceService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *DataGovernanceDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -136,7 +136,7 @@ func (r *DataGovernanceService) Delete(ctx context.Context, id string, opts ...o
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/data-governance/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -149,9 +149,7 @@ type DataGovernanceListResponse struct {
 	// When false, data governance is configured but does not gate dispatch — inbound
 	// events flow through to destinations regardless of category logic.
 	IsEnabled bool `json:"isEnabled" api:"required"`
-	// Discriminator for the entity type. Always "dataGovernance" on the REST surface.
-	// The underlying storage discriminator is "globalDispatchCenter" — REST translates
-	// it on the way out.
+	// Discriminator for this resource. Always "dataGovernance".
 	Kind string `json:"kind" api:"required"`
 	// Governance categories in priority order (1..N).
 	Categories []DataGovernanceListResponseCategory `json:"categories" api:"nullable"`
@@ -505,9 +503,7 @@ type DataGovernanceNewResponse struct {
 	// When false, data governance is configured but does not gate dispatch — inbound
 	// events flow through to destinations regardless of category logic.
 	IsEnabled bool `json:"isEnabled" api:"required"`
-	// Discriminator for the entity type. Always "dataGovernance" on the REST surface.
-	// The underlying storage discriminator is "globalDispatchCenter" — REST translates
-	// it on the way out.
+	// Discriminator for this resource. Always "dataGovernance".
 	Kind string `json:"kind" api:"required"`
 	// Governance categories in priority order (1..N).
 	Categories []DataGovernanceNewResponseCategory `json:"categories" api:"nullable"`
@@ -861,9 +857,7 @@ type DataGovernanceGetResponse struct {
 	// When false, data governance is configured but does not gate dispatch — inbound
 	// events flow through to destinations regardless of category logic.
 	IsEnabled bool `json:"isEnabled" api:"required"`
-	// Discriminator for the entity type. Always "dataGovernance" on the REST surface.
-	// The underlying storage discriminator is "globalDispatchCenter" — REST translates
-	// it on the way out.
+	// Discriminator for this resource. Always "dataGovernance".
 	Kind string `json:"kind" api:"required"`
 	// Governance categories in priority order (1..N).
 	Categories []DataGovernanceGetResponseCategory `json:"categories" api:"nullable"`
@@ -1217,9 +1211,7 @@ type DataGovernanceUpdateResponse struct {
 	// When false, data governance is configured but does not gate dispatch — inbound
 	// events flow through to destinations regardless of category logic.
 	IsEnabled bool `json:"isEnabled" api:"required"`
-	// Discriminator for the entity type. Always "dataGovernance" on the REST surface.
-	// The underlying storage discriminator is "globalDispatchCenter" — REST translates
-	// it on the way out.
+	// Discriminator for this resource. Always "dataGovernance".
 	Kind string `json:"kind" api:"required"`
 	// Governance categories in priority order (1..N).
 	Categories []DataGovernanceUpdateResponseCategory `json:"categories" api:"nullable"`

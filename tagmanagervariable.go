@@ -81,15 +81,17 @@ func (r *TagManagerVariableService) New(ctx context.Context, body TagManagerVari
 	return res, err
 }
 
-// Find a single tag manager variable by ID. Requires API-key scope or current
-// OAuth user permission: tagManagers:find
+// Fetch one variable by id, including its type-specific `parameters`,
+// `defaultValue`, `lookUpTable`, and read-only `folderId`. A missing id and an id
+// this credential cannot access return the same 404. Requires API-key scope or
+// current OAuth user permission: tagManagers:find
 func (r *TagManagerVariableService) Get(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerVariableGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -105,20 +107,23 @@ func (r *TagManagerVariableService) Update(ctx context.Context, id string, body 
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
 
-// Delete a tag manager variable. Requires API-key scope or current OAuth user
-// permission: tagManagers:update
+// Permanently delete a variable and return `{ id, deleted }`. Tags and triggers
+// that reference it by name stop resolving it; use PATCH with `enabled: false` to
+// pause it instead. A missing id and an id this credential cannot access return
+// the same 404. Requires API-key scope or current OAuth user permission:
+// tagManagers:update
 func (r *TagManagerVariableService) Delete(ctx context.Context, id string, opts ...option.RequestOption) (res *TagManagerVariableDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
 		err = errors.New("missing required id parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", url.PathEscape(id))
+	path := fmt.Sprintf("rest/v1/tag-manager-variables/%s", id)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -152,8 +157,8 @@ type TagManagerVariableListResponse struct {
 	// `type`.
 	DefaultValue TagManagerVariableListResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
 	Enabled      bool                                            `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
-	// assign, or `null` to remove from its current folder.
+	// Folder this variable belongs to. Read-only here; assign or remove folder
+	// membership with `POST /tag-manager-asset-folders`.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable TagManagerVariableListResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
@@ -453,8 +458,8 @@ type TagManagerVariableNewResponse struct {
 	// `type`.
 	DefaultValue TagManagerVariableNewResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
 	Enabled      bool                                           `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
-	// assign, or `null` to remove from its current folder.
+	// Folder this variable belongs to. Read-only here; assign or remove folder
+	// membership with `POST /tag-manager-asset-folders`.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable TagManagerVariableNewResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
@@ -753,8 +758,8 @@ type TagManagerVariableGetResponse struct {
 	// `type`.
 	DefaultValue TagManagerVariableGetResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
 	Enabled      bool                                           `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
-	// assign, or `null` to remove from its current folder.
+	// Folder this variable belongs to. Read-only here; assign or remove folder
+	// membership with `POST /tag-manager-asset-folders`.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable TagManagerVariableGetResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
@@ -1053,8 +1058,8 @@ type TagManagerVariableUpdateResponse struct {
 	// `type`.
 	DefaultValue TagManagerVariableUpdateResponseDefaultValueUnion `json:"defaultValue" api:"nullable"`
 	Enabled      bool                                              `json:"enabled" api:"nullable"`
-	// Folder this variable belongs to. Settable via PATCH — send a folder UUID to
-	// assign, or `null` to remove from its current folder.
+	// Folder this variable belongs to. Read-only here; assign or remove folder
+	// membership with `POST /tag-manager-asset-folders`.
 	FolderID string `json:"folderId" api:"nullable"`
 	// Optional lookup table for `LookUpTable`-style variables. JSON value.
 	LookUpTable TagManagerVariableUpdateResponseLookUpTableUnion `json:"lookUpTable" api:"nullable"`
@@ -1344,8 +1349,10 @@ func (r *TagManagerVariableUpdateResponseLookUpTableArrayItemUnion) UnmarshalJSO
 }
 
 type TagManagerVariableDeleteResponse struct {
-	ID      string `json:"id" api:"required"`
-	Deleted bool   `json:"deleted" api:"required"`
+	// The id of the variable that was deleted.
+	ID string `json:"id" api:"required"`
+	// True when the variable was deleted.
+	Deleted bool `json:"deleted" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1622,11 +1629,11 @@ func (r *TagManagerVariableTypesResponseEntityFieldValidator) UnmarshalJSON(data
 }
 
 type TagManagerVariableListParams struct {
-	// Parent tag manager whose variables should be returned.
+	// Parent tag manager whose variables should be returned. Variables are always
+	// scoped to one tag manager; discover ids with `GET /tag-managers`.
 	TagManagerID string `query:"tagManagerId" api:"required" json:"-"`
 	// Maximum number of variables to return. Defaults to 25; values below 1 are
-	// clamped to 1 and values above 1000 are clamped to 1000. The web-app passes 1000
-	// to render the full workspace in one request.
+	// clamped to 1 and values above 1000 are clamped to 1000.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
 	// not decode or modify it. Malformed cursors return 400 Bad Request.

@@ -55,6 +55,9 @@ type Client struct {
 	PersonalizationProperties  PersonalizationPropertyService
 	CustomDomains              CustomDomainService
 	Analytics                  AnalyticsService
+	Dashboards                 DashboardService
+	ReportBranding             ReportBrandingService
+	Insights                   InsightService
 	JourneyFlows               JourneyFlowService
 	TestEvents                 TestEventService
 }
@@ -126,6 +129,9 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.PersonalizationProperties = NewPersonalizationPropertyService(opts...)
 	r.CustomDomains = NewCustomDomainService(opts...)
 	r.Analytics = NewAnalyticsService(opts...)
+	r.Dashboards = NewDashboardService(opts...)
+	r.ReportBranding = NewReportBrandingService(opts...)
+	r.Insights = NewInsightService(opts...)
 	r.JourneyFlows = NewJourneyFlowService(opts...)
 	r.TestEvents = NewTestEventService(opts...)
 
