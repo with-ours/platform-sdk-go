@@ -241,14 +241,18 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 // privacy policies and host coverage, a breakdown by risk and by category,
 // coverage (how many hosts are already covered by a CMP consent service or a
 // suppression rule vs. how many still need a decision), the new/removed host delta
-// versus the previous run, and up to 10 highest-risk hosts that still need a
-// decision. A null privacyPolicyUrl means that no policy was captured for the
-// hostname. Defaults to the latest run; pass `date` (an ISO-8601 timestamp; only
-// the calendar day is used to select the run) to read an earlier run. Clear a host
-// that needs a decision by adding it to a CMP consent service or creating a
-// suppression rule with `POST /rest/v1/web-scanner-rules`. When the scanner has no
-// completed runs, every count is 0 and `runDate` is null. Requires API-key scope
-// or current OAuth user permission: webScanner:find
+// versus the previous run, up to 10 highest-risk hosts that still need a decision,
+// the homepage consent check (which third parties were contacted before any
+// choice, after Reject all, and with Global Privacy Control on), and the
+// Content-Security-Policy gap for each first-party hostname. After a consent or
+// CSP fix, trigger a full scan with `POST /rest/v1/web-scanners/{id}/trigger` and
+// read this summary again to confirm it. A null privacyPolicyUrl means that no
+// policy was captured for the hostname. Defaults to the latest run; pass `date`
+// (an ISO-8601 timestamp; only the calendar day is used to select the run) to read
+// an earlier run. Clear a host that needs a decision by adding it to a CMP consent
+// service or creating a suppression rule with `POST /rest/v1/web-scanner-rules`.
+// When the scanner has no completed runs, every count is 0 and `runDate` is null.
+// Requires API-key scope or current OAuth user permission: webScanner:find
 func (r *WebScannerService) Summary(ctx context.Context, id string, query WebScannerSummaryParams, opts ...option.RequestOption) (res *WebScannerSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -1345,12 +1349,15 @@ func (r *WebScannerCookiesResponseLocalStorage) UnmarshalJSON(data []byte) error
 }
 
 type WebScannerSummaryResponse struct {
-	ByCategory        []WebScannerSummaryResponseByCategory `json:"byCategory" api:"required"`
-	CookieCount       int64                                 `json:"cookieCount" api:"required"`
-	CountsByRisk      WebScannerSummaryResponseCountsByRisk `json:"countsByRisk" api:"required"`
-	Coverage          WebScannerSummaryResponseCoverage     `json:"coverage" api:"required"`
-	HostCount         int64                                 `json:"hostCount" api:"required"`
-	LocalStorageCount int64                                 `json:"localStorageCount" api:"required"`
+	ByCategory   []WebScannerSummaryResponseByCategory `json:"byCategory" api:"required"`
+	CookieCount  int64                                 `json:"cookieCount" api:"required"`
+	CountsByRisk WebScannerSummaryResponseCountsByRisk `json:"countsByRisk" api:"required"`
+	Coverage     WebScannerSummaryResponseCoverage     `json:"coverage" api:"required"`
+	// Content-Security-Policy result for each crawled first-party hostname, most
+	// serious gap first.
+	Csp               []WebScannerSummaryResponseCsp `json:"csp" api:"required"`
+	HostCount         int64                          `json:"hostCount" api:"required"`
+	LocalStorageCount int64                          `json:"localStorageCount" api:"required"`
 	// Distinct privacy policies captured for first-party hostnames in the selected
 	// scan run, including the bounded visible policy text.
 	PrivacyPolicies    []WebScannerSummaryResponsePrivacyPolicy `json:"privacyPolicies" api:"required"`
@@ -1376,17 +1383,22 @@ type WebScannerSummaryResponse struct {
 	// machine-detectable subset of WCAG (~30-40%) — a high score is not a
 	// certification of full conformance; manual audit is still required. Null when the
 	// run audited no pages.
-	Accessibility    WebScannerSummaryResponseAccessibility `json:"accessibility" api:"nullable"`
-	CoverageRevision string                                 `json:"coverageRevision" api:"nullable"`
-	Delta            WebScannerSummaryResponseDelta         `json:"delta" api:"nullable"`
-	RunDate          string                                 `json:"runDate" api:"nullable"`
-	RunRevision      string                                 `json:"runRevision" api:"nullable"`
+	Accessibility WebScannerSummaryResponseAccessibility `json:"accessibility" api:"nullable"`
+	// Consent check for this run: the homepage loaded before any choice, after Reject
+	// all, after Accept all, and with Global Privacy Control on. Null when the run had
+	// no consent check.
+	ConsentProbe     WebScannerSummaryResponseConsentProbe `json:"consentProbe" api:"nullable"`
+	CoverageRevision string                                `json:"coverageRevision" api:"nullable"`
+	Delta            WebScannerSummaryResponseDelta        `json:"delta" api:"nullable"`
+	RunDate          string                                `json:"runDate" api:"nullable"`
+	RunRevision      string                                `json:"runRevision" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ByCategory         respjson.Field
 		CookieCount        respjson.Field
 		CountsByRisk       respjson.Field
 		Coverage           respjson.Field
+		Csp                respjson.Field
 		HostCount          respjson.Field
 		LocalStorageCount  respjson.Field
 		PrivacyPolicies    respjson.Field
@@ -1398,6 +1410,7 @@ type WebScannerSummaryResponse struct {
 		TopUncoveredHosts  respjson.Field
 		VendorCount        respjson.Field
 		Accessibility      respjson.Field
+		ConsentProbe       respjson.Field
 		CoverageRevision   respjson.Field
 		Delta              respjson.Field
 		RunDate            respjson.Field
@@ -1472,6 +1485,36 @@ type WebScannerSummaryResponseCoverage struct {
 // Returns the unmodified JSON received from the API
 func (r WebScannerSummaryResponseCoverage) RawJSON() string { return r.JSON.raw }
 func (r *WebScannerSummaryResponseCoverage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseCsp struct {
+	// Third-party domains contacted from this hostname that the policy does not allow.
+	DomainsNotInCsp []string `json:"domainsNotInCsp" api:"required"`
+	// Whether pages on this hostname sent a Content-Security-Policy.
+	HasCsp bool `json:"hasCsp" api:"required"`
+	// A crawled first-party hostname.
+	Hostname string `json:"hostname" api:"required"`
+	// The most serious policy gap, graded the same way as the dashboard and PDF
+	// report. Null when the policy allows every third-party domain the scan observed.
+	//
+	// Any of "no_policy", "missing_script_src", "missing_connect_src",
+	// "unallowed_domains".
+	Gap string `json:"gap" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DomainsNotInCsp respjson.Field
+		HasCsp          respjson.Field
+		Hostname        respjson.Field
+		Gap             respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseCsp) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseCsp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1766,6 +1809,103 @@ func (r WebScannerSummaryResponseAccessibilityTopViolationSampleNode) RawJSON() 
 	return r.JSON.raw
 }
 func (r *WebScannerSummaryResponseAccessibilityTopViolationSampleNode) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Consent check for this run: the homepage loaded before any choice, after Reject
+// all, after Accept all, and with Global Privacy Control on. Null when the run had
+// no consent check.
+type WebScannerSummaryResponseConsentProbe struct {
+	// Hosts contacted in a state where the visitor had not agreed. Empty when none
+	// were observed. The Ours Privacy consent script host is never listed, since the
+	// banner needs it; other contacted hosts may still be strictly necessary.
+	Findings []WebScannerSummaryResponseConsentProbeFinding `json:"findings" api:"required"`
+	// The page loaded in each consent state.
+	RequestedURL string `json:"requestedUrl" api:"required" format:"uri"`
+	// What each state captured. Empty until the check finishes.
+	States []WebScannerSummaryResponseConsentProbeState `json:"states" api:"required"`
+	// ours_consent_not_installed means the page has no Ours Privacy Consent
+	// Management, so the Reject all and Accept all states could not be driven; the
+	// baseline and gpc states are still captured. A failed check, or one where Ours
+	// Consent is not installed, is never a clean result.
+	//
+	// Any of "queued", "in_progress", "completed", "ours_consent_not_installed",
+	// "failed".
+	Status string `json:"status" api:"required"`
+	// Why the check failed, or why Reject all and Accept all could not be tested.
+	Cause       string `json:"cause" api:"nullable"`
+	CompletedAt string `json:"completedAt" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Findings     respjson.Field
+		RequestedURL respjson.Field
+		States       respjson.Field
+		Status       respjson.Field
+		Cause        respjson.Field
+		CompletedAt  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseConsentProbe) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseConsentProbe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseConsentProbeFinding struct {
+	Hostnames []string `json:"hostnames" api:"required"`
+	// tracker_before_consent: contacted before any choice; reject_not_honored:
+	// contacted after Reject all; gpc_not_honored: contacted with Global Privacy
+	// Control on.
+	//
+	// Any of "tracker_before_consent", "reject_not_honored", "gpc_not_honored".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Hostnames   respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseConsentProbeFinding) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseConsentProbeFinding) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerSummaryResponseConsentProbeState struct {
+	// Any of "completed", "ours_consent_not_installed", "failed".
+	Outcome string `json:"outcome" api:"required"`
+	// baseline is before any consent choice; reject_all and accept_all follow the
+	// matching banner choice; gpc loads with Global Privacy Control on.
+	//
+	// Any of "baseline", "reject_all", "accept_all", "gpc".
+	State       string   `json:"state" api:"required"`
+	Cause       string   `json:"cause" api:"nullable"`
+	CookieNames []string `json:"cookieNames" api:"nullable"`
+	// Third-party hosts contacted in this state.
+	RequestHostnames []string `json:"requestHostnames" api:"nullable"`
+	StorageKeys      []string `json:"storageKeys" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Outcome          respjson.Field
+		State            respjson.Field
+		Cause            respjson.Field
+		CookieNames      respjson.Field
+		RequestHostnames respjson.Field
+		StorageKeys      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerSummaryResponseConsentProbeState) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerSummaryResponseConsentProbeState) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

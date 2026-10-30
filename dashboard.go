@@ -240,7 +240,7 @@ type DashboardListResponse struct {
 	Description string `json:"description" api:"nullable"`
 	// Shared analytics filter, combined with Insight report filters or Funnel and
 	// Journey entry filters. Null clears it; report-specific filters remain in effect.
-	Filter DashboardListResponseFilter `json:"filter"`
+	Filter DashboardListResponseFilter `json:"filter" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -899,10 +899,10 @@ func (r *DashboardListResponseFilter) UnmarshalJSON(data []byte) error {
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type DashboardListResponseFilterFilterUnion struct {
 	// This field is from variant [DashboardListResponseFilterFilterObject].
-	Children []any  `json:"children"`
-	Kind     string `json:"kind"`
+	Children []DashboardListResponseFilterFilterObjectChildUnion `json:"children"`
+	Kind     string                                              `json:"kind"`
 	// This field is from variant [DashboardListResponseFilterFilterObject2].
-	Child any `json:"child"`
+	Child DashboardListResponseFilterFilterObject2ChildUnion `json:"child"`
 	// This field is from variant [DashboardListResponseFilterFilterObject3].
 	Operator string `json:"operator"`
 	// This field is from variant [DashboardListResponseFilterFilterObject3].
@@ -949,7 +949,7 @@ func (r *DashboardListResponseFilterFilterUnion) UnmarshalJSON(data []byte) erro
 }
 
 type DashboardListResponseFilterFilterObject struct {
-	Children []any `json:"children" api:"required"`
+	Children []DashboardListResponseFilterFilterObjectChildUnion `json:"children" api:"required"`
 	// Any of "and", "or".
 	Kind string `json:"kind" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -967,8 +967,244 @@ func (r *DashboardListResponseFilterFilterObject) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type DashboardListResponseFilterFilterObject2 struct {
+// DashboardListResponseFilterFilterObjectChildUnion contains all possible
+// properties and values from [DashboardListResponseFilterFilterObjectChildObject],
+// [DashboardListResponseFilterFilterObjectChildObject2],
+// [DashboardListResponseFilterFilterObjectChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type DashboardListResponseFilterFilterObjectChildUnion struct {
+	// This field is from variant [DashboardListResponseFilterFilterObjectChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObjectChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObjectChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObjectChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObjectChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObjectChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObjectChildObject3].
+	Value DashboardListResponseFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u DashboardListResponseFilterFilterObjectChildUnion) AsDashboardListResponseFilterFilterObjectChildObject() (v DashboardListResponseFilterFilterObjectChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildUnion) AsDashboardListResponseFilterFilterObjectChildObject2() (v DashboardListResponseFilterFilterObjectChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildUnion) AsDashboardListResponseFilterFilterObjectChildObject3() (v DashboardListResponseFilterFilterObjectChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DashboardListResponseFilterFilterObjectChildUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DashboardListResponseFilterFilterObjectChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObjectChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DashboardListResponseFilterFilterObjectChildObject) RawJSON() string { return r.JSON.raw }
+func (r *DashboardListResponseFilterFilterObjectChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObjectChildObject2 struct {
 	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DashboardListResponseFilterFilterObjectChildObject2) RawJSON() string { return r.JSON.raw }
+func (r *DashboardListResponseFilterFilterObjectChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObjectChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                        `json:"type"`
+	Value DashboardListResponseFilterFilterObjectChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DashboardListResponseFilterFilterObjectChildObject3) RawJSON() string { return r.JSON.raw }
+func (r *DashboardListResponseFilterFilterObjectChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DashboardListResponseFilterFilterObjectChildObject3ValueUnion contains all
+// possible properties and values from [string], [float64], [bool],
+// [[]DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfDashboardListResponseFilterFilterObjectChildObject3ValueArray]
+type DashboardListResponseFilterFilterObjectChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfDashboardListResponseFilterFilterObjectChildObject3ValueArray []DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                            struct {
+		OfString                                                        respjson.Field
+		OfFloat                                                         respjson.Field
+		OfBool                                                          respjson.Field
+		OfDashboardListResponseFilterFilterObjectChildObject3ValueArray respjson.Field
+		raw                                                             string
+	} `json:"-"`
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueUnion) AsDashboardListResponseFilterFilterObjectChildObject3ValueArray() (v []DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *DashboardListResponseFilterFilterObjectChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion contains
+// all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObject2 struct {
+	Child DashboardListResponseFilterFilterObject2ChildUnion `json:"child" api:"required"`
 	// Any of "not".
 	Kind string `json:"kind" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -983,6 +1219,244 @@ type DashboardListResponseFilterFilterObject2 struct {
 // Returns the unmodified JSON received from the API
 func (r DashboardListResponseFilterFilterObject2) RawJSON() string { return r.JSON.raw }
 func (r *DashboardListResponseFilterFilterObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DashboardListResponseFilterFilterObject2ChildUnion contains all possible
+// properties and values from
+// [DashboardListResponseFilterFilterObject2ChildObject],
+// [DashboardListResponseFilterFilterObject2ChildObject2],
+// [DashboardListResponseFilterFilterObject2ChildObject3].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type DashboardListResponseFilterFilterObject2ChildUnion struct {
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject].
+	Children []any  `json:"children"`
+	Kind     string `json:"kind"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject2].
+	Child any `json:"child"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject3].
+	Operator string `json:"operator"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject3].
+	Property string `json:"property"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject3].
+	Path []string `json:"path"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject3].
+	Type string `json:"type"`
+	// This field is from variant
+	// [DashboardListResponseFilterFilterObject2ChildObject3].
+	Value DashboardListResponseFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	JSON  struct {
+		Children respjson.Field
+		Kind     respjson.Field
+		Child    respjson.Field
+		Operator respjson.Field
+		Property respjson.Field
+		Path     respjson.Field
+		Type     respjson.Field
+		Value    respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildUnion) AsDashboardListResponseFilterFilterObject2ChildObject() (v DashboardListResponseFilterFilterObject2ChildObject) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildUnion) AsDashboardListResponseFilterFilterObject2ChildObject2() (v DashboardListResponseFilterFilterObject2ChildObject2) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildUnion) AsDashboardListResponseFilterFilterObject2ChildObject3() (v DashboardListResponseFilterFilterObject2ChildObject3) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DashboardListResponseFilterFilterObject2ChildUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *DashboardListResponseFilterFilterObject2ChildUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObject2ChildObject struct {
+	Children []any `json:"children" api:"required"`
+	// Any of "and", "or".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Children    respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DashboardListResponseFilterFilterObject2ChildObject) RawJSON() string { return r.JSON.raw }
+func (r *DashboardListResponseFilterFilterObject2ChildObject) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObject2ChildObject2 struct {
+	Child any `json:"child" api:"required"`
+	// Any of "not".
+	Kind string `json:"kind" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Child       respjson.Field
+		Kind        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DashboardListResponseFilterFilterObject2ChildObject2) RawJSON() string { return r.JSON.raw }
+func (r *DashboardListResponseFilterFilterObject2ChildObject2) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type DashboardListResponseFilterFilterObject2ChildObject3 struct {
+	// Any of "predicate".
+	Kind string `json:"kind" api:"required"`
+	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
+	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
+	// "exists", "missing", "is_null".
+	Operator string   `json:"operator" api:"required"`
+	Property string   `json:"property" api:"required"`
+	Path     []string `json:"path"`
+	// Any of "string", "number", "boolean".
+	Type  string                                                         `json:"type"`
+	Value DashboardListResponseFilterFilterObject2ChildObject3ValueUnion `json:"value"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Kind        respjson.Field
+		Operator    respjson.Field
+		Property    respjson.Field
+		Path        respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r DashboardListResponseFilterFilterObject2ChildObject3) RawJSON() string { return r.JSON.raw }
+func (r *DashboardListResponseFilterFilterObject2ChildObject3) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DashboardListResponseFilterFilterObject2ChildObject3ValueUnion contains all
+// possible properties and values from [string], [float64], [bool],
+// [[]DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool
+// OfDashboardListResponseFilterFilterObject2ChildObject3ValueArray]
+type DashboardListResponseFilterFilterObject2ChildObject3ValueUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	// This field will be present if the value is a
+	// [[]DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion]
+	// instead of an object.
+	OfDashboardListResponseFilterFilterObject2ChildObject3ValueArray []DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion `json:",inline"`
+	JSON                                                             struct {
+		OfString                                                         respjson.Field
+		OfFloat                                                          respjson.Field
+		OfBool                                                           respjson.Field
+		OfDashboardListResponseFilterFilterObject2ChildObject3ValueArray respjson.Field
+		raw                                                              string
+	} `json:"-"`
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueUnion) AsDashboardListResponseFilterFilterObject2ChildObject3ValueArray() (v []DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *DashboardListResponseFilterFilterObject2ChildObject3ValueUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion contains
+// all possible properties and values from [string], [float64], [bool].
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString OfFloat OfBool]
+type DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field will be present if the value is a [float64] instead of an object.
+	OfFloat float64 `json:",inline"`
+	// This field will be present if the value is a [bool] instead of an object.
+	OfBool bool `json:",inline"`
+	JSON   struct {
+		OfString respjson.Field
+		OfFloat  respjson.Field
+		OfBool   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion) AsString() (v string) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion) AsFloat() (v float64) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion) AsBool() (v bool) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion) RawJSON() string {
+	return u.JSON.raw
+}
+
+func (r *DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
