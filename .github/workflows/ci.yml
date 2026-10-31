@@ -30,7 +30,7 @@ jobs:
 
       - name: Run vet
         run: go vet ./...
-  test:
+  test-matrix:
     permissions:
       contents: read
     timeout-minutes: 10
@@ -58,3 +58,19 @@ jobs:
 
       - name: Run tests
         run: ./scripts/test
+
+  # Stable required-check name; matrix legs above include versions in their names.
+  test:
+    name: test
+    needs: [test-matrix]
+    if: always()
+    permissions: {}
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require all matrix legs
+        env:
+          RESULT: ${{ needs.test-matrix.result }}
+        run: |
+          echo "test-matrix: $RESULT"
+          [ "$RESULT" = "success" ]
