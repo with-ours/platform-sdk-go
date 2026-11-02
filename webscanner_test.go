@@ -327,7 +327,7 @@ func TestWebScannerCookiesWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.WebScanners.Cookies(
 		context.TODO(),
-		"id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		oursprivacy.WebScannerCookiesParams{
 			Date:   oursprivacy.Time(time.Now()),
 			Limit:  oursprivacy.Int(1),

@@ -223,6 +223,7 @@ func (r *WebScannerService) Findings(ctx context.Context, id string, query WebSc
 // used to select the run) to read an earlier run. Cookies paginate with `limit`
 // and `offset` (a documented exception to the cursor-pagination standard, since
 // each run is an immutable snapshot); local-storage entries are returned in full.
+// A missing id and an id this credential cannot access return the same 404.
 // Requires API-key scope or current OAuth user permission: webScanner:find
 func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebScannerCookiesParams, opts ...option.RequestOption) (res *WebScannerCookiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -2343,13 +2344,13 @@ func (r WebScannerFindingsParams) URLQuery() (v url.Values, err error) {
 }
 
 type WebScannerCookiesParams struct {
-	// Skip this many findings before returning. Use with `limit` for load-more paging.
+	// Skip this many cookies before returning. Use with `limit` for load-more paging.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
 	// used to select the run; the time component is ignored. Defaults to the most
 	// recent run when omitted.
 	Date param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
-	// Maximum number of findings to return. Defaults to 25; clamped to 1–100.
+	// Maximum number of cookies to return, from 1 to 100. Defaults to 25.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
