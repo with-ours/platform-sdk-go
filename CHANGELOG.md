@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.13.0 (2026-11-04)
+
+Full Changelog: [v2.12.0...v2.13.0](https://github.com/with-ours/platform-sdk-go/compare/v2.12.0...v2.13.0)
+
+### Features
+
+* **go:** require Go 1.26 or later
 ## 2.12.0 (2026-11-02)
 
 Full Changelog: [v2.11.0...v2.12.0](https://github.com/with-ours/platform-sdk-go/compare/v2.11.0...v2.12.0)
