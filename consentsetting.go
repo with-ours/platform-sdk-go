@@ -13,6 +13,7 @@ import (
 
 	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
 	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v2/internal/redact"
 	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/v2/option"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
@@ -69,6 +70,10 @@ func (r *ConsentSettingService) Get(ctx context.Context, id string, opts ...opti
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -88,6 +93,10 @@ func (r *ConsentSettingService) Replace(ctx context.Context, id string, body Con
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -107,6 +116,10 @@ func (r *ConsentSettingService) Update(ctx context.Context, id string, body Cons
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -120,6 +133,10 @@ func (r *ConsentSettingService) Delete(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -145,6 +162,10 @@ func (r *ConsentSettingService) Analytics(ctx context.Context, id string, query 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -177,6 +198,10 @@ func (r *ConsentSettingService) AnalyticsMonthly(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics-monthly", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -211,6 +236,10 @@ func (r *ConsentSettingService) PageAnalysis(ctx context.Context, id string, que
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s/page-analysis", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -230,6 +259,10 @@ func (r *ConsentSettingService) AnalyticsByRegion(ctx context.Context, id string
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/consent-settings/%s/analytics-by-region", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -8721,6 +8754,10 @@ func (r *ConsentSettingReplaceParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r ConsentSettingReplaceParams) Format(f fmt.State, verb rune) {
+	redact.WriteParams(f, r)
+}
+
 // The properties Label, Priority, Value are required.
 type ConsentSettingReplaceParamsCategory struct {
 	// Human-readable label shown next to the toggle in the preferences modal.
@@ -9817,6 +9854,10 @@ func (r ConsentSettingUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *ConsentSettingUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r ConsentSettingUpdateParams) Format(f fmt.State, verb rune) {
+	redact.WriteParams(f, r)
 }
 
 // The properties Label, Priority, Value are required.

@@ -5,9 +5,9 @@ package apierror
 import (
 	"fmt"
 	"net/http"
-	"net/http/httputil"
 
 	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
+	"github.com/with-ours/platform-sdk-go/v2/internal/redact"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
 )
 
@@ -33,18 +33,18 @@ func (r *Error) UnmarshalJSON(data []byte) error {
 
 func (r *Error) Error() string {
 	// Attempt to re-populate the response body
-	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL, r.Response.StatusCode, http.StatusText(r.Response.StatusCode), r.JSON.raw)
+	return fmt.Sprintf("%s %q: %d %s %s", r.Request.Method, r.Request.URL, r.Response.StatusCode, http.StatusText(r.Response.StatusCode), redact.String(r.JSON.raw))
 }
 
 func (r *Error) DumpRequest(body bool) []byte {
 	if r.Request.GetBody != nil {
 		r.Request.Body, _ = r.Request.GetBody()
 	}
-	out, _ := httputil.DumpRequestOut(r.Request, body)
+	out, _ := redact.DumpRequestOut(r.Request, body)
 	return out
 }
 
 func (r *Error) DumpResponse(body bool) []byte {
-	out, _ := httputil.DumpResponse(r.Response, body)
+	out, _ := redact.DumpResponse(r.Response, body)
 	return out
 }

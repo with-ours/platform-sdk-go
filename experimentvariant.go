@@ -87,6 +87,10 @@ func (r *ExperimentVariantService) Get(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-variants/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -100,6 +104,10 @@ func (r *ExperimentVariantService) Update(ctx context.Context, id string, body E
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-variants/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -113,6 +121,10 @@ func (r *ExperimentVariantService) Delete(ctx context.Context, id string, opts .
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-variants/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

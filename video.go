@@ -86,6 +86,10 @@ func (r *VideoService) Get(ctx context.Context, id string, opts ...option.Reques
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -100,6 +104,10 @@ func (r *VideoService) Update(ctx context.Context, id string, body VideoUpdatePa
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -113,6 +121,10 @@ func (r *VideoService) Delete(ctx context.Context, id string, opts ...option.Req
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -128,6 +140,10 @@ func (r *VideoService) Upload(ctx context.Context, id string, body VideoUploadPa
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/upload", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -142,6 +158,10 @@ func (r *VideoService) Transcript(ctx context.Context, id string, query VideoTra
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/transcript", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -157,6 +177,10 @@ func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body Vid
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/transcript", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -171,6 +195,10 @@ func (r *VideoService) RequestCaptionTranslation(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/translate", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -184,6 +212,10 @@ func (r *VideoService) CancelCaptionTranslation(ctx context.Context, id string, 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/cancel-translation", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -212,6 +244,10 @@ func (r *VideoService) AnalyticsTimeseries(ctx context.Context, id string, query
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/analytics", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

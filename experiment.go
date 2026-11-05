@@ -93,6 +93,10 @@ func (r *ExperimentService) Get(ctx context.Context, id string, opts ...option.R
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -114,6 +118,10 @@ func (r *ExperimentService) Update(ctx context.Context, id string, body Experime
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -127,6 +135,10 @@ func (r *ExperimentService) Delete(ctx context.Context, id string, opts ...optio
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -142,6 +154,10 @@ func (r *ExperimentService) Duplicate(ctx context.Context, id string, opts ...op
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/duplicate", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -161,6 +177,10 @@ func (r *ExperimentService) Start(ctx context.Context, id string, body Experimen
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/start", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -177,6 +197,10 @@ func (r *ExperimentService) Stop(ctx context.Context, id string, body Experiment
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/stop", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -193,6 +217,10 @@ func (r *ExperimentService) Rollout(ctx context.Context, id string, body Experim
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/rollout", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -208,6 +236,10 @@ func (r *ExperimentService) EndRollout(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/end-rollout", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -224,6 +256,10 @@ func (r *ExperimentService) Winner(ctx context.Context, id string, body Experime
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/winner", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -239,6 +275,10 @@ func (r *ExperimentService) Pause(ctx context.Context, id string, body Experimen
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/pause", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -253,6 +293,10 @@ func (r *ExperimentService) Resume(ctx context.Context, id string, body Experime
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/resume", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -268,6 +312,10 @@ func (r *ExperimentService) Results(ctx context.Context, id string, query Experi
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/results", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -288,6 +336,10 @@ func (r *ExperimentService) Analysis(ctx context.Context, id string, query Exper
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/analysis", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -309,6 +361,10 @@ func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, qu
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/results-time-series", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -326,6 +382,10 @@ func (r *ExperimentService) SessionReplays(ctx context.Context, id string, query
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiments/%s/session-replays", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

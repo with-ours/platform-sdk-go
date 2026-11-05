@@ -6,7 +6,7 @@
 
 <!-- x-release-please-end -->
 
-The Ours Privacy Platform Go library provides convenient access to the [Ours Privacy Platform REST API](https://docs.oursprivacy.com/docs/api)
+The Ours Privacy Platform Go library provides convenient access to the [Ours Privacy Platform REST API](https://docs.oursprivacy.com/docs/platform-api)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
@@ -39,6 +39,10 @@ This library requires Go 1.26+. Use a currently supported Go release with the la
 
 ## Usage
 
+Create an API key under Settings → API Keys and set it as `OURS_PRIVACY_API_KEY`. See [Authentication](https://docs.oursprivacy.com/docs/platform-api/authentication).
+
+See the [SDK guide](https://docs.oursprivacy.com/docs/platform-go) and the runnable code in [`examples`](examples).
+
 The full API of this library can be found in [api.md](api.md).
 
 ```go
@@ -56,7 +60,9 @@ func main() {
 	client := oursprivacy.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
 	)
-	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
+	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
+		Limit: oursprivacy.Int(20),
+	})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -65,7 +71,76 @@ func main() {
 
 ```
 
+### Get a source's tokens
+
+Fetch the install or ingest tokens for a source; the response depends on the source's type.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/with-ours/platform-sdk-go/v2"
+	"github.com/with-ours/platform-sdk-go/v2/option"
+)
+
+func main() {
+	client := oursprivacy.NewClient(
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
+	)
+	response, err := client.Sources.Tokens(context.TODO(), "YOUR_SOURCE_ID")
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("%+v\n", response)
+}
+
+```
+
+### Check a destination's health
+
+Fetch a snapshot of a destination's dispatches over the trailing 24 hours.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+
+	"github.com/with-ours/platform-sdk-go/v2"
+	"github.com/with-ours/platform-sdk-go/v2/option"
+)
+
+func main() {
+	client := oursprivacy.NewClient(
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
+	)
+	response, err := client.Destinations.Health(context.TODO(), "YOUR_DESTINATION_ID")
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("%+v\n", response.Status)
+}
+
+```
+
+### Publish draft changes
+
+Creating a version (`POST /rest/v1/versions`) publishes your current draft, other than experiments, to your live deployment, so read the [versions guide](https://docs.oursprivacy.com/docs/platform-api/versions) before you call it.
+
+### Further reading
+
+The docs cover the rest of the Platform API.
+
+- [Quickstart](https://docs.oursprivacy.com/docs/platform-api/quickstart)
+- [SDKs and MCP](https://docs.oursprivacy.com/docs/platform-api/sdks-and-mcp)
+
 ### Request fields
+
+Types such as `ExampleParams`, `Point`, `FooParams` and `AnimalUnion` in this section and those after it are illustrative, not part of this SDK.
 
 The oursprivacy library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
 semantics from the Go 1.24+ `encoding/json` release for request fields.
@@ -285,7 +360,9 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Sources.ListAutoPaging(context.TODO(), oursprivacy.SourceListParams{})
+iter := client.Sources.ListAutoPaging(context.TODO(), oursprivacy.SourceListParams{
+	Limit: oursprivacy.Int(20),
+})
 // Automatically fetches more pages as needed.
 for iter.Next() {
 	sourceListResponse := iter.Current()
@@ -300,7 +377,9 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
+page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
+	Limit: oursprivacy.Int(20),
+})
 for page != nil {
 	for _, source := range page.Entities {
 		fmt.Printf("%+v\n", source)
@@ -326,8 +405,8 @@ _, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
 if err != nil {
 	var apierr *oursprivacy.Error
 	if errors.As(err, &apierr) {
-		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
-		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
+		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request, with secrets replaced
+		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response, with secrets replaced
 	}
 	panic(err.Error()) // GET "/rest/v1/sources": 400 Bad Request { ... }
 }
@@ -354,19 +433,6 @@ client.Sources.List(
 	option.WithRequestTimeout(20*time.Second),
 )
 ```
-
-### File uploads
-
-Request parameters that correspond to file uploads in multipart requests are typed as
-`io.Reader`. The contents of the `io.Reader` will by default be sent as a multipart form
-part with the file name of "anonymous_file" and content-type of "application/octet-stream".
-
-The file name and content-type can be customized by implementing `Name() string` or `ContentType()
-string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
-file returned by `os.Open` will be sent with the file name on disk.
-
-We also provide a helper `oursprivacy.File(reader io.Reader, filename string, contentType string)`
-which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ### Retries
 
