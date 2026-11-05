@@ -96,6 +96,10 @@ func (r *ShortLinkService) Get(ctx context.Context, id string, opts ...option.Re
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/short-links/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -112,6 +116,10 @@ func (r *ShortLinkService) Update(ctx context.Context, id string, body ShortLink
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/short-links/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -126,6 +134,10 @@ func (r *ShortLinkService) Delete(ctx context.Context, id string, opts ...option
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/short-links/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -140,6 +152,10 @@ func (r *ShortLinkService) Clone(ctx context.Context, id string, opts ...option.
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/short-links/%s/clone", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -158,6 +174,10 @@ func (r *ShortLinkService) Results(ctx context.Context, id string, query ShortLi
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/short-links/%s/results", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

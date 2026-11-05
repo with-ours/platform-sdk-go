@@ -88,6 +88,10 @@ func (r *JourneyFlowService) Get(ctx context.Context, id string, opts ...option.
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/journey-flows/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -104,6 +108,10 @@ func (r *JourneyFlowService) Update(ctx context.Context, id string, body Journey
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/journey-flows/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -118,6 +126,10 @@ func (r *JourneyFlowService) Delete(ctx context.Context, id string, body Journey
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/journey-flows/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -144,6 +156,10 @@ func (r *JourneyFlowService) Results(ctx context.Context, id string, query Journ
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/journey-flows/%s/result", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -161,6 +177,10 @@ func (r *JourneyFlowService) Export(ctx context.Context, id string, query Journe
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/journey-flows/%s/export", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

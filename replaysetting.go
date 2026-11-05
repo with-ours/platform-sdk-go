@@ -90,6 +90,10 @@ func (r *ReplaySettingService) Get(ctx context.Context, id string, opts ...optio
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -107,6 +111,10 @@ func (r *ReplaySettingService) Update(ctx context.Context, id string, body Repla
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -122,6 +130,10 @@ func (r *ReplaySettingService) Delete(ctx context.Context, id string, opts ...op
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/replay-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

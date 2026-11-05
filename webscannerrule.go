@@ -69,6 +69,10 @@ func (r *WebScannerRuleService) Get(ctx context.Context, id string, opts ...opti
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanner-rules/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -84,6 +88,10 @@ func (r *WebScannerRuleService) Update(ctx context.Context, id string, body WebS
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanner-rules/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -97,6 +105,10 @@ func (r *WebScannerRuleService) Delete(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanner-rules/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

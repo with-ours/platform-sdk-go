@@ -24,7 +24,9 @@ func TestManualPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{})
+	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
+		Limit: oursprivacy.Int(20),
+	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}

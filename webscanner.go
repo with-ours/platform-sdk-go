@@ -13,6 +13,7 @@ import (
 
 	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
 	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v2/internal/redact"
 	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/v2/option"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
@@ -75,6 +76,10 @@ func (r *WebScannerService) Get(ctx context.Context, id string, opts ...option.R
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -92,6 +97,10 @@ func (r *WebScannerService) Update(ctx context.Context, id string, body WebScann
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -106,6 +115,10 @@ func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...optio
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -125,6 +138,10 @@ func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...opti
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/trigger", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -141,6 +158,10 @@ func (r *WebScannerService) AuthenticatedScan(ctx context.Context, id string, bo
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/authenticated-scan", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -158,6 +179,10 @@ func (r *WebScannerService) TargetedScan(ctx context.Context, id string, body We
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/targeted-scan", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -172,6 +197,10 @@ func (r *WebScannerService) VerificationRun(ctx context.Context, id string, quer
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/verification-run", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -188,6 +217,10 @@ func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, que
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/verification-runs", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -214,6 +247,10 @@ func (r *WebScannerService) Findings(ctx context.Context, id string, query WebSc
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/findings", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -232,6 +269,10 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/cookies", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -261,6 +302,10 @@ func (r *WebScannerService) Summary(ctx context.Context, id string, query WebSca
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/summary", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -279,6 +324,10 @@ func (r *WebScannerService) DecisionQueue(ctx context.Context, id string, query 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/decision-queue", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -295,6 +344,10 @@ func (r *WebScannerService) ResolveCoverageGap(ctx context.Context, id string, b
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/resolve-coverage-gap", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -2247,6 +2300,10 @@ func (r WebScannerAuthenticatedScanParams) MarshalJSON() (data []byte, err error
 }
 func (r *WebScannerAuthenticatedScanParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r WebScannerAuthenticatedScanParams) Format(f fmt.State, verb rune) {
+	redact.WriteParams(f, r)
 }
 
 // The properties Location, Name, Value are required.
