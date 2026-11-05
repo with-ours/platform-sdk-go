@@ -37,14 +37,15 @@ func NewHeatmapPageService(opts ...option.RequestOption) (r HeatmapPageService) 
 }
 
 // List pages with heatmap coverage in a date window, ranked for triage. Each
-// entity is identified by `pageKey`, normally origin + pathname with the query
-// string stripped; an account-configured split may include one significant query
-// parameter. Preserve the returned `pageKey` when calling
-// `GET /rest/v1/heatmap-pages/summary`. Supports cursor pagination, with cursor
-// depth capped at roughly 10,000 entries; if you need pages beyond that, narrow
-// `from`/`to` or add filters rather than paginating further. `from`/`to` are UTC
-// calendar days in `YYYY-MM-DD`; the window must be 60 days or fewer. Requires
-// API-key scope or current OAuth user permission: web-analytics:view
+// entity is identified by `pageKey` (origin + pathname, query string stripped).
+// Use `queryParameterFilter` to inspect one survey step or other URL parameter
+// value; filtering narrows events without creating separate page rows. Pass the
+// same filter and returned `pageKey` to `GET /rest/v1/heatmap-pages/summary`.
+// Supports cursor pagination, with cursor depth capped at roughly 10,000 entries;
+// if you need pages beyond that, narrow `from`/`to` or add filters rather than
+// paginating further. `from`/`to` are UTC calendar days in `YYYY-MM-DD`; the
+// window must be 60 days or fewer. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) (res *pagination.Cursor[HeatmapPageListResponse], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
@@ -63,14 +64,15 @@ func (r *HeatmapPageService) List(ctx context.Context, query HeatmapPageListPara
 }
 
 // List pages with heatmap coverage in a date window, ranked for triage. Each
-// entity is identified by `pageKey`, normally origin + pathname with the query
-// string stripped; an account-configured split may include one significant query
-// parameter. Preserve the returned `pageKey` when calling
-// `GET /rest/v1/heatmap-pages/summary`. Supports cursor pagination, with cursor
-// depth capped at roughly 10,000 entries; if you need pages beyond that, narrow
-// `from`/`to` or add filters rather than paginating further. `from`/`to` are UTC
-// calendar days in `YYYY-MM-DD`; the window must be 60 days or fewer. Requires
-// API-key scope or current OAuth user permission: web-analytics:view
+// entity is identified by `pageKey` (origin + pathname, query string stripped).
+// Use `queryParameterFilter` to inspect one survey step or other URL parameter
+// value; filtering narrows events without creating separate page rows. Pass the
+// same filter and returned `pageKey` to `GET /rest/v1/heatmap-pages/summary`.
+// Supports cursor pagination, with cursor depth capped at roughly 10,000 entries;
+// if you need pages beyond that, narrow `from`/`to` or add filters rather than
+// paginating further. `from`/`to` are UTC calendar days in `YYYY-MM-DD`; the
+// window must be 60 days or fewer. Requires API-key scope or current OAuth user
+// permission: web-analytics:view
 func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPageListParams, opts ...option.RequestOption) *pagination.CursorAutoPager[HeatmapPageListResponse] {
 	return pagination.NewCursorAutoPager(r.List(ctx, query, opts...))
 }
@@ -79,15 +81,20 @@ func (r *HeatmapPageService) ListAutoPaging(ctx context.Context, query HeatmapPa
 // depth, and up to 5 curated in-app replay URLs in a single payload. Designed as a
 // one-call diagnosis surface for an AI assistant or marketer — answers "what is
 // happening on this page?" without fanning out across five endpoints. `pageKey`
-// comes from `GET /rest/v1/heatmap-pages`. The endpoint is identified by query
-// params rather than a path id because heatmap pages are not stored entities; this
-// is a documented derived-read exception. `breakpoint` scopes the bin/scroll
-// aggregations; replays are returned across all breakpoints regardless of
-// `breakpoint` (weighted to cover multiple viewports) so callers can compare
-// devices. `clickGrid` always supplies fine click positions for rendering.
-// `clickBins` derives compatible 64×64 counts from the same grid; its totals must
-// not be added to them. Requires API-key scope or current OAuth user permission:
-// web-analytics:view
+// comes from `GET /rest/v1/heatmap-pages`. A base key includes all query variants
+// regardless of saved splits. Reuse the same `queryParameterFilter` to scope all
+// aggregates and replay links to the selected survey step. Legacy saved split keys
+// remain supported without a filter; combining a query string in `pageKey` with
+// `queryParameterFilter` returns 400. This reads retained historical events
+// containing the parameter, requires no account setting, and does not change
+// web-analytics page paths. The endpoint is identified by query params rather than
+// a path id because heatmap pages are not stored entities; this is a documented
+// derived-read exception. `breakpoint` scopes the bin/scroll aggregations; replays
+// are returned across all breakpoints regardless of `breakpoint` (weighted to
+// cover multiple viewports) so callers can compare devices. `clickGrid` always
+// supplies fine click positions for rendering. `clickBins` derives compatible
+// 64×64 counts from the same grid; its totals must not be added to them. Requires
+// API-key scope or current OAuth user permission: web-analytics:view
 func (r *HeatmapPageService) Summary(ctx context.Context, query HeatmapPageSummaryParams, opts ...option.RequestOption) (res *HeatmapPageSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "rest/v1/heatmap-pages/summary"
@@ -100,10 +107,9 @@ type HeatmapPageListResponse struct {
 	DeadClicks  int64                               `json:"deadClicks" api:"required"`
 	DeadRate    float64                             `json:"deadRate" api:"required"`
 	IssueScore  int64                               `json:"issueScore" api:"required"`
-	// Stable per-page identifier. It is normally origin + pathname with the query
-	// string stripped, but an account-configured split may include one significant
-	// query parameter. Preserve the returned value when calling
-	// `GET /rest/v1/heatmap-pages/summary` and the heatmap MCP tools.
+	// Stable per-page identifier: origin + pathname with the query string stripped.
+	// Query-parameter filtering narrows events without changing this key. Use the same
+	// filter when requesting the page summary.
 	PageKey     string  `json:"pageKey" api:"required"`
 	RageClicks  int64   `json:"rageClicks" api:"required"`
 	RageRate    float64 `json:"rageRate" api:"required"`
@@ -297,7 +303,7 @@ func (r *HeatmapPageSummaryResponseRageClick) UnmarshalJSON(data []byte) error {
 type HeatmapPageSummaryResponseReplay struct {
 	// Viewport bucket the session was recorded under.
 	//
-	// Any of "desktop", "mobile", "tablet".
+	// Any of "mobile", "tablet", "desktop".
 	Breakpoint string `json:"breakpoint" api:"required"`
 	// Absolute link to view the session replay in the OursPrivacy web app. Opens the
 	// replayer pre-scoped to this session, visitor, and date.
@@ -346,7 +352,7 @@ type HeatmapPageListParams struct {
 	To string `query:"to" api:"required" json:"-"`
 	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
 	// 1 and values above 100 are clamped to 100.
-	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	Limit param.Opt[float64] `query:"limit,omitzero" json:"-"`
 	// Filter by browser name as captured on events.
 	BrowserName param.Opt[string] `query:"browserName,omitzero" json:"-"`
 	// Filter by visitor country (ISO country name or code as stored on events).
@@ -354,13 +360,20 @@ type HeatmapPageListParams struct {
 	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
 	// not decode or modify it. Malformed cursors return 400 Bad Request.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Filter heatmap events by one URL query parameter, such as
+	// {"name":"p","values":["Contact Details"]}. Send as JSON in an HTTP query string
+	// and as an object in MCP. Matches any listed decoded value; values: [] matches
+	// any non-empty value. Apply the same filter to the list and summary. Works on
+	// retained historical events containing the parameter, requires no account
+	// setting, and does not change web-analytics page paths.
+	QueryParameterFilter param.Opt[string] `query:"queryParameterFilter,omitzero" json:"-"`
 	// Filter by visitor region (state/province as stored on events).
 	Region param.Opt[string] `query:"region,omitzero" json:"-"`
 	// Case-insensitive substring match against `pageKey`.
 	Search param.Opt[string] `query:"search,omitzero" json:"-"`
 	// Sort key. Defaults to `CLICKS` (descending).
 	//
-	// Any of "CLICKS", "DEAD_RATE", "ISSUE_SCORE", "RAGE_RATE".
+	// Any of "CLICKS", "RAGE_RATE", "DEAD_RATE", "ISSUE_SCORE".
 	SortBy HeatmapPageListParamsSortBy `query:"sortBy,omitzero" json:"-"`
 	// Sort direction. Defaults to `DESC`.
 	//
@@ -382,9 +395,9 @@ type HeatmapPageListParamsSortBy string
 
 const (
 	HeatmapPageListParamsSortByClicks     HeatmapPageListParamsSortBy = "CLICKS"
+	HeatmapPageListParamsSortByRageRate   HeatmapPageListParamsSortBy = "RAGE_RATE"
 	HeatmapPageListParamsSortByDeadRate   HeatmapPageListParamsSortBy = "DEAD_RATE"
 	HeatmapPageListParamsSortByIssueScore HeatmapPageListParamsSortBy = "ISSUE_SCORE"
-	HeatmapPageListParamsSortByRageRate   HeatmapPageListParamsSortBy = "RAGE_RATE"
 )
 
 // Sort direction. Defaults to `DESC`.
@@ -400,16 +413,16 @@ type HeatmapPageSummaryParams struct {
 	// computed for. Replays are returned for all breakpoints regardless of this value
 	// so callers can compare across devices.
 	//
-	// Any of "desktop", "mobile", "tablet".
+	// Any of "mobile", "tablet", "desktop".
 	Breakpoint HeatmapPageSummaryParamsBreakpoint `query:"breakpoint,omitzero" api:"required" json:"-"`
 	// Inclusive lower bound of the heatmap window, as a UTC calendar day in
 	// `YYYY-MM-DD` format. The window between `from` and `to` must be 60 days or
 	// fewer.
 	From string `query:"from" api:"required" json:"-"`
-	// Page identifier returned by `GET /rest/v1/heatmap-pages`. It is normally
-	// origin + pathname with the query string stripped, but may include one
-	// account-configured significant query parameter. Pass the returned value
-	// unchanged.
+	// Base page identifier returned by the heatmap pages list. Pass it unchanged,
+	// together with the same queryParameterFilter to inspect the same survey step. A
+	// legacy saved split key is accepted only without queryParameterFilter; combining
+	// them returns 400.
 	PageKey string `query:"pageKey" api:"required" json:"-"`
 	// Inclusive upper bound of the heatmap window, as a UTC calendar day in
 	// `YYYY-MM-DD` format. The window between `from` and `to` must be 60 days or
@@ -419,6 +432,13 @@ type HeatmapPageSummaryParams struct {
 	BrowserName param.Opt[string] `query:"browserName,omitzero" json:"-"`
 	// Filter by visitor country (ISO country name or code as stored on events).
 	Country param.Opt[string] `query:"country,omitzero" json:"-"`
+	// Filter heatmap events by one URL query parameter, such as
+	// {"name":"p","values":["Contact Details"]}. Send as JSON in an HTTP query string
+	// and as an object in MCP. Matches any listed decoded value; values: [] matches
+	// any non-empty value. Apply the same filter to the list and summary. Works on
+	// retained historical events containing the parameter, requires no account
+	// setting, and does not change web-analytics page paths.
+	QueryParameterFilter param.Opt[string] `query:"queryParameterFilter,omitzero" json:"-"`
 	// Filter by visitor region (state/province as stored on events).
 	Region param.Opt[string] `query:"region,omitzero" json:"-"`
 	paramObj
@@ -439,7 +459,7 @@ func (r HeatmapPageSummaryParams) URLQuery() (v url.Values, err error) {
 type HeatmapPageSummaryParamsBreakpoint string
 
 const (
-	HeatmapPageSummaryParamsBreakpointDesktop HeatmapPageSummaryParamsBreakpoint = "desktop"
 	HeatmapPageSummaryParamsBreakpointMobile  HeatmapPageSummaryParamsBreakpoint = "mobile"
 	HeatmapPageSummaryParamsBreakpointTablet  HeatmapPageSummaryParamsBreakpoint = "tablet"
+	HeatmapPageSummaryParamsBreakpointDesktop HeatmapPageSummaryParamsBreakpoint = "desktop"
 )
