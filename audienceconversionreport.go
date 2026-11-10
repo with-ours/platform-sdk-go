@@ -66,6 +66,10 @@ func (r *AudienceConversionReportService) Get(ctx context.Context, id string, op
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/audience-conversion-reports/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -80,6 +84,10 @@ func (r *AudienceConversionReportService) Update(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/audience-conversion-reports/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -93,6 +101,10 @@ func (r *AudienceConversionReportService) Delete(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/audience-conversion-reports/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -108,6 +120,10 @@ func (r *AudienceConversionReportService) Results(ctx context.Context, id string
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/audience-conversion-reports/%s/results", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

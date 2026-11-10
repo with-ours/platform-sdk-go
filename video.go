@@ -86,6 +86,10 @@ func (r *VideoService) Get(ctx context.Context, id string, opts ...option.Reques
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -100,6 +104,10 @@ func (r *VideoService) Update(ctx context.Context, id string, body VideoUpdatePa
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -113,6 +121,10 @@ func (r *VideoService) Delete(ctx context.Context, id string, opts ...option.Req
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -128,6 +140,10 @@ func (r *VideoService) Upload(ctx context.Context, id string, body VideoUploadPa
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/upload", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -142,6 +158,10 @@ func (r *VideoService) Transcript(ctx context.Context, id string, query VideoTra
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/transcript", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -157,6 +177,10 @@ func (r *VideoService) UpdateTranscript(ctx context.Context, id string, body Vid
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/transcript", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -171,6 +195,10 @@ func (r *VideoService) RequestCaptionTranslation(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/translate", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -184,6 +212,10 @@ func (r *VideoService) CancelCaptionTranslation(ctx context.Context, id string, 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/cancel-translation", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -212,6 +244,10 @@ func (r *VideoService) AnalyticsTimeseries(ctx context.Context, id string, query
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/videos/%s/analytics", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -1026,8 +1062,18 @@ type VideoUpdateTranscriptParams struct {
 	// saved.
 	//
 	// Any of "SRT", "VTT".
-	Format       VideoUpdateTranscriptParamsFormat `json:"format,omitzero" api:"required"`
-	LanguageCode param.Opt[string]                 `json:"languageCode,omitzero"`
+	Format VideoUpdateTranscriptParamsFormat `json:"format,omitzero" api:"required"`
+	// Caption track language to replace. Omit or send `null` to replace the source
+	// transcript in the video's source language (`en` when none is set); another
+	// language edits that translated track.
+	//
+	// Any of "af", "sq", "am", "ar", "hy", "az", "bn", "bs", "bg", "ca", "zh",
+	// "zh-TW", "hr", "cs", "da", "fa-AF", "nl", "en", "et", "fa", "tl", "fi", "fr",
+	// "fr-CA", "ka", "de", "el", "gu", "ht", "ha", "he", "hi", "hu", "is", "id", "ga",
+	// "it", "ja", "kn", "kk", "ko", "lv", "lt", "mk", "ms", "ml", "mt", "mr", "mn",
+	// "no", "ps", "pl", "pt", "pt-PT", "pa", "ro", "ru", "sr", "si", "sk", "sl", "so",
+	// "es", "es-MX", "sw", "sv", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "cy".
+	LanguageCode VideoUpdateTranscriptParamsLanguageCode `json:"languageCode,omitzero"`
 	paramObj
 }
 
@@ -1048,9 +1094,101 @@ const (
 	VideoUpdateTranscriptParamsFormatVtt VideoUpdateTranscriptParamsFormat = "VTT"
 )
 
+// Caption track language to replace. Omit or send `null` to replace the source
+// transcript in the video's source language (`en` when none is set); another
+// language edits that translated track.
+type VideoUpdateTranscriptParamsLanguageCode string
+
+const (
+	VideoUpdateTranscriptParamsLanguageCodeAf   VideoUpdateTranscriptParamsLanguageCode = "af"
+	VideoUpdateTranscriptParamsLanguageCodeSq   VideoUpdateTranscriptParamsLanguageCode = "sq"
+	VideoUpdateTranscriptParamsLanguageCodeAm   VideoUpdateTranscriptParamsLanguageCode = "am"
+	VideoUpdateTranscriptParamsLanguageCodeAr   VideoUpdateTranscriptParamsLanguageCode = "ar"
+	VideoUpdateTranscriptParamsLanguageCodeHy   VideoUpdateTranscriptParamsLanguageCode = "hy"
+	VideoUpdateTranscriptParamsLanguageCodeAz   VideoUpdateTranscriptParamsLanguageCode = "az"
+	VideoUpdateTranscriptParamsLanguageCodeBn   VideoUpdateTranscriptParamsLanguageCode = "bn"
+	VideoUpdateTranscriptParamsLanguageCodeBs   VideoUpdateTranscriptParamsLanguageCode = "bs"
+	VideoUpdateTranscriptParamsLanguageCodeBg   VideoUpdateTranscriptParamsLanguageCode = "bg"
+	VideoUpdateTranscriptParamsLanguageCodeCa   VideoUpdateTranscriptParamsLanguageCode = "ca"
+	VideoUpdateTranscriptParamsLanguageCodeZh   VideoUpdateTranscriptParamsLanguageCode = "zh"
+	VideoUpdateTranscriptParamsLanguageCodeZhTw VideoUpdateTranscriptParamsLanguageCode = "zh-TW"
+	VideoUpdateTranscriptParamsLanguageCodeHr   VideoUpdateTranscriptParamsLanguageCode = "hr"
+	VideoUpdateTranscriptParamsLanguageCodeCs   VideoUpdateTranscriptParamsLanguageCode = "cs"
+	VideoUpdateTranscriptParamsLanguageCodeDa   VideoUpdateTranscriptParamsLanguageCode = "da"
+	VideoUpdateTranscriptParamsLanguageCodeFaAf VideoUpdateTranscriptParamsLanguageCode = "fa-AF"
+	VideoUpdateTranscriptParamsLanguageCodeNl   VideoUpdateTranscriptParamsLanguageCode = "nl"
+	VideoUpdateTranscriptParamsLanguageCodeEn   VideoUpdateTranscriptParamsLanguageCode = "en"
+	VideoUpdateTranscriptParamsLanguageCodeEt   VideoUpdateTranscriptParamsLanguageCode = "et"
+	VideoUpdateTranscriptParamsLanguageCodeFa   VideoUpdateTranscriptParamsLanguageCode = "fa"
+	VideoUpdateTranscriptParamsLanguageCodeTl   VideoUpdateTranscriptParamsLanguageCode = "tl"
+	VideoUpdateTranscriptParamsLanguageCodeFi   VideoUpdateTranscriptParamsLanguageCode = "fi"
+	VideoUpdateTranscriptParamsLanguageCodeFr   VideoUpdateTranscriptParamsLanguageCode = "fr"
+	VideoUpdateTranscriptParamsLanguageCodeFrCa VideoUpdateTranscriptParamsLanguageCode = "fr-CA"
+	VideoUpdateTranscriptParamsLanguageCodeKa   VideoUpdateTranscriptParamsLanguageCode = "ka"
+	VideoUpdateTranscriptParamsLanguageCodeDe   VideoUpdateTranscriptParamsLanguageCode = "de"
+	VideoUpdateTranscriptParamsLanguageCodeEl   VideoUpdateTranscriptParamsLanguageCode = "el"
+	VideoUpdateTranscriptParamsLanguageCodeGu   VideoUpdateTranscriptParamsLanguageCode = "gu"
+	VideoUpdateTranscriptParamsLanguageCodeHt   VideoUpdateTranscriptParamsLanguageCode = "ht"
+	VideoUpdateTranscriptParamsLanguageCodeHa   VideoUpdateTranscriptParamsLanguageCode = "ha"
+	VideoUpdateTranscriptParamsLanguageCodeHe   VideoUpdateTranscriptParamsLanguageCode = "he"
+	VideoUpdateTranscriptParamsLanguageCodeHi   VideoUpdateTranscriptParamsLanguageCode = "hi"
+	VideoUpdateTranscriptParamsLanguageCodeHu   VideoUpdateTranscriptParamsLanguageCode = "hu"
+	VideoUpdateTranscriptParamsLanguageCodeIs   VideoUpdateTranscriptParamsLanguageCode = "is"
+	VideoUpdateTranscriptParamsLanguageCodeID   VideoUpdateTranscriptParamsLanguageCode = "id"
+	VideoUpdateTranscriptParamsLanguageCodeGa   VideoUpdateTranscriptParamsLanguageCode = "ga"
+	VideoUpdateTranscriptParamsLanguageCodeIt   VideoUpdateTranscriptParamsLanguageCode = "it"
+	VideoUpdateTranscriptParamsLanguageCodeJa   VideoUpdateTranscriptParamsLanguageCode = "ja"
+	VideoUpdateTranscriptParamsLanguageCodeKn   VideoUpdateTranscriptParamsLanguageCode = "kn"
+	VideoUpdateTranscriptParamsLanguageCodeKk   VideoUpdateTranscriptParamsLanguageCode = "kk"
+	VideoUpdateTranscriptParamsLanguageCodeKo   VideoUpdateTranscriptParamsLanguageCode = "ko"
+	VideoUpdateTranscriptParamsLanguageCodeLv   VideoUpdateTranscriptParamsLanguageCode = "lv"
+	VideoUpdateTranscriptParamsLanguageCodeLt   VideoUpdateTranscriptParamsLanguageCode = "lt"
+	VideoUpdateTranscriptParamsLanguageCodeMk   VideoUpdateTranscriptParamsLanguageCode = "mk"
+	VideoUpdateTranscriptParamsLanguageCodeMs   VideoUpdateTranscriptParamsLanguageCode = "ms"
+	VideoUpdateTranscriptParamsLanguageCodeMl   VideoUpdateTranscriptParamsLanguageCode = "ml"
+	VideoUpdateTranscriptParamsLanguageCodeMt   VideoUpdateTranscriptParamsLanguageCode = "mt"
+	VideoUpdateTranscriptParamsLanguageCodeMr   VideoUpdateTranscriptParamsLanguageCode = "mr"
+	VideoUpdateTranscriptParamsLanguageCodeMn   VideoUpdateTranscriptParamsLanguageCode = "mn"
+	VideoUpdateTranscriptParamsLanguageCodeNo   VideoUpdateTranscriptParamsLanguageCode = "no"
+	VideoUpdateTranscriptParamsLanguageCodePs   VideoUpdateTranscriptParamsLanguageCode = "ps"
+	VideoUpdateTranscriptParamsLanguageCodePl   VideoUpdateTranscriptParamsLanguageCode = "pl"
+	VideoUpdateTranscriptParamsLanguageCodePt   VideoUpdateTranscriptParamsLanguageCode = "pt"
+	VideoUpdateTranscriptParamsLanguageCodePtPt VideoUpdateTranscriptParamsLanguageCode = "pt-PT"
+	VideoUpdateTranscriptParamsLanguageCodePa   VideoUpdateTranscriptParamsLanguageCode = "pa"
+	VideoUpdateTranscriptParamsLanguageCodeRo   VideoUpdateTranscriptParamsLanguageCode = "ro"
+	VideoUpdateTranscriptParamsLanguageCodeRu   VideoUpdateTranscriptParamsLanguageCode = "ru"
+	VideoUpdateTranscriptParamsLanguageCodeSr   VideoUpdateTranscriptParamsLanguageCode = "sr"
+	VideoUpdateTranscriptParamsLanguageCodeSi   VideoUpdateTranscriptParamsLanguageCode = "si"
+	VideoUpdateTranscriptParamsLanguageCodeSk   VideoUpdateTranscriptParamsLanguageCode = "sk"
+	VideoUpdateTranscriptParamsLanguageCodeSl   VideoUpdateTranscriptParamsLanguageCode = "sl"
+	VideoUpdateTranscriptParamsLanguageCodeSo   VideoUpdateTranscriptParamsLanguageCode = "so"
+	VideoUpdateTranscriptParamsLanguageCodeEs   VideoUpdateTranscriptParamsLanguageCode = "es"
+	VideoUpdateTranscriptParamsLanguageCodeEsMx VideoUpdateTranscriptParamsLanguageCode = "es-MX"
+	VideoUpdateTranscriptParamsLanguageCodeSw   VideoUpdateTranscriptParamsLanguageCode = "sw"
+	VideoUpdateTranscriptParamsLanguageCodeSv   VideoUpdateTranscriptParamsLanguageCode = "sv"
+	VideoUpdateTranscriptParamsLanguageCodeTa   VideoUpdateTranscriptParamsLanguageCode = "ta"
+	VideoUpdateTranscriptParamsLanguageCodeTe   VideoUpdateTranscriptParamsLanguageCode = "te"
+	VideoUpdateTranscriptParamsLanguageCodeTh   VideoUpdateTranscriptParamsLanguageCode = "th"
+	VideoUpdateTranscriptParamsLanguageCodeTr   VideoUpdateTranscriptParamsLanguageCode = "tr"
+	VideoUpdateTranscriptParamsLanguageCodeUk   VideoUpdateTranscriptParamsLanguageCode = "uk"
+	VideoUpdateTranscriptParamsLanguageCodeUr   VideoUpdateTranscriptParamsLanguageCode = "ur"
+	VideoUpdateTranscriptParamsLanguageCodeUz   VideoUpdateTranscriptParamsLanguageCode = "uz"
+	VideoUpdateTranscriptParamsLanguageCodeVi   VideoUpdateTranscriptParamsLanguageCode = "vi"
+	VideoUpdateTranscriptParamsLanguageCodeCy   VideoUpdateTranscriptParamsLanguageCode = "cy"
+)
+
 type VideoRequestCaptionTranslationParams struct {
-	LanguageCode string          `json:"languageCode" api:"required"`
-	Replace      param.Opt[bool] `json:"replace,omitzero"`
+	// Target language for the machine-translated caption track. Must differ from the
+	// video's source language.
+	//
+	// Any of "af", "sq", "am", "ar", "hy", "az", "bn", "bs", "bg", "ca", "zh",
+	// "zh-TW", "hr", "cs", "da", "fa-AF", "nl", "en", "et", "fa", "tl", "fi", "fr",
+	// "fr-CA", "ka", "de", "el", "gu", "ht", "ha", "he", "hi", "hu", "is", "id", "ga",
+	// "it", "ja", "kn", "kk", "ko", "lv", "lt", "mk", "ms", "ml", "mt", "mr", "mn",
+	// "no", "ps", "pl", "pt", "pt-PT", "pa", "ro", "ru", "sr", "si", "sk", "sl", "so",
+	// "es", "es-MX", "sw", "sv", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "cy".
+	LanguageCode VideoRequestCaptionTranslationParamsLanguageCode `json:"languageCode,omitzero" api:"required"`
+	Replace      param.Opt[bool]                                  `json:"replace,omitzero"`
 	paramObj
 }
 
@@ -1062,8 +1200,98 @@ func (r *VideoRequestCaptionTranslationParams) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Target language for the machine-translated caption track. Must differ from the
+// video's source language.
+type VideoRequestCaptionTranslationParamsLanguageCode string
+
+const (
+	VideoRequestCaptionTranslationParamsLanguageCodeAf   VideoRequestCaptionTranslationParamsLanguageCode = "af"
+	VideoRequestCaptionTranslationParamsLanguageCodeSq   VideoRequestCaptionTranslationParamsLanguageCode = "sq"
+	VideoRequestCaptionTranslationParamsLanguageCodeAm   VideoRequestCaptionTranslationParamsLanguageCode = "am"
+	VideoRequestCaptionTranslationParamsLanguageCodeAr   VideoRequestCaptionTranslationParamsLanguageCode = "ar"
+	VideoRequestCaptionTranslationParamsLanguageCodeHy   VideoRequestCaptionTranslationParamsLanguageCode = "hy"
+	VideoRequestCaptionTranslationParamsLanguageCodeAz   VideoRequestCaptionTranslationParamsLanguageCode = "az"
+	VideoRequestCaptionTranslationParamsLanguageCodeBn   VideoRequestCaptionTranslationParamsLanguageCode = "bn"
+	VideoRequestCaptionTranslationParamsLanguageCodeBs   VideoRequestCaptionTranslationParamsLanguageCode = "bs"
+	VideoRequestCaptionTranslationParamsLanguageCodeBg   VideoRequestCaptionTranslationParamsLanguageCode = "bg"
+	VideoRequestCaptionTranslationParamsLanguageCodeCa   VideoRequestCaptionTranslationParamsLanguageCode = "ca"
+	VideoRequestCaptionTranslationParamsLanguageCodeZh   VideoRequestCaptionTranslationParamsLanguageCode = "zh"
+	VideoRequestCaptionTranslationParamsLanguageCodeZhTw VideoRequestCaptionTranslationParamsLanguageCode = "zh-TW"
+	VideoRequestCaptionTranslationParamsLanguageCodeHr   VideoRequestCaptionTranslationParamsLanguageCode = "hr"
+	VideoRequestCaptionTranslationParamsLanguageCodeCs   VideoRequestCaptionTranslationParamsLanguageCode = "cs"
+	VideoRequestCaptionTranslationParamsLanguageCodeDa   VideoRequestCaptionTranslationParamsLanguageCode = "da"
+	VideoRequestCaptionTranslationParamsLanguageCodeFaAf VideoRequestCaptionTranslationParamsLanguageCode = "fa-AF"
+	VideoRequestCaptionTranslationParamsLanguageCodeNl   VideoRequestCaptionTranslationParamsLanguageCode = "nl"
+	VideoRequestCaptionTranslationParamsLanguageCodeEn   VideoRequestCaptionTranslationParamsLanguageCode = "en"
+	VideoRequestCaptionTranslationParamsLanguageCodeEt   VideoRequestCaptionTranslationParamsLanguageCode = "et"
+	VideoRequestCaptionTranslationParamsLanguageCodeFa   VideoRequestCaptionTranslationParamsLanguageCode = "fa"
+	VideoRequestCaptionTranslationParamsLanguageCodeTl   VideoRequestCaptionTranslationParamsLanguageCode = "tl"
+	VideoRequestCaptionTranslationParamsLanguageCodeFi   VideoRequestCaptionTranslationParamsLanguageCode = "fi"
+	VideoRequestCaptionTranslationParamsLanguageCodeFr   VideoRequestCaptionTranslationParamsLanguageCode = "fr"
+	VideoRequestCaptionTranslationParamsLanguageCodeFrCa VideoRequestCaptionTranslationParamsLanguageCode = "fr-CA"
+	VideoRequestCaptionTranslationParamsLanguageCodeKa   VideoRequestCaptionTranslationParamsLanguageCode = "ka"
+	VideoRequestCaptionTranslationParamsLanguageCodeDe   VideoRequestCaptionTranslationParamsLanguageCode = "de"
+	VideoRequestCaptionTranslationParamsLanguageCodeEl   VideoRequestCaptionTranslationParamsLanguageCode = "el"
+	VideoRequestCaptionTranslationParamsLanguageCodeGu   VideoRequestCaptionTranslationParamsLanguageCode = "gu"
+	VideoRequestCaptionTranslationParamsLanguageCodeHt   VideoRequestCaptionTranslationParamsLanguageCode = "ht"
+	VideoRequestCaptionTranslationParamsLanguageCodeHa   VideoRequestCaptionTranslationParamsLanguageCode = "ha"
+	VideoRequestCaptionTranslationParamsLanguageCodeHe   VideoRequestCaptionTranslationParamsLanguageCode = "he"
+	VideoRequestCaptionTranslationParamsLanguageCodeHi   VideoRequestCaptionTranslationParamsLanguageCode = "hi"
+	VideoRequestCaptionTranslationParamsLanguageCodeHu   VideoRequestCaptionTranslationParamsLanguageCode = "hu"
+	VideoRequestCaptionTranslationParamsLanguageCodeIs   VideoRequestCaptionTranslationParamsLanguageCode = "is"
+	VideoRequestCaptionTranslationParamsLanguageCodeID   VideoRequestCaptionTranslationParamsLanguageCode = "id"
+	VideoRequestCaptionTranslationParamsLanguageCodeGa   VideoRequestCaptionTranslationParamsLanguageCode = "ga"
+	VideoRequestCaptionTranslationParamsLanguageCodeIt   VideoRequestCaptionTranslationParamsLanguageCode = "it"
+	VideoRequestCaptionTranslationParamsLanguageCodeJa   VideoRequestCaptionTranslationParamsLanguageCode = "ja"
+	VideoRequestCaptionTranslationParamsLanguageCodeKn   VideoRequestCaptionTranslationParamsLanguageCode = "kn"
+	VideoRequestCaptionTranslationParamsLanguageCodeKk   VideoRequestCaptionTranslationParamsLanguageCode = "kk"
+	VideoRequestCaptionTranslationParamsLanguageCodeKo   VideoRequestCaptionTranslationParamsLanguageCode = "ko"
+	VideoRequestCaptionTranslationParamsLanguageCodeLv   VideoRequestCaptionTranslationParamsLanguageCode = "lv"
+	VideoRequestCaptionTranslationParamsLanguageCodeLt   VideoRequestCaptionTranslationParamsLanguageCode = "lt"
+	VideoRequestCaptionTranslationParamsLanguageCodeMk   VideoRequestCaptionTranslationParamsLanguageCode = "mk"
+	VideoRequestCaptionTranslationParamsLanguageCodeMs   VideoRequestCaptionTranslationParamsLanguageCode = "ms"
+	VideoRequestCaptionTranslationParamsLanguageCodeMl   VideoRequestCaptionTranslationParamsLanguageCode = "ml"
+	VideoRequestCaptionTranslationParamsLanguageCodeMt   VideoRequestCaptionTranslationParamsLanguageCode = "mt"
+	VideoRequestCaptionTranslationParamsLanguageCodeMr   VideoRequestCaptionTranslationParamsLanguageCode = "mr"
+	VideoRequestCaptionTranslationParamsLanguageCodeMn   VideoRequestCaptionTranslationParamsLanguageCode = "mn"
+	VideoRequestCaptionTranslationParamsLanguageCodeNo   VideoRequestCaptionTranslationParamsLanguageCode = "no"
+	VideoRequestCaptionTranslationParamsLanguageCodePs   VideoRequestCaptionTranslationParamsLanguageCode = "ps"
+	VideoRequestCaptionTranslationParamsLanguageCodePl   VideoRequestCaptionTranslationParamsLanguageCode = "pl"
+	VideoRequestCaptionTranslationParamsLanguageCodePt   VideoRequestCaptionTranslationParamsLanguageCode = "pt"
+	VideoRequestCaptionTranslationParamsLanguageCodePtPt VideoRequestCaptionTranslationParamsLanguageCode = "pt-PT"
+	VideoRequestCaptionTranslationParamsLanguageCodePa   VideoRequestCaptionTranslationParamsLanguageCode = "pa"
+	VideoRequestCaptionTranslationParamsLanguageCodeRo   VideoRequestCaptionTranslationParamsLanguageCode = "ro"
+	VideoRequestCaptionTranslationParamsLanguageCodeRu   VideoRequestCaptionTranslationParamsLanguageCode = "ru"
+	VideoRequestCaptionTranslationParamsLanguageCodeSr   VideoRequestCaptionTranslationParamsLanguageCode = "sr"
+	VideoRequestCaptionTranslationParamsLanguageCodeSi   VideoRequestCaptionTranslationParamsLanguageCode = "si"
+	VideoRequestCaptionTranslationParamsLanguageCodeSk   VideoRequestCaptionTranslationParamsLanguageCode = "sk"
+	VideoRequestCaptionTranslationParamsLanguageCodeSl   VideoRequestCaptionTranslationParamsLanguageCode = "sl"
+	VideoRequestCaptionTranslationParamsLanguageCodeSo   VideoRequestCaptionTranslationParamsLanguageCode = "so"
+	VideoRequestCaptionTranslationParamsLanguageCodeEs   VideoRequestCaptionTranslationParamsLanguageCode = "es"
+	VideoRequestCaptionTranslationParamsLanguageCodeEsMx VideoRequestCaptionTranslationParamsLanguageCode = "es-MX"
+	VideoRequestCaptionTranslationParamsLanguageCodeSw   VideoRequestCaptionTranslationParamsLanguageCode = "sw"
+	VideoRequestCaptionTranslationParamsLanguageCodeSv   VideoRequestCaptionTranslationParamsLanguageCode = "sv"
+	VideoRequestCaptionTranslationParamsLanguageCodeTa   VideoRequestCaptionTranslationParamsLanguageCode = "ta"
+	VideoRequestCaptionTranslationParamsLanguageCodeTe   VideoRequestCaptionTranslationParamsLanguageCode = "te"
+	VideoRequestCaptionTranslationParamsLanguageCodeTh   VideoRequestCaptionTranslationParamsLanguageCode = "th"
+	VideoRequestCaptionTranslationParamsLanguageCodeTr   VideoRequestCaptionTranslationParamsLanguageCode = "tr"
+	VideoRequestCaptionTranslationParamsLanguageCodeUk   VideoRequestCaptionTranslationParamsLanguageCode = "uk"
+	VideoRequestCaptionTranslationParamsLanguageCodeUr   VideoRequestCaptionTranslationParamsLanguageCode = "ur"
+	VideoRequestCaptionTranslationParamsLanguageCodeUz   VideoRequestCaptionTranslationParamsLanguageCode = "uz"
+	VideoRequestCaptionTranslationParamsLanguageCodeVi   VideoRequestCaptionTranslationParamsLanguageCode = "vi"
+	VideoRequestCaptionTranslationParamsLanguageCodeCy   VideoRequestCaptionTranslationParamsLanguageCode = "cy"
+)
+
 type VideoCancelCaptionTranslationParams struct {
-	LanguageCode string `json:"languageCode" api:"required"`
+	// Target language whose queued or in-progress caption translation to cancel.
+	//
+	// Any of "af", "sq", "am", "ar", "hy", "az", "bn", "bs", "bg", "ca", "zh",
+	// "zh-TW", "hr", "cs", "da", "fa-AF", "nl", "en", "et", "fa", "tl", "fi", "fr",
+	// "fr-CA", "ka", "de", "el", "gu", "ht", "ha", "he", "hi", "hu", "is", "id", "ga",
+	// "it", "ja", "kn", "kk", "ko", "lv", "lt", "mk", "ms", "ml", "mt", "mr", "mn",
+	// "no", "ps", "pl", "pt", "pt-PT", "pa", "ro", "ru", "sr", "si", "sk", "sl", "so",
+	// "es", "es-MX", "sw", "sv", "ta", "te", "th", "tr", "uk", "ur", "uz", "vi", "cy".
+	LanguageCode VideoCancelCaptionTranslationParamsLanguageCode `json:"languageCode,omitzero" api:"required"`
 	paramObj
 }
 
@@ -1074,6 +1302,87 @@ func (r VideoCancelCaptionTranslationParams) MarshalJSON() (data []byte, err err
 func (r *VideoCancelCaptionTranslationParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Target language whose queued or in-progress caption translation to cancel.
+type VideoCancelCaptionTranslationParamsLanguageCode string
+
+const (
+	VideoCancelCaptionTranslationParamsLanguageCodeAf   VideoCancelCaptionTranslationParamsLanguageCode = "af"
+	VideoCancelCaptionTranslationParamsLanguageCodeSq   VideoCancelCaptionTranslationParamsLanguageCode = "sq"
+	VideoCancelCaptionTranslationParamsLanguageCodeAm   VideoCancelCaptionTranslationParamsLanguageCode = "am"
+	VideoCancelCaptionTranslationParamsLanguageCodeAr   VideoCancelCaptionTranslationParamsLanguageCode = "ar"
+	VideoCancelCaptionTranslationParamsLanguageCodeHy   VideoCancelCaptionTranslationParamsLanguageCode = "hy"
+	VideoCancelCaptionTranslationParamsLanguageCodeAz   VideoCancelCaptionTranslationParamsLanguageCode = "az"
+	VideoCancelCaptionTranslationParamsLanguageCodeBn   VideoCancelCaptionTranslationParamsLanguageCode = "bn"
+	VideoCancelCaptionTranslationParamsLanguageCodeBs   VideoCancelCaptionTranslationParamsLanguageCode = "bs"
+	VideoCancelCaptionTranslationParamsLanguageCodeBg   VideoCancelCaptionTranslationParamsLanguageCode = "bg"
+	VideoCancelCaptionTranslationParamsLanguageCodeCa   VideoCancelCaptionTranslationParamsLanguageCode = "ca"
+	VideoCancelCaptionTranslationParamsLanguageCodeZh   VideoCancelCaptionTranslationParamsLanguageCode = "zh"
+	VideoCancelCaptionTranslationParamsLanguageCodeZhTw VideoCancelCaptionTranslationParamsLanguageCode = "zh-TW"
+	VideoCancelCaptionTranslationParamsLanguageCodeHr   VideoCancelCaptionTranslationParamsLanguageCode = "hr"
+	VideoCancelCaptionTranslationParamsLanguageCodeCs   VideoCancelCaptionTranslationParamsLanguageCode = "cs"
+	VideoCancelCaptionTranslationParamsLanguageCodeDa   VideoCancelCaptionTranslationParamsLanguageCode = "da"
+	VideoCancelCaptionTranslationParamsLanguageCodeFaAf VideoCancelCaptionTranslationParamsLanguageCode = "fa-AF"
+	VideoCancelCaptionTranslationParamsLanguageCodeNl   VideoCancelCaptionTranslationParamsLanguageCode = "nl"
+	VideoCancelCaptionTranslationParamsLanguageCodeEn   VideoCancelCaptionTranslationParamsLanguageCode = "en"
+	VideoCancelCaptionTranslationParamsLanguageCodeEt   VideoCancelCaptionTranslationParamsLanguageCode = "et"
+	VideoCancelCaptionTranslationParamsLanguageCodeFa   VideoCancelCaptionTranslationParamsLanguageCode = "fa"
+	VideoCancelCaptionTranslationParamsLanguageCodeTl   VideoCancelCaptionTranslationParamsLanguageCode = "tl"
+	VideoCancelCaptionTranslationParamsLanguageCodeFi   VideoCancelCaptionTranslationParamsLanguageCode = "fi"
+	VideoCancelCaptionTranslationParamsLanguageCodeFr   VideoCancelCaptionTranslationParamsLanguageCode = "fr"
+	VideoCancelCaptionTranslationParamsLanguageCodeFrCa VideoCancelCaptionTranslationParamsLanguageCode = "fr-CA"
+	VideoCancelCaptionTranslationParamsLanguageCodeKa   VideoCancelCaptionTranslationParamsLanguageCode = "ka"
+	VideoCancelCaptionTranslationParamsLanguageCodeDe   VideoCancelCaptionTranslationParamsLanguageCode = "de"
+	VideoCancelCaptionTranslationParamsLanguageCodeEl   VideoCancelCaptionTranslationParamsLanguageCode = "el"
+	VideoCancelCaptionTranslationParamsLanguageCodeGu   VideoCancelCaptionTranslationParamsLanguageCode = "gu"
+	VideoCancelCaptionTranslationParamsLanguageCodeHt   VideoCancelCaptionTranslationParamsLanguageCode = "ht"
+	VideoCancelCaptionTranslationParamsLanguageCodeHa   VideoCancelCaptionTranslationParamsLanguageCode = "ha"
+	VideoCancelCaptionTranslationParamsLanguageCodeHe   VideoCancelCaptionTranslationParamsLanguageCode = "he"
+	VideoCancelCaptionTranslationParamsLanguageCodeHi   VideoCancelCaptionTranslationParamsLanguageCode = "hi"
+	VideoCancelCaptionTranslationParamsLanguageCodeHu   VideoCancelCaptionTranslationParamsLanguageCode = "hu"
+	VideoCancelCaptionTranslationParamsLanguageCodeIs   VideoCancelCaptionTranslationParamsLanguageCode = "is"
+	VideoCancelCaptionTranslationParamsLanguageCodeID   VideoCancelCaptionTranslationParamsLanguageCode = "id"
+	VideoCancelCaptionTranslationParamsLanguageCodeGa   VideoCancelCaptionTranslationParamsLanguageCode = "ga"
+	VideoCancelCaptionTranslationParamsLanguageCodeIt   VideoCancelCaptionTranslationParamsLanguageCode = "it"
+	VideoCancelCaptionTranslationParamsLanguageCodeJa   VideoCancelCaptionTranslationParamsLanguageCode = "ja"
+	VideoCancelCaptionTranslationParamsLanguageCodeKn   VideoCancelCaptionTranslationParamsLanguageCode = "kn"
+	VideoCancelCaptionTranslationParamsLanguageCodeKk   VideoCancelCaptionTranslationParamsLanguageCode = "kk"
+	VideoCancelCaptionTranslationParamsLanguageCodeKo   VideoCancelCaptionTranslationParamsLanguageCode = "ko"
+	VideoCancelCaptionTranslationParamsLanguageCodeLv   VideoCancelCaptionTranslationParamsLanguageCode = "lv"
+	VideoCancelCaptionTranslationParamsLanguageCodeLt   VideoCancelCaptionTranslationParamsLanguageCode = "lt"
+	VideoCancelCaptionTranslationParamsLanguageCodeMk   VideoCancelCaptionTranslationParamsLanguageCode = "mk"
+	VideoCancelCaptionTranslationParamsLanguageCodeMs   VideoCancelCaptionTranslationParamsLanguageCode = "ms"
+	VideoCancelCaptionTranslationParamsLanguageCodeMl   VideoCancelCaptionTranslationParamsLanguageCode = "ml"
+	VideoCancelCaptionTranslationParamsLanguageCodeMt   VideoCancelCaptionTranslationParamsLanguageCode = "mt"
+	VideoCancelCaptionTranslationParamsLanguageCodeMr   VideoCancelCaptionTranslationParamsLanguageCode = "mr"
+	VideoCancelCaptionTranslationParamsLanguageCodeMn   VideoCancelCaptionTranslationParamsLanguageCode = "mn"
+	VideoCancelCaptionTranslationParamsLanguageCodeNo   VideoCancelCaptionTranslationParamsLanguageCode = "no"
+	VideoCancelCaptionTranslationParamsLanguageCodePs   VideoCancelCaptionTranslationParamsLanguageCode = "ps"
+	VideoCancelCaptionTranslationParamsLanguageCodePl   VideoCancelCaptionTranslationParamsLanguageCode = "pl"
+	VideoCancelCaptionTranslationParamsLanguageCodePt   VideoCancelCaptionTranslationParamsLanguageCode = "pt"
+	VideoCancelCaptionTranslationParamsLanguageCodePtPt VideoCancelCaptionTranslationParamsLanguageCode = "pt-PT"
+	VideoCancelCaptionTranslationParamsLanguageCodePa   VideoCancelCaptionTranslationParamsLanguageCode = "pa"
+	VideoCancelCaptionTranslationParamsLanguageCodeRo   VideoCancelCaptionTranslationParamsLanguageCode = "ro"
+	VideoCancelCaptionTranslationParamsLanguageCodeRu   VideoCancelCaptionTranslationParamsLanguageCode = "ru"
+	VideoCancelCaptionTranslationParamsLanguageCodeSr   VideoCancelCaptionTranslationParamsLanguageCode = "sr"
+	VideoCancelCaptionTranslationParamsLanguageCodeSi   VideoCancelCaptionTranslationParamsLanguageCode = "si"
+	VideoCancelCaptionTranslationParamsLanguageCodeSk   VideoCancelCaptionTranslationParamsLanguageCode = "sk"
+	VideoCancelCaptionTranslationParamsLanguageCodeSl   VideoCancelCaptionTranslationParamsLanguageCode = "sl"
+	VideoCancelCaptionTranslationParamsLanguageCodeSo   VideoCancelCaptionTranslationParamsLanguageCode = "so"
+	VideoCancelCaptionTranslationParamsLanguageCodeEs   VideoCancelCaptionTranslationParamsLanguageCode = "es"
+	VideoCancelCaptionTranslationParamsLanguageCodeEsMx VideoCancelCaptionTranslationParamsLanguageCode = "es-MX"
+	VideoCancelCaptionTranslationParamsLanguageCodeSw   VideoCancelCaptionTranslationParamsLanguageCode = "sw"
+	VideoCancelCaptionTranslationParamsLanguageCodeSv   VideoCancelCaptionTranslationParamsLanguageCode = "sv"
+	VideoCancelCaptionTranslationParamsLanguageCodeTa   VideoCancelCaptionTranslationParamsLanguageCode = "ta"
+	VideoCancelCaptionTranslationParamsLanguageCodeTe   VideoCancelCaptionTranslationParamsLanguageCode = "te"
+	VideoCancelCaptionTranslationParamsLanguageCodeTh   VideoCancelCaptionTranslationParamsLanguageCode = "th"
+	VideoCancelCaptionTranslationParamsLanguageCodeTr   VideoCancelCaptionTranslationParamsLanguageCode = "tr"
+	VideoCancelCaptionTranslationParamsLanguageCodeUk   VideoCancelCaptionTranslationParamsLanguageCode = "uk"
+	VideoCancelCaptionTranslationParamsLanguageCodeUr   VideoCancelCaptionTranslationParamsLanguageCode = "ur"
+	VideoCancelCaptionTranslationParamsLanguageCodeUz   VideoCancelCaptionTranslationParamsLanguageCode = "uz"
+	VideoCancelCaptionTranslationParamsLanguageCodeVi   VideoCancelCaptionTranslationParamsLanguageCode = "vi"
+	VideoCancelCaptionTranslationParamsLanguageCodeCy   VideoCancelCaptionTranslationParamsLanguageCode = "cy"
+)
 
 type VideoAnalyticsParams struct {
 	// Inclusive UTC start day in `YYYY-MM-DD` format.

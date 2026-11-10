@@ -564,6 +564,17 @@ func (cfg *RequestConfig) Execute() (err error) {
 	return nil
 }
 
+// CheckPathSegments returns an error if the path has a "." or ".." segment.
+func CheckPathSegments(path string) error {
+	path, _, _ = strings.Cut(path, "?")
+	for _, segment := range strings.Split(path, "/") {
+		if segment == "." || segment == ".." {
+			return fmt.Errorf("path parameter can't be the dot segment %q", segment)
+		}
+	}
+	return nil
+}
+
 func ExecuteNewRequest(ctx context.Context, method string, u string, body any, dst any, opts ...RequestOption) error {
 	cfg, err := NewRequestConfig(ctx, method, u, body, dst, opts...)
 	if err != nil {

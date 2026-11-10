@@ -97,6 +97,10 @@ func (r *MappingService) Get(ctx context.Context, id string, opts ...option.Requ
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/mappings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -112,6 +116,10 @@ func (r *MappingService) Update(ctx context.Context, id string, body MappingUpda
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/mappings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -125,6 +133,10 @@ func (r *MappingService) Delete(ctx context.Context, id string, opts ...option.R
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/mappings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

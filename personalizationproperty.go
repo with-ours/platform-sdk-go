@@ -93,6 +93,10 @@ func (r *PersonalizationPropertyService) Get(ctx context.Context, id string, opt
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/personalization-properties/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -110,6 +114,10 @@ func (r *PersonalizationPropertyService) Update(ctx context.Context, id string, 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/personalization-properties/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -125,6 +133,10 @@ func (r *PersonalizationPropertyService) Delete(ctx context.Context, id string, 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/personalization-properties/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -593,8 +605,8 @@ type PersonalizationPropertyListParams struct {
 	// Required. List properties belonging to this experiment settings record. Get the
 	// id from `GET /rest/v1/experiment-settings`.
 	ExperimentSettingsID string `query:"experimentSettingsId" api:"required" json:"-"`
-	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
-	// 1 and values above 100 are clamped to 100.
+	// Maximum number of properties to return. Defaults to 1000; values below 1 are
+	// clamped to 1 and values above 1000 are clamped to 1000.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
 	// not decode or modify it. Malformed cursors return 400 Bad Request.

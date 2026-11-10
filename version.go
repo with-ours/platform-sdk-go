@@ -101,6 +101,10 @@ func (r *VersionService) Get(ctx context.Context, id string, opts ...option.Requ
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/versions/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -114,6 +118,10 @@ func (r *VersionService) Update(ctx context.Context, id string, body VersionUpda
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/versions/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -130,6 +138,10 @@ func (r *VersionService) Publish(ctx context.Context, id string, opts ...option.
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/versions/%s/publish", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -146,6 +158,10 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/versions/%s/snapshot", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -175,6 +191,10 @@ func (r *VersionService) Snapshot(ctx context.Context, id string, opts ...option
 func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query VersionDiffParams, opts ...option.RequestOption) (res *VersionDiffResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/diff", url.PathEscape(string(id)))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -197,6 +217,10 @@ func (r *VersionService) Diff(ctx context.Context, id VersionDiffParamsID, query
 func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, query VersionStatusParams, opts ...option.RequestOption) (res *VersionStatusResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/status", url.PathEscape(string(id)))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -220,6 +244,10 @@ func (r *VersionService) Status(ctx context.Context, id VersionStatusParamsID, q
 func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, body VersionRevertParams, opts ...option.RequestOption) (res *VersionRevertResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/revert", url.PathEscape(string(id)))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -235,6 +263,10 @@ func (r *VersionService) Revert(ctx context.Context, id VersionRevertParamsID, b
 func (r *VersionService) Abandon(ctx context.Context, id VersionAbandonParamsID, opts ...option.RequestOption) (res *VersionAbandonResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("rest/v1/versions/%v/abandon", url.PathEscape(string(id)))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
