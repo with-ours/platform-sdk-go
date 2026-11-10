@@ -90,6 +90,10 @@ func (r *ConversionJourneySummaryService) Get(ctx context.Context, id string, op
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/conversion-journey-summaries/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -106,6 +110,10 @@ func (r *ConversionJourneySummaryService) Update(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/conversion-journey-summaries/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -120,6 +128,10 @@ func (r *ConversionJourneySummaryService) Delete(ctx context.Context, id string,
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/conversion-journey-summaries/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

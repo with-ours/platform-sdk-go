@@ -218,7 +218,7 @@ func TestVideoUpdateTranscriptWithOptionalParams(t *testing.T) {
 		oursprivacy.VideoUpdateTranscriptParams{
 			Content:      "x",
 			Format:       oursprivacy.VideoUpdateTranscriptParamsFormatSrt,
-			LanguageCode: oursprivacy.String("languageCode"),
+			LanguageCode: oursprivacy.VideoUpdateTranscriptParamsLanguageCodeAf,
 		},
 	)
 	if err != nil {
@@ -246,7 +246,7 @@ func TestVideoRequestCaptionTranslationWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.VideoRequestCaptionTranslationParams{
-			LanguageCode: "languageCode",
+			LanguageCode: oursprivacy.VideoRequestCaptionTranslationParamsLanguageCodeAf,
 			Replace:      oursprivacy.Bool(true),
 		},
 	)
@@ -275,7 +275,7 @@ func TestVideoCancelCaptionTranslation(t *testing.T) {
 		context.TODO(),
 		"id",
 		oursprivacy.VideoCancelCaptionTranslationParams{
-			LanguageCode: "languageCode",
+			LanguageCode: oursprivacy.VideoCancelCaptionTranslationParamsLanguageCodeAf,
 		},
 	)
 	if err != nil {

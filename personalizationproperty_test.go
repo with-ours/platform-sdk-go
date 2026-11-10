@@ -28,7 +28,7 @@ func TestPersonalizationPropertyListWithOptionalParams(t *testing.T) {
 	_, err := client.PersonalizationProperties.List(context.TODO(), oursprivacy.PersonalizationPropertyListParams{
 		ExperimentSettingsID: "08524dc8-5289-48e8-bf40-b3a7cfa6ca0a",
 		Cursor:               oursprivacy.String("cursor"),
-		Limit:                oursprivacy.Int(25),
+		Limit:                oursprivacy.Int(1000),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error

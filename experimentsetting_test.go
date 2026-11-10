@@ -97,7 +97,7 @@ func TestExperimentSettingUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.ExperimentSettings.Update(
 		context.TODO(),
-		"id",
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		oursprivacy.ExperimentSettingUpdateParams{
 			CookieName:       oursprivacy.String("_cord_exp"),
 			Name:             oursprivacy.String("Default Web Experiment Settings"),

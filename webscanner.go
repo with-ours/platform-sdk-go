@@ -13,6 +13,7 @@ import (
 
 	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
 	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v2/internal/redact"
 	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/v2/option"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
@@ -75,6 +76,10 @@ func (r *WebScannerService) Get(ctx context.Context, id string, opts ...option.R
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -92,6 +97,10 @@ func (r *WebScannerService) Update(ctx context.Context, id string, body WebScann
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -106,6 +115,10 @@ func (r *WebScannerService) Delete(ctx context.Context, id string, opts ...optio
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -125,6 +138,10 @@ func (r *WebScannerService) Trigger(ctx context.Context, id string, opts ...opti
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/trigger", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -141,6 +158,10 @@ func (r *WebScannerService) AuthenticatedScan(ctx context.Context, id string, bo
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/authenticated-scan", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -158,6 +179,10 @@ func (r *WebScannerService) TargetedScan(ctx context.Context, id string, body We
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/targeted-scan", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -172,6 +197,10 @@ func (r *WebScannerService) VerificationRun(ctx context.Context, id string, quer
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/verification-run", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -188,6 +217,30 @@ func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, que
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/verification-runs", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	return res, err
+}
+
+// List the scan runs recorded for this scanner, newest first, one per UTC day.
+// Pass an entry's `runDate` as `date` to read that run from the summary, findings,
+// cookies, or decision queue. A missing id and an id this credential cannot access
+// return the same 404. Requires API-key scope or current OAuth user permission:
+// webScanner:find
+func (r *WebScannerService) Runs(ctx context.Context, id string, query WebScannerRunsParams, opts ...option.RequestOption) (res *WebScannerRunsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if id == "" {
+		err = errors.New("missing required id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("rest/v1/web-scanners/%s/runs", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -198,12 +251,12 @@ func (r *WebScannerService) VerificationRuns(ctx context.Context, id string, que
 // Data-flow findings include only recipient metadata, categories, source
 // locations, safe query/body field names when available, and counts; matched
 // query, body, and pathname values are never returned. Defaults to the latest run;
-// pass `date` (an ISO-8601 timestamp; only the calendar day is used to select the
-// run) to read an earlier run. Documented exception to the cursor-pagination
-// standard: paginates with `limit` and `offset` because each run is an immutable
-// snapshot. A host that is neither covered (`coveredByCmp: false`) nor matched by
-// a suppression rule still needs a triage decision — resolve it by adding the host
-// to a CMP consent service or by creating a suppression rule with
+// pass `date` (a day listed by `GET /rest/v1/web-scanners/{id}/runs`) to read an
+// earlier run. Documented exception to the cursor-pagination standard: paginates
+// with `limit` and `offset` because each run is an immutable snapshot. A host that
+// is neither covered (`coveredByCmp: false`) nor matched by a suppression rule
+// still needs a triage decision — resolve it by adding the host to a CMP consent
+// service or by creating a suppression rule with
 // `POST /rest/v1/web-scanner-rules`. Use `GET /rest/v1/web-scanners/{id}/summary`
 // for the rolled-up counts. Requires API-key scope or current OAuth user
 // permission: webScanner:find
@@ -214,17 +267,22 @@ func (r *WebScannerService) Findings(ctx context.Context, id string, query WebSc
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/findings", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
 // List the cookies and local-storage entries observed on a scan run. Defaults to
-// the latest run; pass `date` (an ISO-8601 timestamp; only the calendar day is
-// used to select the run) to read an earlier run. Cookies paginate with `limit`
-// and `offset` (a documented exception to the cursor-pagination standard, since
-// each run is an immutable snapshot); local-storage entries are returned in full.
-// A missing id and an id this credential cannot access return the same 404.
-// Requires API-key scope or current OAuth user permission: webScanner:find
+// the latest run; pass `date` (a day listed by
+// `GET /rest/v1/web-scanners/{id}/runs`) to read an earlier run. Cookies paginate
+// with `limit` and `offset` (a documented exception to the cursor-pagination
+// standard, since each run is an immutable snapshot); local-storage entries are
+// returned in full. A missing id and an id this credential cannot access return
+// the same 404. Requires API-key scope or current OAuth user permission:
+// webScanner:find
 func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebScannerCookiesParams, opts ...option.RequestOption) (res *WebScannerCookiesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -232,6 +290,10 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/cookies", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -248,12 +310,12 @@ func (r *WebScannerService) Cookies(ctx context.Context, id string, query WebSca
 // Content-Security-Policy gap for each first-party hostname. After a consent or
 // CSP fix, trigger a full scan with `POST /rest/v1/web-scanners/{id}/trigger` and
 // read this summary again to confirm it. A null privacyPolicyUrl means that no
-// policy was captured for the hostname. Defaults to the latest run; pass `date`
-// (an ISO-8601 timestamp; only the calendar day is used to select the run) to read
-// an earlier run. Clear a host that needs a decision by adding it to a CMP consent
-// service or creating a suppression rule with `POST /rest/v1/web-scanner-rules`.
-// When the scanner has no completed runs, every count is 0 and `runDate` is null.
-// Requires API-key scope or current OAuth user permission: webScanner:find
+// policy was captured for the hostname. Defaults to the latest run; pass `date` (a
+// day listed by `GET /rest/v1/web-scanners/{id}/runs`) to read an earlier run.
+// Clear a host that needs a decision by adding it to a CMP consent service or
+// creating a suppression rule with `POST /rest/v1/web-scanner-rules`. When the
+// scanner has no completed runs, every count is 0 and `runDate` is null. Requires
+// API-key scope or current OAuth user permission: webScanner:find
 func (r *WebScannerService) Summary(ctx context.Context, id string, query WebScannerSummaryParams, opts ...option.RequestOption) (res *WebScannerSummaryResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -261,6 +323,10 @@ func (r *WebScannerService) Summary(ctx context.Context, id string, query WebSca
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/summary", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -279,6 +345,10 @@ func (r *WebScannerService) DecisionQueue(ctx context.Context, id string, query 
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/decision-queue", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -295,6 +365,10 @@ func (r *WebScannerService) ResolveCoverageGap(ctx context.Context, id string, b
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/web-scanners/%s/resolve-coverage-gap", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -1119,6 +1193,59 @@ func (r *WebScannerVerificationRunsResponseItemRunMetadataFailedURL) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WebScannerRunsResponse struct {
+	Entities   []WebScannerRunsResponseEntity   `json:"entities" api:"required"`
+	Pagination WebScannerRunsResponsePagination `json:"pagination" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		Pagination  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerRunsResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerRunsResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerRunsResponseEntity struct {
+	// When the run was recorded. Pass it as `date` to read that run.
+	RunDate string `json:"runDate" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		RunDate     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerRunsResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerRunsResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebScannerRunsResponsePagination struct {
+	HasMore    bool   `json:"hasMore" api:"required"`
+	NextCursor string `json:"nextCursor" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		HasMore     respjson.Field
+		NextCursor  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebScannerRunsResponsePagination) RawJSON() string { return r.JSON.raw }
+func (r *WebScannerRunsResponsePagination) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebScannerFindingsResponse struct {
 	// True when more findings are available beyond the current window.
 	HasMore bool `json:"hasMore" api:"required"`
@@ -1393,6 +1520,10 @@ type WebScannerSummaryResponse struct {
 	Delta            WebScannerSummaryResponseDelta        `json:"delta" api:"nullable"`
 	RunDate          string                                `json:"runDate" api:"nullable"`
 	RunRevision      string                                `json:"runRevision" api:"nullable"`
+	// Pages the run crawled successfully. 0 means the run captured no pages, so zero
+	// hosts is not a clean result. Null when there is no run or no crawl record for
+	// it.
+	SuccessURLCount float64 `json:"successUrlCount" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ByCategory         respjson.Field
@@ -1416,6 +1547,7 @@ type WebScannerSummaryResponse struct {
 		Delta              respjson.Field
 		RunDate            respjson.Field
 		RunRevision        respjson.Field
+		SuccessURLCount    respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -2249,6 +2381,10 @@ func (r *WebScannerAuthenticatedScanParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+func (r WebScannerAuthenticatedScanParams) Format(f fmt.State, verb rune) {
+	redact.WriteParams(f, r)
+}
+
 // The properties Location, Name, Value are required.
 type WebScannerAuthenticatedScanParamsCredential struct {
 	// Where to place the credential for first-party crawl requests. Header credentials
@@ -2322,14 +2458,33 @@ func (r WebScannerVerificationRunsParams) URLQuery() (v url.Values, err error) {
 	})
 }
 
+type WebScannerRunsParams struct {
+	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
+	// 1 and values above 100 are clamped to 100.
+	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
+	// not decode or modify it. Malformed cursors return 400 Bad Request.
+	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	paramObj
+}
+
+// URLQuery serializes [WebScannerRunsParams]'s query parameters as `url.Values`.
+func (r WebScannerRunsParams) URLQuery() (v url.Values, err error) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type WebScannerFindingsParams struct {
 	// Skip this many findings before returning. Use with `limit` for load-more paging.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
-	// used to select the run; the time component is ignored. Defaults to the most
-	// recent run when omitted.
-	Date param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
-	// Maximum number of findings to return. Defaults to 25; clamped to 1–100.
+	// Which scan run to read: a day (`2026-05-15`) or an ISO-8601 timestamp, of which
+	// only the UTC day is used. A day with no run returns 400; list run days with
+	// `GET /rest/v1/web-scanners/{id}/runs`. Defaults to the most recent run when
+	// omitted.
+	Date param.Opt[string] `query:"date,omitzero" json:"-"`
+	// Maximum number of findings to return. Defaults to 25; must be between 1 and 100.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
 }
@@ -2346,10 +2501,11 @@ func (r WebScannerFindingsParams) URLQuery() (v url.Values, err error) {
 type WebScannerCookiesParams struct {
 	// Skip this many cookies before returning. Use with `limit` for load-more paging.
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
-	// used to select the run; the time component is ignored. Defaults to the most
-	// recent run when omitted.
-	Date param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
+	// Which scan run to read: a day (`2026-05-15`) or an ISO-8601 timestamp, of which
+	// only the UTC day is used. A day with no run returns 400; list run days with
+	// `GET /rest/v1/web-scanners/{id}/runs`. Defaults to the most recent run when
+	// omitted.
+	Date param.Opt[string] `query:"date,omitzero" json:"-"`
 	// Maximum number of cookies to return, from 1 to 100. Defaults to 25.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	paramObj
@@ -2366,11 +2522,12 @@ func (r WebScannerCookiesParams) URLQuery() (v url.Values, err error) {
 
 type WebScannerSummaryParams struct {
 	CoverageRevision param.Opt[string] `query:"coverageRevision,omitzero" json:"-"`
-	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
-	// used to select the run; the time component is ignored. Defaults to the most
-	// recent run when omitted.
-	Date        param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
-	RunRevision param.Opt[string]    `query:"runRevision,omitzero" json:"-"`
+	// Which scan run to read: a day (`2026-05-15`) or an ISO-8601 timestamp, of which
+	// only the UTC day is used. A day with no run returns 400; list run days with
+	// `GET /rest/v1/web-scanners/{id}/runs`. Defaults to the most recent run when
+	// omitted.
+	Date        param.Opt[string] `query:"date,omitzero" json:"-"`
+	RunRevision param.Opt[string] `query:"runRevision,omitzero" json:"-"`
 	paramObj
 }
 
@@ -2391,11 +2548,12 @@ type WebScannerDecisionQueueParams struct {
 	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
 	// not decode or modify it. Malformed cursors return 400 Bad Request.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
-	// Which scan run to read, as an ISO-8601 timestamp. Only the UTC calendar day is
-	// used to select the run; the time component is ignored. Defaults to the most
-	// recent run when omitted.
-	Date        param.Opt[time.Time] `query:"date,omitzero" format:"date-time" json:"-"`
-	RunRevision param.Opt[string]    `query:"runRevision,omitzero" json:"-"`
+	// Which scan run to read: a day (`2026-05-15`) or an ISO-8601 timestamp, of which
+	// only the UTC day is used. A day with no run returns 400; list run days with
+	// `GET /rest/v1/web-scanners/{id}/runs`. Defaults to the most recent run when
+	// omitted.
+	Date        param.Opt[string] `query:"date,omitzero" json:"-"`
+	RunRevision param.Opt[string] `query:"runRevision,omitzero" json:"-"`
 	paramObj
 }
 

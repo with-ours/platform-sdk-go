@@ -24,7 +24,9 @@ func TestAutoPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	iter := client.Sources.ListAutoPaging(context.TODO(), oursprivacy.SourceListParams{})
+	iter := client.Sources.ListAutoPaging(context.TODO(), oursprivacy.SourceListParams{
+		Limit: oursprivacy.Int(20),
+	})
 	// The mock server isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
 		source := iter.Current()

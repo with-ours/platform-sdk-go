@@ -91,6 +91,10 @@ func (r *VideoChannelService) Get(ctx context.Context, id string, opts ...option
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -107,6 +111,10 @@ func (r *VideoChannelService) Update(ctx context.Context, id string, body VideoC
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -121,6 +129,10 @@ func (r *VideoChannelService) Delete(ctx context.Context, id string, opts ...opt
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -137,6 +149,10 @@ func (r *VideoChannelService) Media(ctx context.Context, id string, opts ...opti
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s/media", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -154,6 +170,10 @@ func (r *VideoChannelService) AssignMedia(ctx context.Context, id string, body V
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s/media", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -170,6 +190,10 @@ func (r *VideoChannelService) RemoveMedia(ctx context.Context, id string, body V
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s/media", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -186,6 +210,10 @@ func (r *VideoChannelService) Reorder(ctx context.Context, id string, body Video
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/video-channels/%s/reorder", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
