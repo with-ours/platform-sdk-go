@@ -16,10 +16,6 @@ on:
 
 permissions: {}
 
-concurrency:
-  group: release-${{ github.repository }}
-  cancel-in-progress: false
-
 jobs:
   publish:
     if: >-
@@ -30,6 +26,9 @@ jobs:
     name: publish
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    concurrency:
+      group: release-${{ github.repository }}
+      cancel-in-progress: false
     permissions:
       contents: write
 
