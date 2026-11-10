@@ -96,6 +96,10 @@ func (r *DataGovernanceService) Get(ctx context.Context, id string, opts ...opti
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -121,6 +125,10 @@ func (r *DataGovernanceService) Update(ctx context.Context, id string, body Data
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -137,6 +145,10 @@ func (r *DataGovernanceService) Delete(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/data-governance/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

@@ -13,6 +13,7 @@ import (
 
 	"github.com/with-ours/platform-sdk-go/v2/internal/apijson"
 	"github.com/with-ours/platform-sdk-go/v2/internal/apiquery"
+	"github.com/with-ours/platform-sdk-go/v2/internal/redact"
 	"github.com/with-ours/platform-sdk-go/v2/internal/requestconfig"
 	"github.com/with-ours/platform-sdk-go/v2/option"
 	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
@@ -88,6 +89,10 @@ func (r *SourceService) Get(ctx context.Context, id string, opts ...option.Reque
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -103,6 +108,10 @@ func (r *SourceService) Update(ctx context.Context, id string, body SourceUpdate
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -116,6 +125,10 @@ func (r *SourceService) Delete(ctx context.Context, id string, opts ...option.Re
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/sources/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -135,6 +148,10 @@ func (r *SourceService) Tokens(ctx context.Context, id string, opts ...option.Re
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/sources/%s/tokens", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -881,8 +898,8 @@ func (r *SourceTokensResponseObject2) UnmarshalJSON(data []byte) error {
 }
 
 type SourceListParams struct {
-	// Maximum number of items to return. Defaults to 25; values below 1 are clamped to
-	// 1 and values above 100 are clamped to 100.
+	// Maximum number of sources to return. Defaults to 25; values below 1 are clamped
+	// to 1 and values above 200 are clamped to 200.
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Opaque pagination cursor from pagination.nextCursor in the previous response. Do
 	// not decode or modify it. Malformed cursors return 400 Bad Request.
@@ -1072,6 +1089,10 @@ func (r SourceUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *SourceUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r SourceUpdateParams) Format(f fmt.State, verb rune) {
+	redact.WriteParams(f, r)
 }
 
 type SourceUpdateParamsBotControlMode string

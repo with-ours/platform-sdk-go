@@ -70,6 +70,10 @@ func (r *LocationService) Update(ctx context.Context, id string, body LocationUp
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/locations/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -88,6 +92,10 @@ func (r *LocationService) EmbedCode(ctx context.Context, id string, query Locati
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/locations/%s/embed-code", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

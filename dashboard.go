@@ -96,6 +96,10 @@ func (r *DashboardService) Get(ctx context.Context, id string, opts ...option.Re
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/dashboards/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -113,6 +117,10 @@ func (r *DashboardService) Update(ctx context.Context, id string, body Dashboard
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/dashboards/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -127,6 +135,10 @@ func (r *DashboardService) Delete(ctx context.Context, id string, body Dashboard
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/dashboards/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return res, err
 }
@@ -144,6 +156,10 @@ func (r *DashboardService) Duplicate(ctx context.Context, id string, body Dashbo
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/dashboards/%s/duplicate", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
@@ -177,6 +193,10 @@ func (r *DashboardService) Results(ctx context.Context, id string, query Dashboa
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/dashboards/%s/tile-result", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
@@ -196,6 +216,10 @@ func (r *DashboardService) ReplayTileResult(ctx context.Context, id string, quer
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/dashboards/%s/replay-tile-result", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

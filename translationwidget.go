@@ -71,6 +71,10 @@ func (r *TranslationWidgetService) Get(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/translation-widgets/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -85,6 +89,10 @@ func (r *TranslationWidgetService) Analytics(ctx context.Context, id string, que
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/translation-widgets/%s/analytics", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

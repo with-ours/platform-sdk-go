@@ -82,6 +82,10 @@ func (r *CustomDomainService) Replace(ctx context.Context, id string, body Custo
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/custom-domains/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return res, err
 }
@@ -100,6 +104,10 @@ func (r *CustomDomainService) ReconcileCertificate(ctx context.Context, id strin
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/custom-domains/%s/certificate-validation", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }

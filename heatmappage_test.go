@@ -26,16 +26,17 @@ func TestHeatmapPageListWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.HeatmapPages.List(context.TODO(), oursprivacy.HeatmapPageListParams{
-		From:        "2026-04-01",
-		To:          "2026-04-30",
-		BrowserName: oursprivacy.String("Chrome"),
-		Country:     oursprivacy.String("x"),
-		Cursor:      oursprivacy.String("cursor"),
-		Limit:       oursprivacy.Int(25),
-		Region:      oursprivacy.String("x"),
-		Search:      oursprivacy.String("/pricing"),
-		SortBy:      oursprivacy.HeatmapPageListParamsSortByClicks,
-		SortDir:     oursprivacy.HeatmapPageListParamsSortDirAsc,
+		From:                 "2026-04-01",
+		To:                   "2026-04-30",
+		BrowserName:          oursprivacy.String("Chrome"),
+		Country:              oursprivacy.String("x"),
+		Cursor:               oursprivacy.String("cursor"),
+		Limit:                oursprivacy.Int(25),
+		QueryParameterFilter: oursprivacy.String("queryParameterFilter"),
+		Region:               oursprivacy.String("x"),
+		Search:               oursprivacy.String("/pricing"),
+		SortBy:               oursprivacy.HeatmapPageListParamsSortByClicks,
+		SortDir:              oursprivacy.HeatmapPageListParamsSortDirAsc,
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error
@@ -59,13 +60,14 @@ func TestHeatmapPageSummaryWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.HeatmapPages.Summary(context.TODO(), oursprivacy.HeatmapPageSummaryParams{
-		Breakpoint:  oursprivacy.HeatmapPageSummaryParamsBreakpointDesktop,
-		From:        "2026-04-01",
-		PageKey:     "https://example.com/pricing",
-		To:          "2026-04-30",
-		BrowserName: oursprivacy.String("Chrome"),
-		Country:     oursprivacy.String("x"),
-		Region:      oursprivacy.String("x"),
+		Breakpoint:           oursprivacy.HeatmapPageSummaryParamsBreakpointMobile,
+		From:                 "2026-04-01",
+		PageKey:              "https://example.com/pricing",
+		To:                   "2026-04-30",
+		BrowserName:          oursprivacy.String("Chrome"),
+		Country:              oursprivacy.String("x"),
+		QueryParameterFilter: oursprivacy.String("queryParameterFilter"),
+		Region:               oursprivacy.String("x"),
 	})
 	if err != nil {
 		var apierr *oursprivacy.Error

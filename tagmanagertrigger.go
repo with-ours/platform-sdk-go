@@ -90,6 +90,10 @@ func (r *TagManagerTriggerService) Get(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/tag-manager-triggers/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -105,6 +109,10 @@ func (r *TagManagerTriggerService) Update(ctx context.Context, id string, body T
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/tag-manager-triggers/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -118,6 +126,10 @@ func (r *TagManagerTriggerService) Delete(ctx context.Context, id string, opts .
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/tag-manager-triggers/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }

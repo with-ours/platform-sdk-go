@@ -69,13 +69,19 @@ func (r *ExperimentSettingService) Get(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
 
-// Partially update an experiment settings. Only the fields you send are changed.
-// Requires API-key scope or current OAuth user permission:
-// experimentSettings:update
+// Partially update an experiment settings record. Only the fields you send change.
+// Discover the ID with GET /rest/v1/experiment-settings. Missing IDs and IDs this
+// credential cannot access return the same 404; returns 403 when Experimentation
+// is disabled for an otherwise authorized record. Requires API-key scope or
+// current OAuth user permission: experimentSettings:update
 func (r *ExperimentSettingService) Update(ctx context.Context, id string, body ExperimentSettingUpdateParams, opts ...option.RequestOption) (res *ExperimentSettingUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -83,6 +89,10 @@ func (r *ExperimentSettingService) Update(ctx context.Context, id string, body E
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -97,6 +107,10 @@ func (r *ExperimentSettingService) Delete(ctx context.Context, id string, opts .
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-settings/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -362,16 +376,19 @@ func (r *ExperimentSettingDeleteResponse) UnmarshalJSON(data []byte) error {
 
 type ExperimentSettingNewParams struct {
 	// Cookie name used to persist sticky variant assignments in the browser. Defaults
-	// to `_cord_exp` when omitted on create.
+	// to `_cord_exp` when omitted on create; omitted or null keeps the saved value on
+	// update.
 	CookieName param.Opt[string] `json:"cookieName,omitzero"`
 	// Human-readable name for this experimentation configuration. Defaults to
-	// `Experiment Settings` when omitted on create.
+	// `Experiment Settings` when omitted on create; omitted or null keeps the saved
+	// value on update.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
-	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// anywhere else and your experiments never run on those hosts. On update, an empty
+	// array clears the allowlist (all domains served), and omitted or null keeps the
+	// saved value. Separate from source `whitelistDomains`, which limits which domains
+	// can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }
@@ -386,16 +403,19 @@ func (r *ExperimentSettingNewParams) UnmarshalJSON(data []byte) error {
 
 type ExperimentSettingUpdateParams struct {
 	// Cookie name used to persist sticky variant assignments in the browser. Defaults
-	// to `_cord_exp` when omitted on create.
+	// to `_cord_exp` when omitted on create; omitted or null keeps the saved value on
+	// update.
 	CookieName param.Opt[string] `json:"cookieName,omitzero"`
 	// Human-readable name for this experimentation configuration. Defaults to
-	// `Experiment Settings` when omitted on create.
+	// `Experiment Settings` when omitted on create; omitted or null keeps the saved
+	// value on update.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// Limits which domains can load your experiments. When set, experiments using this
 	// settings record are only served on these domains; the SDK refuses to load
-	// anywhere else and your experiments never run on those hosts. Separate from
-	// source `whitelistDomains`, which limits which domains can send events to the
-	// CDP.
+	// anywhere else and your experiments never run on those hosts. On update, an empty
+	// array clears the allowlist (all domains served), and omitted or null keeps the
+	// saved value. Separate from source `whitelistDomains`, which limits which domains
+	// can send events to the CDP.
 	WhitelistDomains []string `json:"whitelistDomains,omitzero"`
 	paramObj
 }

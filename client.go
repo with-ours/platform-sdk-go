@@ -57,6 +57,7 @@ type Client struct {
 	Analytics                  AnalyticsService
 	Dashboards                 DashboardService
 	ReportBranding             ReportBrandingService
+	AttributionReports         AttributionReportService
 	Insights                   InsightService
 	JourneyFlows               JourneyFlowService
 	TestEvents                 TestEventService
@@ -131,6 +132,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Analytics = NewAnalyticsService(opts...)
 	r.Dashboards = NewDashboardService(opts...)
 	r.ReportBranding = NewReportBrandingService(opts...)
+	r.AttributionReports = NewAttributionReportService(opts...)
 	r.Insights = NewInsightService(opts...)
 	r.JourneyFlows = NewJourneyFlowService(opts...)
 	r.TestEvents = NewTestEventService(opts...)

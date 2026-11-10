@@ -87,6 +87,10 @@ func (r *ExperimentVariantService) Get(ctx context.Context, id string, opts ...o
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-variants/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -100,6 +104,10 @@ func (r *ExperimentVariantService) Update(ctx context.Context, id string, body E
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-variants/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return res, err
 }
@@ -113,6 +121,10 @@ func (r *ExperimentVariantService) Delete(ctx context.Context, id string, opts .
 		return nil, err
 	}
 	path := fmt.Sprintf("rest/v1/experiment-variants/%s", url.PathEscape(id))
+	err = requestconfig.CheckPathSegments(path)
+	if err != nil {
+		return nil, err
+	}
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return res, err
 }
@@ -126,8 +138,8 @@ type ExperimentVariantListResponse struct {
 	IsControl bool `json:"isControl" api:"required"`
 	// Human-readable variant name shown in the dashboard and results.
 	Name string `json:"name" api:"required"`
-	// Relative traffic weight used when assigning visitors among variants in an active
-	// experiment.
+	// Share of the experiment's traffic as a percentage (0–100). Weights across all
+	// variants total 100; the control's weight is the remainder after the treatments.
 	Weight int64 `json:"weight" api:"required"`
 	// Ordered list of declarative DOM mutations applied when this variant is assigned.
 	DomModifications []ExperimentVariantListResponseDomModification `json:"domModifications" api:"nullable"`
@@ -173,16 +185,14 @@ type ExperimentVariantListResponseDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
-	// below to avoid manual JSON encoding.
+	// `{key: value}` object; the structured `styles` / `attribute` fields carry the
+	// same data.
 	Value string `json:"value" api:"required"`
-	// Populated on read for `setAttribute` modifications, parsed from `value`.
-	// Customers may also send this field instead of a JSON-stringified `value` on
-	// write — see `domModificationInputSchema`.
+	// Populated on read for `setAttribute` modifications, parsed from `value`. May
+	// also be sent instead of a JSON-stringified `value` on write.
 	Attribute ExperimentVariantListResponseDomModificationAttribute `json:"attribute" api:"nullable"`
-	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
-	// may also send this field instead of a JSON-stringified `value` on write — see
-	// `domModificationInputSchema`.
+	// Populated on read for `setStyle` modifications, parsed from `value`. May also be
+	// sent instead of a JSON-stringified `value` on write.
 	Styles []ExperimentVariantListResponseDomModificationStyle `json:"styles" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -202,9 +212,8 @@ func (r *ExperimentVariantListResponseDomModification) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Populated on read for `setAttribute` modifications, parsed from `value`.
-// Customers may also send this field instead of a JSON-stringified `value` on
-// write — see `domModificationInputSchema`.
+// Populated on read for `setAttribute` modifications, parsed from `value`. May
+// also be sent instead of a JSON-stringified `value` on write.
 type ExperimentVariantListResponseDomModificationAttribute struct {
 	// HTML attribute name.
 	Name string `json:"name" api:"required"`
@@ -263,8 +272,8 @@ type ExperimentVariantNewResponse struct {
 	IsControl bool `json:"isControl" api:"required"`
 	// Human-readable variant name shown in the dashboard and results.
 	Name string `json:"name" api:"required"`
-	// Relative traffic weight used when assigning visitors among variants in an active
-	// experiment.
+	// Share of the experiment's traffic as a percentage (0–100). Weights across all
+	// variants total 100; the control's weight is the remainder after the treatments.
 	Weight int64 `json:"weight" api:"required"`
 	// Ordered list of declarative DOM mutations applied when this variant is assigned.
 	DomModifications []ExperimentVariantNewResponseDomModification `json:"domModifications" api:"nullable"`
@@ -310,16 +319,14 @@ type ExperimentVariantNewResponseDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
-	// below to avoid manual JSON encoding.
+	// `{key: value}` object; the structured `styles` / `attribute` fields carry the
+	// same data.
 	Value string `json:"value" api:"required"`
-	// Populated on read for `setAttribute` modifications, parsed from `value`.
-	// Customers may also send this field instead of a JSON-stringified `value` on
-	// write — see `domModificationInputSchema`.
+	// Populated on read for `setAttribute` modifications, parsed from `value`. May
+	// also be sent instead of a JSON-stringified `value` on write.
 	Attribute ExperimentVariantNewResponseDomModificationAttribute `json:"attribute" api:"nullable"`
-	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
-	// may also send this field instead of a JSON-stringified `value` on write — see
-	// `domModificationInputSchema`.
+	// Populated on read for `setStyle` modifications, parsed from `value`. May also be
+	// sent instead of a JSON-stringified `value` on write.
 	Styles []ExperimentVariantNewResponseDomModificationStyle `json:"styles" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -339,9 +346,8 @@ func (r *ExperimentVariantNewResponseDomModification) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Populated on read for `setAttribute` modifications, parsed from `value`.
-// Customers may also send this field instead of a JSON-stringified `value` on
-// write — see `domModificationInputSchema`.
+// Populated on read for `setAttribute` modifications, parsed from `value`. May
+// also be sent instead of a JSON-stringified `value` on write.
 type ExperimentVariantNewResponseDomModificationAttribute struct {
 	// HTML attribute name.
 	Name string `json:"name" api:"required"`
@@ -400,8 +406,8 @@ type ExperimentVariantGetResponse struct {
 	IsControl bool `json:"isControl" api:"required"`
 	// Human-readable variant name shown in the dashboard and results.
 	Name string `json:"name" api:"required"`
-	// Relative traffic weight used when assigning visitors among variants in an active
-	// experiment.
+	// Share of the experiment's traffic as a percentage (0–100). Weights across all
+	// variants total 100; the control's weight is the remainder after the treatments.
 	Weight int64 `json:"weight" api:"required"`
 	// Ordered list of declarative DOM mutations applied when this variant is assigned.
 	DomModifications []ExperimentVariantGetResponseDomModification `json:"domModifications" api:"nullable"`
@@ -447,16 +453,14 @@ type ExperimentVariantGetResponseDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
-	// below to avoid manual JSON encoding.
+	// `{key: value}` object; the structured `styles` / `attribute` fields carry the
+	// same data.
 	Value string `json:"value" api:"required"`
-	// Populated on read for `setAttribute` modifications, parsed from `value`.
-	// Customers may also send this field instead of a JSON-stringified `value` on
-	// write — see `domModificationInputSchema`.
+	// Populated on read for `setAttribute` modifications, parsed from `value`. May
+	// also be sent instead of a JSON-stringified `value` on write.
 	Attribute ExperimentVariantGetResponseDomModificationAttribute `json:"attribute" api:"nullable"`
-	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
-	// may also send this field instead of a JSON-stringified `value` on write — see
-	// `domModificationInputSchema`.
+	// Populated on read for `setStyle` modifications, parsed from `value`. May also be
+	// sent instead of a JSON-stringified `value` on write.
 	Styles []ExperimentVariantGetResponseDomModificationStyle `json:"styles" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -476,9 +480,8 @@ func (r *ExperimentVariantGetResponseDomModification) UnmarshalJSON(data []byte)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Populated on read for `setAttribute` modifications, parsed from `value`.
-// Customers may also send this field instead of a JSON-stringified `value` on
-// write — see `domModificationInputSchema`.
+// Populated on read for `setAttribute` modifications, parsed from `value`. May
+// also be sent instead of a JSON-stringified `value` on write.
 type ExperimentVariantGetResponseDomModificationAttribute struct {
 	// HTML attribute name.
 	Name string `json:"name" api:"required"`
@@ -537,8 +540,8 @@ type ExperimentVariantUpdateResponse struct {
 	IsControl bool `json:"isControl" api:"required"`
 	// Human-readable variant name shown in the dashboard and results.
 	Name string `json:"name" api:"required"`
-	// Relative traffic weight used when assigning visitors among variants in an active
-	// experiment.
+	// Share of the experiment's traffic as a percentage (0–100). Weights across all
+	// variants total 100; the control's weight is the remainder after the treatments.
 	Weight int64 `json:"weight" api:"required"`
 	// Ordered list of declarative DOM mutations applied when this variant is assigned.
 	DomModifications []ExperimentVariantUpdateResponseDomModification `json:"domModifications" api:"nullable"`
@@ -584,16 +587,14 @@ type ExperimentVariantUpdateResponseDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
-	// below to avoid manual JSON encoding.
+	// `{key: value}` object; the structured `styles` / `attribute` fields carry the
+	// same data.
 	Value string `json:"value" api:"required"`
-	// Populated on read for `setAttribute` modifications, parsed from `value`.
-	// Customers may also send this field instead of a JSON-stringified `value` on
-	// write — see `domModificationInputSchema`.
+	// Populated on read for `setAttribute` modifications, parsed from `value`. May
+	// also be sent instead of a JSON-stringified `value` on write.
 	Attribute ExperimentVariantUpdateResponseDomModificationAttribute `json:"attribute" api:"nullable"`
-	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
-	// may also send this field instead of a JSON-stringified `value` on write — see
-	// `domModificationInputSchema`.
+	// Populated on read for `setStyle` modifications, parsed from `value`. May also be
+	// sent instead of a JSON-stringified `value` on write.
 	Styles []ExperimentVariantUpdateResponseDomModificationStyle `json:"styles" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -613,9 +614,8 @@ func (r *ExperimentVariantUpdateResponseDomModification) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Populated on read for `setAttribute` modifications, parsed from `value`.
-// Customers may also send this field instead of a JSON-stringified `value` on
-// write — see `domModificationInputSchema`.
+// Populated on read for `setAttribute` modifications, parsed from `value`. May
+// also be sent instead of a JSON-stringified `value` on write.
 type ExperimentVariantUpdateResponseDomModificationAttribute struct {
 	// HTML attribute name.
 	Name string `json:"name" api:"required"`
@@ -674,8 +674,8 @@ type ExperimentVariantDeleteResponse struct {
 	IsControl bool `json:"isControl" api:"required"`
 	// Human-readable variant name shown in the dashboard and results.
 	Name string `json:"name" api:"required"`
-	// Relative traffic weight used when assigning visitors among variants in an active
-	// experiment.
+	// Share of the experiment's traffic as a percentage (0–100). Weights across all
+	// variants total 100; the control's weight is the remainder after the treatments.
 	Weight int64 `json:"weight" api:"required"`
 	// Ordered list of declarative DOM mutations applied when this variant is assigned.
 	DomModifications []ExperimentVariantDeleteResponseDomModification `json:"domModifications" api:"nullable"`
@@ -721,16 +721,14 @@ type ExperimentVariantDeleteResponseDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — prefer the structured `styles` / `attribute` fields
-	// below to avoid manual JSON encoding.
+	// `{key: value}` object; the structured `styles` / `attribute` fields carry the
+	// same data.
 	Value string `json:"value" api:"required"`
-	// Populated on read for `setAttribute` modifications, parsed from `value`.
-	// Customers may also send this field instead of a JSON-stringified `value` on
-	// write — see `domModificationInputSchema`.
+	// Populated on read for `setAttribute` modifications, parsed from `value`. May
+	// also be sent instead of a JSON-stringified `value` on write.
 	Attribute ExperimentVariantDeleteResponseDomModificationAttribute `json:"attribute" api:"nullable"`
-	// Populated on read for `setStyle` modifications, parsed from `value`. Customers
-	// may also send this field instead of a JSON-stringified `value` on write — see
-	// `domModificationInputSchema`.
+	// Populated on read for `setStyle` modifications, parsed from `value`. May also be
+	// sent instead of a JSON-stringified `value` on write.
 	Styles []ExperimentVariantDeleteResponseDomModificationStyle `json:"styles" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -750,9 +748,8 @@ func (r *ExperimentVariantDeleteResponseDomModification) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Populated on read for `setAttribute` modifications, parsed from `value`.
-// Customers may also send this field instead of a JSON-stringified `value` on
-// write — see `domModificationInputSchema`.
+// Populated on read for `setAttribute` modifications, parsed from `value`. May
+// also be sent instead of a JSON-stringified `value` on write.
 type ExperimentVariantDeleteResponseDomModificationAttribute struct {
 	// HTML attribute name.
 	Name string `json:"name" api:"required"`
@@ -829,19 +826,17 @@ type ExperimentVariantNewParams struct {
 	ExperimentID string `json:"experimentId" api:"required"`
 	// Human-readable name for the new variant.
 	Name string `json:"name" api:"required"`
-	// Traffic weight for this variant as a percentage (0–100). Treatment weights are
-	// percentages of the split and must total 99% or less to leave room for the
-	// auto-created control; the control is the remainder (100 − Σ treatment weights,
-	// always ≥ 1%). A personalization experience always serves its first non-control
-	// treatment to matching visitors, regardless of traffic allocation or variant
-	// weights.
+	// This treatment's share of the experiment's traffic as a whole-number percentage
+	// (0–100), not a relative weight. Treatment weights must total 99 or less; the
+	// auto-created control receives the remainder (100 − the treatment total, always
+	// at least 1). For a 50/50 test, send `weight: 50`. A personalization experience
+	// always serves its first non-control treatment to matching visitors, regardless
+	// of traffic allocation or variant weights.
 	Weight int64 `json:"weight" api:"required"`
-	// Mark this variant as the experiment control. Defaults to `false`. The API
-	// rejects the request with 409 if the experiment already has a control variant.
-	// Every experiment keeps exactly one control whose weight is the auto-derived
-	// remainder of the split, so the control cannot be cleared while it would leave
-	// the treatments at 100% (no room for a control). DELETE on the control
-	// returns 409.
+	// Mark this variant as the experiment control. Defaults to `false`. Every
+	// experiment already has an auto-created control that cannot be demoted or
+	// deleted, so creating a second control is rejected with 409; edit the existing
+	// control instead.
 	IsControl param.Opt[bool] `json:"isControl,omitzero"`
 	// Required for redirect variants. Use either a site-relative path such as
 	// `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
@@ -891,8 +886,8 @@ type ExperimentVariantNewParamsDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — or you can supply the structured `styles` / `attribute`
-	// field instead and the server will normalize.
+	// `{key: value}` object — or supply the structured `styles` / `attribute` field
+	// instead and the server will normalize.
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Use this for `setAttribute` to avoid JSON-stringifying `{name: value}` yourself.
 	// Ignored for other actions.
@@ -970,10 +965,9 @@ const (
 )
 
 type ExperimentVariantUpdateParams struct {
-	// Promote or demote this variant as the control. Promoting a second variant while
-	// another already has `isControl: true` is rejected with 409. Demoting the control
-	// (`isControl: false`) is rejected — an experiment must always keep a control.
-	// Null leaves the control flag unchanged.
+	// Promote this variant to control. Rejected with 409 while another variant is the
+	// control, and demoting the control (`false`) is rejected because an experiment
+	// must always keep one. Null leaves the control flag unchanged.
 	IsControl param.Opt[bool] `json:"isControl,omitzero"`
 	// Updated variant name.
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -981,17 +975,24 @@ type ExperimentVariantUpdateParams struct {
 	// as `/pricing-v2` or an absolute `https://` URL. Cross-origin `http://` URLs are
 	// rejected.
 	RedirectURL param.Opt[string] `json:"redirectUrl,omitzero"`
-	// Updated traffic weight as a percentage (0–100). The control variant weight is
-	// derived from the treatments (it is the remainder of the split) and cannot be set
-	// directly.
+	// Updated share of the experiment's traffic as a whole-number percentage (0–100),
+	// not a relative weight. Treatment weights must total 99 or less. The control's
+	// weight is the remainder of the split and cannot be set directly; change a
+	// treatment instead. Omitted or null keeps the saved weight.
 	Weight param.Opt[int64] `json:"weight,omitzero"`
 	// Updated declarative DOM mutations. Sending this field replaces the prior list —
 	// partial-array merging is not supported.
 	DomModifications []ExperimentVariantUpdateParamsDomModification `json:"domModifications,omitzero"`
-	// Updated variant delivery mechanism. `dom_modifications` mutates the current page
-	// in-place; `redirect` sends the visitor to a different URL — pick based on
-	// whether the _page_ or the _content_ is the variable. Changing this also requires
-	// updating the matching payload field (`redirectUrl` or `domModifications`).
+	// Updated delivery mechanism. Variant delivery mechanism. `dom_modifications`
+	// mutates the current page in-place at SDK runtime — use it for
+	// copy/style/image/HTML changes that keep visitors on the same URL (headline copy
+	// tests, button color, hero image swap). `redirect` routes the visitor to a
+	// different URL entirely — use it for landing-page A/B tests, alternate pricing
+	// pages, or any test where the _page itself_ is the variable. They are not
+	// interchangeable: a redirect variant cannot also tweak DOM, and a
+	// dom_modifications variant cannot send the visitor elsewhere. Changing this also
+	// requires updating the matching payload field (`redirectUrl` or
+	// `domModifications`).
 	//
 	// Any of "dom_modifications", "redirect".
 	VariantType ExperimentVariantUpdateParamsVariantType `json:"variantType,omitzero"`
@@ -1025,8 +1026,8 @@ type ExperimentVariantUpdateParamsDomModification struct {
 	// Canonical action payload. For `setText` / `setHtml` / `customCss` / `customJs` /
 	// `setImage` / `insertBefore` / `insertAfter` this is the literal
 	// text/HTML/CSS/JS/URL. For `setStyle` and `setAttribute` it is a JSON-stringified
-	// `{key: value}` object — or you can supply the structured `styles` / `attribute`
-	// field instead and the server will normalize.
+	// `{key: value}` object — or supply the structured `styles` / `attribute` field
+	// instead and the server will normalize.
 	Value param.Opt[string] `json:"value,omitzero"`
 	// Use this for `setAttribute` to avoid JSON-stringifying `{name: value}` yourself.
 	// Ignored for other actions.
@@ -1088,10 +1089,16 @@ func (r *ExperimentVariantUpdateParamsDomModificationStyle) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Updated variant delivery mechanism. `dom_modifications` mutates the current page
-// in-place; `redirect` sends the visitor to a different URL — pick based on
-// whether the _page_ or the _content_ is the variable. Changing this also requires
-// updating the matching payload field (`redirectUrl` or `domModifications`).
+// Updated delivery mechanism. Variant delivery mechanism. `dom_modifications`
+// mutates the current page in-place at SDK runtime — use it for
+// copy/style/image/HTML changes that keep visitors on the same URL (headline copy
+// tests, button color, hero image swap). `redirect` routes the visitor to a
+// different URL entirely — use it for landing-page A/B tests, alternate pricing
+// pages, or any test where the _page itself_ is the variable. They are not
+// interchangeable: a redirect variant cannot also tweak DOM, and a
+// dom_modifications variant cannot send the visitor elsewhere. Changing this also
+// requires updating the matching payload field (`redirectUrl` or
+// `domModifications`).
 type ExperimentVariantUpdateParamsVariantType string
 
 const (
