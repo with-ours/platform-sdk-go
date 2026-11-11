@@ -332,12 +332,15 @@ func (r *WebScannerService) Summary(ctx context.Context, id string, query WebSca
 }
 
 // List every normalized host in the selected scan run that is neither covered by a
-// current CMP consent service nor matched by an active suppression rule. Results
-// are sorted by risk and hostname. Continue with pagination.nextCursor while
-// preserving runRevision and coverageRevision; changed evidence returns HTTP 400
-// and requires restarting from the first page. Historical runs are evaluated
-// against current coverage configuration. Requires API-key scope or current OAuth
-// user permission: webScanner:find
+// current CMP consent service nor matched by an active suppression rule. A host
+// the run's consent check contacted before any choice, after Reject all, or with
+// Global Privacy Control on is included even when the crawl did not request it,
+// with `consentViolations` naming those states. Results are sorted by risk and
+// hostname. Continue with pagination.nextCursor while preserving runRevision and
+// coverageRevision; changed evidence, including a consent check that finishes
+// mid-read, returns HTTP 400 and requires restarting from the first page.
+// Historical runs are evaluated against current coverage configuration. Requires
+// API-key scope or current OAuth user permission: webScanner:find
 func (r *WebScannerService) DecisionQueue(ctx context.Context, id string, query WebScannerDecisionQueueParams, opts ...option.RequestOption) (res *WebScannerDecisionQueueResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {
@@ -2089,22 +2092,30 @@ func (r *WebScannerDecisionQueueResponse) UnmarshalJSON(data []byte) error {
 }
 
 type WebScannerDecisionQueueResponseEntity struct {
-	Hostname    string                                        `json:"hostname" api:"required"`
-	SeenOn      []string                                      `json:"seenOn" api:"required"`
-	Category    string                                        `json:"category" api:"nullable"`
-	DataFlow    WebScannerDecisionQueueResponseEntityDataFlow `json:"dataFlow" api:"nullable"`
-	DisplayName string                                        `json:"displayName" api:"nullable"`
-	Risk        string                                        `json:"risk" api:"nullable"`
+	// Consent states in which this host was contacted although the visitor had not
+	// agreed. Empty when none. A host can be listed from the consent check alone,
+	// without crawl evidence; cover it in the consent banner or add a rule to clear
+	// it, the same as any other row.
+	//
+	// Any of "tracker_before_consent", "reject_not_honored", "gpc_not_honored".
+	ConsentViolations []string                                      `json:"consentViolations" api:"required"`
+	Hostname          string                                        `json:"hostname" api:"required"`
+	SeenOn            []string                                      `json:"seenOn" api:"required"`
+	Category          string                                        `json:"category" api:"nullable"`
+	DataFlow          WebScannerDecisionQueueResponseEntityDataFlow `json:"dataFlow" api:"nullable"`
+	DisplayName       string                                        `json:"displayName" api:"nullable"`
+	Risk              string                                        `json:"risk" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Hostname    respjson.Field
-		SeenOn      respjson.Field
-		Category    respjson.Field
-		DataFlow    respjson.Field
-		DisplayName respjson.Field
-		Risk        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ConsentViolations respjson.Field
+		Hostname          respjson.Field
+		SeenOn            respjson.Field
+		Category          respjson.Field
+		DataFlow          respjson.Field
+		DisplayName       respjson.Field
+		Risk              respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
