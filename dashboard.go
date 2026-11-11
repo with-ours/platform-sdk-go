@@ -7790,6 +7790,8 @@ func (r *DashboardPreviewResponseObjectReportDefinition) UnmarshalJSON(data []by
 }
 
 type DashboardPreviewResponseObjectReportDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                                       `json:"aggregation" api:"required"`
@@ -19872,6 +19874,8 @@ func (r *DashboardResultsResponseObjectReportDefinition) UnmarshalJSON(data []by
 }
 
 type DashboardResultsResponseObjectReportDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                                       `json:"aggregation" api:"required"`

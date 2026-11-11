@@ -251,6 +251,8 @@ func (r *InsightListResponseDefinition) UnmarshalJSON(data []byte) error {
 }
 
 type InsightListResponseDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                      `json:"aggregation" api:"required"`
@@ -1055,6 +1057,8 @@ func (r *InsightNewResponseDefinition) UnmarshalJSON(data []byte) error {
 }
 
 type InsightNewResponseDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                     `json:"aggregation" api:"required"`
@@ -1859,6 +1863,8 @@ func (r *InsightGetResponseDefinition) UnmarshalJSON(data []byte) error {
 }
 
 type InsightGetResponseDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                     `json:"aggregation" api:"required"`
@@ -2663,6 +2669,8 @@ func (r *InsightUpdateResponseDefinition) UnmarshalJSON(data []byte) error {
 }
 
 type InsightUpdateResponseDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                        `json:"aggregation" api:"required"`
@@ -3916,6 +3924,8 @@ func init() {
 
 // The properties ID, Aggregation, EventNames, Name are required.
 type InsightNewParamsDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                   `json:"aggregation,omitzero" api:"required"`
@@ -4505,6 +4515,8 @@ func init() {
 
 // The properties ID, Aggregation, EventNames, Name are required.
 type InsightUpdateParamsDefinitionMetric struct {
+	// UUID that identifies this metric within the definition. Generate a new random
+	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
 	Aggregation string                                      `json:"aggregation,omitzero" api:"required"`
