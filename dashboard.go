@@ -633,8 +633,9 @@ func (r *DashboardListResponseTileObject3Replays) UnmarshalJSON(data []byte) err
 }
 
 type DashboardListResponseTileObject3ReplaysFilter struct {
-	Filter  DashboardListResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                  `json:"version" api:"required"`
+	Filter DashboardListResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -895,8 +896,9 @@ func (r *DashboardListResponseTileObject3ReplaysFilterFilterObject3ValueArrayIte
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardListResponseFilter struct {
-	Filter  DashboardListResponseFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                `json:"version" api:"required"`
+	Filter DashboardListResponseFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2002,8 +2004,9 @@ func (r *DashboardNewResponseTileObject3Replays) UnmarshalJSON(data []byte) erro
 }
 
 type DashboardNewResponseTileObject3ReplaysFilter struct {
-	Filter  DashboardNewResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                 `json:"version" api:"required"`
+	Filter DashboardNewResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2262,8 +2265,9 @@ func (r *DashboardNewResponseTileObject3ReplaysFilterFilterObject3ValueArrayItem
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardNewResponseFilter struct {
-	Filter  DashboardNewResponseFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                               `json:"version" api:"required"`
+	Filter DashboardNewResponseFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3361,8 +3365,9 @@ func (r *DashboardGetResponseTileObject3Replays) UnmarshalJSON(data []byte) erro
 }
 
 type DashboardGetResponseTileObject3ReplaysFilter struct {
-	Filter  DashboardGetResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                 `json:"version" api:"required"`
+	Filter DashboardGetResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3621,8 +3626,9 @@ func (r *DashboardGetResponseTileObject3ReplaysFilterFilterObject3ValueArrayItem
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardGetResponseFilter struct {
-	Filter  DashboardGetResponseFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                               `json:"version" api:"required"`
+	Filter DashboardGetResponseFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4725,8 +4731,9 @@ func (r *DashboardUpdateResponseTileObject3Replays) UnmarshalJSON(data []byte) e
 }
 
 type DashboardUpdateResponseTileObject3ReplaysFilter struct {
-	Filter  DashboardUpdateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                    `json:"version" api:"required"`
+	Filter DashboardUpdateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4989,8 +4996,9 @@ func (r *DashboardUpdateResponseTileObject3ReplaysFilterFilterObject3ValueArrayI
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardUpdateResponseFilter struct {
-	Filter  DashboardUpdateResponseFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                  `json:"version" api:"required"`
+	Filter DashboardUpdateResponseFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6125,8 +6133,9 @@ func (r *DashboardDuplicateResponseTileObject3Replays) UnmarshalJSON(data []byte
 }
 
 type DashboardDuplicateResponseTileObject3ReplaysFilter struct {
-	Filter  DashboardDuplicateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                       `json:"version" api:"required"`
+	Filter DashboardDuplicateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6389,8 +6398,9 @@ func (r *DashboardDuplicateResponseTileObject3ReplaysFilterFilterObject3ValueArr
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardDuplicateResponseFilter struct {
-	Filter  DashboardDuplicateResponseFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                     `json:"version" api:"required"`
+	Filter DashboardDuplicateResponseFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7718,8 +7728,9 @@ type DashboardPreviewResponseObjectReportDefinition struct {
 	Interval string                                                 `json:"interval" api:"required"`
 	Kind     constant.Insight                                       `json:"kind" default:"insight"`
 	Metrics  []DashboardPreviewResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
-	Version  float64                                                `json:"version" api:"required"`
-	Filter   DashboardPreviewResponseObjectReportDefinitionFilter   `json:"filter"`
+	// Any of 1.
+	Version float64                                              `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObjectReportDefinitionFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -7768,8 +7779,9 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetric) UnmarshalJSON(dat
 }
 
 type DashboardPreviewResponseObjectReportDefinitionMetricFilter struct {
-	Filter  DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8055,8 +8067,9 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetricProperty) Unmarshal
 }
 
 type DashboardPreviewResponseObjectReportDefinitionFilter struct {
-	Filter  DashboardPreviewResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                         `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8740,8 +8753,9 @@ type DashboardPreviewResponseObject2ReportQueryDefinition struct {
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry     string                                                          `json:"reentry" api:"required"`
-	Steps       []DashboardPreviewResponseObject2ReportQueryDefinitionStep      `json:"steps" api:"required"`
+	Reentry string                                                     `json:"reentry" api:"required"`
+	Steps   []DashboardPreviewResponseObject2ReportQueryDefinitionStep `json:"steps" api:"required"`
+	// Any of 1.
 	Version     float64                                                         `json:"version" api:"required"`
 	WindowMs    int64                                                           `json:"windowMs" api:"required"`
 	EntryFilter DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -8792,8 +8806,9 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionStep) UnmarshalJSON
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionStepFilter struct {
-	Filter  DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9056,8 +9071,9 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilter struct {
-	Filter  DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                    `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9320,8 +9336,9 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionFilter struct {
-	Filter  DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9800,10 +9817,11 @@ func (r *DashboardPreviewResponseObject3Report) UnmarshalJSON(data []byte) error
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type DashboardPreviewResponseObject3ReportDefinition struct {
-	Anchors            []DashboardPreviewResponseObject3ReportDefinitionAnchor     `json:"anchors" api:"required"`
-	Exploration        DashboardPreviewResponseObject3ReportDefinitionExploration  `json:"exploration" api:"required"`
-	Kind               constant.JourneyFlow                                        `json:"kind" default:"journey-flow"`
-	Scope              DashboardPreviewResponseObject3ReportDefinitionScope        `json:"scope" api:"required"`
+	Anchors     []DashboardPreviewResponseObject3ReportDefinitionAnchor    `json:"anchors" api:"required"`
+	Exploration DashboardPreviewResponseObject3ReportDefinitionExploration `json:"exploration" api:"required"`
+	Kind        constant.JourneyFlow                                       `json:"kind" default:"journey-flow"`
+	Scope       DashboardPreviewResponseObject3ReportDefinitionScope       `json:"scope" api:"required"`
+	// Any of 1.
 	Version            float64                                                     `json:"version" api:"required"`
 	AnchorFilter       DashboardPreviewResponseObject3ReportDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          DashboardPreviewResponseObject3ReportDefinitionBreakdown    `json:"breakdown"`
@@ -10036,8 +10054,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject)
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                 `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10320,8 +10339,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2Filter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                  `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10584,8 +10604,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11162,8 +11183,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                             `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11446,8 +11468,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                              `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11897,8 +11920,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                      `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12181,8 +12205,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                       `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12445,8 +12470,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                         `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12729,8 +12755,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionScope) UnmarshalJSON(dat
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13036,8 +13063,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionBreakdownProperty) Unmar
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionEntryFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13490,8 +13518,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject) 
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13774,8 +13803,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2)
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2Filter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                 `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14253,8 +14283,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                    `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14537,8 +14568,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter  DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                     `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14936,8 +14968,9 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonDateRange) 
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                            `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15200,8 +15233,9 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilter struct {
-	Filter  DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                              `json:"version" api:"required"`
+	Filter DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19722,8 +19756,9 @@ type DashboardResultsResponseObjectReportDefinition struct {
 	Interval string                                                 `json:"interval" api:"required"`
 	Kind     constant.Insight                                       `json:"kind" default:"insight"`
 	Metrics  []DashboardResultsResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
-	Version  float64                                                `json:"version" api:"required"`
-	Filter   DashboardResultsResponseObjectReportDefinitionFilter   `json:"filter"`
+	// Any of 1.
+	Version float64                                              `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObjectReportDefinitionFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -19772,8 +19807,9 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetric) UnmarshalJSON(dat
 }
 
 type DashboardResultsResponseObjectReportDefinitionMetricFilter struct {
-	Filter  DashboardResultsResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter DashboardResultsResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20059,8 +20095,9 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetricProperty) Unmarshal
 }
 
 type DashboardResultsResponseObjectReportDefinitionFilter struct {
-	Filter  DashboardResultsResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                         `json:"version" api:"required"`
+	Filter DashboardResultsResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20744,8 +20781,9 @@ type DashboardResultsResponseObject2ReportQueryDefinition struct {
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry     string                                                          `json:"reentry" api:"required"`
-	Steps       []DashboardResultsResponseObject2ReportQueryDefinitionStep      `json:"steps" api:"required"`
+	Reentry string                                                     `json:"reentry" api:"required"`
+	Steps   []DashboardResultsResponseObject2ReportQueryDefinitionStep `json:"steps" api:"required"`
+	// Any of 1.
 	Version     float64                                                         `json:"version" api:"required"`
 	WindowMs    int64                                                           `json:"windowMs" api:"required"`
 	EntryFilter DashboardResultsResponseObject2ReportQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -20796,8 +20834,9 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionStep) UnmarshalJSON
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionStepFilter struct {
-	Filter  DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21060,8 +21099,9 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionEntryFilter struct {
-	Filter  DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                    `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21324,8 +21364,9 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionFilter struct {
-	Filter  DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21804,10 +21845,11 @@ func (r *DashboardResultsResponseObject3Report) UnmarshalJSON(data []byte) error
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type DashboardResultsResponseObject3ReportDefinition struct {
-	Anchors            []DashboardResultsResponseObject3ReportDefinitionAnchor     `json:"anchors" api:"required"`
-	Exploration        DashboardResultsResponseObject3ReportDefinitionExploration  `json:"exploration" api:"required"`
-	Kind               constant.JourneyFlow                                        `json:"kind" default:"journey-flow"`
-	Scope              DashboardResultsResponseObject3ReportDefinitionScope        `json:"scope" api:"required"`
+	Anchors     []DashboardResultsResponseObject3ReportDefinitionAnchor    `json:"anchors" api:"required"`
+	Exploration DashboardResultsResponseObject3ReportDefinitionExploration `json:"exploration" api:"required"`
+	Kind        constant.JourneyFlow                                       `json:"kind" default:"journey-flow"`
+	Scope       DashboardResultsResponseObject3ReportDefinitionScope       `json:"scope" api:"required"`
+	// Any of 1.
 	Version            float64                                                     `json:"version" api:"required"`
 	AnchorFilter       DashboardResultsResponseObject3ReportDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          DashboardResultsResponseObject3ReportDefinitionBreakdown    `json:"breakdown"`
@@ -22040,8 +22082,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject)
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                 `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22324,8 +22367,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2Filter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                  `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22588,8 +22632,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23166,8 +23211,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                             `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23450,8 +23496,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                              `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23901,8 +23948,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                      `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24185,8 +24233,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                       `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24449,8 +24498,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationPathFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                         `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24733,8 +24783,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionScope) UnmarshalJSON(dat
 }
 
 type DashboardResultsResponseObject3ReportDefinitionScopeSessionFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25040,8 +25091,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionBreakdownProperty) Unmar
 }
 
 type DashboardResultsResponseObject3ReportDefinitionEntryFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25494,8 +25546,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject) 
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25778,8 +25831,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2)
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2Filter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                 `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26257,8 +26311,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                    `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26541,8 +26596,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter  DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                     `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26940,8 +26996,9 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonDateRange) 
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonEntryFilter struct {
-	Filter  DashboardResultsResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                            `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -27204,8 +27261,9 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonSessionFilter struct {
-	Filter  DashboardResultsResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                              `json:"version" api:"required"`
+	Filter DashboardResultsResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -31606,7 +31664,7 @@ func (r *DashboardNewParamsTileObject3Replays) UnmarshalJSON(data []byte) error 
 // The properties Filter, Version are required.
 type DashboardNewParamsTileObject3ReplaysFilter struct {
 	Filter DashboardNewParamsTileObject3ReplaysFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31754,7 +31812,7 @@ func (u *DashboardNewParamsTileObject3ReplaysFilterFilterObject3ValueArrayItemUn
 // The properties Filter, Version are required.
 type DashboardNewParamsFilter struct {
 	Filter DashboardNewParamsFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32184,7 +32242,7 @@ func (r *DashboardUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties Filter, Version are required.
 type DashboardUpdateParamsFilter struct {
 	Filter DashboardUpdateParamsFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32823,7 +32881,7 @@ func (r *DashboardUpdateParamsTileObject3Replays) UnmarshalJSON(data []byte) err
 // The properties Filter, Version are required.
 type DashboardUpdateParamsTileObject3ReplaysFilter struct {
 	Filter DashboardUpdateParamsTileObject3ReplaysFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
