@@ -53,7 +53,6 @@ func TestFunnelNewWithOptionalParams(t *testing.T) {
 		QueryDefinition: oursprivacy.FunnelNewParamsQueryDefinition{
 			Counting: "unique",
 			Identity: "session",
-			Kind:     "funnel",
 			Order:    "ordered",
 			Reentry:  "first",
 			Steps: []oursprivacy.FunnelNewParamsQueryDefinitionStep{{
@@ -159,7 +158,6 @@ func TestFunnelUpdateWithOptionalParams(t *testing.T) {
 			QueryDefinition: oursprivacy.FunnelUpdateParamsQueryDefinition{
 				Counting: "unique",
 				Identity: "session",
-				Kind:     "funnel",
 				Order:    "ordered",
 				Reentry:  "first",
 				Steps: []oursprivacy.FunnelUpdateParamsQueryDefinitionStep{{

@@ -53,7 +53,6 @@ func TestAttributionReportNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.AttributionReports.New(context.TODO(), oursprivacy.AttributionReportNewParams{
 		Definition: oursprivacy.AttributionReportNewParamsDefinition{
-			Kind: "attribution",
 			Outcomes: []oursprivacy.AttributionReportNewParamsDefinitionOutcome{{
 				ID:         "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				EventNames: []string{"x"},
@@ -68,9 +67,8 @@ func TestAttributionReportNewWithOptionalParams(t *testing.T) {
 					Version: 1,
 				},
 				Value: oursprivacy.AttributionReportNewParamsDefinitionOutcomeValue{
-					Path:     []string{"x"},
-					Property: "event.properties",
-					Type:     "number",
+					Path: []string{"x"},
+					Type: "number",
 				},
 			}},
 			Version:  1,
@@ -149,7 +147,6 @@ func TestAttributionReportUpdateWithOptionalParams(t *testing.T) {
 		oursprivacy.AttributionReportUpdateParams{
 			ExpectedRevision: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Definition: oursprivacy.AttributionReportUpdateParamsDefinition{
-				Kind: "attribution",
 				Outcomes: []oursprivacy.AttributionReportUpdateParamsDefinitionOutcome{{
 					ID:         "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 					EventNames: []string{"x"},
@@ -164,9 +161,8 @@ func TestAttributionReportUpdateWithOptionalParams(t *testing.T) {
 						Version: 1,
 					},
 					Value: oursprivacy.AttributionReportUpdateParamsDefinitionOutcomeValue{
-						Path:     []string{"x"},
-						Property: "event.properties",
-						Type:     "number",
+						Path: []string{"x"},
+						Type: "number",
 					},
 				}},
 				Version:  1,

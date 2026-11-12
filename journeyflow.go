@@ -19,6 +19,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/shared/constant"
 )
 
 // JourneyFlowService contains methods and other services that help with
@@ -243,12 +244,10 @@ func (r *JourneyFlowListResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowListResponseDefinition struct {
-	Anchors     []JourneyFlowListResponseDefinitionAnchor    `json:"anchors" api:"required"`
-	Exploration JourneyFlowListResponseDefinitionExploration `json:"exploration" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                 `json:"kind" api:"required"`
-	Scope JourneyFlowListResponseDefinitionScope `json:"scope" api:"required"`
-	// Any of 1.
+	Anchors            []JourneyFlowListResponseDefinitionAnchor     `json:"anchors" api:"required"`
+	Exploration        JourneyFlowListResponseDefinitionExploration  `json:"exploration" api:"required"`
+	Kind               constant.JourneyFlow                          `json:"kind" default:"journey-flow"`
+	Scope              JourneyFlowListResponseDefinitionScope        `json:"scope" api:"required"`
 	Version            float64                                       `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowListResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowListResponseDefinitionBreakdown    `json:"breakdown"`
@@ -454,10 +453,9 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeUnionFilterFilterValu
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                         `json:"kind" api:"required"`
-	Filter JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
+	EventName string                                                         `json:"eventName" api:"required"`
+	Kind      constant.Event                                                 `json:"kind" default:"event"`
+	Filter    JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -475,9 +473,8 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject) UnmarshalJSON
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -584,9 +581,8 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterObj
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -605,8 +601,7 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterObj
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -742,8 +737,7 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterObj
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                          `json:"kind" api:"required"`
+	Kind   constant.Page                                                   `json:"kind" default:"page"`
 	Filter JourneyFlowListResponseDefinitionAnchorAlternativeObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -763,9 +757,8 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject2) UnmarshalJSO
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -872,9 +865,8 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterOb
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -893,8 +885,7 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterOb
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1030,9 +1021,8 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterOb
 }
 
 type JourneyFlowListResponseDefinitionAnchorFilter struct {
-	Filter JourneyFlowListResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1135,9 +1125,8 @@ func (r *JourneyFlowListResponseDefinitionAnchorFilterFilterObject) UnmarshalJSO
 }
 
 type JourneyFlowListResponseDefinitionAnchorFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1156,8 +1145,7 @@ func (r *JourneyFlowListResponseDefinitionAnchorFilterFilterObject2) UnmarshalJS
 }
 
 type JourneyFlowListResponseDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1577,10 +1565,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherUnionFilt
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                     `json:"kind" api:"required"`
-	Filter JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
+	EventName string                                                                     `json:"eventName" api:"required"`
+	Kind      constant.Event                                                             `json:"kind" default:"event"`
+	Filter    JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -1600,9 +1587,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject) U
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1709,9 +1695,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1730,8 +1715,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1867,8 +1851,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                      `json:"kind" api:"required"`
+	Kind   constant.Page                                                               `json:"kind" default:"page"`
 	Filter JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1888,9 +1871,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2) 
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1997,9 +1979,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2Fi
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2018,8 +1999,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2Fi
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2318,10 +2298,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventUnionFilterFilte
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                              `json:"kind" api:"required"`
-	Filter JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
+	EventName string                                                              `json:"eventName" api:"required"`
+	Kind      constant.Event                                                      `json:"kind" default:"event"`
+	Filter    JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -2341,9 +2320,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject) Unmarsha
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2450,9 +2428,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilt
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2471,8 +2448,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilt
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2608,8 +2584,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilt
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                               `json:"kind" api:"required"`
+	Kind   constant.Page                                                        `json:"kind" default:"page"`
 	Filter JourneyFlowListResponseDefinitionExplorationHiddenEventObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2629,9 +2604,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject2) Unmarsh
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2738,9 +2712,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2759,8 +2732,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2896,9 +2868,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationPathFilter struct {
-	Filter JourneyFlowListResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3003,9 +2974,8 @@ func (r *JourneyFlowListResponseDefinitionExplorationPathFilterFilterObject) Unm
 }
 
 type JourneyFlowListResponseDefinitionExplorationPathFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3024,8 +2994,7 @@ func (r *JourneyFlowListResponseDefinitionExplorationPathFilterFilterObject2) Un
 }
 
 type JourneyFlowListResponseDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3181,9 +3150,8 @@ func (r *JourneyFlowListResponseDefinitionScope) UnmarshalJSON(data []byte) erro
 }
 
 type JourneyFlowListResponseDefinitionScopeSessionFilter struct {
-	Filter JourneyFlowListResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3288,9 +3256,8 @@ func (r *JourneyFlowListResponseDefinitionScopeSessionFilterFilterObject) Unmars
 }
 
 type JourneyFlowListResponseDefinitionScopeSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3309,8 +3276,7 @@ func (r *JourneyFlowListResponseDefinitionScopeSessionFilterFilterObject2) Unmar
 }
 
 type JourneyFlowListResponseDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3487,9 +3453,8 @@ func (r *JourneyFlowListResponseDefinitionBreakdownProperty) UnmarshalJSON(data 
 }
 
 type JourneyFlowListResponseDefinitionEntryFilter struct {
-	Filter JourneyFlowListResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3590,9 +3555,8 @@ func (r *JourneyFlowListResponseDefinitionEntryFilterFilterObject) UnmarshalJSON
 }
 
 type JourneyFlowListResponseDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3611,8 +3575,7 @@ func (r *JourneyFlowListResponseDefinitionEntryFilterFilterObject2) UnmarshalJSO
 }
 
 type JourneyFlowListResponseDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3911,10 +3874,9 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherUnionFilterFilterValue
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                        `json:"kind" api:"required"`
-	Filter JourneyFlowListResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
+	EventName string                                                        `json:"eventName" api:"required"`
+	Kind      constant.Event                                                `json:"kind" default:"event"`
+	Filter    JourneyFlowListResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -3932,9 +3894,8 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObject) UnmarshalJSON(
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4041,9 +4002,8 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterObje
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4062,8 +4022,7 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterObje
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4199,8 +4158,7 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterObje
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                         `json:"kind" api:"required"`
+	Kind   constant.Page                                                  `json:"kind" default:"page"`
 	Filter JourneyFlowListResponseDefinitionExclusionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4218,9 +4176,8 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObject2) UnmarshalJSON
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4327,9 +4284,8 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterObj
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4348,8 +4304,7 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterObj
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4673,10 +4628,9 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherUnionFilterFilterV
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                            `json:"kind" api:"required"`
-	Filter JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
+	EventName string                                                            `json:"eventName" api:"required"`
+	Kind      constant.Event                                                    `json:"kind" default:"event"`
+	Filter    JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -4696,9 +4650,8 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObject) UnmarshalJ
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4805,9 +4758,8 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilter
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4826,8 +4778,7 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilter
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4963,8 +4914,7 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilter
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                             `json:"kind" api:"required"`
+	Kind   constant.Page                                                      `json:"kind" default:"page"`
 	Filter JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4984,9 +4934,8 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2) Unmarshal
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5093,9 +5042,8 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilte
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5114,8 +5062,7 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilte
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5376,9 +5323,8 @@ func (r *JourneyFlowListResponseReportContextComparisonDateRange) UnmarshalJSON(
 }
 
 type JourneyFlowListResponseReportContextComparisonEntryFilter struct {
-	Filter JourneyFlowListResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5485,9 +5431,8 @@ func (r *JourneyFlowListResponseReportContextComparisonEntryFilterFilterObject) 
 }
 
 type JourneyFlowListResponseReportContextComparisonEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5506,8 +5451,7 @@ func (r *JourneyFlowListResponseReportContextComparisonEntryFilterFilterObject2)
 }
 
 type JourneyFlowListResponseReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5643,9 +5587,8 @@ func (r *JourneyFlowListResponseReportContextComparisonEntryFilterFilterObject3V
 }
 
 type JourneyFlowListResponseReportContextComparisonSessionFilter struct {
-	Filter JourneyFlowListResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowListResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5752,9 +5695,8 @@ func (r *JourneyFlowListResponseReportContextComparisonSessionFilterFilterObject
 }
 
 type JourneyFlowListResponseReportContextComparisonSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5773,8 +5715,7 @@ func (r *JourneyFlowListResponseReportContextComparisonSessionFilterFilterObject
 }
 
 type JourneyFlowListResponseReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5983,12 +5924,10 @@ func (r *JourneyFlowNewResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowNewResponseDefinition struct {
-	Anchors     []JourneyFlowNewResponseDefinitionAnchor    `json:"anchors" api:"required"`
-	Exploration JourneyFlowNewResponseDefinitionExploration `json:"exploration" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                `json:"kind" api:"required"`
-	Scope JourneyFlowNewResponseDefinitionScope `json:"scope" api:"required"`
-	// Any of 1.
+	Anchors            []JourneyFlowNewResponseDefinitionAnchor     `json:"anchors" api:"required"`
+	Exploration        JourneyFlowNewResponseDefinitionExploration  `json:"exploration" api:"required"`
+	Kind               constant.JourneyFlow                         `json:"kind" default:"journey-flow"`
+	Scope              JourneyFlowNewResponseDefinitionScope        `json:"scope" api:"required"`
 	Version            float64                                      `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowNewResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowNewResponseDefinitionBreakdown    `json:"breakdown"`
@@ -6194,10 +6133,9 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeUnionFilterFilterValue
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                        `json:"kind" api:"required"`
-	Filter JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
+	EventName string                                                        `json:"eventName" api:"required"`
+	Kind      constant.Event                                                `json:"kind" default:"event"`
+	Filter    JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -6215,9 +6153,8 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject) UnmarshalJSON(
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6324,9 +6261,8 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterObje
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6345,8 +6281,7 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterObje
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6482,8 +6417,7 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterObje
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                         `json:"kind" api:"required"`
+	Kind   constant.Page                                                  `json:"kind" default:"page"`
 	Filter JourneyFlowNewResponseDefinitionAnchorAlternativeObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6501,9 +6435,8 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject2) UnmarshalJSON
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6610,9 +6543,8 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6631,8 +6563,7 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6768,9 +6699,8 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowNewResponseDefinitionAnchorFilter struct {
-	Filter JourneyFlowNewResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6871,9 +6801,8 @@ func (r *JourneyFlowNewResponseDefinitionAnchorFilterFilterObject) UnmarshalJSON
 }
 
 type JourneyFlowNewResponseDefinitionAnchorFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6892,8 +6821,7 @@ func (r *JourneyFlowNewResponseDefinitionAnchorFilterFilterObject2) UnmarshalJSO
 }
 
 type JourneyFlowNewResponseDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7313,10 +7241,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherUnionFilte
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                    `json:"kind" api:"required"`
-	Filter JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
+	EventName string                                                                    `json:"eventName" api:"required"`
+	Kind      constant.Event                                                            `json:"kind" default:"event"`
+	Filter    JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -7336,9 +7263,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject) Un
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7445,9 +7371,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7466,8 +7391,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7603,8 +7527,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                     `json:"kind" api:"required"`
+	Kind   constant.Page                                                              `json:"kind" default:"page"`
 	Filter JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7624,9 +7547,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2) U
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7733,9 +7655,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2Fil
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7754,8 +7675,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2Fil
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8053,10 +7973,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventUnionFilterFilter
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                             `json:"kind" api:"required"`
-	Filter JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
+	EventName string                                                             `json:"eventName" api:"required"`
+	Kind      constant.Event                                                     `json:"kind" default:"event"`
+	Filter    JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -8076,9 +7995,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject) Unmarshal
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8185,9 +8103,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilte
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8206,8 +8123,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilte
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8343,8 +8259,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilte
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                              `json:"kind" api:"required"`
+	Kind   constant.Page                                                       `json:"kind" default:"page"`
 	Filter JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -8364,9 +8279,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2) Unmarsha
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8473,9 +8387,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8494,8 +8407,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8631,9 +8543,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationPathFilter struct {
-	Filter JourneyFlowNewResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8738,9 +8649,8 @@ func (r *JourneyFlowNewResponseDefinitionExplorationPathFilterFilterObject) Unma
 }
 
 type JourneyFlowNewResponseDefinitionExplorationPathFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8759,8 +8669,7 @@ func (r *JourneyFlowNewResponseDefinitionExplorationPathFilterFilterObject2) Unm
 }
 
 type JourneyFlowNewResponseDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8916,9 +8825,8 @@ func (r *JourneyFlowNewResponseDefinitionScope) UnmarshalJSON(data []byte) error
 }
 
 type JourneyFlowNewResponseDefinitionScopeSessionFilter struct {
-	Filter JourneyFlowNewResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9023,9 +8931,8 @@ func (r *JourneyFlowNewResponseDefinitionScopeSessionFilterFilterObject) Unmarsh
 }
 
 type JourneyFlowNewResponseDefinitionScopeSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9044,8 +8951,7 @@ func (r *JourneyFlowNewResponseDefinitionScopeSessionFilterFilterObject2) Unmars
 }
 
 type JourneyFlowNewResponseDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9222,9 +9128,8 @@ func (r *JourneyFlowNewResponseDefinitionBreakdownProperty) UnmarshalJSON(data [
 }
 
 type JourneyFlowNewResponseDefinitionEntryFilter struct {
-	Filter JourneyFlowNewResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9325,9 +9230,8 @@ func (r *JourneyFlowNewResponseDefinitionEntryFilterFilterObject) UnmarshalJSON(
 }
 
 type JourneyFlowNewResponseDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9344,8 +9248,7 @@ func (r *JourneyFlowNewResponseDefinitionEntryFilterFilterObject2) UnmarshalJSON
 }
 
 type JourneyFlowNewResponseDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9642,10 +9545,9 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherUnionFilterFilterValue)
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                       `json:"kind" api:"required"`
-	Filter JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
+	EventName string                                                       `json:"eventName" api:"required"`
+	Kind      constant.Event                                               `json:"kind" default:"event"`
+	Filter    JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -9663,9 +9565,8 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObject) UnmarshalJSON(d
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9772,9 +9673,8 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterObjec
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9793,8 +9693,7 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterObjec
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9930,8 +9829,7 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterObjec
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                        `json:"kind" api:"required"`
+	Kind   constant.Page                                                 `json:"kind" default:"page"`
 	Filter JourneyFlowNewResponseDefinitionExclusionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -9949,9 +9847,8 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObject2) UnmarshalJSON(
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10058,9 +9955,8 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterObje
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10079,8 +9975,7 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterObje
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10404,10 +10299,9 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherUnionFilterFilterVa
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                           `json:"kind" api:"required"`
-	Filter JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
+	EventName string                                                           `json:"eventName" api:"required"`
+	Kind      constant.Event                                                   `json:"kind" default:"event"`
+	Filter    JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -10427,9 +10321,8 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject) UnmarshalJS
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10536,9 +10429,8 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterO
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10557,8 +10449,7 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterO
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10694,8 +10585,7 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterO
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                            `json:"kind" api:"required"`
+	Kind   constant.Page                                                     `json:"kind" default:"page"`
 	Filter JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -10715,9 +10605,8 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2) UnmarshalJ
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10824,9 +10713,8 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilter
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10845,8 +10733,7 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilter
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11107,9 +10994,8 @@ func (r *JourneyFlowNewResponseReportContextComparisonDateRange) UnmarshalJSON(d
 }
 
 type JourneyFlowNewResponseReportContextComparisonEntryFilter struct {
-	Filter JourneyFlowNewResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11214,9 +11100,8 @@ func (r *JourneyFlowNewResponseReportContextComparisonEntryFilterFilterObject) U
 }
 
 type JourneyFlowNewResponseReportContextComparisonEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11235,8 +11120,7 @@ func (r *JourneyFlowNewResponseReportContextComparisonEntryFilterFilterObject2) 
 }
 
 type JourneyFlowNewResponseReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11372,9 +11256,8 @@ func (r *JourneyFlowNewResponseReportContextComparisonEntryFilterFilterObject3Va
 }
 
 type JourneyFlowNewResponseReportContextComparisonSessionFilter struct {
-	Filter JourneyFlowNewResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowNewResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11481,9 +11364,8 @@ func (r *JourneyFlowNewResponseReportContextComparisonSessionFilterFilterObject)
 }
 
 type JourneyFlowNewResponseReportContextComparisonSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11502,8 +11384,7 @@ func (r *JourneyFlowNewResponseReportContextComparisonSessionFilterFilterObject2
 }
 
 type JourneyFlowNewResponseReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11712,12 +11593,10 @@ func (r *JourneyFlowGetResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowGetResponseDefinition struct {
-	Anchors     []JourneyFlowGetResponseDefinitionAnchor    `json:"anchors" api:"required"`
-	Exploration JourneyFlowGetResponseDefinitionExploration `json:"exploration" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                `json:"kind" api:"required"`
-	Scope JourneyFlowGetResponseDefinitionScope `json:"scope" api:"required"`
-	// Any of 1.
+	Anchors            []JourneyFlowGetResponseDefinitionAnchor     `json:"anchors" api:"required"`
+	Exploration        JourneyFlowGetResponseDefinitionExploration  `json:"exploration" api:"required"`
+	Kind               constant.JourneyFlow                         `json:"kind" default:"journey-flow"`
+	Scope              JourneyFlowGetResponseDefinitionScope        `json:"scope" api:"required"`
 	Version            float64                                      `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowGetResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowGetResponseDefinitionBreakdown    `json:"breakdown"`
@@ -11923,10 +11802,9 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeUnionFilterFilterValue
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                        `json:"kind" api:"required"`
-	Filter JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
+	EventName string                                                        `json:"eventName" api:"required"`
+	Kind      constant.Event                                                `json:"kind" default:"event"`
+	Filter    JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -11944,9 +11822,8 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject) UnmarshalJSON(
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12053,9 +11930,8 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterObje
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12074,8 +11950,7 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterObje
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12211,8 +12086,7 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterObje
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                         `json:"kind" api:"required"`
+	Kind   constant.Page                                                  `json:"kind" default:"page"`
 	Filter JourneyFlowGetResponseDefinitionAnchorAlternativeObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -12230,9 +12104,8 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject2) UnmarshalJSON
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12339,9 +12212,8 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12360,8 +12232,7 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12497,9 +12368,8 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowGetResponseDefinitionAnchorFilter struct {
-	Filter JourneyFlowGetResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12600,9 +12470,8 @@ func (r *JourneyFlowGetResponseDefinitionAnchorFilterFilterObject) UnmarshalJSON
 }
 
 type JourneyFlowGetResponseDefinitionAnchorFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12621,8 +12490,7 @@ func (r *JourneyFlowGetResponseDefinitionAnchorFilterFilterObject2) UnmarshalJSO
 }
 
 type JourneyFlowGetResponseDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13042,10 +12910,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherUnionFilte
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                    `json:"kind" api:"required"`
-	Filter JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
+	EventName string                                                                    `json:"eventName" api:"required"`
+	Kind      constant.Event                                                            `json:"kind" default:"event"`
+	Filter    JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -13065,9 +12932,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject) Un
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13174,9 +13040,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13195,8 +13060,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13332,8 +13196,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                     `json:"kind" api:"required"`
+	Kind   constant.Page                                                              `json:"kind" default:"page"`
 	Filter JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -13353,9 +13216,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2) U
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13462,9 +13324,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2Fil
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13483,8 +13344,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2Fil
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13782,10 +13642,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventUnionFilterFilter
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                             `json:"kind" api:"required"`
-	Filter JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
+	EventName string                                                             `json:"eventName" api:"required"`
+	Kind      constant.Event                                                     `json:"kind" default:"event"`
+	Filter    JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -13805,9 +13664,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject) Unmarshal
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13914,9 +13772,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilte
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13935,8 +13792,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilte
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14072,8 +13928,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilte
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                              `json:"kind" api:"required"`
+	Kind   constant.Page                                                       `json:"kind" default:"page"`
 	Filter JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -14093,9 +13948,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2) Unmarsha
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14202,9 +14056,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14223,8 +14076,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14360,9 +14212,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationPathFilter struct {
-	Filter JourneyFlowGetResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14467,9 +14318,8 @@ func (r *JourneyFlowGetResponseDefinitionExplorationPathFilterFilterObject) Unma
 }
 
 type JourneyFlowGetResponseDefinitionExplorationPathFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14488,8 +14338,7 @@ func (r *JourneyFlowGetResponseDefinitionExplorationPathFilterFilterObject2) Unm
 }
 
 type JourneyFlowGetResponseDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14645,9 +14494,8 @@ func (r *JourneyFlowGetResponseDefinitionScope) UnmarshalJSON(data []byte) error
 }
 
 type JourneyFlowGetResponseDefinitionScopeSessionFilter struct {
-	Filter JourneyFlowGetResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14752,9 +14600,8 @@ func (r *JourneyFlowGetResponseDefinitionScopeSessionFilterFilterObject) Unmarsh
 }
 
 type JourneyFlowGetResponseDefinitionScopeSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14773,8 +14620,7 @@ func (r *JourneyFlowGetResponseDefinitionScopeSessionFilterFilterObject2) Unmars
 }
 
 type JourneyFlowGetResponseDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14951,9 +14797,8 @@ func (r *JourneyFlowGetResponseDefinitionBreakdownProperty) UnmarshalJSON(data [
 }
 
 type JourneyFlowGetResponseDefinitionEntryFilter struct {
-	Filter JourneyFlowGetResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15054,9 +14899,8 @@ func (r *JourneyFlowGetResponseDefinitionEntryFilterFilterObject) UnmarshalJSON(
 }
 
 type JourneyFlowGetResponseDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15073,8 +14917,7 @@ func (r *JourneyFlowGetResponseDefinitionEntryFilterFilterObject2) UnmarshalJSON
 }
 
 type JourneyFlowGetResponseDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15371,10 +15214,9 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherUnionFilterFilterValue)
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                       `json:"kind" api:"required"`
-	Filter JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
+	EventName string                                                       `json:"eventName" api:"required"`
+	Kind      constant.Event                                               `json:"kind" default:"event"`
+	Filter    JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -15392,9 +15234,8 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObject) UnmarshalJSON(d
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15501,9 +15342,8 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterObjec
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15522,8 +15362,7 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterObjec
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15659,8 +15498,7 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterObjec
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                        `json:"kind" api:"required"`
+	Kind   constant.Page                                                 `json:"kind" default:"page"`
 	Filter JourneyFlowGetResponseDefinitionExclusionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -15678,9 +15516,8 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObject2) UnmarshalJSON(
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15787,9 +15624,8 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterObje
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15808,8 +15644,7 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterObje
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -16133,10 +15968,9 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherUnionFilterFilterVa
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                           `json:"kind" api:"required"`
-	Filter JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
+	EventName string                                                           `json:"eventName" api:"required"`
+	Kind      constant.Event                                                   `json:"kind" default:"event"`
+	Filter    JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -16156,9 +15990,8 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject) UnmarshalJS
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16265,9 +16098,8 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterO
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16286,8 +16118,7 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterO
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -16423,8 +16254,7 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterO
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                            `json:"kind" api:"required"`
+	Kind   constant.Page                                                     `json:"kind" default:"page"`
 	Filter JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -16444,9 +16274,8 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2) UnmarshalJ
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16553,9 +16382,8 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilter
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16574,8 +16402,7 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilter
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -16836,9 +16663,8 @@ func (r *JourneyFlowGetResponseReportContextComparisonDateRange) UnmarshalJSON(d
 }
 
 type JourneyFlowGetResponseReportContextComparisonEntryFilter struct {
-	Filter JourneyFlowGetResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16943,9 +16769,8 @@ func (r *JourneyFlowGetResponseReportContextComparisonEntryFilterFilterObject) U
 }
 
 type JourneyFlowGetResponseReportContextComparisonEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16964,8 +16789,7 @@ func (r *JourneyFlowGetResponseReportContextComparisonEntryFilterFilterObject2) 
 }
 
 type JourneyFlowGetResponseReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -17101,9 +16925,8 @@ func (r *JourneyFlowGetResponseReportContextComparisonEntryFilterFilterObject3Va
 }
 
 type JourneyFlowGetResponseReportContextComparisonSessionFilter struct {
-	Filter JourneyFlowGetResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowGetResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -17210,9 +17033,8 @@ func (r *JourneyFlowGetResponseReportContextComparisonSessionFilterFilterObject)
 }
 
 type JourneyFlowGetResponseReportContextComparisonSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -17231,8 +17053,7 @@ func (r *JourneyFlowGetResponseReportContextComparisonSessionFilterFilterObject2
 }
 
 type JourneyFlowGetResponseReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -17441,12 +17262,10 @@ func (r *JourneyFlowUpdateResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowUpdateResponseDefinition struct {
-	Anchors     []JourneyFlowUpdateResponseDefinitionAnchor    `json:"anchors" api:"required"`
-	Exploration JourneyFlowUpdateResponseDefinitionExploration `json:"exploration" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                   `json:"kind" api:"required"`
-	Scope JourneyFlowUpdateResponseDefinitionScope `json:"scope" api:"required"`
-	// Any of 1.
+	Anchors            []JourneyFlowUpdateResponseDefinitionAnchor     `json:"anchors" api:"required"`
+	Exploration        JourneyFlowUpdateResponseDefinitionExploration  `json:"exploration" api:"required"`
+	Kind               constant.JourneyFlow                            `json:"kind" default:"journey-flow"`
+	Scope              JourneyFlowUpdateResponseDefinitionScope        `json:"scope" api:"required"`
 	Version            float64                                         `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowUpdateResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowUpdateResponseDefinitionBreakdown    `json:"breakdown"`
@@ -17656,10 +17475,9 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeUnionFilterFilterVa
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                           `json:"kind" api:"required"`
-	Filter JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
+	EventName string                                                           `json:"eventName" api:"required"`
+	Kind      constant.Event                                                   `json:"kind" default:"event"`
+	Filter    JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -17679,9 +17497,8 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject) UnmarshalJS
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -17788,9 +17605,8 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterO
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -17809,8 +17625,7 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterO
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -17946,8 +17761,7 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterO
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                            `json:"kind" api:"required"`
+	Kind   constant.Page                                                     `json:"kind" default:"page"`
 	Filter JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -17967,9 +17781,8 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2) UnmarshalJ
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18076,9 +17889,8 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilter
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18097,8 +17909,7 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilter
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -18234,9 +18045,8 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilter
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18341,9 +18151,8 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorFilterFilterObject) UnmarshalJ
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18362,8 +18171,7 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorFilterFilterObject2) Unmarshal
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -18785,10 +18593,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherUnionFi
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                       `json:"kind" api:"required"`
-	Filter JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
+	EventName string                                                                       `json:"eventName" api:"required"`
+	Kind      constant.Event                                                               `json:"kind" default:"event"`
+	Filter    JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -18808,9 +18615,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject)
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18917,9 +18723,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18938,8 +18743,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19075,8 +18879,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                        `json:"kind" api:"required"`
+	Kind   constant.Page                                                                 `json:"kind" default:"page"`
 	Filter JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -19096,9 +18899,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19205,9 +19007,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19226,8 +19027,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19528,10 +19328,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventUnionFilterFil
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                `json:"kind" api:"required"`
-	Filter JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
+	EventName string                                                                `json:"eventName" api:"required"`
+	Kind      constant.Event                                                        `json:"kind" default:"event"`
+	Filter    JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -19551,9 +19350,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject) Unmars
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19660,9 +19458,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFi
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19681,8 +19478,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFi
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19818,8 +19614,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFi
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                                 `json:"kind" api:"required"`
+	Kind   constant.Page                                                          `json:"kind" default:"page"`
 	Filter JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -19839,9 +19634,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2) Unmar
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19948,9 +19742,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19969,8 +19762,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20106,9 +19898,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationPathFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20213,9 +20004,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterObject) U
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20234,8 +20024,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterObject2) 
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20391,9 +20180,8 @@ func (r *JourneyFlowUpdateResponseDefinitionScope) UnmarshalJSON(data []byte) er
 }
 
 type JourneyFlowUpdateResponseDefinitionScopeSessionFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20498,9 +20286,8 @@ func (r *JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterObject) Unma
 }
 
 type JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20519,8 +20306,7 @@ func (r *JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterObject2) Unm
 }
 
 type JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20697,9 +20483,8 @@ func (r *JourneyFlowUpdateResponseDefinitionBreakdownProperty) UnmarshalJSON(dat
 }
 
 type JourneyFlowUpdateResponseDefinitionEntryFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20804,9 +20589,8 @@ func (r *JourneyFlowUpdateResponseDefinitionEntryFilterFilterObject) UnmarshalJS
 }
 
 type JourneyFlowUpdateResponseDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20825,8 +20609,7 @@ func (r *JourneyFlowUpdateResponseDefinitionEntryFilterFilterObject2) UnmarshalJ
 }
 
 type JourneyFlowUpdateResponseDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21125,10 +20908,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherUnionFilterFilterVal
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                          `json:"kind" api:"required"`
-	Filter JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
+	EventName string                                                          `json:"eventName" api:"required"`
+	Kind      constant.Event                                                  `json:"kind" default:"event"`
+	Filter    JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -21148,9 +20930,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObject) UnmarshalJSO
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21257,9 +21038,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterOb
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21278,8 +21058,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterOb
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21415,8 +21194,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterOb
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                           `json:"kind" api:"required"`
+	Kind   constant.Page                                                    `json:"kind" default:"page"`
 	Filter JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -21436,9 +21214,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2) UnmarshalJS
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21545,9 +21322,8 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterO
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21566,8 +21342,7 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterO
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21892,10 +21667,9 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherUnionFilterFilte
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                              `json:"kind" api:"required"`
-	Filter JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
+	EventName string                                                              `json:"eventName" api:"required"`
+	Kind      constant.Event                                                      `json:"kind" default:"event"`
+	Filter    JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -21915,9 +21689,8 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject) Unmarsha
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22024,9 +21797,8 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilt
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22045,8 +21817,7 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilt
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22182,8 +21953,7 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilt
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                               `json:"kind" api:"required"`
+	Kind   constant.Page                                                        `json:"kind" default:"page"`
 	Filter JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -22203,9 +21973,8 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2) Unmarsh
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22312,9 +22081,8 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFil
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22333,8 +22101,7 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFil
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22597,9 +22364,8 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonDateRange) UnmarshalJSO
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonEntryFilter struct {
-	Filter JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22706,9 +22472,8 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterObject
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22727,8 +22492,7 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterObject
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22864,9 +22628,8 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterObject
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonSessionFilter struct {
-	Filter JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22973,9 +22736,8 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterObje
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22994,8 +22756,7 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterObje
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30558,13 +30319,9 @@ func (r *JourneyFlowNewParams) UnmarshalJSON(data []byte) error {
 //
 // The properties Anchors, Exploration, Kind, Scope, Version are required.
 type JourneyFlowNewParamsDefinition struct {
-	Anchors     []JourneyFlowNewParamsDefinitionAnchor    `json:"anchors,omitzero" api:"required"`
-	Exploration JourneyFlowNewParamsDefinitionExploration `json:"exploration,omitzero" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                              `json:"kind,omitzero" api:"required"`
-	Scope JourneyFlowNewParamsDefinitionScope `json:"scope,omitzero" api:"required"`
-	// Any of 1.
-	Version            float64                                    `json:"version,omitzero" api:"required"`
+	Anchors            []JourneyFlowNewParamsDefinitionAnchor     `json:"anchors,omitzero" api:"required"`
+	Exploration        JourneyFlowNewParamsDefinitionExploration  `json:"exploration,omitzero" api:"required"`
+	Scope              JourneyFlowNewParamsDefinitionScope        `json:"scope,omitzero" api:"required"`
 	ContextWindowMs    param.Opt[int64]                           `json:"contextWindowMs,omitzero"`
 	ConversionWindowMs param.Opt[int64]                           `json:"conversionWindowMs,omitzero"`
 	AnchorFilter       JourneyFlowNewParamsDefinitionAnchorFilter `json:"anchorFilter,omitzero"`
@@ -30577,6 +30334,10 @@ type JourneyFlowNewParamsDefinition struct {
 	NodeExpansions []JourneyFlowNewParamsDefinitionNodeExpansion `json:"nodeExpansions,omitzero"`
 	// Any of "first", "best".
 	Reentry string `json:"reentry,omitzero"`
+	// This field can be elided, and will marshal its zero value as "journey-flow".
+	Kind constant.JourneyFlow `json:"kind" default:"journey-flow"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -30589,9 +30350,6 @@ func (r *JourneyFlowNewParamsDefinition) UnmarshalJSON(data []byte) error {
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinition](
-		"kind", "journey-flow",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinition](
 		"version", 1,
 	)
@@ -30638,10 +30396,10 @@ func (u *JourneyFlowNewParamsDefinitionAnchorAlternativeUnion) UnmarshalJSON(dat
 
 // The properties EventName, Kind are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                      `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilter `json:"filter,omitzero"`
+	EventName string                                                      `json:"eventName" api:"required"`
+	Filter    JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -30653,16 +30411,10 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObject) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -30723,8 +30475,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -30736,16 +30488,8 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30755,6 +30499,8 @@ type JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject3 st
 	// Any of "string", "number", "boolean".
 	Type  string                                                                             `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -30767,9 +30513,6 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -30815,9 +30558,9 @@ func (u *JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject
 
 // The property Kind is required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                       `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowNewParamsDefinitionAnchorAlternativeObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -30829,16 +30572,10 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObject2) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -30899,8 +30636,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -30912,16 +30649,8 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObjec
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30931,6 +30660,8 @@ type JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject3 s
 	// Any of "string", "number", "boolean".
 	Type  string                                                                              `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -30943,9 +30674,6 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObjec
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -30992,7 +30720,7 @@ func (u *JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObjec
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionAnchorFilter struct {
 	Filter JourneyFlowNewParamsDefinitionAnchorFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31053,8 +30781,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionAnchorFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -31066,16 +30794,8 @@ func (r *JourneyFlowNewParamsDefinitionAnchorFilterFilterObject2) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31085,6 +30805,8 @@ type JourneyFlowNewParamsDefinitionAnchorFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                            `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionAnchorFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -31097,9 +30819,6 @@ func (r *JourneyFlowNewParamsDefinitionAnchorFilterFilterObject3) UnmarshalJSON(
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionAnchorFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -31261,10 +30980,10 @@ func (u *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherUnion) Unmar
 
 // The properties EventName, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                  `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter,omitzero"`
+	EventName string                                                                  `json:"eventName" api:"required"`
+	Filter    JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -31276,16 +30995,10 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31346,8 +31059,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -31359,16 +31072,8 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31378,6 +31083,8 @@ type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilt
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                         `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -31390,9 +31097,6 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -31438,9 +31142,9 @@ func (u *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter
 
 // The property Kind is required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                   `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -31452,16 +31156,10 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2) Unm
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31522,8 +31220,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -31535,16 +31233,8 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2Filte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31554,6 +31244,8 @@ type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFil
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                          `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -31566,9 +31258,6 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2Filte
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -31651,10 +31340,10 @@ func (u *JourneyFlowNewParamsDefinitionExplorationHiddenEventUnion) UnmarshalJSO
 
 // The properties EventName, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                           `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilter `json:"filter,omitzero"`
+	EventName string                                                           `json:"eventName" api:"required"`
+	Filter    JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -31666,16 +31355,10 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31736,8 +31419,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -31749,16 +31432,8 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31768,6 +31443,8 @@ type JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObjec
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                  `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -31780,9 +31457,6 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterO
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -31828,9 +31502,9 @@ func (u *JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterO
 
 // The property Kind is required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                            `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -31842,16 +31516,10 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31912,8 +31580,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -31925,16 +31593,8 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilter
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31944,6 +31604,8 @@ type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObje
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                   `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -31956,9 +31618,6 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilter
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32005,7 +31664,7 @@ func (u *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilter
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationPathFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationPathFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32066,8 +31725,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32079,16 +31738,8 @@ func (r *JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject2) Unmar
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32098,6 +31749,8 @@ type JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                     `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32110,9 +31763,6 @@ func (r *JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject3) Unmar
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExplorationPathFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32175,7 +31825,7 @@ func (r *JourneyFlowNewParamsDefinitionScope) UnmarshalJSON(data []byte) error {
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionScopeSessionFilter struct {
 	Filter JourneyFlowNewParamsDefinitionScopeSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32236,8 +31886,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32249,16 +31899,8 @@ func (r *JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject2) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32268,6 +31910,8 @@ type JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                  `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32280,9 +31924,6 @@ func (r *JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject3) Unmarsha
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionScopeSessionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32368,7 +32009,7 @@ func init() {
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionEntryFilter struct {
 	Filter JourneyFlowNewParamsDefinitionEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32429,8 +32070,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionEntryFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32442,16 +32083,8 @@ func (r *JourneyFlowNewParamsDefinitionEntryFilterFilterObject2) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionEntryFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32461,6 +32094,8 @@ type JourneyFlowNewParamsDefinitionEntryFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                           `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionEntryFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32473,9 +32108,6 @@ func (r *JourneyFlowNewParamsDefinitionEntryFilterFilterObject3) UnmarshalJSON(d
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionEntryFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionEntryFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32554,10 +32186,10 @@ func (u *JourneyFlowNewParamsDefinitionExclusionMatcherUnion) UnmarshalJSON(data
 
 // The properties EventName, Kind are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                     `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilter `json:"filter,omitzero"`
+	EventName string                                                     `json:"eventName" api:"required"`
+	Filter    JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -32569,16 +32201,10 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObject) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32639,8 +32265,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32652,16 +32278,8 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject2
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32671,6 +32289,8 @@ type JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3 str
 	// Any of "string", "number", "boolean".
 	Type  string                                                                            `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32683,9 +32303,6 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32731,9 +32348,9 @@ func (u *JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject3
 
 // The property Kind is required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                      `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowNewParamsDefinitionExclusionMatcherObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -32745,16 +32362,10 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObject2) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32815,8 +32426,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32828,16 +32439,8 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32847,6 +32450,8 @@ type JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject3 st
 	// Any of "string", "number", "boolean".
 	Type  string                                                                             `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32859,9 +32464,6 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32963,10 +32565,10 @@ func (u *JourneyFlowNewParamsDefinitionNodeExpansionMatcherUnion) UnmarshalJSON(
 
 // The properties EventName, Kind are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                         `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilter `json:"filter,omitzero"`
+	EventName string                                                         `json:"eventName" api:"required"`
+	Filter    JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -32978,16 +32580,10 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33048,8 +32644,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -33061,16 +32657,8 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObj
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33080,6 +32668,8 @@ type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -33092,9 +32682,6 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObj
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -33140,9 +32727,9 @@ func (u *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObj
 
 // The property Kind is required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                          `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -33154,16 +32741,10 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33224,8 +32805,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -33237,16 +32818,8 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterOb
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33256,6 +32829,8 @@ type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                 `json:"type,omitzero"`
 	Value JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -33268,9 +32843,6 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterOb
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -33430,7 +33002,7 @@ func (r *JourneyFlowNewParamsReportContextComparisonDateRange) UnmarshalJSON(dat
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsReportContextComparisonEntryFilter struct {
 	Filter JourneyFlowNewParamsReportContextComparisonEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33491,8 +33063,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -33504,16 +33076,8 @@ func (r *JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject2) Un
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33523,6 +33087,8 @@ type JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3 struct 
 	// Any of "string", "number", "boolean".
 	Type  string                                                                        `json:"type,omitzero"`
 	Value JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -33535,9 +33101,6 @@ func (r *JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3) Un
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -33584,7 +33147,7 @@ func (u *JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3Valu
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsReportContextComparisonSessionFilter struct {
 	Filter JourneyFlowNewParamsReportContextComparisonSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33645,8 +33208,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -33658,16 +33221,8 @@ func (r *JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject2) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33677,6 +33232,8 @@ type JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3 struc
 	// Any of "string", "number", "boolean".
 	Type  string                                                                          `json:"type,omitzero"`
 	Value JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -33689,9 +33246,6 @@ func (r *JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3) 
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowNewParamsReportContextComparisonSessionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -33795,13 +33349,9 @@ func (r *JourneyFlowUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // The properties Anchors, Exploration, Kind, Scope, Version are required.
 type JourneyFlowUpdateParamsDefinition struct {
-	Anchors     []JourneyFlowUpdateParamsDefinitionAnchor    `json:"anchors,omitzero" api:"required"`
-	Exploration JourneyFlowUpdateParamsDefinitionExploration `json:"exploration,omitzero" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                 `json:"kind,omitzero" api:"required"`
-	Scope JourneyFlowUpdateParamsDefinitionScope `json:"scope,omitzero" api:"required"`
-	// Any of 1.
-	Version            float64                                       `json:"version,omitzero" api:"required"`
+	Anchors            []JourneyFlowUpdateParamsDefinitionAnchor     `json:"anchors,omitzero" api:"required"`
+	Exploration        JourneyFlowUpdateParamsDefinitionExploration  `json:"exploration,omitzero" api:"required"`
+	Scope              JourneyFlowUpdateParamsDefinitionScope        `json:"scope,omitzero" api:"required"`
 	ContextWindowMs    param.Opt[int64]                              `json:"contextWindowMs,omitzero"`
 	ConversionWindowMs param.Opt[int64]                              `json:"conversionWindowMs,omitzero"`
 	AnchorFilter       JourneyFlowUpdateParamsDefinitionAnchorFilter `json:"anchorFilter,omitzero"`
@@ -33814,6 +33364,10 @@ type JourneyFlowUpdateParamsDefinition struct {
 	NodeExpansions []JourneyFlowUpdateParamsDefinitionNodeExpansion `json:"nodeExpansions,omitzero"`
 	// Any of "first", "best".
 	Reentry string `json:"reentry,omitzero"`
+	// This field can be elided, and will marshal its zero value as "journey-flow".
+	Kind constant.JourneyFlow `json:"kind" default:"journey-flow"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -33826,9 +33380,6 @@ func (r *JourneyFlowUpdateParamsDefinition) UnmarshalJSON(data []byte) error {
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinition](
-		"kind", "journey-flow",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinition](
 		"version", 1,
 	)
@@ -33875,10 +33426,10 @@ func (u *JourneyFlowUpdateParamsDefinitionAnchorAlternativeUnion) UnmarshalJSON(
 
 // The properties EventName, Kind are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                         `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilter `json:"filter,omitzero"`
+	EventName string                                                         `json:"eventName" api:"required"`
+	Filter    JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -33890,16 +33441,10 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33960,8 +33505,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -33973,16 +33518,8 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObj
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33992,6 +33529,8 @@ type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject3
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -34004,9 +33543,6 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObj
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -34052,9 +33588,9 @@ func (u *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObj
 
 // The property Kind is required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                          `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -34066,16 +33602,10 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34136,8 +33666,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -34149,16 +33679,8 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterOb
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -34168,6 +33690,8 @@ type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                 `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -34180,9 +33704,6 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterOb
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -34229,7 +33750,7 @@ func (u *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterOb
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionAnchorFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionAnchorFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34290,8 +33811,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -34303,16 +33824,8 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject2) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -34322,6 +33835,8 @@ type JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                               `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -34334,9 +33849,6 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject3) UnmarshalJS
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionAnchorFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -34498,10 +34010,10 @@ func (u *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherUnion) Un
 
 // The properties EventName, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                     `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter,omitzero"`
+	EventName string                                                                     `json:"eventName" api:"required"`
+	Filter    JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -34513,16 +34025,10 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject) U
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34583,8 +34089,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -34596,16 +34102,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFil
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -34615,6 +34113,8 @@ type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterF
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                            `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -34627,9 +34127,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFil
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -34675,9 +34172,9 @@ func (u *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFil
 
 // The property Kind is required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                      `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -34689,16 +34186,10 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34759,8 +34250,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -34772,16 +34263,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2Fi
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -34791,6 +34274,8 @@ type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2Filter
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                             `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -34803,9 +34288,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2Fi
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -34888,10 +34370,10 @@ func (u *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventUnion) Unmarshal
 
 // The properties EventName, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                              `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilter `json:"filter,omitzero"`
+	EventName string                                                              `json:"eventName" api:"required"`
+	Filter    JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -34903,16 +34385,10 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject) Unmarsha
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34973,8 +34449,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -34986,16 +34462,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35005,6 +34473,8 @@ type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterOb
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                     `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35017,9 +34487,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilt
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35065,9 +34532,9 @@ func (u *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilt
 
 // The property Kind is required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                               `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -35079,16 +34546,10 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2) Unmarsh
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35149,8 +34610,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35162,16 +34623,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFil
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35181,6 +34634,8 @@ type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterO
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                      `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35193,9 +34648,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFil
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35242,7 +34694,7 @@ func (u *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFil
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationPathFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35303,8 +34755,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35316,16 +34768,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject2) Un
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35335,6 +34779,8 @@ type JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject3 struct 
 	// Any of "string", "number", "boolean".
 	Type  string                                                                        `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35347,9 +34793,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject3) Un
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35412,7 +34855,7 @@ func (r *JourneyFlowUpdateParamsDefinitionScope) UnmarshalJSON(data []byte) erro
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionScopeSessionFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35473,8 +34916,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35486,16 +34929,8 @@ func (r *JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject2) Unmar
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35505,6 +34940,8 @@ type JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                     `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35517,9 +34954,6 @@ func (r *JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject3) Unmar
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35605,7 +35039,7 @@ func init() {
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionEntryFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35666,8 +35100,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35679,16 +35113,8 @@ func (r *JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject2) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35698,6 +35124,8 @@ type JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                              `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35710,9 +35138,6 @@ func (r *JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject3) UnmarshalJSO
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionEntryFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35791,10 +35216,10 @@ func (u *JourneyFlowUpdateParamsDefinitionExclusionMatcherUnion) UnmarshalJSON(d
 
 // The properties EventName, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                        `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilter `json:"filter,omitzero"`
+	EventName string                                                        `json:"eventName" api:"required"`
+	Filter    JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -35806,16 +35231,10 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObject) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35876,8 +35295,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35889,16 +35308,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObje
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35908,6 +35319,8 @@ type JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject3 
 	// Any of "string", "number", "boolean".
 	Type  string                                                                               `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35920,9 +35333,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObje
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35968,9 +35378,9 @@ func (u *JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObje
 
 // The property Kind is required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                         `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -35982,16 +35392,10 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36052,8 +35456,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36065,16 +35469,8 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObj
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36084,6 +35480,8 @@ type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject3
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36096,9 +35494,6 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObj
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36200,10 +35595,10 @@ func (u *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherUnion) UnmarshalJS
 
 // The properties EventName, Kind are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                            `json:"kind,omitzero" api:"required"`
-	Filter JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilter `json:"filter,omitzero"`
+	EventName string                                                            `json:"eventName" api:"required"`
+	Filter    JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event".
+	Kind constant.Event `json:"kind" default:"event"`
 	paramObj
 }
 
@@ -36215,16 +35610,10 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject](
-		"kind", "event",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36285,8 +35674,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36298,16 +35687,8 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilter
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36317,6 +35698,8 @@ type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObje
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                   `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36329,9 +35712,6 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilter
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36377,9 +35757,9 @@ func (u *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilter
 
 // The property Kind is required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                             `json:"kind,omitzero" api:"required"`
 	Filter JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2Filter `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "page".
+	Kind constant.Page `json:"kind" default:"page"`
 	paramObj
 }
 
@@ -36391,16 +35771,10 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2) Unmarshal
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2](
-		"kind", "page",
-	)
-}
-
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36461,8 +35835,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36474,16 +35848,8 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36493,6 +35859,8 @@ type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObj
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                    `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36505,9 +35873,6 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilte
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36667,7 +36032,7 @@ func (r *JourneyFlowUpdateParamsReportContextComparisonDateRange) UnmarshalJSON(
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsReportContextComparisonEntryFilter struct {
 	Filter JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36728,8 +36093,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36741,16 +36106,8 @@ func (r *JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject2)
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36760,6 +36117,8 @@ type JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3 stru
 	// Any of "string", "number", "boolean".
 	Type  string                                                                           `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36772,9 +36131,6 @@ func (r *JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36821,7 +36177,7 @@ func (u *JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3V
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsReportContextComparisonSessionFilter struct {
 	Filter JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36882,8 +36238,8 @@ func init() {
 // The properties Child, Kind are required.
 type JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36895,16 +36251,8 @@ func (r *JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36914,6 +36262,8 @@ type JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject3 st
 	// Any of "string", "number", "boolean".
 	Type  string                                                                             `json:"type,omitzero"`
 	Value JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36926,9 +36276,6 @@ func (r *JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject
 }
 
 func init() {
-	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)

@@ -19,6 +19,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/shared/constant"
 )
 
 // InsightService contains methods and other services that help with interacting
@@ -225,13 +226,11 @@ func (r *InsightListResponse) UnmarshalJSON(data []byte) error {
 // analytics property catalog.
 type InsightListResponseDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval" api:"required"`
-	// Any of "insight".
-	Kind    string                                `json:"kind" api:"required"`
-	Metrics []InsightListResponseDefinitionMetric `json:"metrics" api:"required"`
-	// Any of 1.
-	Version float64                             `json:"version" api:"required"`
-	Filter  InsightListResponseDefinitionFilter `json:"filter"`
+	Interval string                                `json:"interval" api:"required"`
+	Kind     constant.Insight                      `json:"kind" default:"insight"`
+	Metrics  []InsightListResponseDefinitionMetric `json:"metrics" api:"required"`
+	Version  float64                               `json:"version" api:"required"`
+	Filter   InsightListResponseDefinitionFilter   `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -280,9 +279,8 @@ func (r *InsightListResponseDefinitionMetric) UnmarshalJSON(data []byte) error {
 }
 
 type InsightListResponseDefinitionMetricFilter struct {
-	Filter InsightListResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightListResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -383,9 +381,8 @@ func (r *InsightListResponseDefinitionMetricFilterFilterObject) UnmarshalJSON(da
 }
 
 type InsightListResponseDefinitionMetricFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -402,8 +399,7 @@ func (r *InsightListResponseDefinitionMetricFilterFilterObject2) UnmarshalJSON(d
 }
 
 type InsightListResponseDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -537,9 +533,8 @@ func (r *InsightListResponseDefinitionMetricFilterFilterObject3ValueArrayItemUni
 }
 
 type InsightListResponseDefinitionMetricProperty struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -559,9 +554,8 @@ func (r *InsightListResponseDefinitionMetricProperty) UnmarshalJSON(data []byte)
 }
 
 type InsightListResponseDefinitionFilter struct {
-	Filter InsightListResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightListResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -654,9 +648,8 @@ func (r *InsightListResponseDefinitionFilterFilterObject) UnmarshalJSON(data []b
 }
 
 type InsightListResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -673,8 +666,7 @@ func (r *InsightListResponseDefinitionFilterFilterObject2) UnmarshalJSON(data []
 }
 
 type InsightListResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1031,13 +1023,11 @@ func (r *InsightNewResponse) UnmarshalJSON(data []byte) error {
 // analytics property catalog.
 type InsightNewResponseDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval" api:"required"`
-	// Any of "insight".
-	Kind    string                               `json:"kind" api:"required"`
-	Metrics []InsightNewResponseDefinitionMetric `json:"metrics" api:"required"`
-	// Any of 1.
-	Version float64                            `json:"version" api:"required"`
-	Filter  InsightNewResponseDefinitionFilter `json:"filter"`
+	Interval string                               `json:"interval" api:"required"`
+	Kind     constant.Insight                     `json:"kind" default:"insight"`
+	Metrics  []InsightNewResponseDefinitionMetric `json:"metrics" api:"required"`
+	Version  float64                              `json:"version" api:"required"`
+	Filter   InsightNewResponseDefinitionFilter   `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -1086,9 +1076,8 @@ func (r *InsightNewResponseDefinitionMetric) UnmarshalJSON(data []byte) error {
 }
 
 type InsightNewResponseDefinitionMetricFilter struct {
-	Filter InsightNewResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightNewResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1189,9 +1178,8 @@ func (r *InsightNewResponseDefinitionMetricFilterFilterObject) UnmarshalJSON(dat
 }
 
 type InsightNewResponseDefinitionMetricFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1208,8 +1196,7 @@ func (r *InsightNewResponseDefinitionMetricFilterFilterObject2) UnmarshalJSON(da
 }
 
 type InsightNewResponseDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1343,9 +1330,8 @@ func (r *InsightNewResponseDefinitionMetricFilterFilterObject3ValueArrayItemUnio
 }
 
 type InsightNewResponseDefinitionMetricProperty struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1365,9 +1351,8 @@ func (r *InsightNewResponseDefinitionMetricProperty) UnmarshalJSON(data []byte) 
 }
 
 type InsightNewResponseDefinitionFilter struct {
-	Filter InsightNewResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightNewResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1460,9 +1445,8 @@ func (r *InsightNewResponseDefinitionFilterFilterObject) UnmarshalJSON(data []by
 }
 
 type InsightNewResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1479,8 +1463,7 @@ func (r *InsightNewResponseDefinitionFilterFilterObject2) UnmarshalJSON(data []b
 }
 
 type InsightNewResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1837,13 +1820,11 @@ func (r *InsightGetResponse) UnmarshalJSON(data []byte) error {
 // analytics property catalog.
 type InsightGetResponseDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval" api:"required"`
-	// Any of "insight".
-	Kind    string                               `json:"kind" api:"required"`
-	Metrics []InsightGetResponseDefinitionMetric `json:"metrics" api:"required"`
-	// Any of 1.
-	Version float64                            `json:"version" api:"required"`
-	Filter  InsightGetResponseDefinitionFilter `json:"filter"`
+	Interval string                               `json:"interval" api:"required"`
+	Kind     constant.Insight                     `json:"kind" default:"insight"`
+	Metrics  []InsightGetResponseDefinitionMetric `json:"metrics" api:"required"`
+	Version  float64                              `json:"version" api:"required"`
+	Filter   InsightGetResponseDefinitionFilter   `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -1892,9 +1873,8 @@ func (r *InsightGetResponseDefinitionMetric) UnmarshalJSON(data []byte) error {
 }
 
 type InsightGetResponseDefinitionMetricFilter struct {
-	Filter InsightGetResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightGetResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1995,9 +1975,8 @@ func (r *InsightGetResponseDefinitionMetricFilterFilterObject) UnmarshalJSON(dat
 }
 
 type InsightGetResponseDefinitionMetricFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2014,8 +1993,7 @@ func (r *InsightGetResponseDefinitionMetricFilterFilterObject2) UnmarshalJSON(da
 }
 
 type InsightGetResponseDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2149,9 +2127,8 @@ func (r *InsightGetResponseDefinitionMetricFilterFilterObject3ValueArrayItemUnio
 }
 
 type InsightGetResponseDefinitionMetricProperty struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2171,9 +2148,8 @@ func (r *InsightGetResponseDefinitionMetricProperty) UnmarshalJSON(data []byte) 
 }
 
 type InsightGetResponseDefinitionFilter struct {
-	Filter InsightGetResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightGetResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2266,9 +2242,8 @@ func (r *InsightGetResponseDefinitionFilterFilterObject) UnmarshalJSON(data []by
 }
 
 type InsightGetResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2285,8 +2260,7 @@ func (r *InsightGetResponseDefinitionFilterFilterObject2) UnmarshalJSON(data []b
 }
 
 type InsightGetResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2643,13 +2617,11 @@ func (r *InsightUpdateResponse) UnmarshalJSON(data []byte) error {
 // analytics property catalog.
 type InsightUpdateResponseDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval" api:"required"`
-	// Any of "insight".
-	Kind    string                                  `json:"kind" api:"required"`
-	Metrics []InsightUpdateResponseDefinitionMetric `json:"metrics" api:"required"`
-	// Any of 1.
-	Version float64                               `json:"version" api:"required"`
-	Filter  InsightUpdateResponseDefinitionFilter `json:"filter"`
+	Interval string                                  `json:"interval" api:"required"`
+	Kind     constant.Insight                        `json:"kind" default:"insight"`
+	Metrics  []InsightUpdateResponseDefinitionMetric `json:"metrics" api:"required"`
+	Version  float64                                 `json:"version" api:"required"`
+	Filter   InsightUpdateResponseDefinitionFilter   `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -2698,9 +2670,8 @@ func (r *InsightUpdateResponseDefinitionMetric) UnmarshalJSON(data []byte) error
 }
 
 type InsightUpdateResponseDefinitionMetricFilter struct {
-	Filter InsightUpdateResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightUpdateResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2801,9 +2772,8 @@ func (r *InsightUpdateResponseDefinitionMetricFilterFilterObject) UnmarshalJSON(
 }
 
 type InsightUpdateResponseDefinitionMetricFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2820,8 +2790,7 @@ func (r *InsightUpdateResponseDefinitionMetricFilterFilterObject2) UnmarshalJSON
 }
 
 type InsightUpdateResponseDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2955,9 +2924,8 @@ func (r *InsightUpdateResponseDefinitionMetricFilterFilterObject3ValueArrayItemU
 }
 
 type InsightUpdateResponseDefinitionMetricProperty struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2977,9 +2945,8 @@ func (r *InsightUpdateResponseDefinitionMetricProperty) UnmarshalJSON(data []byt
 }
 
 type InsightUpdateResponseDefinitionFilter struct {
-	Filter InsightUpdateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  InsightUpdateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3072,9 +3039,8 @@ func (r *InsightUpdateResponseDefinitionFilterFilterObject) UnmarshalJSON(data [
 }
 
 type InsightUpdateResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3091,8 +3057,7 @@ func (r *InsightUpdateResponseDefinitionFilterFilterObject2) UnmarshalJSON(data 
 }
 
 type InsightUpdateResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3892,13 +3857,13 @@ func (r *InsightNewParams) UnmarshalJSON(data []byte) error {
 // The properties Interval, Kind, Metrics, Version are required.
 type InsightNewParamsDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval,omitzero" api:"required"`
-	// Any of "insight".
-	Kind    string                             `json:"kind,omitzero" api:"required"`
-	Metrics []InsightNewParamsDefinitionMetric `json:"metrics,omitzero" api:"required"`
-	// Any of 1.
-	Version float64                          `json:"version,omitzero" api:"required"`
-	Filter  InsightNewParamsDefinitionFilter `json:"filter,omitzero"`
+	Interval string                             `json:"interval,omitzero" api:"required"`
+	Metrics  []InsightNewParamsDefinitionMetric `json:"metrics,omitzero" api:"required"`
+	Filter   InsightNewParamsDefinitionFilter   `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "insight".
+	Kind constant.Insight `json:"kind" default:"insight"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -3913,9 +3878,6 @@ func (r *InsightNewParamsDefinition) UnmarshalJSON(data []byte) error {
 func init() {
 	apijson.RegisterFieldValidator[InsightNewParamsDefinition](
 		"interval", "day", "week", "month",
-	)
-	apijson.RegisterFieldValidator[InsightNewParamsDefinition](
-		"kind", "insight",
 	)
 	apijson.RegisterFieldValidator[InsightNewParamsDefinition](
 		"version", 1,
@@ -3953,7 +3915,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightNewParamsDefinitionMetricFilter struct {
 	Filter InsightNewParamsDefinitionMetricFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4014,8 +3976,8 @@ func init() {
 // The properties Child, Kind are required.
 type InsightNewParamsDefinitionMetricFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -4027,16 +3989,8 @@ func (r *InsightNewParamsDefinitionMetricFilterFilterObject2) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[InsightNewParamsDefinitionMetricFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type InsightNewParamsDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4046,6 +4000,8 @@ type InsightNewParamsDefinitionMetricFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                        `json:"type,omitzero"`
 	Value InsightNewParamsDefinitionMetricFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -4058,9 +4014,6 @@ func (r *InsightNewParamsDefinitionMetricFilterFilterObject3) UnmarshalJSON(data
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InsightNewParamsDefinitionMetricFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[InsightNewParamsDefinitionMetricFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -4107,10 +4060,10 @@ func (u *InsightNewParamsDefinitionMetricFilterFilterObject3ValueArrayItemUnion)
 // The properties Path, Property are required.
 type InsightNewParamsDefinitionMetricProperty struct {
 	Path []string `json:"path,omitzero" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property,omitzero" api:"required"`
 	// Any of "number".
 	Type string `json:"type,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event.properties".
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	paramObj
 }
 
@@ -4124,9 +4077,6 @@ func (r *InsightNewParamsDefinitionMetricProperty) UnmarshalJSON(data []byte) er
 
 func init() {
 	apijson.RegisterFieldValidator[InsightNewParamsDefinitionMetricProperty](
-		"property", "event.properties",
-	)
-	apijson.RegisterFieldValidator[InsightNewParamsDefinitionMetricProperty](
 		"type", "number",
 	)
 }
@@ -4134,7 +4084,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightNewParamsDefinitionFilter struct {
 	Filter InsightNewParamsDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4195,8 +4145,8 @@ func init() {
 // The properties Child, Kind are required.
 type InsightNewParamsDefinitionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -4208,16 +4158,8 @@ func (r *InsightNewParamsDefinitionFilterFilterObject2) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[InsightNewParamsDefinitionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type InsightNewParamsDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4227,6 +4169,8 @@ type InsightNewParamsDefinitionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                  `json:"type,omitzero"`
 	Value InsightNewParamsDefinitionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -4239,9 +4183,6 @@ func (r *InsightNewParamsDefinitionFilterFilterObject3) UnmarshalJSON(data []byt
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InsightNewParamsDefinitionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[InsightNewParamsDefinitionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -4483,13 +4424,13 @@ func (r *InsightUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties Interval, Kind, Metrics, Version are required.
 type InsightUpdateParamsDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval,omitzero" api:"required"`
-	// Any of "insight".
-	Kind    string                                `json:"kind,omitzero" api:"required"`
-	Metrics []InsightUpdateParamsDefinitionMetric `json:"metrics,omitzero" api:"required"`
-	// Any of 1.
-	Version float64                             `json:"version,omitzero" api:"required"`
-	Filter  InsightUpdateParamsDefinitionFilter `json:"filter,omitzero"`
+	Interval string                                `json:"interval,omitzero" api:"required"`
+	Metrics  []InsightUpdateParamsDefinitionMetric `json:"metrics,omitzero" api:"required"`
+	Filter   InsightUpdateParamsDefinitionFilter   `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "insight".
+	Kind constant.Insight `json:"kind" default:"insight"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4504,9 +4445,6 @@ func (r *InsightUpdateParamsDefinition) UnmarshalJSON(data []byte) error {
 func init() {
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinition](
 		"interval", "day", "week", "month",
-	)
-	apijson.RegisterFieldValidator[InsightUpdateParamsDefinition](
-		"kind", "insight",
 	)
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinition](
 		"version", 1,
@@ -4544,7 +4482,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightUpdateParamsDefinitionMetricFilter struct {
 	Filter InsightUpdateParamsDefinitionMetricFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4605,8 +4543,8 @@ func init() {
 // The properties Child, Kind are required.
 type InsightUpdateParamsDefinitionMetricFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -4618,16 +4556,8 @@ func (r *InsightUpdateParamsDefinitionMetricFilterFilterObject2) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionMetricFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type InsightUpdateParamsDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4637,6 +4567,8 @@ type InsightUpdateParamsDefinitionMetricFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                           `json:"type,omitzero"`
 	Value InsightUpdateParamsDefinitionMetricFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -4649,9 +4581,6 @@ func (r *InsightUpdateParamsDefinitionMetricFilterFilterObject3) UnmarshalJSON(d
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionMetricFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionMetricFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -4698,10 +4627,10 @@ func (u *InsightUpdateParamsDefinitionMetricFilterFilterObject3ValueArrayItemUni
 // The properties Path, Property are required.
 type InsightUpdateParamsDefinitionMetricProperty struct {
 	Path []string `json:"path,omitzero" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property,omitzero" api:"required"`
 	// Any of "number".
 	Type string `json:"type,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event.properties".
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	paramObj
 }
 
@@ -4715,9 +4644,6 @@ func (r *InsightUpdateParamsDefinitionMetricProperty) UnmarshalJSON(data []byte)
 
 func init() {
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionMetricProperty](
-		"property", "event.properties",
-	)
-	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionMetricProperty](
 		"type", "number",
 	)
 }
@@ -4725,7 +4651,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightUpdateParamsDefinitionFilter struct {
 	Filter InsightUpdateParamsDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4786,8 +4712,8 @@ func init() {
 // The properties Child, Kind are required.
 type InsightUpdateParamsDefinitionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -4799,16 +4725,8 @@ func (r *InsightUpdateParamsDefinitionFilterFilterObject2) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type InsightUpdateParamsDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4818,6 +4736,8 @@ type InsightUpdateParamsDefinitionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                     `json:"type,omitzero"`
 	Value InsightUpdateParamsDefinitionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -4830,9 +4750,6 @@ func (r *InsightUpdateParamsDefinitionFilterFilterObject3) UnmarshalJSON(data []
 }
 
 func init() {
-	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinitionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)

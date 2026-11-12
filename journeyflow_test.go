@@ -58,7 +58,6 @@ func TestJourneyFlowNewWithOptionalParams(t *testing.T) {
 				Alternatives: []oursprivacy.JourneyFlowNewParamsDefinitionAnchorAlternativeUnion{{
 					OfJourneyFlowNewsDefinitionAnchorAlternativeObject: &oursprivacy.JourneyFlowNewParamsDefinitionAnchorAlternativeObject{
 						EventName: "x",
-						Kind:      "event",
 						Filter: oursprivacy.JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilter{
 							Filter: oursprivacy.JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterUnion{
 								OfJourneyFlowNewsDefinitionAnchorAlternativeObjectFilterFilterObject: &oursprivacy.JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterObject{
@@ -101,7 +100,6 @@ func TestJourneyFlowNewWithOptionalParams(t *testing.T) {
 						Matcher: oursprivacy.JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherUnion{
 							OfJourneyFlowNewsDefinitionExplorationFocusObjectMatcherObject: &oursprivacy.JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject{
 								EventName: "x",
-								Kind:      "event",
 								Filter: oursprivacy.JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter{
 									Filter: oursprivacy.JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion{
 										OfJourneyFlowNewsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject: &oursprivacy.JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject{
@@ -118,7 +116,6 @@ func TestJourneyFlowNewWithOptionalParams(t *testing.T) {
 				HiddenEvents: []oursprivacy.JourneyFlowNewParamsDefinitionExplorationHiddenEventUnion{{
 					OfJourneyFlowNewsDefinitionExplorationHiddenEventObject: &oursprivacy.JourneyFlowNewParamsDefinitionExplorationHiddenEventObject{
 						EventName: "x",
-						Kind:      "event",
 						Filter: oursprivacy.JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilter{
 							Filter: oursprivacy.JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterUnion{
 								OfJourneyFlowNewsDefinitionExplorationHiddenEventObjectFilterFilterObject: &oursprivacy.JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterObject{
@@ -142,7 +139,6 @@ func TestJourneyFlowNewWithOptionalParams(t *testing.T) {
 				},
 				StepKinds: []string{"event"},
 			},
-			Kind: "journey-flow",
 			Scope: oursprivacy.JourneyFlowNewParamsDefinitionScope{
 				ExcludeBots: true,
 				SourceIDs:   []string{"x"},
@@ -193,7 +189,6 @@ func TestJourneyFlowNewWithOptionalParams(t *testing.T) {
 				Matcher: oursprivacy.JourneyFlowNewParamsDefinitionExclusionMatcherUnion{
 					OfJourneyFlowNewsDefinitionExclusionMatcherObject: &oursprivacy.JourneyFlowNewParamsDefinitionExclusionMatcherObject{
 						EventName: "x",
-						Kind:      "event",
 						Filter: oursprivacy.JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilter{
 							Filter: oursprivacy.JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterUnion{
 								OfJourneyFlowNewsDefinitionExclusionMatcherObjectFilterFilterObject: &oursprivacy.JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterObject{
@@ -216,7 +211,6 @@ func TestJourneyFlowNewWithOptionalParams(t *testing.T) {
 				Matcher: oursprivacy.JourneyFlowNewParamsDefinitionNodeExpansionMatcherUnion{
 					OfJourneyFlowNewsDefinitionNodeExpansionMatcherObject: &oursprivacy.JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject{
 						EventName: "x",
-						Kind:      "event",
 						Filter: oursprivacy.JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilter{
 							Filter: oursprivacy.JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterUnion{
 								OfJourneyFlowNewsDefinitionNodeExpansionMatcherObjectFilterFilterObject: &oursprivacy.JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject{
@@ -340,7 +334,6 @@ func TestJourneyFlowUpdateWithOptionalParams(t *testing.T) {
 					Alternatives: []oursprivacy.JourneyFlowUpdateParamsDefinitionAnchorAlternativeUnion{{
 						OfJourneyFlowUpdatesDefinitionAnchorAlternativeObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject{
 							EventName: "x",
-							Kind:      "event",
 							Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilter{
 								Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterUnion{
 									OfJourneyFlowUpdatesDefinitionAnchorAlternativeObjectFilterFilterObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterObject{
@@ -383,7 +376,6 @@ func TestJourneyFlowUpdateWithOptionalParams(t *testing.T) {
 							Matcher: oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherUnion{
 								OfJourneyFlowUpdatesDefinitionExplorationFocusObjectMatcherObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject{
 									EventName: "x",
-									Kind:      "event",
 									Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilter{
 										Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion{
 											OfJourneyFlowUpdatesDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject{
@@ -400,7 +392,6 @@ func TestJourneyFlowUpdateWithOptionalParams(t *testing.T) {
 					HiddenEvents: []oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationHiddenEventUnion{{
 						OfJourneyFlowUpdatesDefinitionExplorationHiddenEventObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject{
 							EventName: "x",
-							Kind:      "event",
 							Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilter{
 								Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterUnion{
 									OfJourneyFlowUpdatesDefinitionExplorationHiddenEventObjectFilterFilterObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterObject{
@@ -424,7 +415,6 @@ func TestJourneyFlowUpdateWithOptionalParams(t *testing.T) {
 					},
 					StepKinds: []string{"event"},
 				},
-				Kind: "journey-flow",
 				Scope: oursprivacy.JourneyFlowUpdateParamsDefinitionScope{
 					ExcludeBots: true,
 					SourceIDs:   []string{"x"},
@@ -475,7 +465,6 @@ func TestJourneyFlowUpdateWithOptionalParams(t *testing.T) {
 					Matcher: oursprivacy.JourneyFlowUpdateParamsDefinitionExclusionMatcherUnion{
 						OfJourneyFlowUpdatesDefinitionExclusionMatcherObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionExclusionMatcherObject{
 							EventName: "x",
-							Kind:      "event",
 							Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilter{
 								Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterUnion{
 									OfJourneyFlowUpdatesDefinitionExclusionMatcherObjectFilterFilterObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterObject{
@@ -498,7 +487,6 @@ func TestJourneyFlowUpdateWithOptionalParams(t *testing.T) {
 					Matcher: oursprivacy.JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherUnion{
 						OfJourneyFlowUpdatesDefinitionNodeExpansionMatcherObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject{
 							EventName: "x",
-							Kind:      "event",
 							Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilter{
 								Filter: oursprivacy.JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterUnion{
 									OfJourneyFlowUpdatesDefinitionNodeExpansionMatcherObjectFilterFilterObject: &oursprivacy.JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterObject{
