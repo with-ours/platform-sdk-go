@@ -19,6 +19,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/shared/constant"
 )
 
 // AttributionReportService contains methods and other services that help with
@@ -261,11 +262,9 @@ func (r *AttributionReportListResponse) UnmarshalJSON(data []byte) error {
 // (default USD). Outcome ids identify outcomes in results. Replaces the saved
 // definition on PATCH.
 type AttributionReportListResponseDefinition struct {
-	// Any of "attribution".
-	Kind     string                                           `json:"kind" api:"required"`
+	Kind     constant.Attribution                             `json:"kind" default:"attribution"`
 	Outcomes []AttributionReportListResponseDefinitionOutcome `json:"outcomes" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Version  float64                                          `json:"version" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -322,9 +321,8 @@ func (r *AttributionReportListResponseDefinitionOutcome) UnmarshalJSON(data []by
 }
 
 type AttributionReportListResponseDefinitionOutcomeFilter struct {
-	Filter AttributionReportListResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportListResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -429,9 +427,8 @@ func (r *AttributionReportListResponseDefinitionOutcomeFilterFilterObject) Unmar
 }
 
 type AttributionReportListResponseDefinitionOutcomeFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -450,8 +447,7 @@ func (r *AttributionReportListResponseDefinitionOutcomeFilterFilterObject2) Unma
 }
 
 type AttributionReportListResponseDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -587,9 +583,8 @@ func (r *AttributionReportListResponseDefinitionOutcomeFilterFilterObject3ValueA
 }
 
 type AttributionReportListResponseDefinitionOutcomeValue struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -609,9 +604,8 @@ func (r *AttributionReportListResponseDefinitionOutcomeValue) UnmarshalJSON(data
 }
 
 type AttributionReportListResponseDefinitionFilter struct {
-	Filter AttributionReportListResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportListResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -714,9 +708,8 @@ func (r *AttributionReportListResponseDefinitionFilterFilterObject) UnmarshalJSO
 }
 
 type AttributionReportListResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -735,8 +728,7 @@ func (r *AttributionReportListResponseDefinitionFilterFilterObject2) UnmarshalJS
 }
 
 type AttributionReportListResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1031,11 +1023,9 @@ func (r *AttributionReportNewResponse) UnmarshalJSON(data []byte) error {
 // (default USD). Outcome ids identify outcomes in results. Replaces the saved
 // definition on PATCH.
 type AttributionReportNewResponseDefinition struct {
-	// Any of "attribution".
-	Kind     string                                          `json:"kind" api:"required"`
+	Kind     constant.Attribution                            `json:"kind" default:"attribution"`
 	Outcomes []AttributionReportNewResponseDefinitionOutcome `json:"outcomes" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Version  float64                                         `json:"version" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -1092,9 +1082,8 @@ func (r *AttributionReportNewResponseDefinitionOutcome) UnmarshalJSON(data []byt
 }
 
 type AttributionReportNewResponseDefinitionOutcomeFilter struct {
-	Filter AttributionReportNewResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportNewResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1199,9 +1188,8 @@ func (r *AttributionReportNewResponseDefinitionOutcomeFilterFilterObject) Unmars
 }
 
 type AttributionReportNewResponseDefinitionOutcomeFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1220,8 +1208,7 @@ func (r *AttributionReportNewResponseDefinitionOutcomeFilterFilterObject2) Unmar
 }
 
 type AttributionReportNewResponseDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1357,9 +1344,8 @@ func (r *AttributionReportNewResponseDefinitionOutcomeFilterFilterObject3ValueAr
 }
 
 type AttributionReportNewResponseDefinitionOutcomeValue struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1379,9 +1365,8 @@ func (r *AttributionReportNewResponseDefinitionOutcomeValue) UnmarshalJSON(data 
 }
 
 type AttributionReportNewResponseDefinitionFilter struct {
-	Filter AttributionReportNewResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportNewResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1482,9 +1467,8 @@ func (r *AttributionReportNewResponseDefinitionFilterFilterObject) UnmarshalJSON
 }
 
 type AttributionReportNewResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1503,8 +1487,7 @@ func (r *AttributionReportNewResponseDefinitionFilterFilterObject2) UnmarshalJSO
 }
 
 type AttributionReportNewResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1797,11 +1780,9 @@ func (r *AttributionReportGetResponse) UnmarshalJSON(data []byte) error {
 // (default USD). Outcome ids identify outcomes in results. Replaces the saved
 // definition on PATCH.
 type AttributionReportGetResponseDefinition struct {
-	// Any of "attribution".
-	Kind     string                                          `json:"kind" api:"required"`
+	Kind     constant.Attribution                            `json:"kind" default:"attribution"`
 	Outcomes []AttributionReportGetResponseDefinitionOutcome `json:"outcomes" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Version  float64                                         `json:"version" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -1858,9 +1839,8 @@ func (r *AttributionReportGetResponseDefinitionOutcome) UnmarshalJSON(data []byt
 }
 
 type AttributionReportGetResponseDefinitionOutcomeFilter struct {
-	Filter AttributionReportGetResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportGetResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1965,9 +1945,8 @@ func (r *AttributionReportGetResponseDefinitionOutcomeFilterFilterObject) Unmars
 }
 
 type AttributionReportGetResponseDefinitionOutcomeFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1986,8 +1965,7 @@ func (r *AttributionReportGetResponseDefinitionOutcomeFilterFilterObject2) Unmar
 }
 
 type AttributionReportGetResponseDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2123,9 +2101,8 @@ func (r *AttributionReportGetResponseDefinitionOutcomeFilterFilterObject3ValueAr
 }
 
 type AttributionReportGetResponseDefinitionOutcomeValue struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2145,9 +2122,8 @@ func (r *AttributionReportGetResponseDefinitionOutcomeValue) UnmarshalJSON(data 
 }
 
 type AttributionReportGetResponseDefinitionFilter struct {
-	Filter AttributionReportGetResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportGetResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2248,9 +2224,8 @@ func (r *AttributionReportGetResponseDefinitionFilterFilterObject) UnmarshalJSON
 }
 
 type AttributionReportGetResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2269,8 +2244,7 @@ func (r *AttributionReportGetResponseDefinitionFilterFilterObject2) UnmarshalJSO
 }
 
 type AttributionReportGetResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2563,11 +2537,9 @@ func (r *AttributionReportUpdateResponse) UnmarshalJSON(data []byte) error {
 // (default USD). Outcome ids identify outcomes in results. Replaces the saved
 // definition on PATCH.
 type AttributionReportUpdateResponseDefinition struct {
-	// Any of "attribution".
-	Kind     string                                             `json:"kind" api:"required"`
+	Kind     constant.Attribution                               `json:"kind" default:"attribution"`
 	Outcomes []AttributionReportUpdateResponseDefinitionOutcome `json:"outcomes" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Version  float64                                            `json:"version" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -2624,9 +2596,8 @@ func (r *AttributionReportUpdateResponseDefinitionOutcome) UnmarshalJSON(data []
 }
 
 type AttributionReportUpdateResponseDefinitionOutcomeFilter struct {
-	Filter AttributionReportUpdateResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportUpdateResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2731,9 +2702,8 @@ func (r *AttributionReportUpdateResponseDefinitionOutcomeFilterFilterObject) Unm
 }
 
 type AttributionReportUpdateResponseDefinitionOutcomeFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2752,8 +2722,7 @@ func (r *AttributionReportUpdateResponseDefinitionOutcomeFilterFilterObject2) Un
 }
 
 type AttributionReportUpdateResponseDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2889,9 +2858,8 @@ func (r *AttributionReportUpdateResponseDefinitionOutcomeFilterFilterObject3Valu
 }
 
 type AttributionReportUpdateResponseDefinitionOutcomeValue struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2911,9 +2879,8 @@ func (r *AttributionReportUpdateResponseDefinitionOutcomeValue) UnmarshalJSON(da
 }
 
 type AttributionReportUpdateResponseDefinitionFilter struct {
-	Filter AttributionReportUpdateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportUpdateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3018,9 +2985,8 @@ func (r *AttributionReportUpdateResponseDefinitionFilterFilterObject) UnmarshalJ
 }
 
 type AttributionReportUpdateResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3039,8 +3005,7 @@ func (r *AttributionReportUpdateResponseDefinitionFilterFilterObject2) Unmarshal
 }
 
 type AttributionReportUpdateResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3358,11 +3323,9 @@ func (r *AttributionReportDuplicateResponse) UnmarshalJSON(data []byte) error {
 // (default USD). Outcome ids identify outcomes in results. Replaces the saved
 // definition on PATCH.
 type AttributionReportDuplicateResponseDefinition struct {
-	// Any of "attribution".
-	Kind     string                                                `json:"kind" api:"required"`
+	Kind     constant.Attribution                                  `json:"kind" default:"attribution"`
 	Outcomes []AttributionReportDuplicateResponseDefinitionOutcome `json:"outcomes" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Version  float64                                               `json:"version" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -3419,9 +3382,8 @@ func (r *AttributionReportDuplicateResponseDefinitionOutcome) UnmarshalJSON(data
 }
 
 type AttributionReportDuplicateResponseDefinitionOutcomeFilter struct {
-	Filter AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3528,9 +3490,8 @@ func (r *AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterObject) 
 }
 
 type AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3549,8 +3510,7 @@ func (r *AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterObject2)
 }
 
 type AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3686,9 +3646,8 @@ func (r *AttributionReportDuplicateResponseDefinitionOutcomeFilterFilterObject3V
 }
 
 type AttributionReportDuplicateResponseDefinitionOutcomeValue struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3708,9 +3667,8 @@ func (r *AttributionReportDuplicateResponseDefinitionOutcomeValue) UnmarshalJSON
 }
 
 type AttributionReportDuplicateResponseDefinitionFilter struct {
-	Filter AttributionReportDuplicateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  AttributionReportDuplicateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3815,9 +3773,8 @@ func (r *AttributionReportDuplicateResponseDefinitionFilterFilterObject) Unmarsh
 }
 
 type AttributionReportDuplicateResponseDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3836,8 +3793,7 @@ func (r *AttributionReportDuplicateResponseDefinitionFilterFilterObject2) Unmars
 }
 
 type AttributionReportDuplicateResponseDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4754,11 +4710,7 @@ func (r *AttributionReportNewParams) UnmarshalJSON(data []byte) error {
 //
 // The properties Kind, Outcomes, Version are required.
 type AttributionReportNewParamsDefinition struct {
-	// Any of "attribution".
-	Kind     string                                        `json:"kind,omitzero" api:"required"`
 	Outcomes []AttributionReportNewParamsDefinitionOutcome `json:"outcomes,omitzero" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version,omitzero" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting,omitzero"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -4769,6 +4721,10 @@ type AttributionReportNewParamsDefinition struct {
 	// Any of "first_touch", "last_touch", "linear", "u_shaped", "j_shaped",
 	// "time_decay".
 	Model string `json:"model,omitzero"`
+	// This field can be elided, and will marshal its zero value as "attribution".
+	Kind constant.Attribution `json:"kind" default:"attribution"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4781,9 +4737,6 @@ func (r *AttributionReportNewParamsDefinition) UnmarshalJSON(data []byte) error 
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinition](
-		"kind", "attribution",
-	)
 	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinition](
 		"version", 1,
 	)
@@ -4822,7 +4775,7 @@ func (r *AttributionReportNewParamsDefinitionOutcome) UnmarshalJSON(data []byte)
 // The properties Filter, Version are required.
 type AttributionReportNewParamsDefinitionOutcomeFilter struct {
 	Filter AttributionReportNewParamsDefinitionOutcomeFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4883,8 +4836,8 @@ func init() {
 // The properties Child, Kind are required.
 type AttributionReportNewParamsDefinitionOutcomeFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -4896,16 +4849,8 @@ func (r *AttributionReportNewParamsDefinitionOutcomeFilterFilterObject2) Unmarsh
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionOutcomeFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4915,6 +4860,8 @@ type AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                   `json:"type,omitzero"`
 	Value AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -4927,9 +4874,6 @@ func (r *AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3) Unmarsh
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -4976,10 +4920,10 @@ func (u *AttributionReportNewParamsDefinitionOutcomeFilterFilterObject3ValueArra
 // The properties Path, Property are required.
 type AttributionReportNewParamsDefinitionOutcomeValue struct {
 	Path []string `json:"path,omitzero" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property,omitzero" api:"required"`
 	// Any of "number".
 	Type string `json:"type,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event.properties".
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	paramObj
 }
 
@@ -4993,9 +4937,6 @@ func (r *AttributionReportNewParamsDefinitionOutcomeValue) UnmarshalJSON(data []
 
 func init() {
 	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionOutcomeValue](
-		"property", "event.properties",
-	)
-	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionOutcomeValue](
 		"type", "number",
 	)
 }
@@ -5003,7 +4944,7 @@ func init() {
 // The properties Filter, Version are required.
 type AttributionReportNewParamsDefinitionFilter struct {
 	Filter AttributionReportNewParamsDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5064,8 +5005,8 @@ func init() {
 // The properties Child, Kind are required.
 type AttributionReportNewParamsDefinitionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5077,16 +5018,8 @@ func (r *AttributionReportNewParamsDefinitionFilterFilterObject2) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type AttributionReportNewParamsDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5096,6 +5029,8 @@ type AttributionReportNewParamsDefinitionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                            `json:"type,omitzero"`
 	Value AttributionReportNewParamsDefinitionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5108,9 +5043,6 @@ func (r *AttributionReportNewParamsDefinitionFilterFilterObject3) UnmarshalJSON(
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[AttributionReportNewParamsDefinitionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5277,11 +5209,7 @@ func (r *AttributionReportUpdateParams) UnmarshalJSON(data []byte) error {
 //
 // The properties Kind, Outcomes, Version are required.
 type AttributionReportUpdateParamsDefinition struct {
-	// Any of "attribution".
-	Kind     string                                           `json:"kind,omitzero" api:"required"`
 	Outcomes []AttributionReportUpdateParamsDefinitionOutcome `json:"outcomes,omitzero" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version,omitzero" api:"required"`
 	// Any of "unique", "totals", "sessions".
 	Counting string `json:"counting,omitzero"`
 	// Any of "USD", "CAD", "GBP", "EUR", "AUD".
@@ -5292,6 +5220,10 @@ type AttributionReportUpdateParamsDefinition struct {
 	// Any of "first_touch", "last_touch", "linear", "u_shaped", "j_shaped",
 	// "time_decay".
 	Model string `json:"model,omitzero"`
+	// This field can be elided, and will marshal its zero value as "attribution".
+	Kind constant.Attribution `json:"kind" default:"attribution"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5304,9 +5236,6 @@ func (r *AttributionReportUpdateParamsDefinition) UnmarshalJSON(data []byte) err
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinition](
-		"kind", "attribution",
-	)
 	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinition](
 		"version", 1,
 	)
@@ -5345,7 +5274,7 @@ func (r *AttributionReportUpdateParamsDefinitionOutcome) UnmarshalJSON(data []by
 // The properties Filter, Version are required.
 type AttributionReportUpdateParamsDefinitionOutcomeFilter struct {
 	Filter AttributionReportUpdateParamsDefinitionOutcomeFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5406,8 +5335,8 @@ func init() {
 // The properties Child, Kind are required.
 type AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5419,16 +5348,8 @@ func (r *AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject2) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5438,6 +5359,8 @@ type AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                      `json:"type,omitzero"`
 	Value AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5450,9 +5373,6 @@ func (r *AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3) Unma
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5499,10 +5419,10 @@ func (u *AttributionReportUpdateParamsDefinitionOutcomeFilterFilterObject3ValueA
 // The properties Path, Property are required.
 type AttributionReportUpdateParamsDefinitionOutcomeValue struct {
 	Path []string `json:"path,omitzero" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property,omitzero" api:"required"`
 	// Any of "number".
 	Type string `json:"type,omitzero"`
+	// This field can be elided, and will marshal its zero value as "event.properties".
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	paramObj
 }
 
@@ -5516,9 +5436,6 @@ func (r *AttributionReportUpdateParamsDefinitionOutcomeValue) UnmarshalJSON(data
 
 func init() {
 	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionOutcomeValue](
-		"property", "event.properties",
-	)
-	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionOutcomeValue](
 		"type", "number",
 	)
 }
@@ -5526,7 +5443,7 @@ func init() {
 // The properties Filter, Version are required.
 type AttributionReportUpdateParamsDefinitionFilter struct {
 	Filter AttributionReportUpdateParamsDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5587,8 +5504,8 @@ func init() {
 // The properties Child, Kind are required.
 type AttributionReportUpdateParamsDefinitionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5600,16 +5517,8 @@ func (r *AttributionReportUpdateParamsDefinitionFilterFilterObject2) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type AttributionReportUpdateParamsDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5619,6 +5528,8 @@ type AttributionReportUpdateParamsDefinitionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                               `json:"type,omitzero"`
 	Value AttributionReportUpdateParamsDefinitionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5631,9 +5542,6 @@ func (r *AttributionReportUpdateParamsDefinitionFilterFilterObject3) UnmarshalJS
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[AttributionReportUpdateParamsDefinitionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)

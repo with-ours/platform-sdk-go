@@ -18,6 +18,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/shared/constant"
 )
 
 // ExperimentService contains methods and other services that help with interacting
@@ -778,9 +779,8 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJSON
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -975,9 +975,8 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObj
 }
 
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -996,8 +995,7 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObj
 }
 
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1134,8 +1132,7 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObj
 
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                          `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1242,9 +1239,8 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObj
 }
 
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1263,8 +1259,7 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObj
 }
 
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1400,8 +1395,7 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObj
 }
 
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1615,9 +1609,8 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data []
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentListResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1810,9 +1803,8 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObjectChild
 }
 
 type ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1831,8 +1823,7 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObjectChild
 }
 
 type ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1969,8 +1960,7 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObjectChild
 
 type ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                  `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2077,9 +2067,8 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2Chil
 }
 
 type ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2098,8 +2087,7 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2Chil
 }
 
 type ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2235,8 +2223,7 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject2Chil
 }
 
 type ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2427,9 +2414,8 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentListResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2622,9 +2608,8 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObjectChi
 }
 
 type ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2643,8 +2628,7 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObjectChi
 }
 
 type ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2781,8 +2765,7 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObjectChi
 
 type ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                    `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2889,9 +2872,8 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2910,8 +2892,7 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3047,8 +3028,7 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3660,9 +3640,8 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJSON(
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3857,9 +3836,8 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3878,8 +3856,7 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4016,8 +3993,7 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                         `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4124,9 +4100,8 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4145,8 +4120,7 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4282,8 +4256,7 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4497,9 +4470,8 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data []b
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4692,9 +4664,8 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObjectChildO
 }
 
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4713,8 +4684,7 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObjectChildO
 }
 
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4851,8 +4821,7 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObjectChildO
 
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                 `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4959,9 +4928,8 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2Child
 }
 
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4980,8 +4948,7 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2Child
 }
 
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5117,8 +5084,7 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject2Child
 }
 
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5309,9 +5275,8 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data [
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                            `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5504,9 +5469,8 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObjectChil
 }
 
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5525,8 +5489,7 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObjectChil
 }
 
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5663,8 +5626,7 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObjectChil
 
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                   `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5771,9 +5733,8 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2Chi
 }
 
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5792,8 +5753,7 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2Chi
 }
 
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5929,8 +5889,7 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject2Chi
 }
 
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6542,9 +6501,8 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJSON(
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6739,9 +6697,8 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6760,8 +6717,7 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6898,8 +6854,7 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                         `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7006,9 +6961,8 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7027,8 +6981,7 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7164,8 +7117,7 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObje
 }
 
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7379,9 +7331,8 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data []b
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7574,9 +7525,8 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObjectChildO
 }
 
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7595,8 +7545,7 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObjectChildO
 }
 
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7733,8 +7682,7 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObjectChildO
 
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                 `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7841,9 +7789,8 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2Child
 }
 
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7862,8 +7809,7 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2Child
 }
 
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7999,8 +7945,7 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject2Child
 }
 
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8191,9 +8136,8 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data [
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                            `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8386,9 +8330,8 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObjectChil
 }
 
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8407,8 +8350,7 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObjectChil
 }
 
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8545,8 +8487,7 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObjectChil
 
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                   `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8653,9 +8594,8 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2Chi
 }
 
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8674,8 +8614,7 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2Chi
 }
 
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8811,8 +8750,7 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject2Chi
 }
 
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9426,9 +9364,8 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJS
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9623,9 +9560,8 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9644,8 +9580,7 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9782,8 +9717,7 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                            `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9890,9 +9824,8 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9911,8 +9844,7 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10048,8 +9980,7 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10263,9 +10194,8 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10458,9 +10388,8 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObjectChi
 }
 
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10479,8 +10408,7 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObjectChi
 }
 
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10617,8 +10545,7 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObjectChi
 
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                    `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10725,9 +10652,8 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10746,8 +10672,7 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10883,8 +10808,7 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11075,9 +10999,8 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcher) UnmarshalJSON(dat
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11272,9 +11195,8 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObjectC
 }
 
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11293,8 +11215,7 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObjectC
 }
 
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11431,8 +11352,7 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObjectC
 
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                      `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11539,9 +11459,8 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2
 }
 
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11560,8 +11479,7 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2
 }
 
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11697,8 +11615,7 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject2
 }
 
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12314,9 +12231,8 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12511,9 +12427,8 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilt
 }
 
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12532,8 +12447,7 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilt
 }
 
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12670,8 +12584,7 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilt
 
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                               `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12778,9 +12691,8 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilt
 }
 
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12799,8 +12711,7 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilt
 }
 
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12936,8 +12847,7 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilt
 }
 
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13151,9 +13061,8 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcher) UnmarshalJSON(da
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13348,9 +13257,8 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject
 }
 
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13369,8 +13277,7 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject
 }
 
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13507,8 +13414,7 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject
 
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                       `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13615,9 +13521,8 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject
 }
 
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13636,8 +13541,7 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject
 }
 
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13773,8 +13677,7 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject
 }
 
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13965,9 +13868,8 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcher) UnmarshalJSON(
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14162,9 +14064,8 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObje
 }
 
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14183,8 +14084,7 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObje
 }
 
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14321,8 +14221,7 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObje
 
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                         `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14429,9 +14328,8 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObje
 }
 
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14450,8 +14348,7 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObje
 }
 
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14587,8 +14484,7 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObje
 }
 
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15085,9 +14981,8 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcher) Un
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15282,9 +15177,8 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15303,8 +15197,7 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15441,8 +15334,7 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                     `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15549,9 +15441,8 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15570,8 +15461,7 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15707,8 +15597,7 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15924,9 +15813,8 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcher) UnmarshalJ
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16121,9 +16009,8 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16142,8 +16029,7 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -16280,8 +16166,7 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                             `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16388,9 +16273,8 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16409,8 +16293,7 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -16546,8 +16429,7 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -16740,9 +16622,8 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16937,9 +16818,8 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -16958,8 +16838,7 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -17096,8 +16975,7 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                               `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -17204,9 +17082,8 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -17225,8 +17102,7 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -17362,8 +17238,7 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -17861,9 +17736,8 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcher) Unm
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18058,9 +17932,8 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilte
 }
 
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18079,8 +17952,7 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilte
 }
 
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -18217,8 +18089,7 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilte
 
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                    `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18325,9 +18196,8 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilte
 }
 
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18346,8 +18216,7 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilte
 }
 
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -18483,8 +18352,7 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilte
 }
 
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -18700,9 +18568,8 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcher) UnmarshalJS
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18897,9 +18764,8 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterO
 }
 
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -18918,8 +18784,7 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterO
 }
 
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19056,8 +18921,7 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterO
 
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                            `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19164,9 +19028,8 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterO
 }
 
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19185,8 +19048,7 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterO
 }
 
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19322,8 +19184,7 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterO
 }
 
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19516,9 +19377,8 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcher) Unmarshal
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19713,9 +19573,8 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilte
 }
 
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19734,8 +19593,7 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilte
 }
 
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19872,8 +19730,7 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilte
 
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                              `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -19980,9 +19837,8 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilte
 }
 
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20001,8 +19857,7 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilte
 }
 
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20138,8 +19993,7 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilte
 }
 
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20639,9 +20493,8 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcher) 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20836,9 +20689,8 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFi
 }
 
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20857,8 +20709,7 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFi
 }
 
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20995,8 +20846,7 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFi
 
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                       `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21103,9 +20953,8 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFi
 }
 
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21124,8 +20973,7 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFi
 }
 
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21261,8 +21109,7 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFi
 }
 
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21478,9 +21325,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21675,9 +21521,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilt
 }
 
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21696,8 +21541,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilt
 }
 
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21834,8 +21678,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilt
 
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                               `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21942,9 +21785,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilt
 }
 
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21963,8 +21805,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilt
 }
 
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22100,8 +21941,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilt
 }
 
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22294,9 +22134,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher) Unmars
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                          `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22491,9 +22330,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFi
 }
 
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22512,8 +22350,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFi
 }
 
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22650,8 +22487,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFi
 
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                 `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22758,9 +22594,8 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFi
 }
 
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22779,8 +22614,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFi
 }
 
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22916,8 +22750,7 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFi
 }
 
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -23421,9 +23254,8 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23618,9 +23450,8 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 }
 
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -23639,8 +23470,7 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 }
 
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -23777,8 +23607,7 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                          `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -23885,9 +23714,8 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 }
 
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -23906,8 +23734,7 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 }
 
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24043,8 +23870,7 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 }
 
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24260,9 +24086,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcher) Unmar
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24457,9 +24282,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterF
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -24478,8 +24302,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterF
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24616,8 +24439,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterF
 
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                  `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -24724,9 +24546,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterF
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -24745,8 +24566,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterF
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24882,8 +24702,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterF
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -25076,9 +24895,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher) Unm
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25273,9 +25091,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilte
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -25294,8 +25111,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilte
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -25432,8 +25248,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilte
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                    `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -25540,9 +25355,8 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilte
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -25561,8 +25375,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilte
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -25698,8 +25511,7 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilte
 }
 
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -26180,9 +25992,8 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJS
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26377,9 +26188,8 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -26398,8 +26208,7 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -26536,8 +26345,7 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                            `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -26644,9 +26452,8 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -26665,8 +26472,7 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -26802,8 +26608,7 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterO
 }
 
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -27017,9 +26822,8 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -27212,9 +27016,8 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObjectChi
 }
 
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -27233,8 +27036,7 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObjectChi
 }
 
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -27371,8 +27173,7 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObjectChi
 
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                    `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -27479,9 +27280,8 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -27500,8 +27300,7 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -27637,8 +27436,7 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject2Ch
 }
 
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -27829,9 +27627,8 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcher) UnmarshalJSON(dat
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -28026,9 +27823,8 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObjectC
 }
 
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -28047,8 +27843,7 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObjectC
 }
 
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -28185,8 +27980,7 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObjectC
 
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                      `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -28293,9 +28087,8 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2
 }
 
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -28314,8 +28107,7 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2
 }
 
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -28451,8 +28243,7 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject2
 }
 
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -28949,9 +28740,8 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcher) Un
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -29146,9 +28936,8 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -29167,8 +28956,7 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -29305,8 +29093,7 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                     `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -29413,9 +29200,8 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -29434,8 +29220,7 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -29571,8 +29356,7 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilt
 }
 
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -29788,9 +29572,8 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcher) UnmarshalJ
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -29985,9 +29768,8 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -30006,8 +29788,7 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30144,8 +29925,7 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                             `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -30252,9 +30032,8 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -30273,8 +30052,7 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30410,8 +30188,7 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilter
 }
 
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30604,9 +30381,8 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                        `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -30801,9 +30577,8 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -30822,8 +30597,7 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -30960,8 +30734,7 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                               `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -31068,9 +30841,8 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -31089,8 +30861,7 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31226,8 +30997,7 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilt
 }
 
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31725,9 +31495,8 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcher) U
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -31922,9 +31691,8 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFil
 }
 
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -31943,8 +31711,7 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFil
 }
 
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32081,8 +31848,7 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFil
 
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2 struct {
 	Child ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                      `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -32189,9 +31955,8 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFil
 }
 
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -32210,8 +31975,7 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFil
 }
 
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32347,8 +32111,7 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFil
 }
 
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32564,9 +32327,8 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcher) Unmarshal
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -32761,9 +32523,8 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilte
 }
 
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -32782,8 +32543,7 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilte
 }
 
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32920,8 +32680,7 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilte
 
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                              `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -33028,9 +32787,8 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilte
 }
 
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -33049,8 +32807,7 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilte
 }
 
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33186,8 +32943,7 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilte
 }
 
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33380,9 +33136,8 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher) Unmarsh
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -33577,9 +33332,8 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFil
 }
 
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -33598,8 +33352,7 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFil
 }
 
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33736,8 +33489,7 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFil
 
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                                                                `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -33844,9 +33596,8 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFil
 }
 
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -33865,8 +33616,7 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFil
 }
 
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -34002,8 +33752,7 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFil
 }
 
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35013,7 +34762,7 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcher) UnmarshalJSON(data []byt
 // The properties Filter, Version are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilter struct {
 	Filter ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35113,8 +34862,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35126,16 +34875,8 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObj
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35145,6 +34886,8 @@ type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                `json:"type,omitzero"`
 	Value ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35157,9 +34900,6 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObj
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35206,8 +34946,8 @@ func (u *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObj
 // The properties Child, Kind are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35217,12 +34957,6 @@ func (r ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2) Marsha
 }
 func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2](
-		"kind", "not",
-	)
 }
 
 // Only one field can be non-zero.
@@ -35267,8 +35001,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35280,16 +35014,8 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildOb
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35299,6 +35025,8 @@ type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                 `json:"type,omitzero"`
 	Value ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35311,9 +35039,6 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildOb
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35359,8 +35084,6 @@ func (u *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildOb
 
 // The properties Kind, Operator, Property are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35370,6 +35093,8 @@ type ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                     `json:"type,omitzero"`
 	Value ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35382,9 +35107,6 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject3) Unmar
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35476,7 +35198,7 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcher) UnmarshalJSON(data []b
 // The properties Filter, Version are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilter struct {
 	Filter ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35576,8 +35298,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35589,16 +35311,8 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35608,6 +35322,8 @@ type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObjec
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                  `json:"type,omitzero"`
 	Value ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35620,9 +35336,6 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildO
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35669,8 +35382,8 @@ func (u *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObjectChildO
 // The properties Child, Kind are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35680,12 +35393,6 @@ func (r ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2) Mars
 }
 func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2](
-		"kind", "not",
-	)
 }
 
 // Only one field can be non-zero.
@@ -35730,8 +35437,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -35743,16 +35450,8 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2Child
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35762,6 +35461,8 @@ type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObje
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                   `json:"type,omitzero"`
 	Value ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35774,9 +35475,6 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2Child
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -35822,8 +35520,6 @@ func (u *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject2Child
 
 // The properties Kind, Operator, Property are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -35833,6 +35529,8 @@ type ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                                       `json:"type,omitzero"`
 	Value ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -35845,9 +35543,6 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject3) Unm
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36155,7 +35850,7 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcher) UnmarshalJSON(data []
 // The properties Filter, Version are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter struct {
 	Filter ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36255,8 +35950,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36268,16 +35963,8 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChild
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36287,6 +35974,8 @@ type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObje
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                   `json:"type,omitzero"`
 	Value ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36299,9 +35988,6 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChild
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36348,8 +36034,8 @@ func (u *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObjectChild
 // The properties Child, Kind are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildUnion `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36359,12 +36045,6 @@ func (r ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2) Mar
 }
 func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2](
-		"kind", "not",
-	)
 }
 
 // Only one field can be non-zero.
@@ -36409,8 +36089,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36422,16 +36102,8 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2Chil
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36441,6 +36113,8 @@ type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObj
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                    `json:"type,omitzero"`
 	Value ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36453,9 +36127,6 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2Chil
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2ChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36501,8 +36172,6 @@ func (u *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject2Chil
 
 // The properties Kind, Operator, Property are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36512,6 +36181,8 @@ type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject3 struct 
 	// Any of "string", "number", "boolean".
 	Type  string                                                                        `json:"type,omitzero"`
 	Value ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36524,9 +36195,6 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject3) Un
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36618,7 +36286,7 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcher) UnmarshalJSON(data 
 // The properties Filter, Version are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter struct {
 	Filter ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36718,8 +36386,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36731,16 +36399,8 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChi
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36750,6 +36410,8 @@ type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildOb
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                     `json:"type,omitzero"`
 	Value ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36762,9 +36424,6 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChi
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36811,8 +36470,8 @@ func (u *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObjectChi
 // The properties Child, Kind are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2 struct {
 	Child ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildUnion `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36822,12 +36481,6 @@ func (r ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2) M
 }
 func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2](
-		"kind", "not",
-	)
 }
 
 // Only one field can be non-zero.
@@ -36872,8 +36525,8 @@ func init() {
 // The properties Child, Kind are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -36885,16 +36538,8 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2Ch
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36904,6 +36549,8 @@ type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildO
 	// Any of "string", "number", "boolean".
 	Type  string                                                                                      `json:"type,omitzero"`
 	Value ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36916,9 +36563,6 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2Ch
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2ChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -36964,8 +36608,6 @@ func (u *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject2Ch
 
 // The properties Kind, Operator, Property are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -36975,6 +36617,8 @@ type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject3 struc
 	// Any of "string", "number", "boolean".
 	Type  string                                                                          `json:"type,omitzero"`
 	Value ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -36987,9 +36631,6 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject3) 
 }
 
 func init() {
-	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)

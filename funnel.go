@@ -18,6 +18,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v2/option"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/shared/constant"
 )
 
 // FunnelService contains methods and other services that help with interacting
@@ -223,15 +224,13 @@ type FunnelListResponseEntityQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                        `json:"reentry" api:"required"`
-	Steps   []FunnelListResponseEntityQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                             `json:"reentry" api:"required"`
+	Steps       []FunnelListResponseEntityQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                            `json:"version" api:"required"`
 	WindowMs    int64                                              `json:"windowMs" api:"required"`
 	EntryFilter FunnelListResponseEntityQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -282,9 +281,8 @@ func (r *FunnelListResponseEntityQueryDefinitionStep) UnmarshalJSON(data []byte)
 }
 
 type FunnelListResponseEntityQueryDefinitionStepFilter struct {
-	Filter FunnelListResponseEntityQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelListResponseEntityQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -389,9 +387,8 @@ func (r *FunnelListResponseEntityQueryDefinitionStepFilterFilterObject) Unmarsha
 }
 
 type FunnelListResponseEntityQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -410,8 +407,7 @@ func (r *FunnelListResponseEntityQueryDefinitionStepFilterFilterObject2) Unmarsh
 }
 
 type FunnelListResponseEntityQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -547,9 +543,8 @@ func (r *FunnelListResponseEntityQueryDefinitionStepFilterFilterObject3ValueArra
 }
 
 type FunnelListResponseEntityQueryDefinitionEntryFilter struct {
-	Filter FunnelListResponseEntityQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelListResponseEntityQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -654,9 +649,8 @@ func (r *FunnelListResponseEntityQueryDefinitionEntryFilterFilterObject) Unmarsh
 }
 
 type FunnelListResponseEntityQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -675,8 +669,7 @@ func (r *FunnelListResponseEntityQueryDefinitionEntryFilterFilterObject2) Unmars
 }
 
 type FunnelListResponseEntityQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -812,9 +805,8 @@ func (r *FunnelListResponseEntityQueryDefinitionEntryFilterFilterObject3ValueArr
 }
 
 type FunnelListResponseEntityQueryDefinitionFilter struct {
-	Filter FunnelListResponseEntityQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelListResponseEntityQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -917,9 +909,8 @@ func (r *FunnelListResponseEntityQueryDefinitionFilterFilterObject) UnmarshalJSO
 }
 
 type FunnelListResponseEntityQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -938,8 +929,7 @@ func (r *FunnelListResponseEntityQueryDefinitionFilterFilterObject2) UnmarshalJS
 }
 
 type FunnelListResponseEntityQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1132,15 +1122,13 @@ type FunnelNewResponseQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                 `json:"reentry" api:"required"`
-	Steps   []FunnelNewResponseQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                      `json:"reentry" api:"required"`
+	Steps       []FunnelNewResponseQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                     `json:"version" api:"required"`
 	WindowMs    int64                                       `json:"windowMs" api:"required"`
 	EntryFilter FunnelNewResponseQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -1191,9 +1179,8 @@ func (r *FunnelNewResponseQueryDefinitionStep) UnmarshalJSON(data []byte) error 
 }
 
 type FunnelNewResponseQueryDefinitionStepFilter struct {
-	Filter FunnelNewResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelNewResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1294,9 +1281,8 @@ func (r *FunnelNewResponseQueryDefinitionStepFilterFilterObject) UnmarshalJSON(d
 }
 
 type FunnelNewResponseQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1313,8 +1299,7 @@ func (r *FunnelNewResponseQueryDefinitionStepFilterFilterObject2) UnmarshalJSON(
 }
 
 type FunnelNewResponseQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1448,9 +1433,8 @@ func (r *FunnelNewResponseQueryDefinitionStepFilterFilterObject3ValueArrayItemUn
 }
 
 type FunnelNewResponseQueryDefinitionEntryFilter struct {
-	Filter FunnelNewResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelNewResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1551,9 +1535,8 @@ func (r *FunnelNewResponseQueryDefinitionEntryFilterFilterObject) UnmarshalJSON(
 }
 
 type FunnelNewResponseQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1570,8 +1553,7 @@ func (r *FunnelNewResponseQueryDefinitionEntryFilterFilterObject2) UnmarshalJSON
 }
 
 type FunnelNewResponseQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1705,9 +1687,8 @@ func (r *FunnelNewResponseQueryDefinitionEntryFilterFilterObject3ValueArrayItemU
 }
 
 type FunnelNewResponseQueryDefinitionFilter struct {
-	Filter FunnelNewResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelNewResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1806,9 +1787,8 @@ func (r *FunnelNewResponseQueryDefinitionFilterFilterObject) UnmarshalJSON(data 
 }
 
 type FunnelNewResponseQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1825,8 +1805,7 @@ func (r *FunnelNewResponseQueryDefinitionFilterFilterObject2) UnmarshalJSON(data
 }
 
 type FunnelNewResponseQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2025,15 +2004,13 @@ type FunnelGetResponseQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                 `json:"reentry" api:"required"`
-	Steps   []FunnelGetResponseQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                      `json:"reentry" api:"required"`
+	Steps       []FunnelGetResponseQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                     `json:"version" api:"required"`
 	WindowMs    int64                                       `json:"windowMs" api:"required"`
 	EntryFilter FunnelGetResponseQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -2084,9 +2061,8 @@ func (r *FunnelGetResponseQueryDefinitionStep) UnmarshalJSON(data []byte) error 
 }
 
 type FunnelGetResponseQueryDefinitionStepFilter struct {
-	Filter FunnelGetResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelGetResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2187,9 +2163,8 @@ func (r *FunnelGetResponseQueryDefinitionStepFilterFilterObject) UnmarshalJSON(d
 }
 
 type FunnelGetResponseQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2206,8 +2181,7 @@ func (r *FunnelGetResponseQueryDefinitionStepFilterFilterObject2) UnmarshalJSON(
 }
 
 type FunnelGetResponseQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2341,9 +2315,8 @@ func (r *FunnelGetResponseQueryDefinitionStepFilterFilterObject3ValueArrayItemUn
 }
 
 type FunnelGetResponseQueryDefinitionEntryFilter struct {
-	Filter FunnelGetResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelGetResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2444,9 +2417,8 @@ func (r *FunnelGetResponseQueryDefinitionEntryFilterFilterObject) UnmarshalJSON(
 }
 
 type FunnelGetResponseQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2463,8 +2435,7 @@ func (r *FunnelGetResponseQueryDefinitionEntryFilterFilterObject2) UnmarshalJSON
 }
 
 type FunnelGetResponseQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2598,9 +2569,8 @@ func (r *FunnelGetResponseQueryDefinitionEntryFilterFilterObject3ValueArrayItemU
 }
 
 type FunnelGetResponseQueryDefinitionFilter struct {
-	Filter FunnelGetResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelGetResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                           `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2699,9 +2669,8 @@ func (r *FunnelGetResponseQueryDefinitionFilterFilterObject) UnmarshalJSON(data 
 }
 
 type FunnelGetResponseQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2718,8 +2687,7 @@ func (r *FunnelGetResponseQueryDefinitionFilterFilterObject2) UnmarshalJSON(data
 }
 
 type FunnelGetResponseQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2917,15 +2885,13 @@ type FunnelUpdateResponseQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                    `json:"reentry" api:"required"`
-	Steps   []FunnelUpdateResponseQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                         `json:"reentry" api:"required"`
+	Steps       []FunnelUpdateResponseQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                        `json:"version" api:"required"`
 	WindowMs    int64                                          `json:"windowMs" api:"required"`
 	EntryFilter FunnelUpdateResponseQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -2976,9 +2942,8 @@ func (r *FunnelUpdateResponseQueryDefinitionStep) UnmarshalJSON(data []byte) err
 }
 
 type FunnelUpdateResponseQueryDefinitionStepFilter struct {
-	Filter FunnelUpdateResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelUpdateResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3081,9 +3046,8 @@ func (r *FunnelUpdateResponseQueryDefinitionStepFilterFilterObject) UnmarshalJSO
 }
 
 type FunnelUpdateResponseQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3102,8 +3066,7 @@ func (r *FunnelUpdateResponseQueryDefinitionStepFilterFilterObject2) UnmarshalJS
 }
 
 type FunnelUpdateResponseQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3239,9 +3202,8 @@ func (r *FunnelUpdateResponseQueryDefinitionStepFilterFilterObject3ValueArrayIte
 }
 
 type FunnelUpdateResponseQueryDefinitionEntryFilter struct {
-	Filter FunnelUpdateResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelUpdateResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3346,9 +3308,8 @@ func (r *FunnelUpdateResponseQueryDefinitionEntryFilterFilterObject) UnmarshalJS
 }
 
 type FunnelUpdateResponseQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3367,8 +3328,7 @@ func (r *FunnelUpdateResponseQueryDefinitionEntryFilterFilterObject2) UnmarshalJ
 }
 
 type FunnelUpdateResponseQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3504,9 +3464,8 @@ func (r *FunnelUpdateResponseQueryDefinitionEntryFilterFilterObject3ValueArrayIt
 }
 
 type FunnelUpdateResponseQueryDefinitionFilter struct {
-	Filter FunnelUpdateResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelUpdateResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3607,9 +3566,8 @@ func (r *FunnelUpdateResponseQueryDefinitionFilterFilterObject) UnmarshalJSON(da
 }
 
 type FunnelUpdateResponseQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3626,8 +3584,7 @@ func (r *FunnelUpdateResponseQueryDefinitionFilterFilterObject2) UnmarshalJSON(d
 }
 
 type FunnelUpdateResponseQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3844,15 +3801,13 @@ type FunnelDuplicateResponseQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                       `json:"reentry" api:"required"`
-	Steps   []FunnelDuplicateResponseQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                            `json:"reentry" api:"required"`
+	Steps       []FunnelDuplicateResponseQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                           `json:"version" api:"required"`
 	WindowMs    int64                                             `json:"windowMs" api:"required"`
 	EntryFilter FunnelDuplicateResponseQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -3903,9 +3858,8 @@ func (r *FunnelDuplicateResponseQueryDefinitionStep) UnmarshalJSON(data []byte) 
 }
 
 type FunnelDuplicateResponseQueryDefinitionStepFilter struct {
-	Filter FunnelDuplicateResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelDuplicateResponseQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4010,9 +3964,8 @@ func (r *FunnelDuplicateResponseQueryDefinitionStepFilterFilterObject) Unmarshal
 }
 
 type FunnelDuplicateResponseQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4031,8 +3984,7 @@ func (r *FunnelDuplicateResponseQueryDefinitionStepFilterFilterObject2) Unmarsha
 }
 
 type FunnelDuplicateResponseQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4168,9 +4120,8 @@ func (r *FunnelDuplicateResponseQueryDefinitionStepFilterFilterObject3ValueArray
 }
 
 type FunnelDuplicateResponseQueryDefinitionEntryFilter struct {
-	Filter FunnelDuplicateResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelDuplicateResponseQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4275,9 +4226,8 @@ func (r *FunnelDuplicateResponseQueryDefinitionEntryFilterFilterObject) Unmarsha
 }
 
 type FunnelDuplicateResponseQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4296,8 +4246,7 @@ func (r *FunnelDuplicateResponseQueryDefinitionEntryFilterFilterObject2) Unmarsh
 }
 
 type FunnelDuplicateResponseQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4433,9 +4382,8 @@ func (r *FunnelDuplicateResponseQueryDefinitionEntryFilterFilterObject3ValueArra
 }
 
 type FunnelDuplicateResponseQueryDefinitionFilter struct {
-	Filter FunnelDuplicateResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  FunnelDuplicateResponseQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4536,9 +4484,8 @@ func (r *FunnelDuplicateResponseQueryDefinitionFilterFilterObject) UnmarshalJSON
 }
 
 type FunnelDuplicateResponseQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4557,8 +4504,7 @@ func (r *FunnelDuplicateResponseQueryDefinitionFilterFilterObject2) UnmarshalJSO
 }
 
 type FunnelDuplicateResponseQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4879,18 +4825,18 @@ type FunnelNewParamsQueryDefinition struct {
 	Counting string `json:"counting,omitzero" api:"required"`
 	// Any of "session", "visitor".
 	Identity string `json:"identity,omitzero" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "ordered", "any".
 	Order string `json:"order,omitzero" api:"required"`
 	// Any of "first", "best".
-	Reentry string                               `json:"reentry,omitzero" api:"required"`
-	Steps   []FunnelNewParamsQueryDefinitionStep `json:"steps,omitzero" api:"required"`
-	// Any of 1.
-	Version     float64                                   `json:"version,omitzero" api:"required"`
+	Reentry     string                                    `json:"reentry,omitzero" api:"required"`
+	Steps       []FunnelNewParamsQueryDefinitionStep      `json:"steps,omitzero" api:"required"`
 	WindowMs    int64                                     `json:"windowMs" api:"required"`
 	EntryFilter FunnelNewParamsQueryDefinitionEntryFilter `json:"entryFilter,omitzero"`
 	Filter      FunnelNewParamsQueryDefinitionFilter      `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "funnel".
+	Kind constant.Funnel `json:"kind" default:"funnel"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -4908,9 +4854,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinition](
 		"identity", "session", "visitor",
-	)
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinition](
-		"kind", "funnel",
 	)
 	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinition](
 		"order", "ordered", "any",
@@ -4943,7 +4886,7 @@ func (r *FunnelNewParamsQueryDefinitionStep) UnmarshalJSON(data []byte) error {
 // The properties Filter, Version are required.
 type FunnelNewParamsQueryDefinitionStepFilter struct {
 	Filter FunnelNewParamsQueryDefinitionStepFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5004,8 +4947,8 @@ func init() {
 // The properties Child, Kind are required.
 type FunnelNewParamsQueryDefinitionStepFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5017,16 +4960,8 @@ func (r *FunnelNewParamsQueryDefinitionStepFilterFilterObject2) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionStepFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type FunnelNewParamsQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5036,6 +4971,8 @@ type FunnelNewParamsQueryDefinitionStepFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                          `json:"type,omitzero"`
 	Value FunnelNewParamsQueryDefinitionStepFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5048,9 +4985,6 @@ func (r *FunnelNewParamsQueryDefinitionStepFilterFilterObject3) UnmarshalJSON(da
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionStepFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionStepFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5097,7 +5031,7 @@ func (u *FunnelNewParamsQueryDefinitionStepFilterFilterObject3ValueArrayItemUnio
 // The properties Filter, Version are required.
 type FunnelNewParamsQueryDefinitionEntryFilter struct {
 	Filter FunnelNewParamsQueryDefinitionEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5158,8 +5092,8 @@ func init() {
 // The properties Child, Kind are required.
 type FunnelNewParamsQueryDefinitionEntryFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5171,16 +5105,8 @@ func (r *FunnelNewParamsQueryDefinitionEntryFilterFilterObject2) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionEntryFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type FunnelNewParamsQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5190,6 +5116,8 @@ type FunnelNewParamsQueryDefinitionEntryFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                           `json:"type,omitzero"`
 	Value FunnelNewParamsQueryDefinitionEntryFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5202,9 +5130,6 @@ func (r *FunnelNewParamsQueryDefinitionEntryFilterFilterObject3) UnmarshalJSON(d
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionEntryFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionEntryFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5251,7 +5176,7 @@ func (u *FunnelNewParamsQueryDefinitionEntryFilterFilterObject3ValueArrayItemUni
 // The properties Filter, Version are required.
 type FunnelNewParamsQueryDefinitionFilter struct {
 	Filter FunnelNewParamsQueryDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5312,8 +5237,8 @@ func init() {
 // The properties Child, Kind are required.
 type FunnelNewParamsQueryDefinitionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5325,16 +5250,8 @@ func (r *FunnelNewParamsQueryDefinitionFilterFilterObject2) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type FunnelNewParamsQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5344,6 +5261,8 @@ type FunnelNewParamsQueryDefinitionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                      `json:"type,omitzero"`
 	Value FunnelNewParamsQueryDefinitionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5356,9 +5275,6 @@ func (r *FunnelNewParamsQueryDefinitionFilterFilterObject3) UnmarshalJSON(data [
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[FunnelNewParamsQueryDefinitionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5432,18 +5348,18 @@ type FunnelUpdateParamsQueryDefinition struct {
 	Counting string `json:"counting,omitzero" api:"required"`
 	// Any of "session", "visitor".
 	Identity string `json:"identity,omitzero" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "ordered", "any".
 	Order string `json:"order,omitzero" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                  `json:"reentry,omitzero" api:"required"`
-	Steps   []FunnelUpdateParamsQueryDefinitionStep `json:"steps,omitzero" api:"required"`
-	// Any of 1.
-	Version     float64                                      `json:"version,omitzero" api:"required"`
+	Reentry     string                                       `json:"reentry,omitzero" api:"required"`
+	Steps       []FunnelUpdateParamsQueryDefinitionStep      `json:"steps,omitzero" api:"required"`
 	WindowMs    int64                                        `json:"windowMs" api:"required"`
 	EntryFilter FunnelUpdateParamsQueryDefinitionEntryFilter `json:"entryFilter,omitzero"`
 	Filter      FunnelUpdateParamsQueryDefinitionFilter      `json:"filter,omitzero"`
+	// This field can be elided, and will marshal its zero value as "funnel".
+	Kind constant.Funnel `json:"kind" default:"funnel"`
+	// This field can be elided, and will marshal its zero value as 1.
+	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
 
@@ -5461,9 +5377,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinition](
 		"identity", "session", "visitor",
-	)
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinition](
-		"kind", "funnel",
 	)
 	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinition](
 		"order", "ordered", "any",
@@ -5496,7 +5409,7 @@ func (r *FunnelUpdateParamsQueryDefinitionStep) UnmarshalJSON(data []byte) error
 // The properties Filter, Version are required.
 type FunnelUpdateParamsQueryDefinitionStepFilter struct {
 	Filter FunnelUpdateParamsQueryDefinitionStepFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5557,8 +5470,8 @@ func init() {
 // The properties Child, Kind are required.
 type FunnelUpdateParamsQueryDefinitionStepFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5570,16 +5483,8 @@ func (r *FunnelUpdateParamsQueryDefinitionStepFilterFilterObject2) UnmarshalJSON
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionStepFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5589,6 +5494,8 @@ type FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                             `json:"type,omitzero"`
 	Value FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5601,9 +5508,6 @@ func (r *FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3) UnmarshalJSON
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5650,7 +5554,7 @@ func (u *FunnelUpdateParamsQueryDefinitionStepFilterFilterObject3ValueArrayItemU
 // The properties Filter, Version are required.
 type FunnelUpdateParamsQueryDefinitionEntryFilter struct {
 	Filter FunnelUpdateParamsQueryDefinitionEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5711,8 +5615,8 @@ func init() {
 // The properties Child, Kind are required.
 type FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5724,16 +5628,8 @@ func (r *FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject2) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5743,6 +5639,8 @@ type FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                              `json:"type,omitzero"`
 	Value FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5755,9 +5653,6 @@ func (r *FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3) UnmarshalJSO
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -5804,7 +5699,7 @@ func (u *FunnelUpdateParamsQueryDefinitionEntryFilterFilterObject3ValueArrayItem
 // The properties Filter, Version are required.
 type FunnelUpdateParamsQueryDefinitionFilter struct {
 	Filter FunnelUpdateParamsQueryDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -5865,8 +5760,8 @@ func init() {
 // The properties Child, Kind are required.
 type FunnelUpdateParamsQueryDefinitionFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -5878,16 +5773,8 @@ func (r *FunnelUpdateParamsQueryDefinitionFilterFilterObject2) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type FunnelUpdateParamsQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5897,6 +5784,8 @@ type FunnelUpdateParamsQueryDefinitionFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                         `json:"type,omitzero"`
 	Value FunnelUpdateParamsQueryDefinitionFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -5909,9 +5798,6 @@ func (r *FunnelUpdateParamsQueryDefinitionFilterFilterObject3) UnmarshalJSON(dat
 }
 
 func init() {
-	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[FunnelUpdateParamsQueryDefinitionFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)

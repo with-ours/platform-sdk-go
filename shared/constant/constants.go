@@ -18,6 +18,36 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Attribution string     // Always "attribution"
+type Event string           // Always "event"
+type EventProperties string // Always "event.properties"
+type Funnel string          // Always "funnel"
+type Insight string         // Always "insight"
+type JourneyFlow string     // Always "journey-flow"
+type Not string             // Always "not"
+type Page string            // Always "page"
+type Predicate string       // Always "predicate"
+
+func (c Attribution) Default() Attribution         { return "attribution" }
+func (c Event) Default() Event                     { return "event" }
+func (c EventProperties) Default() EventProperties { return "event.properties" }
+func (c Funnel) Default() Funnel                   { return "funnel" }
+func (c Insight) Default() Insight                 { return "insight" }
+func (c JourneyFlow) Default() JourneyFlow         { return "journey-flow" }
+func (c Not) Default() Not                         { return "not" }
+func (c Page) Default() Page                       { return "page" }
+func (c Predicate) Default() Predicate             { return "predicate" }
+
+func (c Attribution) MarshalJSON() ([]byte, error)     { return marshalString(c) }
+func (c Event) MarshalJSON() ([]byte, error)           { return marshalString(c) }
+func (c EventProperties) MarshalJSON() ([]byte, error) { return marshalString(c) }
+func (c Funnel) MarshalJSON() ([]byte, error)          { return marshalString(c) }
+func (c Insight) MarshalJSON() ([]byte, error)         { return marshalString(c) }
+func (c JourneyFlow) MarshalJSON() ([]byte, error)     { return marshalString(c) }
+func (c Not) MarshalJSON() ([]byte, error)             { return marshalString(c) }
+func (c Page) MarshalJSON() ([]byte, error)            { return marshalString(c) }
+func (c Predicate) MarshalJSON() ([]byte, error)       { return marshalString(c) }
+
 type constant[T any] interface {
 	Constant[T]
 	*T

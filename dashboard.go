@@ -19,6 +19,7 @@ import (
 	"github.com/with-ours/platform-sdk-go/v2/packages/pagination"
 	"github.com/with-ours/platform-sdk-go/v2/packages/param"
 	"github.com/with-ours/platform-sdk-go/v2/packages/respjson"
+	"github.com/with-ours/platform-sdk-go/v2/shared/constant"
 )
 
 // DashboardService contains methods and other services that help with interacting
@@ -632,9 +633,8 @@ func (r *DashboardListResponseTileObject3Replays) UnmarshalJSON(data []byte) err
 }
 
 type DashboardListResponseTileObject3ReplaysFilter struct {
-	Filter DashboardListResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardListResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -737,9 +737,8 @@ func (r *DashboardListResponseTileObject3ReplaysFilterFilterObject) UnmarshalJSO
 }
 
 type DashboardListResponseTileObject3ReplaysFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -758,8 +757,7 @@ func (r *DashboardListResponseTileObject3ReplaysFilterFilterObject2) UnmarshalJS
 }
 
 type DashboardListResponseTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -897,9 +895,8 @@ func (r *DashboardListResponseTileObject3ReplaysFilterFilterObject3ValueArrayIte
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardListResponseFilter struct {
-	Filter DashboardListResponseFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardListResponseFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1074,9 +1071,8 @@ func (r *DashboardListResponseFilterFilterObjectChildObject) UnmarshalJSON(data 
 }
 
 type DashboardListResponseFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1093,8 +1089,7 @@ func (r *DashboardListResponseFilterFilterObjectChildObject2) UnmarshalJSON(data
 }
 
 type DashboardListResponseFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1229,8 +1224,7 @@ func (r *DashboardListResponseFilterFilterObjectChildObject3ValueArrayItemUnion)
 
 type DashboardListResponseFilterFilterObject2 struct {
 	Child DashboardListResponseFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                       `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1331,9 +1325,8 @@ func (r *DashboardListResponseFilterFilterObject2ChildObject) UnmarshalJSON(data
 }
 
 type DashboardListResponseFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -1350,8 +1343,7 @@ func (r *DashboardListResponseFilterFilterObject2ChildObject2) UnmarshalJSON(dat
 }
 
 type DashboardListResponseFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -1485,8 +1477,7 @@ func (r *DashboardListResponseFilterFilterObject2ChildObject3ValueArrayItemUnion
 }
 
 type DashboardListResponseFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2011,9 +2002,8 @@ func (r *DashboardNewResponseTileObject3Replays) UnmarshalJSON(data []byte) erro
 }
 
 type DashboardNewResponseTileObject3ReplaysFilter struct {
-	Filter DashboardNewResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardNewResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2114,9 +2104,8 @@ func (r *DashboardNewResponseTileObject3ReplaysFilterFilterObject) UnmarshalJSON
 }
 
 type DashboardNewResponseTileObject3ReplaysFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2135,8 +2124,7 @@ func (r *DashboardNewResponseTileObject3ReplaysFilterFilterObject2) UnmarshalJSO
 }
 
 type DashboardNewResponseTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2274,9 +2262,8 @@ func (r *DashboardNewResponseTileObject3ReplaysFilterFilterObject3ValueArrayItem
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardNewResponseFilter struct {
-	Filter DashboardNewResponseFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardNewResponseFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2445,9 +2432,8 @@ func (r *DashboardNewResponseFilterFilterObjectChildObject) UnmarshalJSON(data [
 }
 
 type DashboardNewResponseFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2464,8 +2450,7 @@ func (r *DashboardNewResponseFilterFilterObjectChildObject2) UnmarshalJSON(data 
 }
 
 type DashboardNewResponseFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2600,8 +2585,7 @@ func (r *DashboardNewResponseFilterFilterObjectChildObject3ValueArrayItemUnion) 
 
 type DashboardNewResponseFilterFilterObject2 struct {
 	Child DashboardNewResponseFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                      `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2700,9 +2684,8 @@ func (r *DashboardNewResponseFilterFilterObject2ChildObject) UnmarshalJSON(data 
 }
 
 type DashboardNewResponseFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -2719,8 +2702,7 @@ func (r *DashboardNewResponseFilterFilterObject2ChildObject2) UnmarshalJSON(data
 }
 
 type DashboardNewResponseFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -2854,8 +2836,7 @@ func (r *DashboardNewResponseFilterFilterObject2ChildObject3ValueArrayItemUnion)
 }
 
 type DashboardNewResponseFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3380,9 +3361,8 @@ func (r *DashboardGetResponseTileObject3Replays) UnmarshalJSON(data []byte) erro
 }
 
 type DashboardGetResponseTileObject3ReplaysFilter struct {
-	Filter DashboardGetResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardGetResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3483,9 +3463,8 @@ func (r *DashboardGetResponseTileObject3ReplaysFilterFilterObject) UnmarshalJSON
 }
 
 type DashboardGetResponseTileObject3ReplaysFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3504,8 +3483,7 @@ func (r *DashboardGetResponseTileObject3ReplaysFilterFilterObject2) UnmarshalJSO
 }
 
 type DashboardGetResponseTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3643,9 +3621,8 @@ func (r *DashboardGetResponseTileObject3ReplaysFilterFilterObject3ValueArrayItem
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardGetResponseFilter struct {
-	Filter DashboardGetResponseFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardGetResponseFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3814,9 +3791,8 @@ func (r *DashboardGetResponseFilterFilterObjectChildObject) UnmarshalJSON(data [
 }
 
 type DashboardGetResponseFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -3833,8 +3809,7 @@ func (r *DashboardGetResponseFilterFilterObjectChildObject2) UnmarshalJSON(data 
 }
 
 type DashboardGetResponseFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -3969,8 +3944,7 @@ func (r *DashboardGetResponseFilterFilterObjectChildObject3ValueArrayItemUnion) 
 
 type DashboardGetResponseFilterFilterObject2 struct {
 	Child DashboardGetResponseFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                      `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4069,9 +4043,8 @@ func (r *DashboardGetResponseFilterFilterObject2ChildObject) UnmarshalJSON(data 
 }
 
 type DashboardGetResponseFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4088,8 +4061,7 @@ func (r *DashboardGetResponseFilterFilterObject2ChildObject2) UnmarshalJSON(data
 }
 
 type DashboardGetResponseFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4223,8 +4195,7 @@ func (r *DashboardGetResponseFilterFilterObject2ChildObject3ValueArrayItemUnion)
 }
 
 type DashboardGetResponseFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -4754,9 +4725,8 @@ func (r *DashboardUpdateResponseTileObject3Replays) UnmarshalJSON(data []byte) e
 }
 
 type DashboardUpdateResponseTileObject3ReplaysFilter struct {
-	Filter DashboardUpdateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardUpdateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4861,9 +4831,8 @@ func (r *DashboardUpdateResponseTileObject3ReplaysFilterFilterObject) UnmarshalJ
 }
 
 type DashboardUpdateResponseTileObject3ReplaysFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -4882,8 +4851,7 @@ func (r *DashboardUpdateResponseTileObject3ReplaysFilterFilterObject2) Unmarshal
 }
 
 type DashboardUpdateResponseTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5021,9 +4989,8 @@ func (r *DashboardUpdateResponseTileObject3ReplaysFilterFilterObject3ValueArrayI
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardUpdateResponseFilter struct {
-	Filter DashboardUpdateResponseFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardUpdateResponseFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5200,9 +5167,8 @@ func (r *DashboardUpdateResponseFilterFilterObjectChildObject) UnmarshalJSON(dat
 }
 
 type DashboardUpdateResponseFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5219,8 +5185,7 @@ func (r *DashboardUpdateResponseFilterFilterObjectChildObject2) UnmarshalJSON(da
 }
 
 type DashboardUpdateResponseFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5355,8 +5320,7 @@ func (r *DashboardUpdateResponseFilterFilterObjectChildObject3ValueArrayItemUnio
 
 type DashboardUpdateResponseFilterFilterObject2 struct {
 	Child DashboardUpdateResponseFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                         `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5457,9 +5421,8 @@ func (r *DashboardUpdateResponseFilterFilterObject2ChildObject) UnmarshalJSON(da
 }
 
 type DashboardUpdateResponseFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -5476,8 +5439,7 @@ func (r *DashboardUpdateResponseFilterFilterObject2ChildObject2) UnmarshalJSON(d
 }
 
 type DashboardUpdateResponseFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -5611,8 +5573,7 @@ func (r *DashboardUpdateResponseFilterFilterObject2ChildObject3ValueArrayItemUni
 }
 
 type DashboardUpdateResponseFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6164,9 +6125,8 @@ func (r *DashboardDuplicateResponseTileObject3Replays) UnmarshalJSON(data []byte
 }
 
 type DashboardDuplicateResponseTileObject3ReplaysFilter struct {
-	Filter DashboardDuplicateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardDuplicateResponseTileObject3ReplaysFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6271,9 +6231,8 @@ func (r *DashboardDuplicateResponseTileObject3ReplaysFilterFilterObject) Unmarsh
 }
 
 type DashboardDuplicateResponseTileObject3ReplaysFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6292,8 +6251,7 @@ func (r *DashboardDuplicateResponseTileObject3ReplaysFilterFilterObject2) Unmars
 }
 
 type DashboardDuplicateResponseTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6431,9 +6389,8 @@ func (r *DashboardDuplicateResponseTileObject3ReplaysFilterFilterObject3ValueArr
 // Shared analytics filter, combined with Insight report filters or Funnel and
 // Journey entry filters. Null clears it; report-specific filters remain in effect.
 type DashboardDuplicateResponseFilter struct {
-	Filter DashboardDuplicateResponseFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardDuplicateResponseFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6610,9 +6567,8 @@ func (r *DashboardDuplicateResponseFilterFilterObjectChildObject) UnmarshalJSON(
 }
 
 type DashboardDuplicateResponseFilterFilterObjectChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6629,8 +6585,7 @@ func (r *DashboardDuplicateResponseFilterFilterObjectChildObject2) UnmarshalJSON
 }
 
 type DashboardDuplicateResponseFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -6765,8 +6720,7 @@ func (r *DashboardDuplicateResponseFilterFilterObjectChildObject3ValueArrayItemU
 
 type DashboardDuplicateResponseFilterFilterObject2 struct {
 	Child DashboardDuplicateResponseFilterFilterObject2ChildUnion `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Kind  constant.Not                                            `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6867,9 +6821,8 @@ func (r *DashboardDuplicateResponseFilterFilterObject2ChildObject) UnmarshalJSON
 }
 
 type DashboardDuplicateResponseFilterFilterObject2ChildObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -6888,8 +6841,7 @@ func (r *DashboardDuplicateResponseFilterFilterObject2ChildObject2) UnmarshalJSO
 }
 
 type DashboardDuplicateResponseFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7025,8 +6977,7 @@ func (r *DashboardDuplicateResponseFilterFilterObject2ChildObject3ValueArrayItem
 }
 
 type DashboardDuplicateResponseFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -7764,13 +7715,11 @@ func (r *DashboardPreviewResponseObjectReport) UnmarshalJSON(data []byte) error 
 // analytics property catalog.
 type DashboardPreviewResponseObjectReportDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval" api:"required"`
-	// Any of "insight".
-	Kind    string                                                 `json:"kind" api:"required"`
-	Metrics []DashboardPreviewResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
-	// Any of 1.
-	Version float64                                              `json:"version" api:"required"`
-	Filter  DashboardPreviewResponseObjectReportDefinitionFilter `json:"filter"`
+	Interval string                                                 `json:"interval" api:"required"`
+	Kind     constant.Insight                                       `json:"kind" default:"insight"`
+	Metrics  []DashboardPreviewResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
+	Version  float64                                                `json:"version" api:"required"`
+	Filter   DashboardPreviewResponseObjectReportDefinitionFilter   `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -7819,9 +7768,8 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetric) UnmarshalJSON(dat
 }
 
 type DashboardPreviewResponseObjectReportDefinitionMetricFilter struct {
-	Filter DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7928,9 +7876,8 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterObject)
 }
 
 type DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -7949,8 +7896,7 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterObject2
 }
 
 type DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8086,9 +8032,8 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetricFilterFilterObject3
 }
 
 type DashboardPreviewResponseObjectReportDefinitionMetricProperty struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -8110,9 +8055,8 @@ func (r *DashboardPreviewResponseObjectReportDefinitionMetricProperty) Unmarshal
 }
 
 type DashboardPreviewResponseObjectReportDefinitionFilter struct {
-	Filter DashboardPreviewResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8217,9 +8161,8 @@ func (r *DashboardPreviewResponseObjectReportDefinitionFilterFilterObject) Unmar
 }
 
 type DashboardPreviewResponseObjectReportDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8238,8 +8181,7 @@ func (r *DashboardPreviewResponseObjectReportDefinitionFilterFilterObject2) Unma
 }
 
 type DashboardPreviewResponseObjectReportDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -8793,15 +8735,13 @@ type DashboardPreviewResponseObject2ReportQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                                     `json:"reentry" api:"required"`
-	Steps   []DashboardPreviewResponseObject2ReportQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                                          `json:"reentry" api:"required"`
+	Steps       []DashboardPreviewResponseObject2ReportQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                                         `json:"version" api:"required"`
 	WindowMs    int64                                                           `json:"windowMs" api:"required"`
 	EntryFilter DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -8852,9 +8792,8 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionStep) UnmarshalJSON
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionStepFilter struct {
-	Filter DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8961,9 +8900,8 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -8982,8 +8920,7 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9119,9 +9056,8 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilter struct {
-	Filter DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9228,9 +9164,8 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9249,8 +9184,7 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9386,9 +9320,8 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionFilter struct {
-	Filter DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9495,9 +9428,8 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterObject)
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -9516,8 +9448,7 @@ func (r *DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterObject2
 }
 
 type DashboardPreviewResponseObject2ReportQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -9869,12 +9800,10 @@ func (r *DashboardPreviewResponseObject3Report) UnmarshalJSON(data []byte) error
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type DashboardPreviewResponseObject3ReportDefinition struct {
-	Anchors     []DashboardPreviewResponseObject3ReportDefinitionAnchor    `json:"anchors" api:"required"`
-	Exploration DashboardPreviewResponseObject3ReportDefinitionExploration `json:"exploration" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                               `json:"kind" api:"required"`
-	Scope DashboardPreviewResponseObject3ReportDefinitionScope `json:"scope" api:"required"`
-	// Any of 1.
+	Anchors            []DashboardPreviewResponseObject3ReportDefinitionAnchor     `json:"anchors" api:"required"`
+	Exploration        DashboardPreviewResponseObject3ReportDefinitionExploration  `json:"exploration" api:"required"`
+	Kind               constant.JourneyFlow                                        `json:"kind" default:"journey-flow"`
+	Scope              DashboardPreviewResponseObject3ReportDefinitionScope        `json:"scope" api:"required"`
 	Version            float64                                                     `json:"version" api:"required"`
 	AnchorFilter       DashboardPreviewResponseObject3ReportDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          DashboardPreviewResponseObject3ReportDefinitionBreakdown    `json:"breakdown"`
@@ -10085,10 +10014,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeUnionFi
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                       `json:"kind" api:"required"`
-	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilter `json:"filter"`
+	EventName string                                                                       `json:"eventName" api:"required"`
+	Kind      constant.Event                                                               `json:"kind" default:"event"`
+	Filter    DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -10108,9 +10036,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject)
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10217,9 +10144,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectF
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10238,8 +10164,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectF
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10375,8 +10300,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObjectF
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                                        `json:"kind" api:"required"`
+	Kind   constant.Page                                                                 `json:"kind" default:"page"`
 	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -10396,9 +10320,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2Filter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10505,9 +10428,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10526,8 +10448,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -10663,9 +10584,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10772,9 +10692,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterObject
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -10793,8 +10712,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterObject
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11222,10 +11140,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                                   `json:"kind" api:"required"`
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
+	EventName string                                                                                   `json:"eventName" api:"required"`
+	Kind      constant.Event                                                                           `json:"kind" default:"event"`
+	Filter    DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -11245,9 +11162,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11354,9 +11270,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11375,8 +11290,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11512,8 +11426,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                                    `json:"kind" api:"required"`
+	Kind   constant.Page                                                                             `json:"kind" default:"page"`
 	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -11533,9 +11446,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11642,9 +11554,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -11663,8 +11574,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -11965,10 +11875,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventUn
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                            `json:"kind" api:"required"`
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
+	EventName string                                                                            `json:"eventName" api:"required"`
+	Kind      constant.Event                                                                    `json:"kind" default:"event"`
+	Filter    DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -11988,9 +11897,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12097,9 +12005,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12118,8 +12025,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12255,8 +12161,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                                             `json:"kind" api:"required"`
+	Kind   constant.Page                                                                      `json:"kind" default:"page"`
 	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -12276,9 +12181,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12385,9 +12289,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12406,8 +12309,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12543,9 +12445,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12652,9 +12553,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFil
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12673,8 +12573,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFil
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -12830,9 +12729,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionScope) UnmarshalJSON(dat
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12939,9 +12837,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilter
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -12960,8 +12857,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilter
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13140,9 +13036,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionBreakdownProperty) Unmar
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionEntryFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13249,9 +13144,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterObject)
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13270,8 +13164,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterObject2
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13575,10 +13468,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherUnionFil
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                      `json:"kind" api:"required"`
-	Filter DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilter `json:"filter"`
+	EventName string                                                                      `json:"eventName" api:"required"`
+	Kind      constant.Event                                                              `json:"kind" default:"event"`
+	Filter    DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -13598,9 +13490,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject) 
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13707,9 +13598,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFi
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -13728,8 +13618,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFi
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -13865,8 +13754,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObjectFi
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                       `json:"kind" api:"required"`
+	Kind   constant.Page                                                                `json:"kind" default:"page"`
 	Filter DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -13886,9 +13774,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2)
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2Filter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13995,9 +13882,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2F
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14016,8 +13902,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2F
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14346,10 +14231,9 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherUnio
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                          `json:"kind" api:"required"`
-	Filter DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
+	EventName string                                                                          `json:"eventName" api:"required"`
+	Kind      constant.Event                                                                  `json:"kind" default:"event"`
+	Filter    DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -14369,9 +14253,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14478,9 +14361,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14499,8 +14381,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -14636,8 +14517,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                           `json:"kind" api:"required"`
+	Kind   constant.Page                                                                    `json:"kind" default:"page"`
 	Filter DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -14657,9 +14537,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14766,9 +14645,8 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -14787,8 +14665,7 @@ func (r *DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardPreviewResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15059,9 +14936,8 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonDateRange) 
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilter struct {
-	Filter DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                            `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15168,9 +15044,8 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15189,8 +15064,7 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -15326,9 +15200,8 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilter struct {
-	Filter DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15435,9 +15308,8 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilt
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -15456,8 +15328,7 @@ func (r *DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilt
 }
 
 type DashboardPreviewResponseObject3ReportReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -19848,13 +19719,11 @@ func (r *DashboardResultsResponseObjectReport) UnmarshalJSON(data []byte) error 
 // analytics property catalog.
 type DashboardResultsResponseObjectReportDefinition struct {
 	// Any of "day", "week", "month".
-	Interval string `json:"interval" api:"required"`
-	// Any of "insight".
-	Kind    string                                                 `json:"kind" api:"required"`
-	Metrics []DashboardResultsResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
-	// Any of 1.
-	Version float64                                              `json:"version" api:"required"`
-	Filter  DashboardResultsResponseObjectReportDefinitionFilter `json:"filter"`
+	Interval string                                                 `json:"interval" api:"required"`
+	Kind     constant.Insight                                       `json:"kind" default:"insight"`
+	Metrics  []DashboardResultsResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
+	Version  float64                                                `json:"version" api:"required"`
+	Filter   DashboardResultsResponseObjectReportDefinitionFilter   `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -19903,9 +19772,8 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetric) UnmarshalJSON(dat
 }
 
 type DashboardResultsResponseObjectReportDefinitionMetricFilter struct {
-	Filter DashboardResultsResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObjectReportDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20012,9 +19880,8 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetricFilterFilterObject)
 }
 
 type DashboardResultsResponseObjectReportDefinitionMetricFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20033,8 +19900,7 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetricFilterFilterObject2
 }
 
 type DashboardResultsResponseObjectReportDefinitionMetricFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20170,9 +20036,8 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetricFilterFilterObject3
 }
 
 type DashboardResultsResponseObjectReportDefinitionMetricProperty struct {
-	Path []string `json:"path" api:"required"`
-	// Any of "event.properties".
-	Property string `json:"property" api:"required"`
+	Path     []string                 `json:"path" api:"required"`
+	Property constant.EventProperties `json:"property" default:"event.properties"`
 	// Any of "number".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -20194,9 +20059,8 @@ func (r *DashboardResultsResponseObjectReportDefinitionMetricProperty) Unmarshal
 }
 
 type DashboardResultsResponseObjectReportDefinitionFilter struct {
-	Filter DashboardResultsResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObjectReportDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20301,9 +20165,8 @@ func (r *DashboardResultsResponseObjectReportDefinitionFilterFilterObject) Unmar
 }
 
 type DashboardResultsResponseObjectReportDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -20322,8 +20185,7 @@ func (r *DashboardResultsResponseObjectReportDefinitionFilterFilterObject2) Unma
 }
 
 type DashboardResultsResponseObjectReportDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -20877,15 +20739,13 @@ type DashboardResultsResponseObject2ReportQueryDefinition struct {
 	// Any of "unique", "events", "sessions".
 	Counting string `json:"counting" api:"required"`
 	// Any of "session", "visitor".
-	Identity string `json:"identity" api:"required"`
-	// Any of "funnel".
-	Kind string `json:"kind" api:"required"`
+	Identity string          `json:"identity" api:"required"`
+	Kind     constant.Funnel `json:"kind" default:"funnel"`
 	// Any of "ordered", "any".
 	Order string `json:"order" api:"required"`
 	// Any of "first", "best".
-	Reentry string                                                     `json:"reentry" api:"required"`
-	Steps   []DashboardResultsResponseObject2ReportQueryDefinitionStep `json:"steps" api:"required"`
-	// Any of 1.
+	Reentry     string                                                          `json:"reentry" api:"required"`
+	Steps       []DashboardResultsResponseObject2ReportQueryDefinitionStep      `json:"steps" api:"required"`
 	Version     float64                                                         `json:"version" api:"required"`
 	WindowMs    int64                                                           `json:"windowMs" api:"required"`
 	EntryFilter DashboardResultsResponseObject2ReportQueryDefinitionEntryFilter `json:"entryFilter"`
@@ -20936,9 +20796,8 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionStep) UnmarshalJSON
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionStepFilter struct {
-	Filter DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                   `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21045,9 +20904,8 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21066,8 +20924,7 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21203,9 +21060,8 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionStepFilterFilterObj
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionEntryFilter struct {
-	Filter DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21312,9 +21168,8 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21333,8 +21188,7 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21470,9 +21324,8 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionEntryFilterFilterOb
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionFilter struct {
-	Filter DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21579,9 +21432,8 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterObject)
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -21600,8 +21452,7 @@ func (r *DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterObject2
 }
 
 type DashboardResultsResponseObject2ReportQueryDefinitionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -21953,12 +21804,10 @@ func (r *DashboardResultsResponseObject3Report) UnmarshalJSON(data []byte) error
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type DashboardResultsResponseObject3ReportDefinition struct {
-	Anchors     []DashboardResultsResponseObject3ReportDefinitionAnchor    `json:"anchors" api:"required"`
-	Exploration DashboardResultsResponseObject3ReportDefinitionExploration `json:"exploration" api:"required"`
-	// Any of "journey-flow".
-	Kind  string                                               `json:"kind" api:"required"`
-	Scope DashboardResultsResponseObject3ReportDefinitionScope `json:"scope" api:"required"`
-	// Any of 1.
+	Anchors            []DashboardResultsResponseObject3ReportDefinitionAnchor     `json:"anchors" api:"required"`
+	Exploration        DashboardResultsResponseObject3ReportDefinitionExploration  `json:"exploration" api:"required"`
+	Kind               constant.JourneyFlow                                        `json:"kind" default:"journey-flow"`
+	Scope              DashboardResultsResponseObject3ReportDefinitionScope        `json:"scope" api:"required"`
 	Version            float64                                                     `json:"version" api:"required"`
 	AnchorFilter       DashboardResultsResponseObject3ReportDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          DashboardResultsResponseObject3ReportDefinitionBreakdown    `json:"breakdown"`
@@ -22169,10 +22018,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeUnionFi
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                       `json:"kind" api:"required"`
-	Filter DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilter `json:"filter"`
+	EventName string                                                                       `json:"eventName" api:"required"`
+	Kind      constant.Event                                                               `json:"kind" default:"event"`
+	Filter    DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -22192,9 +22040,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject)
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22301,9 +22148,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectF
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22322,8 +22168,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectF
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22459,8 +22304,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObjectF
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2 struct {
-	// Any of "page".
-	Kind   string                                                                        `json:"kind" api:"required"`
+	Kind   constant.Page                                                                 `json:"kind" default:"page"`
 	Filter DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -22480,9 +22324,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2Filter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                  `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22589,9 +22432,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22610,8 +22452,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -22747,9 +22588,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorAlternativeObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22856,9 +22696,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterObject
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -22877,8 +22716,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterObject
 }
 
 type DashboardResultsResponseObject3ReportDefinitionAnchorFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -23306,10 +23144,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                                   `json:"kind" api:"required"`
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
+	EventName string                                                                                   `json:"eventName" api:"required"`
+	Kind      constant.Event                                                                           `json:"kind" default:"event"`
+	Filter    DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -23329,9 +23166,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                             `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23438,9 +23274,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -23459,8 +23294,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -23596,8 +23430,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                                    `json:"kind" api:"required"`
+	Kind   constant.Page                                                                             `json:"kind" default:"page"`
 	Filter DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -23617,9 +23450,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23726,9 +23558,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -23747,8 +23578,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMa
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationFocusObjectMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24049,10 +23879,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventUn
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                            `json:"kind" api:"required"`
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
+	EventName string                                                                            `json:"eventName" api:"required"`
+	Kind      constant.Event                                                                    `json:"kind" default:"event"`
+	Filter    DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -24072,9 +23901,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24181,9 +24009,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -24202,8 +24029,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24339,8 +24165,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2 struct {
-	// Any of "page".
-	Kind   string                                                                             `json:"kind" api:"required"`
+	Kind   constant.Page                                                                      `json:"kind" default:"page"`
 	Filter DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -24360,9 +24185,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                       `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24469,9 +24293,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -24490,8 +24313,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24627,9 +24449,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationHiddenEventOb
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationPathFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                         `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24736,9 +24557,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFil
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -24757,8 +24577,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFil
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExplorationPathFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -24914,9 +24733,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionScope) UnmarshalJSON(dat
 }
 
 type DashboardResultsResponseObject3ReportDefinitionScopeSessionFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                      `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25023,9 +24841,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilter
 }
 
 type DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -25044,8 +24861,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilter
 }
 
 type DashboardResultsResponseObject3ReportDefinitionScopeSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -25224,9 +25040,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionBreakdownProperty) Unmar
 }
 
 type DashboardResultsResponseObject3ReportDefinitionEntryFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                               `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25333,9 +25148,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterObject)
 }
 
 type DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -25354,8 +25168,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterObject2
 }
 
 type DashboardResultsResponseObject3ReportDefinitionEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -25659,10 +25472,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherUnionFil
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                      `json:"kind" api:"required"`
-	Filter DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilter `json:"filter"`
+	EventName string                                                                      `json:"eventName" api:"required"`
+	Kind      constant.Event                                                              `json:"kind" default:"event"`
+	Filter    DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -25682,9 +25494,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject) 
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25791,9 +25602,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFi
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -25812,8 +25622,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFi
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -25949,8 +25758,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObjectFi
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                       `json:"kind" api:"required"`
+	Kind   constant.Page                                                                `json:"kind" default:"page"`
 	Filter DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -25970,9 +25778,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2)
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2Filter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26079,9 +25886,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2F
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -26100,8 +25906,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2F
 }
 
 type DashboardResultsResponseObject3ReportDefinitionExclusionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -26430,10 +26235,9 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherUnio
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject struct {
-	EventName string `json:"eventName" api:"required"`
-	// Any of "event".
-	Kind   string                                                                          `json:"kind" api:"required"`
-	Filter DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
+	EventName string                                                                          `json:"eventName" api:"required"`
+	Kind      constant.Event                                                                  `json:"kind" default:"event"`
+	Filter    DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		EventName   respjson.Field
@@ -26453,9 +26257,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                    `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26562,9 +26365,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -26583,8 +26385,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObjectFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -26720,8 +26521,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2 struct {
-	// Any of "page".
-	Kind   string                                                                           `json:"kind" api:"required"`
+	Kind   constant.Page                                                                    `json:"kind" default:"page"`
 	Filter DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2Filter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -26741,9 +26541,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                                     `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26850,9 +26649,8 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -26871,8 +26669,7 @@ func (r *DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObje
 }
 
 type DashboardResultsResponseObject3ReportDefinitionNodeExpansionMatcherObject2FilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -27143,9 +26940,8 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonDateRange) 
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonEntryFilter struct {
-	Filter DashboardResultsResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                            `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -27252,9 +27048,8 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonEntryFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -27273,8 +27068,7 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonEntryFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -27410,9 +27204,8 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonEntryFilter
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonSessionFilter struct {
-	Filter DashboardResultsResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	// Any of 1.
-	Version float64 `json:"version" api:"required"`
+	Filter  DashboardResultsResponseObject3ReportReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	Version float64                                                                              `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -27519,9 +27312,8 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonSessionFilt
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonSessionFilterFilterObject2 struct {
-	Child any `json:"child" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind" api:"required"`
+	Child any          `json:"child" api:"required"`
+	Kind  constant.Not `json:"kind" default:"not"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Child       respjson.Field
@@ -27540,8 +27332,7 @@ func (r *DashboardResultsResponseObject3ReportReportContextComparisonSessionFilt
 }
 
 type DashboardResultsResponseObject3ReportReportContextComparisonSessionFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind" api:"required"`
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31815,7 +31606,7 @@ func (r *DashboardNewParamsTileObject3Replays) UnmarshalJSON(data []byte) error 
 // The properties Filter, Version are required.
 type DashboardNewParamsTileObject3ReplaysFilter struct {
 	Filter DashboardNewParamsTileObject3ReplaysFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31876,8 +31667,8 @@ func init() {
 // The properties Child, Kind are required.
 type DashboardNewParamsTileObject3ReplaysFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -31889,16 +31680,8 @@ func (r *DashboardNewParamsTileObject3ReplaysFilterFilterObject2) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsTileObject3ReplaysFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type DashboardNewParamsTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -31908,6 +31691,8 @@ type DashboardNewParamsTileObject3ReplaysFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                            `json:"type,omitzero"`
 	Value DashboardNewParamsTileObject3ReplaysFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -31920,9 +31705,6 @@ func (r *DashboardNewParamsTileObject3ReplaysFilterFilterObject3) UnmarshalJSON(
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsTileObject3ReplaysFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardNewParamsTileObject3ReplaysFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -31972,7 +31754,7 @@ func (u *DashboardNewParamsTileObject3ReplaysFilterFilterObject3ValueArrayItemUn
 // The properties Filter, Version are required.
 type DashboardNewParamsFilter struct {
 	Filter DashboardNewParamsFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32072,8 +31854,8 @@ func init() {
 // The properties Child, Kind are required.
 type DashboardNewParamsFilterFilterObjectChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32085,16 +31867,8 @@ func (r *DashboardNewParamsFilterFilterObjectChildObject2) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObjectChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type DashboardNewParamsFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32104,6 +31878,8 @@ type DashboardNewParamsFilterFilterObjectChildObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                     `json:"type,omitzero"`
 	Value DashboardNewParamsFilterFilterObjectChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32116,9 +31892,6 @@ func (r *DashboardNewParamsFilterFilterObjectChildObject3) UnmarshalJSON(data []
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObjectChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObjectChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32165,8 +31938,8 @@ func (u *DashboardNewParamsFilterFilterObjectChildObject3ValueArrayItemUnion) Un
 // The properties Child, Kind are required.
 type DashboardNewParamsFilterFilterObject2 struct {
 	Child DashboardNewParamsFilterFilterObject2ChildUnion `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32176,12 +31949,6 @@ func (r DashboardNewParamsFilterFilterObject2) MarshalJSON() (data []byte, err e
 }
 func (r *DashboardNewParamsFilterFilterObject2) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObject2](
-		"kind", "not",
-	)
 }
 
 // Only one field can be non-zero.
@@ -32226,8 +31993,8 @@ func init() {
 // The properties Child, Kind are required.
 type DashboardNewParamsFilterFilterObject2ChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32239,16 +32006,8 @@ func (r *DashboardNewParamsFilterFilterObject2ChildObject2) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObject2ChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type DashboardNewParamsFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32258,6 +32017,8 @@ type DashboardNewParamsFilterFilterObject2ChildObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                      `json:"type,omitzero"`
 	Value DashboardNewParamsFilterFilterObject2ChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32270,9 +32031,6 @@ func (r *DashboardNewParamsFilterFilterObject2ChildObject3) UnmarshalJSON(data [
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObject2ChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObject2ChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32318,8 +32076,6 @@ func (u *DashboardNewParamsFilterFilterObject2ChildObject3ValueArrayItemUnion) U
 
 // The properties Kind, Operator, Property are required.
 type DashboardNewParamsFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32329,6 +32085,8 @@ type DashboardNewParamsFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                          `json:"type,omitzero"`
 	Value DashboardNewParamsFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32341,9 +32099,6 @@ func (r *DashboardNewParamsFilterFilterObject3) UnmarshalJSON(data []byte) error
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardNewParamsFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32429,7 +32184,7 @@ func (r *DashboardUpdateParams) UnmarshalJSON(data []byte) error {
 // The properties Filter, Version are required.
 type DashboardUpdateParamsFilter struct {
 	Filter DashboardUpdateParamsFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32529,8 +32284,8 @@ func init() {
 // The properties Child, Kind are required.
 type DashboardUpdateParamsFilterFilterObjectChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32542,16 +32297,8 @@ func (r *DashboardUpdateParamsFilterFilterObjectChildObject2) UnmarshalJSON(data
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObjectChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type DashboardUpdateParamsFilterFilterObjectChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32561,6 +32308,8 @@ type DashboardUpdateParamsFilterFilterObjectChildObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                        `json:"type,omitzero"`
 	Value DashboardUpdateParamsFilterFilterObjectChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32573,9 +32322,6 @@ func (r *DashboardUpdateParamsFilterFilterObjectChildObject3) UnmarshalJSON(data
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObjectChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObjectChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32622,8 +32368,8 @@ func (u *DashboardUpdateParamsFilterFilterObjectChildObject3ValueArrayItemUnion)
 // The properties Child, Kind are required.
 type DashboardUpdateParamsFilterFilterObject2 struct {
 	Child DashboardUpdateParamsFilterFilterObject2ChildUnion `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32633,12 +32379,6 @@ func (r DashboardUpdateParamsFilterFilterObject2) MarshalJSON() (data []byte, er
 }
 func (r *DashboardUpdateParamsFilterFilterObject2) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObject2](
-		"kind", "not",
-	)
 }
 
 // Only one field can be non-zero.
@@ -32683,8 +32423,8 @@ func init() {
 // The properties Child, Kind are required.
 type DashboardUpdateParamsFilterFilterObject2ChildObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -32696,16 +32436,8 @@ func (r *DashboardUpdateParamsFilterFilterObject2ChildObject2) UnmarshalJSON(dat
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObject2ChildObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type DashboardUpdateParamsFilterFilterObject2ChildObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32715,6 +32447,8 @@ type DashboardUpdateParamsFilterFilterObject2ChildObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                         `json:"type,omitzero"`
 	Value DashboardUpdateParamsFilterFilterObject2ChildObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32727,9 +32461,6 @@ func (r *DashboardUpdateParamsFilterFilterObject2ChildObject3) UnmarshalJSON(dat
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObject2ChildObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObject2ChildObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -32775,8 +32506,6 @@ func (u *DashboardUpdateParamsFilterFilterObject2ChildObject3ValueArrayItemUnion
 
 // The properties Kind, Operator, Property are required.
 type DashboardUpdateParamsFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -32786,6 +32515,8 @@ type DashboardUpdateParamsFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                             `json:"type,omitzero"`
 	Value DashboardUpdateParamsFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -32798,9 +32529,6 @@ func (r *DashboardUpdateParamsFilterFilterObject3) UnmarshalJSON(data []byte) er
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardUpdateParamsFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
@@ -33095,7 +32823,7 @@ func (r *DashboardUpdateParamsTileObject3Replays) UnmarshalJSON(data []byte) err
 // The properties Filter, Version are required.
 type DashboardUpdateParamsTileObject3ReplaysFilter struct {
 	Filter DashboardUpdateParamsTileObject3ReplaysFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// Any of 1.
+	// This field can be elided, and will marshal its zero value as 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33156,8 +32884,8 @@ func init() {
 // The properties Child, Kind are required.
 type DashboardUpdateParamsTileObject3ReplaysFilterFilterObject2 struct {
 	Child any `json:"child,omitzero" api:"required"`
-	// Any of "not".
-	Kind string `json:"kind,omitzero" api:"required"`
+	// This field can be elided, and will marshal its zero value as "not".
+	Kind constant.Not `json:"kind" default:"not"`
 	paramObj
 }
 
@@ -33169,16 +32897,8 @@ func (r *DashboardUpdateParamsTileObject3ReplaysFilterFilterObject2) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsTileObject3ReplaysFilterFilterObject2](
-		"kind", "not",
-	)
-}
-
 // The properties Kind, Operator, Property are required.
 type DashboardUpdateParamsTileObject3ReplaysFilterFilterObject3 struct {
-	// Any of "predicate".
-	Kind string `json:"kind,omitzero" api:"required"`
 	// Any of "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains",
 	// "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in",
 	// "exists", "missing", "is_null".
@@ -33188,6 +32908,8 @@ type DashboardUpdateParamsTileObject3ReplaysFilterFilterObject3 struct {
 	// Any of "string", "number", "boolean".
 	Type  string                                                               `json:"type,omitzero"`
 	Value DashboardUpdateParamsTileObject3ReplaysFilterFilterObject3ValueUnion `json:"value,omitzero"`
+	// This field can be elided, and will marshal its zero value as "predicate".
+	Kind constant.Predicate `json:"kind" default:"predicate"`
 	paramObj
 }
 
@@ -33200,9 +32922,6 @@ func (r *DashboardUpdateParamsTileObject3ReplaysFilterFilterObject3) UnmarshalJS
 }
 
 func init() {
-	apijson.RegisterFieldValidator[DashboardUpdateParamsTileObject3ReplaysFilterFilterObject3](
-		"kind", "predicate",
-	)
 	apijson.RegisterFieldValidator[DashboardUpdateParamsTileObject3ReplaysFilterFilterObject3](
 		"operator", "eq", "neq", "gt", "gte", "lt", "lte", "contains", "not_contains", "contains_ci", "not_contains_ci", "starts_with", "ends_with", "in", "not_in", "exists", "missing", "is_null",
 	)
