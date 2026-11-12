@@ -779,8 +779,9 @@ func (r *ExperimentListResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJSON
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter ExperimentListResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1609,8 +1610,9 @@ func (r *ExperimentListResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data []
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentListResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                           `json:"version" api:"required"`
+	Filter ExperimentListResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2414,8 +2416,9 @@ func (r *ExperimentListResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentListResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                             `json:"version" api:"required"`
+	Filter ExperimentListResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3640,8 +3643,9 @@ func (r *ExperimentNewResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJSON(
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter ExperimentNewResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4470,8 +4474,9 @@ func (r *ExperimentNewResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data []b
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentNewResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                          `json:"version" api:"required"`
+	Filter ExperimentNewResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5275,8 +5280,9 @@ func (r *ExperimentNewResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data [
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentNewResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                            `json:"version" api:"required"`
+	Filter ExperimentNewResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6501,8 +6507,9 @@ func (r *ExperimentGetResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJSON(
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter ExperimentGetResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7331,8 +7338,9 @@ func (r *ExperimentGetResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data []b
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentGetResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                          `json:"version" api:"required"`
+	Filter ExperimentGetResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8136,8 +8144,9 @@ func (r *ExperimentGetResponseMetricsSecondaryEventMatcher) UnmarshalJSON(data [
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentGetResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                            `json:"version" api:"required"`
+	Filter ExperimentGetResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9364,8 +9373,9 @@ func (r *ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJS
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter ExperimentUpdateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10194,8 +10204,9 @@ func (r *ExperimentUpdateResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentUpdateResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                             `json:"version" api:"required"`
+	Filter ExperimentUpdateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10999,8 +11010,9 @@ func (r *ExperimentUpdateResponseMetricsSecondaryEventMatcher) UnmarshalJSON(dat
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentUpdateResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter ExperimentUpdateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12231,8 +12243,9 @@ func (r *ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter ExperimentDuplicateResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13061,8 +13074,9 @@ func (r *ExperimentDuplicateResponseMetricsPrimaryEventMatcher) UnmarshalJSON(da
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                `json:"version" api:"required"`
+	Filter ExperimentDuplicateResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13868,8 +13882,9 @@ func (r *ExperimentDuplicateResponseMetricsSecondaryEventMatcher) UnmarshalJSON(
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter ExperimentDuplicateResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14981,8 +14996,9 @@ func (r *ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcher) Un
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                              `json:"version" api:"required"`
+	Filter ExperimentStartResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15813,8 +15829,9 @@ func (r *ExperimentStartResponseExperimentMetricsPrimaryEventMatcher) UnmarshalJ
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter ExperimentStartResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16622,8 +16639,9 @@ func (r *ExperimentStartResponseExperimentMetricsSecondaryEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter ExperimentStartResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -17736,8 +17754,9 @@ func (r *ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcher) Unm
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                             `json:"version" api:"required"`
+	Filter ExperimentStopResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18568,8 +18587,9 @@ func (r *ExperimentStopResponseExperimentMetricsPrimaryEventMatcher) UnmarshalJS
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter ExperimentStopResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19377,8 +19397,9 @@ func (r *ExperimentStopResponseExperimentMetricsSecondaryEventMatcher) Unmarshal
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                       `json:"version" api:"required"`
+	Filter ExperimentStopResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20493,8 +20514,9 @@ func (r *ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcher) 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                `json:"version" api:"required"`
+	Filter ExperimentRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21325,8 +21347,9 @@ func (r *ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter ExperimentRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22134,8 +22157,9 @@ func (r *ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcher) Unmars
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                          `json:"version" api:"required"`
+	Filter ExperimentRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -23254,8 +23278,9 @@ func (r *ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatche
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                   `json:"version" api:"required"`
+	Filter ExperimentEndRolloutResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24086,8 +24111,9 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcher) Unmar
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                           `json:"version" api:"required"`
+	Filter ExperimentEndRolloutResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -24895,8 +24921,9 @@ func (r *ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcher) Unm
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                             `json:"version" api:"required"`
+	Filter ExperimentEndRolloutResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -25992,8 +26019,9 @@ func (r *ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcher) UnmarshalJS
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter ExperimentWinnerResponseAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -26822,8 +26850,9 @@ func (r *ExperimentWinnerResponseMetricsPrimaryEventMatcher) UnmarshalJSON(data 
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentWinnerResponseMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                             `json:"version" api:"required"`
+	Filter ExperimentWinnerResponseMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -27627,8 +27656,9 @@ func (r *ExperimentWinnerResponseMetricsSecondaryEventMatcher) UnmarshalJSON(dat
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentWinnerResponseMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter ExperimentWinnerResponseMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -28740,8 +28770,9 @@ func (r *ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcher) Un
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                              `json:"version" api:"required"`
+	Filter ExperimentPauseResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -29572,8 +29603,9 @@ func (r *ExperimentPauseResponseExperimentMetricsPrimaryEventMatcher) UnmarshalJ
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter ExperimentPauseResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -30381,8 +30413,9 @@ func (r *ExperimentPauseResponseExperimentMetricsSecondaryEventMatcher) Unmarsha
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter ExperimentPauseResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -31495,8 +31528,9 @@ func (r *ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcher) U
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilter struct {
-	Filter  ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                               `json:"version" api:"required"`
+	Filter ExperimentResumeResponseExperimentAnalysisMetricSnapshotEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -32327,8 +32361,9 @@ func (r *ExperimentResumeResponseExperimentMetricsPrimaryEventMatcher) Unmarshal
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilter struct {
-	Filter  ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                       `json:"version" api:"required"`
+	Filter ExperimentResumeResponseExperimentMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -33136,8 +33171,9 @@ func (r *ExperimentResumeResponseExperimentMetricsSecondaryEventMatcher) Unmarsh
 
 // Versioned analytics filter using catalog property IDs and operators.
 type ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilter struct {
-	Filter  ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                         `json:"version" api:"required"`
+	Filter ExperimentResumeResponseExperimentMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -34762,7 +34798,7 @@ func (r *ExperimentNewParamsMetricsPrimaryEventMatcher) UnmarshalJSON(data []byt
 // The properties Filter, Version are required.
 type ExperimentNewParamsMetricsPrimaryEventMatcherFilter struct {
 	Filter ExperimentNewParamsMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35198,7 +35234,7 @@ func (r *ExperimentNewParamsMetricsSecondaryEventMatcher) UnmarshalJSON(data []b
 // The properties Filter, Version are required.
 type ExperimentNewParamsMetricsSecondaryEventMatcherFilter struct {
 	Filter ExperimentNewParamsMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35850,7 +35886,7 @@ func (r *ExperimentUpdateParamsMetricsPrimaryEventMatcher) UnmarshalJSON(data []
 // The properties Filter, Version are required.
 type ExperimentUpdateParamsMetricsPrimaryEventMatcherFilter struct {
 	Filter ExperimentUpdateParamsMetricsPrimaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36286,7 +36322,7 @@ func (r *ExperimentUpdateParamsMetricsSecondaryEventMatcher) UnmarshalJSON(data 
 // The properties Filter, Version are required.
 type ExperimentUpdateParamsMetricsSecondaryEventMatcherFilter struct {
 	Filter ExperimentUpdateParamsMetricsSecondaryEventMatcherFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
