@@ -229,8 +229,9 @@ type InsightListResponseDefinition struct {
 	Interval string                                `json:"interval" api:"required"`
 	Kind     constant.Insight                      `json:"kind" default:"insight"`
 	Metrics  []InsightListResponseDefinitionMetric `json:"metrics" api:"required"`
-	Version  float64                               `json:"version" api:"required"`
-	Filter   InsightListResponseDefinitionFilter   `json:"filter"`
+	// Any of 1.
+	Version float64                             `json:"version" api:"required"`
+	Filter  InsightListResponseDefinitionFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -279,8 +280,9 @@ func (r *InsightListResponseDefinitionMetric) UnmarshalJSON(data []byte) error {
 }
 
 type InsightListResponseDefinitionMetricFilter struct {
-	Filter  InsightListResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                              `json:"version" api:"required"`
+	Filter InsightListResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -554,8 +556,9 @@ func (r *InsightListResponseDefinitionMetricProperty) UnmarshalJSON(data []byte)
 }
 
 type InsightListResponseDefinitionFilter struct {
-	Filter  InsightListResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                        `json:"version" api:"required"`
+	Filter InsightListResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1026,8 +1029,9 @@ type InsightNewResponseDefinition struct {
 	Interval string                               `json:"interval" api:"required"`
 	Kind     constant.Insight                     `json:"kind" default:"insight"`
 	Metrics  []InsightNewResponseDefinitionMetric `json:"metrics" api:"required"`
-	Version  float64                              `json:"version" api:"required"`
-	Filter   InsightNewResponseDefinitionFilter   `json:"filter"`
+	// Any of 1.
+	Version float64                            `json:"version" api:"required"`
+	Filter  InsightNewResponseDefinitionFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -1076,8 +1080,9 @@ func (r *InsightNewResponseDefinitionMetric) UnmarshalJSON(data []byte) error {
 }
 
 type InsightNewResponseDefinitionMetricFilter struct {
-	Filter  InsightNewResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                             `json:"version" api:"required"`
+	Filter InsightNewResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1351,8 +1356,9 @@ func (r *InsightNewResponseDefinitionMetricProperty) UnmarshalJSON(data []byte) 
 }
 
 type InsightNewResponseDefinitionFilter struct {
-	Filter  InsightNewResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                       `json:"version" api:"required"`
+	Filter InsightNewResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1823,8 +1829,9 @@ type InsightGetResponseDefinition struct {
 	Interval string                               `json:"interval" api:"required"`
 	Kind     constant.Insight                     `json:"kind" default:"insight"`
 	Metrics  []InsightGetResponseDefinitionMetric `json:"metrics" api:"required"`
-	Version  float64                              `json:"version" api:"required"`
-	Filter   InsightGetResponseDefinitionFilter   `json:"filter"`
+	// Any of 1.
+	Version float64                            `json:"version" api:"required"`
+	Filter  InsightGetResponseDefinitionFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -1873,8 +1880,9 @@ func (r *InsightGetResponseDefinitionMetric) UnmarshalJSON(data []byte) error {
 }
 
 type InsightGetResponseDefinitionMetricFilter struct {
-	Filter  InsightGetResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                             `json:"version" api:"required"`
+	Filter InsightGetResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2148,8 +2156,9 @@ func (r *InsightGetResponseDefinitionMetricProperty) UnmarshalJSON(data []byte) 
 }
 
 type InsightGetResponseDefinitionFilter struct {
-	Filter  InsightGetResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                       `json:"version" api:"required"`
+	Filter InsightGetResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2620,8 +2629,9 @@ type InsightUpdateResponseDefinition struct {
 	Interval string                                  `json:"interval" api:"required"`
 	Kind     constant.Insight                        `json:"kind" default:"insight"`
 	Metrics  []InsightUpdateResponseDefinitionMetric `json:"metrics" api:"required"`
-	Version  float64                                 `json:"version" api:"required"`
-	Filter   InsightUpdateResponseDefinitionFilter   `json:"filter"`
+	// Any of 1.
+	Version float64                               `json:"version" api:"required"`
+	Filter  InsightUpdateResponseDefinitionFilter `json:"filter"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -2670,8 +2680,9 @@ func (r *InsightUpdateResponseDefinitionMetric) UnmarshalJSON(data []byte) error
 }
 
 type InsightUpdateResponseDefinitionMetricFilter struct {
-	Filter  InsightUpdateResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                `json:"version" api:"required"`
+	Filter InsightUpdateResponseDefinitionMetricFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2945,8 +2956,9 @@ func (r *InsightUpdateResponseDefinitionMetricProperty) UnmarshalJSON(data []byt
 }
 
 type InsightUpdateResponseDefinitionFilter struct {
-	Filter  InsightUpdateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                          `json:"version" api:"required"`
+	Filter InsightUpdateResponseDefinitionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3862,7 +3874,7 @@ type InsightNewParamsDefinition struct {
 	Filter   InsightNewParamsDefinitionFilter   `json:"filter,omitzero"`
 	// This field can be elided, and will marshal its zero value as "insight".
 	Kind constant.Insight `json:"kind" default:"insight"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -3915,7 +3927,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightNewParamsDefinitionMetricFilter struct {
 	Filter InsightNewParamsDefinitionMetricFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4084,7 +4096,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightNewParamsDefinitionFilter struct {
 	Filter InsightNewParamsDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4429,7 +4441,7 @@ type InsightUpdateParamsDefinition struct {
 	Filter   InsightUpdateParamsDefinitionFilter   `json:"filter,omitzero"`
 	// This field can be elided, and will marshal its zero value as "insight".
 	Kind constant.Insight `json:"kind" default:"insight"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4482,7 +4494,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightUpdateParamsDefinitionMetricFilter struct {
 	Filter InsightUpdateParamsDefinitionMetricFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -4651,7 +4663,7 @@ func init() {
 // The properties Filter, Version are required.
 type InsightUpdateParamsDefinitionFilter struct {
 	Filter InsightUpdateParamsDefinitionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }

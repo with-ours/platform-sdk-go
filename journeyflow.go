@@ -244,10 +244,11 @@ func (r *JourneyFlowListResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowListResponseDefinition struct {
-	Anchors            []JourneyFlowListResponseDefinitionAnchor     `json:"anchors" api:"required"`
-	Exploration        JourneyFlowListResponseDefinitionExploration  `json:"exploration" api:"required"`
-	Kind               constant.JourneyFlow                          `json:"kind" default:"journey-flow"`
-	Scope              JourneyFlowListResponseDefinitionScope        `json:"scope" api:"required"`
+	Anchors     []JourneyFlowListResponseDefinitionAnchor    `json:"anchors" api:"required"`
+	Exploration JourneyFlowListResponseDefinitionExploration `json:"exploration" api:"required"`
+	Kind        constant.JourneyFlow                         `json:"kind" default:"journey-flow"`
+	Scope       JourneyFlowListResponseDefinitionScope       `json:"scope" api:"required"`
+	// Any of 1.
 	Version            float64                                       `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowListResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowListResponseDefinitionBreakdown    `json:"breakdown"`
@@ -473,8 +474,9 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject) UnmarshalJSON
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter  JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -757,8 +759,9 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject2) UnmarshalJSO
 }
 
 type JourneyFlowListResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter  JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                    `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1021,8 +1024,9 @@ func (r *JourneyFlowListResponseDefinitionAnchorAlternativeObject2FilterFilterOb
 }
 
 type JourneyFlowListResponseDefinitionAnchorFilter struct {
-	Filter  JourneyFlowListResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                  `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1587,8 +1591,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject) U
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter  JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                               `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -1871,8 +1876,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2) 
 }
 
 type JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter  JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2320,8 +2326,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject) Unmarsha
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter  JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2604,8 +2611,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject2) Unmarsh
 }
 
 type JourneyFlowListResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter  JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                         `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -2868,8 +2876,9 @@ func (r *JourneyFlowListResponseDefinitionExplorationHiddenEventObject2FilterFil
 }
 
 type JourneyFlowListResponseDefinitionExplorationPathFilter struct {
-	Filter  JourneyFlowListResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                           `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3150,8 +3159,9 @@ func (r *JourneyFlowListResponseDefinitionScope) UnmarshalJSON(data []byte) erro
 }
 
 type JourneyFlowListResponseDefinitionScopeSessionFilter struct {
-	Filter  JourneyFlowListResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                        `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3453,8 +3463,9 @@ func (r *JourneyFlowListResponseDefinitionBreakdownProperty) UnmarshalJSON(data 
 }
 
 type JourneyFlowListResponseDefinitionEntryFilter struct {
-	Filter  JourneyFlowListResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                 `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -3894,8 +3905,9 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObject) UnmarshalJSON(
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter  JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4176,8 +4188,9 @@ func (r *JourneyFlowListResponseDefinitionExclusionMatcherObject2) UnmarshalJSON
 }
 
 type JourneyFlowListResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter  JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4650,8 +4663,9 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObject) UnmarshalJ
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter  JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -4934,8 +4948,9 @@ func (r *JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2) Unmarshal
 }
 
 type JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter  JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                       `json:"version" api:"required"`
+	Filter JourneyFlowListResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5323,8 +5338,9 @@ func (r *JourneyFlowListResponseReportContextComparisonDateRange) UnmarshalJSON(
 }
 
 type JourneyFlowListResponseReportContextComparisonEntryFilter struct {
-	Filter  JourneyFlowListResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                              `json:"version" api:"required"`
+	Filter JourneyFlowListResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5587,8 +5603,9 @@ func (r *JourneyFlowListResponseReportContextComparisonEntryFilterFilterObject3V
 }
 
 type JourneyFlowListResponseReportContextComparisonSessionFilter struct {
-	Filter  JourneyFlowListResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                `json:"version" api:"required"`
+	Filter JourneyFlowListResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -5924,10 +5941,11 @@ func (r *JourneyFlowNewResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowNewResponseDefinition struct {
-	Anchors            []JourneyFlowNewResponseDefinitionAnchor     `json:"anchors" api:"required"`
-	Exploration        JourneyFlowNewResponseDefinitionExploration  `json:"exploration" api:"required"`
-	Kind               constant.JourneyFlow                         `json:"kind" default:"journey-flow"`
-	Scope              JourneyFlowNewResponseDefinitionScope        `json:"scope" api:"required"`
+	Anchors     []JourneyFlowNewResponseDefinitionAnchor    `json:"anchors" api:"required"`
+	Exploration JourneyFlowNewResponseDefinitionExploration `json:"exploration" api:"required"`
+	Kind        constant.JourneyFlow                        `json:"kind" default:"journey-flow"`
+	Scope       JourneyFlowNewResponseDefinitionScope       `json:"scope" api:"required"`
+	// Any of 1.
 	Version            float64                                      `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowNewResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowNewResponseDefinitionBreakdown    `json:"breakdown"`
@@ -6153,8 +6171,9 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject) UnmarshalJSON(
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6435,8 +6454,9 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject2) UnmarshalJSON
 }
 
 type JourneyFlowNewResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter  JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -6699,8 +6719,9 @@ func (r *JourneyFlowNewResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowNewResponseDefinitionAnchorFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                 `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7263,8 +7284,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject) Un
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                              `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7547,8 +7569,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2) U
 }
 
 type JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter  JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                               `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -7995,8 +8018,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject) Unmarshal
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                       `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8279,8 +8303,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2) Unmarsha
 }
 
 type JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter  JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8543,8 +8568,9 @@ func (r *JourneyFlowNewResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowNewResponseDefinitionExplorationPathFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                          `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -8825,8 +8851,9 @@ func (r *JourneyFlowNewResponseDefinitionScope) UnmarshalJSON(data []byte) error
 }
 
 type JourneyFlowNewResponseDefinitionScopeSessionFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                       `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9128,8 +9155,9 @@ func (r *JourneyFlowNewResponseDefinitionBreakdownProperty) UnmarshalJSON(data [
 }
 
 type JourneyFlowNewResponseDefinitionEntryFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9565,8 +9593,9 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObject) UnmarshalJSON(d
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                 `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -9847,8 +9876,9 @@ func (r *JourneyFlowNewResponseDefinitionExclusionMatcherObject2) UnmarshalJSON(
 }
 
 type JourneyFlowNewResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter  JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10321,8 +10351,9 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject) UnmarshalJS
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter  JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10605,8 +10636,9 @@ func (r *JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2) UnmarshalJ
 }
 
 type JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter  JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -10994,8 +11026,9 @@ func (r *JourneyFlowNewResponseReportContextComparisonDateRange) UnmarshalJSON(d
 }
 
 type JourneyFlowNewResponseReportContextComparisonEntryFilter struct {
-	Filter  JourneyFlowNewResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                             `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11256,8 +11289,9 @@ func (r *JourneyFlowNewResponseReportContextComparisonEntryFilterFilterObject3Va
 }
 
 type JourneyFlowNewResponseReportContextComparisonSessionFilter struct {
-	Filter  JourneyFlowNewResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter JourneyFlowNewResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -11593,10 +11627,11 @@ func (r *JourneyFlowGetResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowGetResponseDefinition struct {
-	Anchors            []JourneyFlowGetResponseDefinitionAnchor     `json:"anchors" api:"required"`
-	Exploration        JourneyFlowGetResponseDefinitionExploration  `json:"exploration" api:"required"`
-	Kind               constant.JourneyFlow                         `json:"kind" default:"journey-flow"`
-	Scope              JourneyFlowGetResponseDefinitionScope        `json:"scope" api:"required"`
+	Anchors     []JourneyFlowGetResponseDefinitionAnchor    `json:"anchors" api:"required"`
+	Exploration JourneyFlowGetResponseDefinitionExploration `json:"exploration" api:"required"`
+	Kind        constant.JourneyFlow                        `json:"kind" default:"journey-flow"`
+	Scope       JourneyFlowGetResponseDefinitionScope       `json:"scope" api:"required"`
+	// Any of 1.
 	Version            float64                                      `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowGetResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowGetResponseDefinitionBreakdown    `json:"breakdown"`
@@ -11822,8 +11857,9 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject) UnmarshalJSON(
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12104,8 +12140,9 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject2) UnmarshalJSON
 }
 
 type JourneyFlowGetResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter  JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                   `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12368,8 +12405,9 @@ func (r *JourneyFlowGetResponseDefinitionAnchorAlternativeObject2FilterFilterObj
 }
 
 type JourneyFlowGetResponseDefinitionAnchorFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                 `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -12932,8 +12970,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject) Un
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                              `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13216,8 +13255,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2) U
 }
 
 type JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter  JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                               `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13664,8 +13704,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject) Unmarshal
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                       `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -13948,8 +13989,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2) Unmarsha
 }
 
 type JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter  JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14212,8 +14254,9 @@ func (r *JourneyFlowGetResponseDefinitionExplorationHiddenEventObject2FilterFilt
 }
 
 type JourneyFlowGetResponseDefinitionExplorationPathFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                          `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14494,8 +14537,9 @@ func (r *JourneyFlowGetResponseDefinitionScope) UnmarshalJSON(data []byte) error
 }
 
 type JourneyFlowGetResponseDefinitionScopeSessionFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                       `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -14797,8 +14841,9 @@ func (r *JourneyFlowGetResponseDefinitionBreakdownProperty) UnmarshalJSON(data [
 }
 
 type JourneyFlowGetResponseDefinitionEntryFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15234,8 +15279,9 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObject) UnmarshalJSON(d
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                 `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15516,8 +15562,9 @@ func (r *JourneyFlowGetResponseDefinitionExclusionMatcherObject2) UnmarshalJSON(
 }
 
 type JourneyFlowGetResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter  JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -15990,8 +16037,9 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject) UnmarshalJS
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter  JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16274,8 +16322,9 @@ func (r *JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2) UnmarshalJ
 }
 
 type JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter  JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16663,8 +16712,9 @@ func (r *JourneyFlowGetResponseReportContextComparisonDateRange) UnmarshalJSON(d
 }
 
 type JourneyFlowGetResponseReportContextComparisonEntryFilter struct {
-	Filter  JourneyFlowGetResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                             `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -16925,8 +16975,9 @@ func (r *JourneyFlowGetResponseReportContextComparisonEntryFilterFilterObject3Va
 }
 
 type JourneyFlowGetResponseReportContextComparisonSessionFilter struct {
-	Filter  JourneyFlowGetResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                               `json:"version" api:"required"`
+	Filter JourneyFlowGetResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -17262,10 +17313,11 @@ func (r *JourneyFlowUpdateResponse) UnmarshalJSON(data []byte) error {
 // counting, scope, and exploration settings. Selecting specific sourceIds also
 // requires source:view permission.
 type JourneyFlowUpdateResponseDefinition struct {
-	Anchors            []JourneyFlowUpdateResponseDefinitionAnchor     `json:"anchors" api:"required"`
-	Exploration        JourneyFlowUpdateResponseDefinitionExploration  `json:"exploration" api:"required"`
-	Kind               constant.JourneyFlow                            `json:"kind" default:"journey-flow"`
-	Scope              JourneyFlowUpdateResponseDefinitionScope        `json:"scope" api:"required"`
+	Anchors     []JourneyFlowUpdateResponseDefinitionAnchor    `json:"anchors" api:"required"`
+	Exploration JourneyFlowUpdateResponseDefinitionExploration `json:"exploration" api:"required"`
+	Kind        constant.JourneyFlow                           `json:"kind" default:"journey-flow"`
+	Scope       JourneyFlowUpdateResponseDefinitionScope       `json:"scope" api:"required"`
+	// Any of 1.
 	Version            float64                                         `json:"version" api:"required"`
 	AnchorFilter       JourneyFlowUpdateResponseDefinitionAnchorFilter `json:"anchorFilter"`
 	Breakdown          JourneyFlowUpdateResponseDefinitionBreakdown    `json:"breakdown"`
@@ -17497,8 +17549,9 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject) UnmarshalJS
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -17781,8 +17834,9 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2) UnmarshalJ
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2Filter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                      `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18045,8 +18099,9 @@ func (r *JourneyFlowUpdateResponseDefinitionAnchorAlternativeObject2FilterFilter
 }
 
 type JourneyFlowUpdateResponseDefinitionAnchorFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                    `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionAnchorFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18615,8 +18670,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject)
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                 `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -18899,8 +18955,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2Filter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19350,8 +19407,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject) Unmars
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                          `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19634,8 +19692,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2) Unmar
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2Filter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                           `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -19898,8 +19957,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExplorationHiddenEventObject2FilterF
 }
 
 type JourneyFlowUpdateResponseDefinitionExplorationPathFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                             `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExplorationPathFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20180,8 +20240,9 @@ func (r *JourneyFlowUpdateResponseDefinitionScope) UnmarshalJSON(data []byte) er
 }
 
 type JourneyFlowUpdateResponseDefinitionScopeSessionFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                          `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionScopeSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20483,8 +20544,9 @@ func (r *JourneyFlowUpdateResponseDefinitionBreakdownProperty) UnmarshalJSON(dat
 }
 
 type JourneyFlowUpdateResponseDefinitionEntryFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                   `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -20930,8 +20992,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObject) UnmarshalJSO
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                    `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21214,8 +21277,9 @@ func (r *JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2) UnmarshalJS
 }
 
 type JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2Filter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                     `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21689,8 +21753,9 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject) Unmarsha
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                        `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -21973,8 +22038,9 @@ func (r *JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2) Unmarsh
 }
 
 type JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2Filter struct {
-	Filter  JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                         `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22364,8 +22430,9 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonDateRange) UnmarshalJSO
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonEntryFilter struct {
-	Filter  JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -22628,8 +22695,9 @@ func (r *JourneyFlowUpdateResponseReportContextComparisonEntryFilterFilterObject
 }
 
 type JourneyFlowUpdateResponseReportContextComparisonSessionFilter struct {
-	Filter  JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
-	Version float64                                                                  `json:"version" api:"required"`
+	Filter JourneyFlowUpdateResponseReportContextComparisonSessionFilterFilterUnion `json:"filter" api:"required"`
+	// Any of 1.
+	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Filter      respjson.Field
@@ -30336,7 +30404,7 @@ type JourneyFlowNewParamsDefinition struct {
 	Reentry string `json:"reentry,omitzero"`
 	// This field can be elided, and will marshal its zero value as "journey-flow".
 	Kind constant.JourneyFlow `json:"kind" default:"journey-flow"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -30414,7 +30482,7 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObject) UnmarshalJSON(da
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -30575,7 +30643,7 @@ func (r *JourneyFlowNewParamsDefinitionAnchorAlternativeObject2) UnmarshalJSON(d
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionAnchorAlternativeObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -30720,7 +30788,7 @@ func (u *JourneyFlowNewParamsDefinitionAnchorAlternativeObject2FilterFilterObjec
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionAnchorFilter struct {
 	Filter JourneyFlowNewParamsDefinitionAnchorFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -30998,7 +31066,7 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject) Unma
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31159,7 +31227,7 @@ func (r *JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2) Unm
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31358,7 +31426,7 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject) UnmarshalJS
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31519,7 +31587,7 @@ func (r *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2) UnmarshalJ
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31664,7 +31732,7 @@ func (u *JourneyFlowNewParamsDefinitionExplorationHiddenEventObject2FilterFilter
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExplorationPathFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExplorationPathFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -31825,7 +31893,7 @@ func (r *JourneyFlowNewParamsDefinitionScope) UnmarshalJSON(data []byte) error {
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionScopeSessionFilter struct {
 	Filter JourneyFlowNewParamsDefinitionScopeSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32009,7 +32077,7 @@ func init() {
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionEntryFilter struct {
 	Filter JourneyFlowNewParamsDefinitionEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32204,7 +32272,7 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObject) UnmarshalJSON(dat
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32365,7 +32433,7 @@ func (r *JourneyFlowNewParamsDefinitionExclusionMatcherObject2) UnmarshalJSON(da
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionExclusionMatcherObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32583,7 +32651,7 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject) UnmarshalJSON
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilter struct {
 	Filter JourneyFlowNewParamsDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -32744,7 +32812,7 @@ func (r *JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2) UnmarshalJSO
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2Filter struct {
 	Filter JourneyFlowNewParamsDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33002,7 +33070,7 @@ func (r *JourneyFlowNewParamsReportContextComparisonDateRange) UnmarshalJSON(dat
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsReportContextComparisonEntryFilter struct {
 	Filter JourneyFlowNewParamsReportContextComparisonEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33147,7 +33215,7 @@ func (u *JourneyFlowNewParamsReportContextComparisonEntryFilterFilterObject3Valu
 // The properties Filter, Version are required.
 type JourneyFlowNewParamsReportContextComparisonSessionFilter struct {
 	Filter JourneyFlowNewParamsReportContextComparisonSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33366,7 +33434,7 @@ type JourneyFlowUpdateParamsDefinition struct {
 	Reentry string `json:"reentry,omitzero"`
 	// This field can be elided, and will marshal its zero value as "journey-flow".
 	Kind constant.JourneyFlow `json:"kind" default:"journey-flow"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33444,7 +33512,7 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject) UnmarshalJSON
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionAnchorAlternativeObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33605,7 +33673,7 @@ func (r *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2) UnmarshalJSO
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -33750,7 +33818,7 @@ func (u *JourneyFlowUpdateParamsDefinitionAnchorAlternativeObject2FilterFilterOb
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionAnchorFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionAnchorFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34028,7 +34096,7 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject) U
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34189,7 +34257,7 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2) 
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationFocusObjectMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34388,7 +34456,7 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject) Unmarsha
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34549,7 +34617,7 @@ func (r *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2) Unmarsh
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34694,7 +34762,7 @@ func (u *JourneyFlowUpdateParamsDefinitionExplorationHiddenEventObject2FilterFil
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExplorationPathFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExplorationPathFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -34855,7 +34923,7 @@ func (r *JourneyFlowUpdateParamsDefinitionScope) UnmarshalJSON(data []byte) erro
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionScopeSessionFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionScopeSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35039,7 +35107,7 @@ func init() {
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionEntryFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35234,7 +35302,7 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObject) UnmarshalJSON(
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExclusionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35395,7 +35463,7 @@ func (r *JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2) UnmarshalJSON
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionExclusionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35613,7 +35681,7 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject) UnmarshalJ
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilter struct {
 	Filter JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObjectFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -35774,7 +35842,7 @@ func (r *JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2) Unmarshal
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2Filter struct {
 	Filter JourneyFlowUpdateParamsDefinitionNodeExpansionMatcherObject2FilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36032,7 +36100,7 @@ func (r *JourneyFlowUpdateParamsReportContextComparisonDateRange) UnmarshalJSON(
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsReportContextComparisonEntryFilter struct {
 	Filter JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
@@ -36177,7 +36245,7 @@ func (u *JourneyFlowUpdateParamsReportContextComparisonEntryFilterFilterObject3V
 // The properties Filter, Version are required.
 type JourneyFlowUpdateParamsReportContextComparisonSessionFilter struct {
 	Filter JourneyFlowUpdateParamsReportContextComparisonSessionFilterFilterUnion `json:"filter,omitzero" api:"required"`
-	// This field can be elided, and will marshal its zero value as 1.
+	// Any of 1.
 	Version float64 `json:"version,omitzero" api:"required"`
 	paramObj
 }
