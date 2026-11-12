@@ -54,7 +54,6 @@ func TestInsightNewWithOptionalParams(t *testing.T) {
 	_, err := client.Insights.New(context.TODO(), oursprivacy.InsightNewParams{
 		Definition: oursprivacy.InsightNewParamsDefinition{
 			Interval: "day",
-			Kind:     "insight",
 			Metrics: []oursprivacy.InsightNewParamsDefinitionMetric{{
 				ID:          "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				Aggregation: "event_count",
@@ -70,9 +69,8 @@ func TestInsightNewWithOptionalParams(t *testing.T) {
 					Version: 1,
 				},
 				Property: oursprivacy.InsightNewParamsDefinitionMetricProperty{
-					Path:     []string{"x"},
-					Property: "event.properties",
-					Type:     "number",
+					Path: []string{"x"},
+					Type: "number",
 				},
 			}},
 			Version: 1,
@@ -165,7 +163,6 @@ func TestInsightUpdateWithOptionalParams(t *testing.T) {
 			ExpectedRevision: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Definition: oursprivacy.InsightUpdateParamsDefinition{
 				Interval: "day",
-				Kind:     "insight",
 				Metrics: []oursprivacy.InsightUpdateParamsDefinitionMetric{{
 					ID:          "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 					Aggregation: "event_count",
@@ -181,9 +178,8 @@ func TestInsightUpdateWithOptionalParams(t *testing.T) {
 						Version: 1,
 					},
 					Property: oursprivacy.InsightUpdateParamsDefinitionMetricProperty{
-						Path:     []string{"x"},
-						Property: "event.properties",
-						Type:     "number",
+						Path: []string{"x"},
+						Type: "number",
 					},
 				}},
 				Version: 1,

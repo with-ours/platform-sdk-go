@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.16.0 (2026-11-12)
+
+Full Changelog: [v2.15.0...v2.16.0](https://github.com/with-ours/platform-sdk-go/compare/v2.15.0...v2.16.0)
+
+### Features
+
+* **api:** API update.
 ## 2.15.0 (2026-11-11)
 
 Full Changelog: [v2.14.0...v2.15.0](https://github.com/with-ours/platform-sdk-go/compare/v2.14.0...v2.15.0)
