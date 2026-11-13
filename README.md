@@ -26,7 +26,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/with-ours/platform-sdk-go/v2@v2.18.0'
+go get -u 'github.com/with-ours/platform-sdk-go/v2@v2.19.0'
 ```
 
 <!-- x-release-please-end -->
@@ -49,6 +49,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/with-ours/platform-sdk-go/v2"
 	"github.com/with-ours/platform-sdk-go/v2/option"
@@ -56,7 +57,7 @@ import (
 
 func main() {
 	client := oursprivacy.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
+		option.WithAPIKey(os.Getenv("OURS_PRIVACY_API_KEY")), // This is the default and can be omitted
 	)
 	page, err := client.Sources.List(context.TODO(), oursprivacy.SourceListParams{
 		Limit: oursprivacy.Int(20),
@@ -79,6 +80,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/with-ours/platform-sdk-go/v2"
 	"github.com/with-ours/platform-sdk-go/v2/option"
@@ -86,7 +88,7 @@ import (
 
 func main() {
 	client := oursprivacy.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
+		option.WithAPIKey(os.Getenv("OURS_PRIVACY_API_KEY")), // This is the default and can be omitted
 	)
 	response, err := client.Sources.Tokens(context.TODO(), "YOUR_SOURCE_ID")
 	if err != nil {
@@ -107,6 +109,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/with-ours/platform-sdk-go/v2"
 	"github.com/with-ours/platform-sdk-go/v2/option"
@@ -114,7 +117,7 @@ import (
 
 func main() {
 	client := oursprivacy.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("OURS_PRIVACY_API_KEY")
+		option.WithAPIKey(os.Getenv("OURS_PRIVACY_API_KEY")), // This is the default and can be omitted
 	)
 	response, err := client.Destinations.Health(context.TODO(), "YOUR_DESTINATION_ID")
 	if err != nil {
