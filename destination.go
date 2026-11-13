@@ -167,10 +167,10 @@ type DestinationListResponse struct {
 	// audience-sync types that are not creatable through POST /rest/v1/destinations.
 	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "Affiliatly", "AmazonDSP",
-	// "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob",
-	// "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest",
-	// "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
+	// "ActiveCampaignApi", "AdRollCAPI", "Admitad", "AdobeAnalytics", "Affiliatly",
+	// "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook",
+	// "AzureBlob", "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb",
+	// "BingRest", "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
 	// "DatabricksWarehouse", "DomoWarehouse", "Everflow", "Facebook",
 	// "FacebookAudience", "FloodlightSGTM", "FullContact", "Fullstory", "G4Analytics",
 	// "GA4MeasurementProtocol", "GA4ServerProxy", "Google", "GoogleAds360",
@@ -185,7 +185,7 @@ type DestinationListResponse struct {
 	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "Trybe", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience",
-	// "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Woopra", "XAds", "XAdsV2", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationListResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                         `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                       `json:"limitedToSourceIds" api:"nullable"`
@@ -232,6 +232,7 @@ const (
 	DestinationListResponseTypeAwss3                        DestinationListResponseType = "AWSS3"
 	DestinationListResponseTypeAwssns                       DestinationListResponseType = "AWSSNS"
 	DestinationListResponseTypeActiveCampaignAPI            DestinationListResponseType = "ActiveCampaignApi"
+	DestinationListResponseTypeAdRollCapi                   DestinationListResponseType = "AdRollCAPI"
 	DestinationListResponseTypeAdmitad                      DestinationListResponseType = "Admitad"
 	DestinationListResponseTypeAdobeAnalytics               DestinationListResponseType = "AdobeAnalytics"
 	DestinationListResponseTypeAffiliatly                   DestinationListResponseType = "Affiliatly"
@@ -321,6 +322,7 @@ const (
 	DestinationListResponseTypeVibeAudience                 DestinationListResponseType = "VibeAudience"
 	DestinationListResponseTypeWoopra                       DestinationListResponseType = "Woopra"
 	DestinationListResponseTypeXAds                         DestinationListResponseType = "XAds"
+	DestinationListResponseTypeXAdsV2                       DestinationListResponseType = "XAdsV2"
 	DestinationListResponseTypeYelpCapi                     DestinationListResponseType = "YelpCAPI"
 	DestinationListResponseTypeZendesk                      DestinationListResponseType = "Zendesk"
 	DestinationListResponseTypeZohoCRM                      DestinationListResponseType = "ZohoCRM"
@@ -397,10 +399,10 @@ type DestinationNewResponse struct {
 	// audience-sync types that are not creatable through POST /rest/v1/destinations.
 	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "Affiliatly", "AmazonDSP",
-	// "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob",
-	// "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest",
-	// "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
+	// "ActiveCampaignApi", "AdRollCAPI", "Admitad", "AdobeAnalytics", "Affiliatly",
+	// "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook",
+	// "AzureBlob", "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb",
+	// "BingRest", "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
 	// "DatabricksWarehouse", "DomoWarehouse", "Everflow", "Facebook",
 	// "FacebookAudience", "FloodlightSGTM", "FullContact", "Fullstory", "G4Analytics",
 	// "GA4MeasurementProtocol", "GA4ServerProxy", "Google", "GoogleAds360",
@@ -415,7 +417,7 @@ type DestinationNewResponse struct {
 	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "Trybe", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience",
-	// "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Woopra", "XAds", "XAdsV2", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationNewResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                      `json:"limitedToSourceIds" api:"nullable"`
@@ -462,6 +464,7 @@ const (
 	DestinationNewResponseTypeAwss3                        DestinationNewResponseType = "AWSS3"
 	DestinationNewResponseTypeAwssns                       DestinationNewResponseType = "AWSSNS"
 	DestinationNewResponseTypeActiveCampaignAPI            DestinationNewResponseType = "ActiveCampaignApi"
+	DestinationNewResponseTypeAdRollCapi                   DestinationNewResponseType = "AdRollCAPI"
 	DestinationNewResponseTypeAdmitad                      DestinationNewResponseType = "Admitad"
 	DestinationNewResponseTypeAdobeAnalytics               DestinationNewResponseType = "AdobeAnalytics"
 	DestinationNewResponseTypeAffiliatly                   DestinationNewResponseType = "Affiliatly"
@@ -551,6 +554,7 @@ const (
 	DestinationNewResponseTypeVibeAudience                 DestinationNewResponseType = "VibeAudience"
 	DestinationNewResponseTypeWoopra                       DestinationNewResponseType = "Woopra"
 	DestinationNewResponseTypeXAds                         DestinationNewResponseType = "XAds"
+	DestinationNewResponseTypeXAdsV2                       DestinationNewResponseType = "XAdsV2"
 	DestinationNewResponseTypeYelpCapi                     DestinationNewResponseType = "YelpCAPI"
 	DestinationNewResponseTypeZendesk                      DestinationNewResponseType = "Zendesk"
 	DestinationNewResponseTypeZohoCRM                      DestinationNewResponseType = "ZohoCRM"
@@ -627,10 +631,10 @@ type DestinationGetResponse struct {
 	// audience-sync types that are not creatable through POST /rest/v1/destinations.
 	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "Affiliatly", "AmazonDSP",
-	// "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob",
-	// "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest",
-	// "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
+	// "ActiveCampaignApi", "AdRollCAPI", "Admitad", "AdobeAnalytics", "Affiliatly",
+	// "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook",
+	// "AzureBlob", "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb",
+	// "BingRest", "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
 	// "DatabricksWarehouse", "DomoWarehouse", "Everflow", "Facebook",
 	// "FacebookAudience", "FloodlightSGTM", "FullContact", "Fullstory", "G4Analytics",
 	// "GA4MeasurementProtocol", "GA4ServerProxy", "Google", "GoogleAds360",
@@ -645,7 +649,7 @@ type DestinationGetResponse struct {
 	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "Trybe", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience",
-	// "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Woopra", "XAds", "XAdsV2", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationGetResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                        `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                      `json:"limitedToSourceIds" api:"nullable"`
@@ -692,6 +696,7 @@ const (
 	DestinationGetResponseTypeAwss3                        DestinationGetResponseType = "AWSS3"
 	DestinationGetResponseTypeAwssns                       DestinationGetResponseType = "AWSSNS"
 	DestinationGetResponseTypeActiveCampaignAPI            DestinationGetResponseType = "ActiveCampaignApi"
+	DestinationGetResponseTypeAdRollCapi                   DestinationGetResponseType = "AdRollCAPI"
 	DestinationGetResponseTypeAdmitad                      DestinationGetResponseType = "Admitad"
 	DestinationGetResponseTypeAdobeAnalytics               DestinationGetResponseType = "AdobeAnalytics"
 	DestinationGetResponseTypeAffiliatly                   DestinationGetResponseType = "Affiliatly"
@@ -781,6 +786,7 @@ const (
 	DestinationGetResponseTypeVibeAudience                 DestinationGetResponseType = "VibeAudience"
 	DestinationGetResponseTypeWoopra                       DestinationGetResponseType = "Woopra"
 	DestinationGetResponseTypeXAds                         DestinationGetResponseType = "XAds"
+	DestinationGetResponseTypeXAdsV2                       DestinationGetResponseType = "XAdsV2"
 	DestinationGetResponseTypeYelpCapi                     DestinationGetResponseType = "YelpCAPI"
 	DestinationGetResponseTypeZendesk                      DestinationGetResponseType = "Zendesk"
 	DestinationGetResponseTypeZohoCRM                      DestinationGetResponseType = "ZohoCRM"
@@ -857,10 +863,10 @@ type DestinationUpdateResponse struct {
 	// audience-sync types that are not creatable through POST /rest/v1/destinations.
 	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "Affiliatly", "AmazonDSP",
-	// "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob",
-	// "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest",
-	// "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
+	// "ActiveCampaignApi", "AdRollCAPI", "Admitad", "AdobeAnalytics", "Affiliatly",
+	// "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook",
+	// "AzureBlob", "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb",
+	// "BingRest", "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
 	// "DatabricksWarehouse", "DomoWarehouse", "Everflow", "Facebook",
 	// "FacebookAudience", "FloodlightSGTM", "FullContact", "Fullstory", "G4Analytics",
 	// "GA4MeasurementProtocol", "GA4ServerProxy", "Google", "GoogleAds360",
@@ -875,7 +881,7 @@ type DestinationUpdateResponse struct {
 	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "Trybe", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience",
-	// "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Woopra", "XAds", "XAdsV2", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type               DestinationUpdateResponseType                    `json:"type" api:"required"`
 	HashingSalt        string                                           `json:"hashingSalt" api:"nullable"`
 	LimitedToSourceIDs []string                                         `json:"limitedToSourceIds" api:"nullable"`
@@ -922,6 +928,7 @@ const (
 	DestinationUpdateResponseTypeAwss3                        DestinationUpdateResponseType = "AWSS3"
 	DestinationUpdateResponseTypeAwssns                       DestinationUpdateResponseType = "AWSSNS"
 	DestinationUpdateResponseTypeActiveCampaignAPI            DestinationUpdateResponseType = "ActiveCampaignApi"
+	DestinationUpdateResponseTypeAdRollCapi                   DestinationUpdateResponseType = "AdRollCAPI"
 	DestinationUpdateResponseTypeAdmitad                      DestinationUpdateResponseType = "Admitad"
 	DestinationUpdateResponseTypeAdobeAnalytics               DestinationUpdateResponseType = "AdobeAnalytics"
 	DestinationUpdateResponseTypeAffiliatly                   DestinationUpdateResponseType = "Affiliatly"
@@ -1011,6 +1018,7 @@ const (
 	DestinationUpdateResponseTypeVibeAudience                 DestinationUpdateResponseType = "VibeAudience"
 	DestinationUpdateResponseTypeWoopra                       DestinationUpdateResponseType = "Woopra"
 	DestinationUpdateResponseTypeXAds                         DestinationUpdateResponseType = "XAds"
+	DestinationUpdateResponseTypeXAdsV2                       DestinationUpdateResponseType = "XAdsV2"
 	DestinationUpdateResponseTypeYelpCapi                     DestinationUpdateResponseType = "YelpCAPI"
 	DestinationUpdateResponseTypeZendesk                      DestinationUpdateResponseType = "Zendesk"
 	DestinationUpdateResponseTypeZohoCRM                      DestinationUpdateResponseType = "ZohoCRM"
@@ -1103,14 +1111,15 @@ type DestinationTypesResponseEntity struct {
 	// "GA4MeasurementProtocol", "GoogleAds360", "Facebook", "Mixpanel", "Amplitude",
 	// "TikTok", "Reddit", "RedditCapiV3", "Podscribe", "Pinterest", "Mailchimp",
 	// "AWSKinesis", "AWSLambda", "AWSSNS", "GooglePubSub", "LinkedInAdsCAPI",
-	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds",
-	// "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari", "TatariCAPI", "Viant",
-	// "ViantCAPI", "Impact", "Spotify", "Taboola", "AmazonDSP", "AppLovin",
-	// "IHeartMediaMagellan", "Vibe", "GoogleDataManagerEventIngest", "Zendesk",
-	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
-	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
-	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared", "Trybe", "Affiliatly".
+	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "XAdsV2",
+	// "QuoraAds", "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari",
+	// "TatariCAPI", "Viant", "ViantCAPI", "Impact", "Spotify", "Taboola", "AmazonDSP",
+	// "AppLovin", "IHeartMediaMagellan", "Vibe", "GoogleDataManagerEventIngest",
+	// "Zendesk", "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO",
+	// "Attentive", "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow",
+	// "BeeswaxPostback", "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI",
+	// "AdRollCAPI", "MNTN", "ZohoCRM", "Rokt", "Fullstory", "GravityCAPI",
+	// "LeadSquared", "Trybe", "Affiliatly".
 	ID           string                                       `json:"id" api:"required"`
 	Capabilities DestinationTypesResponseEntityCapabilities   `json:"capabilities" api:"required"`
 	Label        string                                       `json:"label" api:"required"`
@@ -1471,10 +1480,10 @@ type DestinationListParams struct {
 	// Filter destinations by destination type.
 	//
 	// Any of "AWSEventBridge", "AWSKinesis", "AWSLambda", "AWSS3", "AWSSNS",
-	// "ActiveCampaignApi", "Admitad", "AdobeAnalytics", "Affiliatly", "AmazonDSP",
-	// "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook", "AzureBlob",
-	// "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb", "BingRest",
-	// "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
+	// "ActiveCampaignApi", "AdRollCAPI", "Admitad", "AdobeAnalytics", "Affiliatly",
+	// "AmazonDSP", "Amplitude", "AppLovin", "ArtsAI", "Attentive", "Audiohook",
+	// "AzureBlob", "BasisPostback", "BeeswaxPostback", "BingAds", "BingAdsWeb",
+	// "BingRest", "Braze", "BrazeAudience", "ConvertABTestingEvent", "Customerio",
 	// "DatabricksWarehouse", "DomoWarehouse", "Everflow", "Facebook",
 	// "FacebookAudience", "FloodlightSGTM", "FullContact", "Fullstory", "G4Analytics",
 	// "GA4MeasurementProtocol", "GA4ServerProxy", "Google", "GoogleAds360",
@@ -1489,7 +1498,7 @@ type DestinationListParams struct {
 	// "Reddit", "RedditCapiV3", "Rokt", "RokuCAPI", "SnapchatAdsCapi", "Spotify",
 	// "StackAdaptAPI", "Taboola", "Tatari", "TatariCAPI", "TheTradeDesk", "TikTok",
 	// "Trybe", "UniversalAds", "VWO", "Viant", "ViantCAPI", "Vibe", "VibeAudience",
-	// "Woopra", "XAds", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
+	// "Woopra", "XAds", "XAdsV2", "YelpCAPI", "Zendesk", "ZohoCRM", "ZoomInfo".
 	Type DestinationListParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
@@ -1520,6 +1529,7 @@ const (
 	DestinationListParamsTypeAwss3                        DestinationListParamsType = "AWSS3"
 	DestinationListParamsTypeAwssns                       DestinationListParamsType = "AWSSNS"
 	DestinationListParamsTypeActiveCampaignAPI            DestinationListParamsType = "ActiveCampaignApi"
+	DestinationListParamsTypeAdRollCapi                   DestinationListParamsType = "AdRollCAPI"
 	DestinationListParamsTypeAdmitad                      DestinationListParamsType = "Admitad"
 	DestinationListParamsTypeAdobeAnalytics               DestinationListParamsType = "AdobeAnalytics"
 	DestinationListParamsTypeAffiliatly                   DestinationListParamsType = "Affiliatly"
@@ -1609,6 +1619,7 @@ const (
 	DestinationListParamsTypeVibeAudience                 DestinationListParamsType = "VibeAudience"
 	DestinationListParamsTypeWoopra                       DestinationListParamsType = "Woopra"
 	DestinationListParamsTypeXAds                         DestinationListParamsType = "XAds"
+	DestinationListParamsTypeXAdsV2                       DestinationListParamsType = "XAdsV2"
 	DestinationListParamsTypeYelpCapi                     DestinationListParamsType = "YelpCAPI"
 	DestinationListParamsTypeZendesk                      DestinationListParamsType = "Zendesk"
 	DestinationListParamsTypeZohoCRM                      DestinationListParamsType = "ZohoCRM"
@@ -1630,14 +1641,15 @@ type DestinationNewParams struct {
 	// "GA4MeasurementProtocol", "GoogleAds360", "Facebook", "Mixpanel", "Amplitude",
 	// "TikTok", "Reddit", "RedditCapiV3", "Podscribe", "Pinterest", "Mailchimp",
 	// "AWSKinesis", "AWSLambda", "AWSSNS", "GooglePubSub", "LinkedInAdsCAPI",
-	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "QuoraAds",
-	// "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari", "TatariCAPI", "Viant",
-	// "ViantCAPI", "Impact", "Spotify", "Taboola", "AmazonDSP", "AppLovin",
-	// "IHeartMediaMagellan", "Vibe", "GoogleDataManagerEventIngest", "Zendesk",
-	// "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO", "Attentive",
-	// "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow", "BeeswaxPostback",
-	// "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI", "MNTN", "ZohoCRM",
-	// "Rokt", "Fullstory", "GravityCAPI", "LeadSquared", "Trybe", "Affiliatly".
+	// "ActiveCampaignApi", "StackAdaptAPI", "Hubspot", "Klaviyo", "XAds", "XAdsV2",
+	// "QuoraAds", "SnapchatAdsCapi", "Partnerize", "NextdoorAds", "Tatari",
+	// "TatariCAPI", "Viant", "ViantCAPI", "Impact", "Spotify", "Taboola", "AmazonDSP",
+	// "AppLovin", "IHeartMediaMagellan", "Vibe", "GoogleDataManagerEventIngest",
+	// "Zendesk", "Iterable", "ArtsAI", "QuantcastCAPI", "FloodlightSGTM", "VWO",
+	// "Attentive", "Admitad", "Plausible", "PostHog", "RokuCAPI", "Everflow",
+	// "BeeswaxPostback", "AdobeAnalytics", "UniversalAds", "OpenAIAds", "YelpCAPI",
+	// "AdRollCAPI", "MNTN", "ZohoCRM", "Rokt", "Fullstory", "GravityCAPI",
+	// "LeadSquared", "Trybe", "Affiliatly".
 	Type DestinationNewParamsType `json:"type,omitzero" api:"required"`
 	// Human-readable label shown in dashboards. Defaults to the type name when
 	// omitted.
@@ -1718,6 +1730,7 @@ const (
 	DestinationNewParamsTypeHubspot                      DestinationNewParamsType = "Hubspot"
 	DestinationNewParamsTypeKlaviyo                      DestinationNewParamsType = "Klaviyo"
 	DestinationNewParamsTypeXAds                         DestinationNewParamsType = "XAds"
+	DestinationNewParamsTypeXAdsV2                       DestinationNewParamsType = "XAdsV2"
 	DestinationNewParamsTypeQuoraAds                     DestinationNewParamsType = "QuoraAds"
 	DestinationNewParamsTypeSnapchatAdsCapi              DestinationNewParamsType = "SnapchatAdsCapi"
 	DestinationNewParamsTypePartnerize                   DestinationNewParamsType = "Partnerize"
@@ -1751,6 +1764,7 @@ const (
 	DestinationNewParamsTypeUniversalAds                 DestinationNewParamsType = "UniversalAds"
 	DestinationNewParamsTypeOpenAIAds                    DestinationNewParamsType = "OpenAIAds"
 	DestinationNewParamsTypeYelpCapi                     DestinationNewParamsType = "YelpCAPI"
+	DestinationNewParamsTypeAdRollCapi                   DestinationNewParamsType = "AdRollCAPI"
 	DestinationNewParamsTypeMntn                         DestinationNewParamsType = "MNTN"
 	DestinationNewParamsTypeZohoCRM                      DestinationNewParamsType = "ZohoCRM"
 	DestinationNewParamsTypeRokt                         DestinationNewParamsType = "Rokt"
