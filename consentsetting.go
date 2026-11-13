@@ -555,16 +555,16 @@ type ConsentSettingListResponseEntityDefaultTranslationValueConsentModal struct 
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1170,16 +1170,16 @@ type ConsentSettingListResponseEntityRegionRuleTranslationValueConsentModal stru
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -1891,16 +1891,16 @@ type ConsentSettingNewResponseDefaultTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -2498,16 +2498,16 @@ type ConsentSettingNewResponseRegionRuleTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3226,16 +3226,16 @@ type ConsentSettingGetResponseDefaultTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -3833,16 +3833,16 @@ type ConsentSettingGetResponseRegionRuleTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -4561,16 +4561,16 @@ type ConsentSettingReplaceResponseDefaultTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5174,16 +5174,16 @@ type ConsentSettingReplaceResponseRegionRuleTranslationValueConsentModal struct 
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -5904,16 +5904,16 @@ type ConsentSettingUpdateResponseDefaultTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -6515,16 +6515,16 @@ type ConsentSettingUpdateResponseRegionRuleTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7245,16 +7245,16 @@ type ConsentSettingDeleteResponseDefaultTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7856,16 +7856,16 @@ type ConsentSettingDeleteResponseRegionRuleTranslationValueConsentModal struct {
 	GpcNotification string `json:"gpcNotification" api:"nullable"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel string `json:"privacyPolicyLabel" api:"nullable"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL string `json:"privacyPolicyUrl" api:"nullable"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage string `json:"revisionMessage" api:"nullable"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel string `json:"termsOfServiceLabel" api:"nullable"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL string `json:"termsOfServiceUrl" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -8932,16 +8932,16 @@ type ConsentSettingReplaceParamsDefaultTranslationValueConsentModal struct {
 	GpcNotification param.Opt[string] `json:"gpcNotification,omitzero"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel param.Opt[string] `json:"privacyPolicyLabel,omitzero"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL param.Opt[string] `json:"privacyPolicyUrl,omitzero"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage param.Opt[string] `json:"revisionMessage,omitzero"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel param.Opt[string] `json:"termsOfServiceLabel,omitzero"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL param.Opt[string] `json:"termsOfServiceUrl,omitzero"`
 	paramObj
 }
@@ -9442,16 +9442,16 @@ type ConsentSettingReplaceParamsRegionRuleTranslationValueConsentModal struct {
 	GpcNotification param.Opt[string] `json:"gpcNotification,omitzero"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel param.Opt[string] `json:"privacyPolicyLabel,omitzero"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL param.Opt[string] `json:"privacyPolicyUrl,omitzero"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage param.Opt[string] `json:"revisionMessage,omitzero"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel param.Opt[string] `json:"termsOfServiceLabel,omitzero"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL param.Opt[string] `json:"termsOfServiceUrl,omitzero"`
 	paramObj
 }
@@ -10034,16 +10034,16 @@ type ConsentSettingUpdateParamsDefaultTranslationValueConsentModal struct {
 	GpcNotification param.Opt[string] `json:"gpcNotification,omitzero"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel param.Opt[string] `json:"privacyPolicyLabel,omitzero"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL param.Opt[string] `json:"privacyPolicyUrl,omitzero"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage param.Opt[string] `json:"revisionMessage,omitzero"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel param.Opt[string] `json:"termsOfServiceLabel,omitzero"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL param.Opt[string] `json:"termsOfServiceUrl,omitzero"`
 	paramObj
 }
@@ -10544,16 +10544,16 @@ type ConsentSettingUpdateParamsRegionRuleTranslationValueConsentModal struct {
 	GpcNotification param.Opt[string] `json:"gpcNotification,omitzero"`
 	// Link label for the privacy policy (defaults to "Privacy Policy").
 	PrivacyPolicyLabel param.Opt[string] `json:"privacyPolicyLabel,omitzero"`
-	// Privacy policy link. Accepts an absolute URL (https://...) or a relative path
-	// (/legal/privacy) so one config can run across multiple domains. javascript:,
-	// data:, and vbscript: schemes are rejected.
+	// Privacy policy link. Accepts absolute HTTP or HTTPS URLs, or a path starting
+	// with a single / (such as /legal/privacy). Other schemes, protocol-relative URLs,
+	// and bare relative paths are rejected.
 	PrivacyPolicyURL param.Opt[string] `json:"privacyPolicyUrl,omitzero"`
 	// Optional message shown when the consent revision has bumped (re-prompt copy).
 	RevisionMessage param.Opt[string] `json:"revisionMessage,omitzero"`
 	// Link label for terms of service (defaults to "Terms of Service").
 	TermsOfServiceLabel param.Opt[string] `json:"termsOfServiceLabel,omitzero"`
-	// Terms of service link. Same scheme rules as privacyPolicyUrl: absolute or
-	// relative path only.
+	// Terms of service link. Same rules as privacyPolicyUrl: absolute HTTP or HTTPS
+	// URL, or a path starting with a single /.
 	TermsOfServiceURL param.Opt[string] `json:"termsOfServiceUrl,omitzero"`
 	paramObj
 }
