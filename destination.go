@@ -1427,7 +1427,8 @@ type DestinationHealthResponse struct {
 	WindowEnd string `json:"windowEnd" api:"required"`
 	// Start of the snapshot window (ISO 8601).
 	WindowStart string `json:"windowStart" api:"required"`
-	// Timestamp of the most recent dispatch attempt to this destination, if any.
+	// ISO 8601 timestamp of the most recent successful dispatch to this destination
+	// within the health window. Null when none succeeded in the window.
 	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
 	// successCount / (successCount + failureCount). Null when there were no
 	// succeeded/failed dispatches in the window.
@@ -1663,8 +1664,8 @@ type DestinationNewParams struct {
 	// discover valid keys. On PATCH, omitted keys are preserved and `null` clears a
 	// specific setting.
 	Settings map[string]DestinationNewParamsSettingUnion `json:"settings,omitzero"`
-	// Initial status. Omit or send `null` for `Enabled`; send `Disabled` to create
-	// paused.
+	// Initial status. Omit or send `null` for `Disabled`; send `Enabled` to create
+	// active.
 	//
 	// Any of "Enabled", "Disabled".
 	Status DestinationNewParamsStatus `json:"status,omitzero"`
@@ -1792,8 +1793,8 @@ func (u *DestinationNewParamsSettingUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
 }
 
-// Initial status. Omit or send `null` for `Enabled`; send `Disabled` to create
-// paused.
+// Initial status. Omit or send `null` for `Disabled`; send `Enabled` to create
+// active.
 type DestinationNewParamsStatus string
 
 const (
