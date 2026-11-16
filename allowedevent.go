@@ -205,14 +205,6 @@ type AllowedEventNewResponse struct {
 	// value are gated through this allowed event. Reserved: names starting with `$`
 	// are system events and cannot be created (except `$identify`).
 	Name string `json:"name" api:"required"`
-	// ISO 8601 timestamp of the most recent successful dispatch to any destination on
-	// `destinationIds`. Lags `lastTriggeredAt` when consent or governance rules drop
-	// the event before dispatch.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO 8601 timestamp of the most recent inbound event observed for this name.
-	// Useful for spotting events that were configured but never fired. Null when never
-	// observed.
-	LastTriggeredAt string `json:"lastTriggeredAt" api:"nullable"`
 	// Optional free-form trigger description. Not used by the dispatch pipeline —
 	// surfaced in the dashboard so teams can record where each event fires.
 	Trigger string `json:"trigger" api:"nullable"`
@@ -221,16 +213,14 @@ type AllowedEventNewResponse struct {
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
-		DestinationIDs   respjson.Field
-		Name             respjson.Field
-		LastDispatchedAt respjson.Field
-		LastTriggeredAt  respjson.Field
-		Trigger          respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		Trigger        respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -252,14 +242,6 @@ type AllowedEventGetResponse struct {
 	// value are gated through this allowed event. Reserved: names starting with `$`
 	// are system events and cannot be created (except `$identify`).
 	Name string `json:"name" api:"required"`
-	// ISO 8601 timestamp of the most recent successful dispatch to any destination on
-	// `destinationIds`. Lags `lastTriggeredAt` when consent or governance rules drop
-	// the event before dispatch.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO 8601 timestamp of the most recent inbound event observed for this name.
-	// Useful for spotting events that were configured but never fired. Null when never
-	// observed.
-	LastTriggeredAt string `json:"lastTriggeredAt" api:"nullable"`
 	// Optional free-form trigger description. Not used by the dispatch pipeline —
 	// surfaced in the dashboard so teams can record where each event fires.
 	Trigger string `json:"trigger" api:"nullable"`
@@ -268,16 +250,14 @@ type AllowedEventGetResponse struct {
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
-		DestinationIDs   respjson.Field
-		Name             respjson.Field
-		LastDispatchedAt respjson.Field
-		LastTriggeredAt  respjson.Field
-		Trigger          respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		Trigger        respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
@@ -299,14 +279,6 @@ type AllowedEventUpdateResponse struct {
 	// value are gated through this allowed event. Reserved: names starting with `$`
 	// are system events and cannot be created (except `$identify`).
 	Name string `json:"name" api:"required"`
-	// ISO 8601 timestamp of the most recent successful dispatch to any destination on
-	// `destinationIds`. Lags `lastTriggeredAt` when consent or governance rules drop
-	// the event before dispatch.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO 8601 timestamp of the most recent inbound event observed for this name.
-	// Useful for spotting events that were configured but never fired. Null when never
-	// observed.
-	LastTriggeredAt string `json:"lastTriggeredAt" api:"nullable"`
 	// Optional free-form trigger description. Not used by the dispatch pipeline —
 	// surfaced in the dashboard so teams can record where each event fires.
 	Trigger string `json:"trigger" api:"nullable"`
@@ -315,16 +287,14 @@ type AllowedEventUpdateResponse struct {
 	UpdatedAt string `json:"updatedAt" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
-		DestinationIDs   respjson.Field
-		Name             respjson.Field
-		LastDispatchedAt respjson.Field
-		LastTriggeredAt  respjson.Field
-		Trigger          respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID             respjson.Field
+		CreatedAt      respjson.Field
+		DestinationIDs respjson.Field
+		Name           respjson.Field
+		Trigger        respjson.Field
+		UpdatedAt      respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
 	} `json:"-"`
 }
 
