@@ -653,11 +653,13 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsQueryCatalogResponse">AnalyticsQueryCatalogResponse</a>
 - <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsPropertySuggestionsResponse">AnalyticsPropertySuggestionsResponse</a>
+- <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsEventNamesResponse">AnalyticsEventNamesResponse</a>
 
 Methods:
 
 - <code title="get /rest/v1/analytics/query-catalog">client.Analytics.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsService.QueryCatalog">QueryCatalog</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsQueryCatalogResponse">AnalyticsQueryCatalogResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /rest/v1/analytics/property-suggestions">client.Analytics.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsService.PropertySuggestions">PropertySuggestions</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsPropertySuggestionsParams">AnalyticsPropertySuggestionsParams</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsPropertySuggestionsResponse">AnalyticsPropertySuggestionsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /rest/v1/analytics/event-names">client.Analytics.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsService.EventNames">EventNames</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2">oursprivacy</a>.<a href="https://pkg.go.dev/github.com/with-ours/platform-sdk-go/v2#AnalyticsEventNamesResponse">AnalyticsEventNamesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Dashboards
 
