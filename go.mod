@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/tidwall/gjson v1.20.2
-	github.com/tidwall/sjson v1.2.8
+	github.com/tidwall/sjson v1.2.9
 )
 
 require (
