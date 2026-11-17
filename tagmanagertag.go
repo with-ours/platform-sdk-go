@@ -167,7 +167,8 @@ type TagManagerTagListResponse struct {
 	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
 	// not valid ids.
 	Type string `json:"type" api:"required"`
-	// Triggers that suppress this tag when they match — evaluated after fire triggers.
+	// Exception triggers: the tag does not fire on an event one of these matches, like
+	// GTM exceptions.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
@@ -223,7 +224,8 @@ type TagManagerTagNewResponse struct {
 	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
 	// not valid ids.
 	Type string `json:"type" api:"required"`
-	// Triggers that suppress this tag when they match — evaluated after fire triggers.
+	// Exception triggers: the tag does not fire on an event one of these matches, like
+	// GTM exceptions.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
@@ -279,7 +281,8 @@ type TagManagerTagGetResponse struct {
 	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
 	// not valid ids.
 	Type string `json:"type" api:"required"`
-	// Triggers that suppress this tag when they match — evaluated after fire triggers.
+	// Exception triggers: the tag does not fire on an event one of these matches, like
+	// GTM exceptions.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.
@@ -335,7 +338,8 @@ type TagManagerTagUpdateResponse struct {
 	// `GET /tag-manager-tags/types` for the canonical set — names like `GA4Event` are
 	// not valid ids.
 	Type string `json:"type" api:"required"`
-	// Triggers that suppress this tag when they match — evaluated after fire triggers.
+	// Exception triggers: the tag does not fire on an event one of these matches, like
+	// GTM exceptions.
 	BlockTriggerIDs []string `json:"blockTriggerIds" api:"nullable"`
 	CreatedAt       string   `json:"createdAt" api:"nullable"`
 	// Defaults to `true` on create.

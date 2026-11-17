@@ -58,9 +58,27 @@ func (r *AnalyticsService) PropertySuggestions(ctx context.Context, query Analyt
 	return res, err
 }
 
+// Discover the event names this account has collected in the last 30 days, for
+// Insight metric `eventNames`, the `eventName` of funnel steps and journey flows,
+// or the `eventName` filter of `GET /rest/v1/analytics/property-suggestions`.
+// Returns `{ entities }` in alphabetical order. The list is not paginated: it
+// holds up to the 500 most frequent names, and newly seen events may take a few
+// minutes to appear. Names missing from the list still work when entered exactly.
+// Requires API-key scope or current OAuth user permission: web-analytics:view
+func (r *AnalyticsService) EventNames(ctx context.Context, opts ...option.RequestOption) (res *AnalyticsEventNamesResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "rest/v1/analytics/event-names"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 type AnalyticsQueryCatalogResponse struct {
-	Entries     []AnalyticsQueryCatalogResponseEntry `json:"entries" api:"required"`
-	Limitations []string                             `json:"limitations" api:"required"`
+	// Fields available to analytics report filters.
+	Entries []AnalyticsQueryCatalogResponseEntry `json:"entries" api:"required"`
+	// Known limits of analytics filtering.
+	Limitations []string `json:"limitations" api:"required"`
+	// Catalog format version.
+	//
 	// Any of 1.
 	Version float64 `json:"version" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -80,15 +98,24 @@ func (r *AnalyticsQueryCatalogResponse) UnmarshalJSON(data []byte) error {
 }
 
 type AnalyticsQueryCatalogResponseEntry struct {
-	ID              string   `json:"id" api:"required"`
-	Label           string   `json:"label" api:"required"`
-	MissingBehavior string   `json:"missingBehavior" api:"required"`
-	Operators       []string `json:"operators" api:"required"`
-	Provider        string   `json:"provider" api:"required"`
-	Scope           string   `json:"scope" api:"required"`
-	Type            string   `json:"type" api:"required"`
-	AllowedTypes    []string `json:"allowedTypes" api:"nullable"`
-	RequiresPath    bool     `json:"requiresPath" api:"nullable"`
+	// Catalog identifier for this filterable field.
+	ID string `json:"id" api:"required"`
+	// Human-readable field name.
+	Label string `json:"label" api:"required"`
+	// How a filter treats events where the field is absent.
+	MissingBehavior string `json:"missingBehavior" api:"required"`
+	// Operators this field accepts in a filter condition.
+	Operators []string `json:"operators" api:"required"`
+	// Data source that supplies the field value.
+	Provider string `json:"provider" api:"required"`
+	// Whether the field belongs to the event or to its session.
+	Scope string `json:"scope" api:"required"`
+	// Value type the filter compares against.
+	Type string `json:"type" api:"required"`
+	// Value types allowed for a path-based field.
+	AllowedTypes []string `json:"allowedTypes" api:"nullable"`
+	// True when a property path must be supplied, as for custom event properties.
+	RequiresPath bool `json:"requiresPath" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID              respjson.Field
@@ -112,10 +139,14 @@ func (r *AnalyticsQueryCatalogResponseEntry) UnmarshalJSON(data []byte) error {
 }
 
 type AnalyticsPropertySuggestionsResponse struct {
+	// Property paths and value types observed in a sample of recent events.
 	Entities []AnalyticsPropertySuggestionsResponseEntity `json:"entities" api:"required"`
-	From     time.Time                                    `json:"from" api:"required" format:"date-time"`
-	Sampled  bool                                         `json:"sampled" api:"required"`
-	To       time.Time                                    `json:"to" api:"required" format:"date-time"`
+	// Start of the observation window the suggestions were drawn from.
+	From time.Time `json:"from" api:"required" format:"date-time"`
+	// True when the suggestions come from a sample, so some paths may be missing.
+	Sampled bool `json:"sampled" api:"required"`
+	// End of the observation window the suggestions were drawn from.
+	To time.Time `json:"to" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Entities    respjson.Field
@@ -134,9 +165,14 @@ func (r *AnalyticsPropertySuggestionsResponse) UnmarshalJSON(data []byte) error 
 }
 
 type AnalyticsPropertySuggestionsResponseEntity struct {
+	// Property path segments, outermost first.
 	Path []string `json:"path" api:"required"`
+	// Property bag the path belongs to.
+	//
 	// Any of "event.properties", "event.visitor_properties".
 	Property string `json:"property" api:"required"`
+	// Value type observed at this path.
+	//
 	// Any of "string", "number", "boolean".
 	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -152,6 +188,51 @@ type AnalyticsPropertySuggestionsResponseEntity struct {
 // Returns the unmodified JSON received from the API
 func (r AnalyticsPropertySuggestionsResponseEntity) RawJSON() string { return r.JSON.raw }
 func (r *AnalyticsPropertySuggestionsResponseEntity) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AnalyticsEventNamesResponse struct {
+	// Distinct event names seen in the last 30 days, alphabetical. Not paginated: the
+	// list holds up to the 500 most frequent names.
+	Entities []AnalyticsEventNamesResponseEntity `json:"entities" api:"required"`
+	// Start of the observation window the suggestions were drawn from.
+	From time.Time `json:"from" api:"required" format:"date-time"`
+	// True when rare names may be missing from the list. Missing names still work when
+	// entered exactly.
+	Sampled bool `json:"sampled" api:"required"`
+	// End of the observation window the suggestions were drawn from.
+	To time.Time `json:"to" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Entities    respjson.Field
+		From        respjson.Field
+		Sampled     respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AnalyticsEventNamesResponse) RawJSON() string { return r.JSON.raw }
+func (r *AnalyticsEventNamesResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type AnalyticsEventNamesResponseEntity struct {
+	// Event name exactly as collected, including `$`-prefixed system events.
+	Name string `json:"name" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AnalyticsEventNamesResponseEntity) RawJSON() string { return r.JSON.raw }
+func (r *AnalyticsEventNamesResponseEntity) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
