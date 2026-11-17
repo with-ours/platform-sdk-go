@@ -352,9 +352,9 @@ func (r *ExperimentService) Analysis(ctx context.Context, id string, query Exper
 // inclusive) to set the window; both default to the full experiment runtime when
 // omitted, so the no-arg call returns every day from start to today (or to
 // `stoppedAt` for completed experiments). The response orders days oldest-first
-// and omits days with no impressions, so an empty `days` array means there was no
-// measured traffic in the window. Requires API-key scope or current OAuth user
-// permission: experiment:find
+// and omits days with neither impressions nor goal events, so an empty `days`
+// array means there was no measured traffic in the window. Requires API-key scope
+// or current OAuth user permission: experiment:find
 func (r *ExperimentService) ResultsTimeSeries(ctx context.Context, id string, query ExperimentResultsTimeSeriesParams, opts ...option.RequestOption) (res *ExperimentResultsTimeSeriesResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if id == "" {

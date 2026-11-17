@@ -168,8 +168,8 @@ type SourceListResponse struct {
 	Status SourceListResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
-	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "DotNetApi", "FacebookLeadAds", "FlutterApi", "FormsortWebhooks", "Formstack",
+	// "GoLangApi", "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
 	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
@@ -181,13 +181,7 @@ type SourceListResponse struct {
 	ExcludeRequestContext bool                             `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
-	IsPublished bool `json:"isPublished" api:"nullable"`
-	// ISO-8601 timestamp of the most recent event from this source successfully
-	// dispatched to a destination.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO-8601 timestamp of the most recent inbound request received by this source.
-	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string                                  `json:"lastTriggeredAt" api:"nullable"`
+	IsPublished           bool                                    `json:"isPublished" api:"nullable"`
 	Name                  string                                  `json:"name" api:"nullable"`
 	ProbabilisticIdentity SourceListResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
 	ProjectAPIKey         string                                  `json:"projectAPIKey" api:"nullable"`
@@ -214,8 +208,6 @@ type SourceListResponse struct {
 		BotScoreThreshold       respjson.Field
 		ExcludeRequestContext   respjson.Field
 		IsPublished             respjson.Field
-		LastDispatchedAt        respjson.Field
-		LastTriggeredAt         respjson.Field
 		Name                    respjson.Field
 		ProbabilisticIdentity   respjson.Field
 		ProjectAPIKey           respjson.Field
@@ -255,6 +247,7 @@ const (
 	SourceListResponseTypeCallTrackingMetrics SourceListResponseType = "CallTrackingMetrics"
 	SourceListResponseTypeDotNetAPI           SourceListResponseType = "DotNetApi"
 	SourceListResponseTypeFacebookLeadAds     SourceListResponseType = "FacebookLeadAds"
+	SourceListResponseTypeFlutterAPI          SourceListResponseType = "FlutterApi"
 	SourceListResponseTypeFormsortWebhooks    SourceListResponseType = "FormsortWebhooks"
 	SourceListResponseTypeFormstack           SourceListResponseType = "Formstack"
 	SourceListResponseTypeGoLangAPI           SourceListResponseType = "GoLangApi"
@@ -320,8 +313,8 @@ type SourceNewResponse struct {
 	Status SourceNewResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
-	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "DotNetApi", "FacebookLeadAds", "FlutterApi", "FormsortWebhooks", "Formstack",
+	// "GoLangApi", "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
 	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
@@ -333,13 +326,7 @@ type SourceNewResponse struct {
 	ExcludeRequestContext bool                            `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
-	IsPublished bool `json:"isPublished" api:"nullable"`
-	// ISO-8601 timestamp of the most recent event from this source successfully
-	// dispatched to a destination.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO-8601 timestamp of the most recent inbound request received by this source.
-	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string                                 `json:"lastTriggeredAt" api:"nullable"`
+	IsPublished           bool                                   `json:"isPublished" api:"nullable"`
 	Name                  string                                 `json:"name" api:"nullable"`
 	ProbabilisticIdentity SourceNewResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
 	ProjectAPIKey         string                                 `json:"projectAPIKey" api:"nullable"`
@@ -366,8 +353,6 @@ type SourceNewResponse struct {
 		BotScoreThreshold       respjson.Field
 		ExcludeRequestContext   respjson.Field
 		IsPublished             respjson.Field
-		LastDispatchedAt        respjson.Field
-		LastTriggeredAt         respjson.Field
 		Name                    respjson.Field
 		ProbabilisticIdentity   respjson.Field
 		ProjectAPIKey           respjson.Field
@@ -407,6 +392,7 @@ const (
 	SourceNewResponseTypeCallTrackingMetrics SourceNewResponseType = "CallTrackingMetrics"
 	SourceNewResponseTypeDotNetAPI           SourceNewResponseType = "DotNetApi"
 	SourceNewResponseTypeFacebookLeadAds     SourceNewResponseType = "FacebookLeadAds"
+	SourceNewResponseTypeFlutterAPI          SourceNewResponseType = "FlutterApi"
 	SourceNewResponseTypeFormsortWebhooks    SourceNewResponseType = "FormsortWebhooks"
 	SourceNewResponseTypeFormstack           SourceNewResponseType = "Formstack"
 	SourceNewResponseTypeGoLangAPI           SourceNewResponseType = "GoLangApi"
@@ -472,8 +458,8 @@ type SourceGetResponse struct {
 	Status SourceGetResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
-	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "DotNetApi", "FacebookLeadAds", "FlutterApi", "FormsortWebhooks", "Formstack",
+	// "GoLangApi", "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
 	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
@@ -485,13 +471,7 @@ type SourceGetResponse struct {
 	ExcludeRequestContext bool                            `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
-	IsPublished bool `json:"isPublished" api:"nullable"`
-	// ISO-8601 timestamp of the most recent event from this source successfully
-	// dispatched to a destination.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO-8601 timestamp of the most recent inbound request received by this source.
-	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string                                 `json:"lastTriggeredAt" api:"nullable"`
+	IsPublished           bool                                   `json:"isPublished" api:"nullable"`
 	Name                  string                                 `json:"name" api:"nullable"`
 	ProbabilisticIdentity SourceGetResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
 	ProjectAPIKey         string                                 `json:"projectAPIKey" api:"nullable"`
@@ -518,8 +498,6 @@ type SourceGetResponse struct {
 		BotScoreThreshold       respjson.Field
 		ExcludeRequestContext   respjson.Field
 		IsPublished             respjson.Field
-		LastDispatchedAt        respjson.Field
-		LastTriggeredAt         respjson.Field
 		Name                    respjson.Field
 		ProbabilisticIdentity   respjson.Field
 		ProjectAPIKey           respjson.Field
@@ -559,6 +537,7 @@ const (
 	SourceGetResponseTypeCallTrackingMetrics SourceGetResponseType = "CallTrackingMetrics"
 	SourceGetResponseTypeDotNetAPI           SourceGetResponseType = "DotNetApi"
 	SourceGetResponseTypeFacebookLeadAds     SourceGetResponseType = "FacebookLeadAds"
+	SourceGetResponseTypeFlutterAPI          SourceGetResponseType = "FlutterApi"
 	SourceGetResponseTypeFormsortWebhooks    SourceGetResponseType = "FormsortWebhooks"
 	SourceGetResponseTypeFormstack           SourceGetResponseType = "Formstack"
 	SourceGetResponseTypeGoLangAPI           SourceGetResponseType = "GoLangApi"
@@ -624,8 +603,8 @@ type SourceUpdateResponse struct {
 	Status SourceUpdateResponseStatus `json:"status" api:"required"`
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
-	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "DotNetApi", "FacebookLeadAds", "FlutterApi", "FormsortWebhooks", "Formstack",
+	// "GoLangApi", "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
 	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
@@ -637,13 +616,7 @@ type SourceUpdateResponse struct {
 	ExcludeRequestContext bool                               `json:"excludeRequestContext" api:"nullable"`
 	// Whether this source exists in the currently published version. A source that is
 	// not published will not accept events.
-	IsPublished bool `json:"isPublished" api:"nullable"`
-	// ISO-8601 timestamp of the most recent event from this source successfully
-	// dispatched to a destination.
-	LastDispatchedAt string `json:"lastDispatchedAt" api:"nullable"`
-	// ISO-8601 timestamp of the most recent inbound request received by this source.
-	// Useful for debugging "is my webhook even reaching us?"
-	LastTriggeredAt       string                                    `json:"lastTriggeredAt" api:"nullable"`
+	IsPublished           bool                                      `json:"isPublished" api:"nullable"`
 	Name                  string                                    `json:"name" api:"nullable"`
 	ProbabilisticIdentity SourceUpdateResponseProbabilisticIdentity `json:"probabilisticIdentity" api:"nullable"`
 	ProjectAPIKey         string                                    `json:"projectAPIKey" api:"nullable"`
@@ -670,8 +643,6 @@ type SourceUpdateResponse struct {
 		BotScoreThreshold       respjson.Field
 		ExcludeRequestContext   respjson.Field
 		IsPublished             respjson.Field
-		LastDispatchedAt        respjson.Field
-		LastTriggeredAt         respjson.Field
 		Name                    respjson.Field
 		ProbabilisticIdentity   respjson.Field
 		ProjectAPIKey           respjson.Field
@@ -711,6 +682,7 @@ const (
 	SourceUpdateResponseTypeCallTrackingMetrics SourceUpdateResponseType = "CallTrackingMetrics"
 	SourceUpdateResponseTypeDotNetAPI           SourceUpdateResponseType = "DotNetApi"
 	SourceUpdateResponseTypeFacebookLeadAds     SourceUpdateResponseType = "FacebookLeadAds"
+	SourceUpdateResponseTypeFlutterAPI          SourceUpdateResponseType = "FlutterApi"
 	SourceUpdateResponseTypeFormsortWebhooks    SourceUpdateResponseType = "FormsortWebhooks"
 	SourceUpdateResponseTypeFormstack           SourceUpdateResponseType = "Formstack"
 	SourceUpdateResponseTypeGoLangAPI           SourceUpdateResponseType = "GoLangApi"
@@ -916,8 +888,8 @@ type SourceListParams struct {
 	//
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
-	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "DotNetApi", "FacebookLeadAds", "FlutterApi", "FormsortWebhooks", "Formstack",
+	// "GoLangApi", "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
 	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
@@ -974,6 +946,7 @@ const (
 	SourceListParamsTypeCallTrackingMetrics SourceListParamsType = "CallTrackingMetrics"
 	SourceListParamsTypeDotNetAPI           SourceListParamsType = "DotNetApi"
 	SourceListParamsTypeFacebookLeadAds     SourceListParamsType = "FacebookLeadAds"
+	SourceListParamsTypeFlutterAPI          SourceListParamsType = "FlutterApi"
 	SourceListParamsTypeFormsortWebhooks    SourceListParamsType = "FormsortWebhooks"
 	SourceListParamsTypeFormstack           SourceListParamsType = "Formstack"
 	SourceListParamsTypeGoLangAPI           SourceListParamsType = "GoLangApi"
@@ -1002,8 +975,8 @@ const (
 type SourceNewParams struct {
 	// Any of "AlchemerWebhook", "AndroidNativeApi", "Branch", "CSharpApi",
 	// "CalComWebhooks", "CalendlyWebhook", "CallRail", "CallTrackingMetrics",
-	// "DotNetApi", "FacebookLeadAds", "FormsortWebhooks", "Formstack", "GoLangApi",
-	// "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
+	// "DotNetApi", "FacebookLeadAds", "FlutterApi", "FormsortWebhooks", "Formstack",
+	// "GoLangApi", "HTTPApiSource", "Healthie", "Heyflow", "HubspotAppActions",
 	// "HubspotFormWebhook", "JotFormWebhooks", "KotlinApi", "NodejsApi", "PHPApi",
 	// "PixelImage", "PythonApi", "ReactNativeApi", "RedirectSource", "RubyApi",
 	// "SegmentWebPlugin", "TypeformWebhooks", "WebSource", "Webhook", "WhatConverts",
@@ -1037,6 +1010,7 @@ const (
 	SourceNewParamsTypeCallTrackingMetrics SourceNewParamsType = "CallTrackingMetrics"
 	SourceNewParamsTypeDotNetAPI           SourceNewParamsType = "DotNetApi"
 	SourceNewParamsTypeFacebookLeadAds     SourceNewParamsType = "FacebookLeadAds"
+	SourceNewParamsTypeFlutterAPI          SourceNewParamsType = "FlutterApi"
 	SourceNewParamsTypeFormsortWebhooks    SourceNewParamsType = "FormsortWebhooks"
 	SourceNewParamsTypeFormstack           SourceNewParamsType = "Formstack"
 	SourceNewParamsTypeGoLangAPI           SourceNewParamsType = "GoLangApi"
