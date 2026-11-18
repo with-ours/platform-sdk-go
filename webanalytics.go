@@ -166,7 +166,7 @@ type WebAnalyticsOverviewInsightResponseScope struct {
 	Cumulative bool      `json:"cumulative" api:"required"`
 	ExecutedAt time.Time `json:"executedAt" api:"required" format:"date-time"`
 	From       string    `json:"from" api:"required"`
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string `json:"interval" api:"required"`
 	// Any of "unknown".
 	SourceCompleteness string `json:"sourceCompleteness" api:"required"`
