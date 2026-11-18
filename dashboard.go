@@ -245,7 +245,7 @@ type DashboardListResponse struct {
 	// Display name for the saved Dashboard.
 	Name string `json:"name" api:"required"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardListResponseReportContext `json:"reportContext" api:"required"`
 	Revision      string                             `json:"revision" api:"required" format:"uuid"`
@@ -291,7 +291,7 @@ func (r *DashboardListResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 type DashboardListResponseReportContext struct {
 	DateRange DashboardListResponseReportContextDateRangeUnion `json:"dateRange" api:"required"`
@@ -1617,7 +1617,7 @@ type DashboardNewResponse struct {
 	// Display name for the saved Dashboard.
 	Name string `json:"name" api:"required"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardNewResponseReportContext `json:"reportContext" api:"required"`
 	Revision      string                            `json:"revision" api:"required" format:"uuid"`
@@ -1663,7 +1663,7 @@ func (r *DashboardNewResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 type DashboardNewResponseReportContext struct {
 	DateRange DashboardNewResponseReportContextDateRangeUnion `json:"dateRange" api:"required"`
@@ -2978,7 +2978,7 @@ type DashboardGetResponse struct {
 	// Display name for the saved Dashboard.
 	Name string `json:"name" api:"required"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardGetResponseReportContext `json:"reportContext" api:"required"`
 	Revision      string                            `json:"revision" api:"required" format:"uuid"`
@@ -3024,7 +3024,7 @@ func (r *DashboardGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 type DashboardGetResponseReportContext struct {
 	DateRange DashboardGetResponseReportContextDateRangeUnion `json:"dateRange" api:"required"`
@@ -4339,7 +4339,7 @@ type DashboardUpdateResponse struct {
 	// Display name for the saved Dashboard.
 	Name string `json:"name" api:"required"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardUpdateResponseReportContext `json:"reportContext" api:"required"`
 	Revision      string                               `json:"revision" api:"required" format:"uuid"`
@@ -4385,7 +4385,7 @@ func (r *DashboardUpdateResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 type DashboardUpdateResponseReportContext struct {
 	DateRange DashboardUpdateResponseReportContextDateRangeUnion `json:"dateRange" api:"required"`
@@ -5740,7 +5740,7 @@ type DashboardDuplicateResponse struct {
 	// Display name for the saved Dashboard.
 	Name string `json:"name" api:"required"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardDuplicateResponseReportContext `json:"reportContext" api:"required"`
 	Revision      string                                  `json:"revision" api:"required" format:"uuid"`
@@ -5786,7 +5786,7 @@ func (r *DashboardDuplicateResponse) UnmarshalJSON(data []byte) error {
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 type DashboardDuplicateResponseReportContext struct {
 	DateRange DashboardDuplicateResponseReportContextDateRangeUnion `json:"dateRange" api:"required"`
@@ -7266,6 +7266,8 @@ type DashboardPreviewResponseUnionReportDefinition struct {
 	Version float64                                                `json:"version"`
 	// This field is from variant [DashboardPreviewResponseObjectReportDefinition].
 	Filter DashboardPreviewResponseObjectReportDefinitionFilter `json:"filter"`
+	// This field is from variant [DashboardPreviewResponseObjectReportDefinition].
+	IncludeBots bool `json:"includeBots"`
 	// This field is from variant [DashboardPreviewResponseObject3ReportDefinition].
 	Anchors []DashboardPreviewResponseObject3ReportDefinitionAnchor `json:"anchors"`
 	// This field is from variant [DashboardPreviewResponseObject3ReportDefinition].
@@ -7298,6 +7300,7 @@ type DashboardPreviewResponseUnionReportDefinition struct {
 		Metrics            respjson.Field
 		Version            respjson.Field
 		Filter             respjson.Field
+		IncludeBots        respjson.Field
 		Anchors            respjson.Field
 		Exploration        respjson.Field
 		Scope              respjson.Field
@@ -7679,9 +7682,10 @@ type DashboardPreviewResponseObjectReport struct {
 	ID              string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt       time.Time `json:"createdAt" api:"required" format:"date-time"`
 	CreatedByUserID string    `json:"createdByUserId" api:"required"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition DashboardPreviewResponseObjectReportDefinition `json:"definition" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -7720,17 +7724,20 @@ func (r *DashboardPreviewResponseObjectReport) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 type DashboardPreviewResponseObjectReportDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                                                 `json:"interval" api:"required"`
 	Kind     constant.Insight                                       `json:"kind" default:"insight"`
 	Metrics  []DashboardPreviewResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
 	// Any of 1.
 	Version float64                                              `json:"version" api:"required"`
 	Filter  DashboardPreviewResponseObjectReportDefinitionFilter `json:"filter"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots bool `json:"includeBots"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -7738,6 +7745,7 @@ type DashboardPreviewResponseObjectReportDefinition struct {
 		Metrics     respjson.Field
 		Version     respjson.Field
 		Filter      respjson.Field
+		IncludeBots respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -7754,17 +7762,20 @@ type DashboardPreviewResponseObjectReportDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                                       `json:"aggregation" api:"required"`
-	EventNames  []string                                                     `json:"eventNames" api:"required"`
-	Name        string                                                       `json:"name" api:"required"`
-	Filter      DashboardPreviewResponseObjectReportDefinitionMetricFilter   `json:"filter"`
-	Property    DashboardPreviewResponseObjectReportDefinitionMetricProperty `json:"property"`
+	Aggregation string   `json:"aggregation" api:"required"`
+	EventNames  []string `json:"eventNames" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents bool                                                         `json:"allEvents"`
+	Filter    DashboardPreviewResponseObjectReportDefinitionMetricFilter   `json:"filter"`
+	Property  DashboardPreviewResponseObjectReportDefinitionMetricProperty `json:"property"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Aggregation respjson.Field
 		EventNames  respjson.Field
 		Name        respjson.Field
+		AllEvents   respjson.Field
 		Filter      respjson.Field
 		Property    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -8553,7 +8564,7 @@ type DashboardPreviewResponseObjectResultScope struct {
 	Cumulative bool      `json:"cumulative" api:"required"`
 	ExecutedAt time.Time `json:"executedAt" api:"required" format:"date-time"`
 	From       string    `json:"from" api:"required"`
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string `json:"interval" api:"required"`
 	// Any of "unknown".
 	SourceCompleteness string `json:"sourceCompleteness" api:"required"`
@@ -19294,6 +19305,8 @@ type DashboardResultsResponseUnionReportDefinition struct {
 	Version float64                                                `json:"version"`
 	// This field is from variant [DashboardResultsResponseObjectReportDefinition].
 	Filter DashboardResultsResponseObjectReportDefinitionFilter `json:"filter"`
+	// This field is from variant [DashboardResultsResponseObjectReportDefinition].
+	IncludeBots bool `json:"includeBots"`
 	// This field is from variant [DashboardResultsResponseObject3ReportDefinition].
 	Anchors []DashboardResultsResponseObject3ReportDefinitionAnchor `json:"anchors"`
 	// This field is from variant [DashboardResultsResponseObject3ReportDefinition].
@@ -19326,6 +19339,7 @@ type DashboardResultsResponseUnionReportDefinition struct {
 		Metrics            respjson.Field
 		Version            respjson.Field
 		Filter             respjson.Field
+		IncludeBots        respjson.Field
 		Anchors            respjson.Field
 		Exploration        respjson.Field
 		Scope              respjson.Field
@@ -19707,9 +19721,10 @@ type DashboardResultsResponseObjectReport struct {
 	ID              string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt       time.Time `json:"createdAt" api:"required" format:"date-time"`
 	CreatedByUserID string    `json:"createdByUserId" api:"required"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition DashboardResultsResponseObjectReportDefinition `json:"definition" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -19748,17 +19763,20 @@ func (r *DashboardResultsResponseObjectReport) UnmarshalJSON(data []byte) error 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 type DashboardResultsResponseObjectReportDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                                                 `json:"interval" api:"required"`
 	Kind     constant.Insight                                       `json:"kind" default:"insight"`
 	Metrics  []DashboardResultsResponseObjectReportDefinitionMetric `json:"metrics" api:"required"`
 	// Any of 1.
 	Version float64                                              `json:"version" api:"required"`
 	Filter  DashboardResultsResponseObjectReportDefinitionFilter `json:"filter"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots bool `json:"includeBots"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -19766,6 +19784,7 @@ type DashboardResultsResponseObjectReportDefinition struct {
 		Metrics     respjson.Field
 		Version     respjson.Field
 		Filter      respjson.Field
+		IncludeBots respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -19782,17 +19801,20 @@ type DashboardResultsResponseObjectReportDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                                       `json:"aggregation" api:"required"`
-	EventNames  []string                                                     `json:"eventNames" api:"required"`
-	Name        string                                                       `json:"name" api:"required"`
-	Filter      DashboardResultsResponseObjectReportDefinitionMetricFilter   `json:"filter"`
-	Property    DashboardResultsResponseObjectReportDefinitionMetricProperty `json:"property"`
+	Aggregation string   `json:"aggregation" api:"required"`
+	EventNames  []string `json:"eventNames" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents bool                                                         `json:"allEvents"`
+	Filter    DashboardResultsResponseObjectReportDefinitionMetricFilter   `json:"filter"`
+	Property  DashboardResultsResponseObjectReportDefinitionMetricProperty `json:"property"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Aggregation respjson.Field
 		EventNames  respjson.Field
 		Name        respjson.Field
+		AllEvents   respjson.Field
 		Filter      respjson.Field
 		Property    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -20581,7 +20603,7 @@ type DashboardResultsResponseObjectResultScope struct {
 	Cumulative bool      `json:"cumulative" api:"required"`
 	ExecutedAt time.Time `json:"executedAt" api:"required" format:"date-time"`
 	From       string    `json:"from" api:"required"`
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string `json:"interval" api:"required"`
 	// Any of "unknown".
 	SourceCompleteness string `json:"sourceCompleteness" api:"required"`
@@ -31384,7 +31406,7 @@ type DashboardNewParams struct {
 	// Display name for the saved Dashboard.
 	Name string `json:"name" api:"required"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardNewParamsReportContext `json:"reportContext,omitzero" api:"required"`
 	// Ordered collection of up to 12 tiles; every kind counts toward the limit. Each
@@ -31414,7 +31436,7 @@ func (r *DashboardNewParams) UnmarshalJSON(data []byte) error {
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 //
 // The property DateRange is required.
@@ -32212,7 +32234,7 @@ type DashboardUpdateParams struct {
 	// Journey entry filters. Null clears it; report-specific filters remain in effect.
 	Filter DashboardUpdateParamsFilter `json:"filter,omitzero"`
 	// Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-	// Journey tiles support up to 91 inclusive days; Insights retain their native
+	// Journey tiles support up to 93 inclusive days; Insights retain their native
 	// range limit.
 	ReportContext DashboardUpdateParamsReportContext `json:"reportContext,omitzero"`
 	// Ordered collection of up to 12 tiles; every kind counts toward the limit. Each
@@ -32631,7 +32653,7 @@ func (u *DashboardUpdateParamsFilterFilterObject3ValueArrayItemUnion) UnmarshalJ
 }
 
 // Complete UTC date context. Replaces the saved context on PATCH. Funnel and
-// Journey tiles support up to 91 inclusive days; Insights retain their native
+// Journey tiles support up to 93 inclusive days; Insights retain their native
 // range limit.
 //
 // The property DateRange is required.
