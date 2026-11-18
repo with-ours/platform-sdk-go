@@ -53,12 +53,13 @@ func TestInsightNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Insights.New(context.TODO(), oursprivacy.InsightNewParams{
 		Definition: oursprivacy.InsightNewParamsDefinition{
-			Interval: "day",
+			Interval: "hour",
 			Metrics: []oursprivacy.InsightNewParamsDefinitionMetric{{
 				ID:          "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 				Aggregation: "event_count",
 				EventNames:  []string{"x"},
 				Name:        "x",
+				AllEvents:   oursprivacy.Bool(true),
 				Filter: oursprivacy.InsightNewParamsDefinitionMetricFilter{
 					Filter: oursprivacy.InsightNewParamsDefinitionMetricFilterFilterUnion{
 						OfInsightNewsDefinitionMetricFilterFilterObject: &oursprivacy.InsightNewParamsDefinitionMetricFilterFilterObject{
@@ -83,6 +84,7 @@ func TestInsightNewWithOptionalParams(t *testing.T) {
 				},
 				Version: 1,
 			},
+			IncludeBots: oursprivacy.Bool(true),
 		},
 		Name: "x",
 		ReportContext: oursprivacy.InsightNewParamsReportContext{
@@ -162,12 +164,13 @@ func TestInsightUpdateWithOptionalParams(t *testing.T) {
 		oursprivacy.InsightUpdateParams{
 			ExpectedRevision: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Definition: oursprivacy.InsightUpdateParamsDefinition{
-				Interval: "day",
+				Interval: "hour",
 				Metrics: []oursprivacy.InsightUpdateParamsDefinitionMetric{{
 					ID:          "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 					Aggregation: "event_count",
 					EventNames:  []string{"x"},
 					Name:        "x",
+					AllEvents:   oursprivacy.Bool(true),
 					Filter: oursprivacy.InsightUpdateParamsDefinitionMetricFilter{
 						Filter: oursprivacy.InsightUpdateParamsDefinitionMetricFilterFilterUnion{
 							OfInsightUpdatesDefinitionMetricFilterFilterObject: &oursprivacy.InsightUpdateParamsDefinitionMetricFilterFilterObject{
@@ -192,6 +195,7 @@ func TestInsightUpdateWithOptionalParams(t *testing.T) {
 					},
 					Version: 1,
 				},
+				IncludeBots: oursprivacy.Bool(true),
 			},
 			Description: oursprivacy.String("description"),
 			Name:        oursprivacy.String("x"),
