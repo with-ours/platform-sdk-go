@@ -143,7 +143,7 @@ func (r *FunnelService) Duplicate(ctx context.Context, id string, opts ...option
 // data at request time; ad hoc filter, saved-scope, and web-source overrides are
 // not accepted. Observation completeness is null when the source coverage
 // watermark is unavailable. `to` must be on or after `from`, and the window may
-// span at most 91 days including both endpoints. Requires API-key scope or current
+// span at most 93 days including both endpoints. Requires API-key scope or current
 // OAuth user permission: web-analytics:view
 func (r *FunnelService) Results(ctx context.Context, id string, query FunnelResultsParams, opts ...option.RequestOption) (res *FunnelResultsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
@@ -5863,12 +5863,12 @@ func (u *FunnelUpdateParamsQueryDefinitionFilterFilterObject3ValueArrayItemUnion
 
 type FunnelResultsParams struct {
 	// Inclusive lower bound of the analysis window, as a UTC calendar day in
-	// `YYYY-MM-DD` format. The window may span at most 91 days including both
+	// `YYYY-MM-DD` format. The window may span at most 93 days including both
 	// endpoints.
 	From string `query:"from" api:"required" json:"-"`
 	// Inclusive upper bound of the analysis window, as a UTC calendar day in
 	// `YYYY-MM-DD` format. Must be on or after `from`, and the window may span at most
-	// 91 days including both endpoints.
+	// 93 days including both endpoints.
 	To string `query:"to" api:"required" json:"-"`
 	// Use the saved funnel response's updatedAt from GET /funnels/{id} (MCP:
 	// get_funnel.updatedAt) to require that definition revision. Results return the

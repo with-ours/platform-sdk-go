@@ -180,9 +180,10 @@ type InsightListResponse struct {
 	ID              string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt       time.Time `json:"createdAt" api:"required" format:"date-time"`
 	CreatedByUserID string    `json:"createdByUserId" api:"required"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition InsightListResponseDefinition `json:"definition" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -221,17 +222,20 @@ func (r *InsightListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 type InsightListResponseDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                                `json:"interval" api:"required"`
 	Kind     constant.Insight                      `json:"kind" default:"insight"`
 	Metrics  []InsightListResponseDefinitionMetric `json:"metrics" api:"required"`
 	// Any of 1.
 	Version float64                             `json:"version" api:"required"`
 	Filter  InsightListResponseDefinitionFilter `json:"filter"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots bool `json:"includeBots"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -239,6 +243,7 @@ type InsightListResponseDefinition struct {
 		Metrics     respjson.Field
 		Version     respjson.Field
 		Filter      respjson.Field
+		IncludeBots respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -255,17 +260,20 @@ type InsightListResponseDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                      `json:"aggregation" api:"required"`
-	EventNames  []string                                    `json:"eventNames" api:"required"`
-	Name        string                                      `json:"name" api:"required"`
-	Filter      InsightListResponseDefinitionMetricFilter   `json:"filter"`
-	Property    InsightListResponseDefinitionMetricProperty `json:"property"`
+	Aggregation string   `json:"aggregation" api:"required"`
+	EventNames  []string `json:"eventNames" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents bool                                        `json:"allEvents"`
+	Filter    InsightListResponseDefinitionMetricFilter   `json:"filter"`
+	Property  InsightListResponseDefinitionMetricProperty `json:"property"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Aggregation respjson.Field
 		EventNames  respjson.Field
 		Name        respjson.Field
+		AllEvents   respjson.Field
 		Filter      respjson.Field
 		Property    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -980,9 +988,10 @@ type InsightNewResponse struct {
 	ID              string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt       time.Time `json:"createdAt" api:"required" format:"date-time"`
 	CreatedByUserID string    `json:"createdByUserId" api:"required"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition InsightNewResponseDefinition `json:"definition" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -1021,17 +1030,20 @@ func (r *InsightNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 type InsightNewResponseDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                               `json:"interval" api:"required"`
 	Kind     constant.Insight                     `json:"kind" default:"insight"`
 	Metrics  []InsightNewResponseDefinitionMetric `json:"metrics" api:"required"`
 	// Any of 1.
 	Version float64                            `json:"version" api:"required"`
 	Filter  InsightNewResponseDefinitionFilter `json:"filter"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots bool `json:"includeBots"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -1039,6 +1051,7 @@ type InsightNewResponseDefinition struct {
 		Metrics     respjson.Field
 		Version     respjson.Field
 		Filter      respjson.Field
+		IncludeBots respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1055,17 +1068,20 @@ type InsightNewResponseDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                     `json:"aggregation" api:"required"`
-	EventNames  []string                                   `json:"eventNames" api:"required"`
-	Name        string                                     `json:"name" api:"required"`
-	Filter      InsightNewResponseDefinitionMetricFilter   `json:"filter"`
-	Property    InsightNewResponseDefinitionMetricProperty `json:"property"`
+	Aggregation string   `json:"aggregation" api:"required"`
+	EventNames  []string `json:"eventNames" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents bool                                       `json:"allEvents"`
+	Filter    InsightNewResponseDefinitionMetricFilter   `json:"filter"`
+	Property  InsightNewResponseDefinitionMetricProperty `json:"property"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Aggregation respjson.Field
 		EventNames  respjson.Field
 		Name        respjson.Field
+		AllEvents   respjson.Field
 		Filter      respjson.Field
 		Property    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -1780,9 +1796,10 @@ type InsightGetResponse struct {
 	ID              string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt       time.Time `json:"createdAt" api:"required" format:"date-time"`
 	CreatedByUserID string    `json:"createdByUserId" api:"required"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition InsightGetResponseDefinition `json:"definition" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -1821,17 +1838,20 @@ func (r *InsightGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 type InsightGetResponseDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                               `json:"interval" api:"required"`
 	Kind     constant.Insight                     `json:"kind" default:"insight"`
 	Metrics  []InsightGetResponseDefinitionMetric `json:"metrics" api:"required"`
 	// Any of 1.
 	Version float64                            `json:"version" api:"required"`
 	Filter  InsightGetResponseDefinitionFilter `json:"filter"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots bool `json:"includeBots"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -1839,6 +1859,7 @@ type InsightGetResponseDefinition struct {
 		Metrics     respjson.Field
 		Version     respjson.Field
 		Filter      respjson.Field
+		IncludeBots respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1855,17 +1876,20 @@ type InsightGetResponseDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                     `json:"aggregation" api:"required"`
-	EventNames  []string                                   `json:"eventNames" api:"required"`
-	Name        string                                     `json:"name" api:"required"`
-	Filter      InsightGetResponseDefinitionMetricFilter   `json:"filter"`
-	Property    InsightGetResponseDefinitionMetricProperty `json:"property"`
+	Aggregation string   `json:"aggregation" api:"required"`
+	EventNames  []string `json:"eventNames" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents bool                                       `json:"allEvents"`
+	Filter    InsightGetResponseDefinitionMetricFilter   `json:"filter"`
+	Property  InsightGetResponseDefinitionMetricProperty `json:"property"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Aggregation respjson.Field
 		EventNames  respjson.Field
 		Name        respjson.Field
+		AllEvents   respjson.Field
 		Filter      respjson.Field
 		Property    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -2580,9 +2604,10 @@ type InsightUpdateResponse struct {
 	ID              string    `json:"id" api:"required" format:"uuid"`
 	CreatedAt       time.Time `json:"createdAt" api:"required" format:"date-time"`
 	CreatedByUserID string    `json:"createdByUserId" api:"required"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition InsightUpdateResponseDefinition `json:"definition" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -2621,17 +2646,20 @@ func (r *InsightUpdateResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 type InsightUpdateResponseDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                                  `json:"interval" api:"required"`
 	Kind     constant.Insight                        `json:"kind" default:"insight"`
 	Metrics  []InsightUpdateResponseDefinitionMetric `json:"metrics" api:"required"`
 	// Any of 1.
 	Version float64                               `json:"version" api:"required"`
 	Filter  InsightUpdateResponseDefinitionFilter `json:"filter"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots bool `json:"includeBots"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Interval    respjson.Field
@@ -2639,6 +2667,7 @@ type InsightUpdateResponseDefinition struct {
 		Metrics     respjson.Field
 		Version     respjson.Field
 		Filter      respjson.Field
+		IncludeBots respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -2655,17 +2684,20 @@ type InsightUpdateResponseDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                        `json:"aggregation" api:"required"`
-	EventNames  []string                                      `json:"eventNames" api:"required"`
-	Name        string                                        `json:"name" api:"required"`
-	Filter      InsightUpdateResponseDefinitionMetricFilter   `json:"filter"`
-	Property    InsightUpdateResponseDefinitionMetricProperty `json:"property"`
+	Aggregation string   `json:"aggregation" api:"required"`
+	EventNames  []string `json:"eventNames" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents bool                                          `json:"allEvents"`
+	Filter    InsightUpdateResponseDefinitionMetricFilter   `json:"filter"`
+	Property  InsightUpdateResponseDefinitionMetricProperty `json:"property"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Aggregation respjson.Field
 		EventNames  respjson.Field
 		Name        respjson.Field
+		AllEvents   respjson.Field
 		Filter      respjson.Field
 		Property    respjson.Field
 		ExtraFields map[string]respjson.Field
@@ -3421,7 +3453,7 @@ type InsightCapabilitiesResponse struct {
 	// Any of "today", "yesterday", "last_7_days", "last_30_days", "last_90_days",
 	// "last_12_months", "week_to_date", "month_to_date", "year_to_date".
 	SupportedDatePresets []string `json:"supportedDatePresets" api:"required"`
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	SupportedIntervals []string `json:"supportedIntervals" api:"required"`
 	// Any of "none", "rolling_average".
 	SupportedSmoothing []string `json:"supportedSmoothing" api:"required"`
@@ -3518,7 +3550,7 @@ type InsightResultsResponseScope struct {
 	Cumulative bool      `json:"cumulative" api:"required"`
 	ExecutedAt time.Time `json:"executedAt" api:"required" format:"date-time"`
 	From       string    `json:"from" api:"required"`
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string `json:"interval" api:"required"`
 	// Any of "unknown".
 	SourceCompleteness string `json:"sourceCompleteness" api:"required"`
@@ -3690,7 +3722,7 @@ type InsightPreviewResponseScope struct {
 	Cumulative bool      `json:"cumulative" api:"required"`
 	ExecutedAt time.Time `json:"executedAt" api:"required" format:"date-time"`
 	From       string    `json:"from" api:"required"`
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string `json:"interval" api:"required"`
 	// Any of "unknown".
 	SourceCompleteness string `json:"sourceCompleteness" api:"required"`
@@ -3837,9 +3869,10 @@ func (r InsightListParams) URLQuery() (v url.Values, err error) {
 }
 
 type InsightNewParams struct {
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition InsightNewParamsDefinition `json:"definition,omitzero" api:"required"`
 	// Display name for the saved Insight.
 	Name string `json:"name" api:"required"`
@@ -3862,16 +3895,19 @@ func (r *InsightNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 //
 // The properties Interval, Kind, Metrics, Version are required.
 type InsightNewParamsDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                             `json:"interval,omitzero" api:"required"`
 	Metrics  []InsightNewParamsDefinitionMetric `json:"metrics,omitzero" api:"required"`
-	Filter   InsightNewParamsDefinitionFilter   `json:"filter,omitzero"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots param.Opt[bool]                  `json:"includeBots,omitzero"`
+	Filter      InsightNewParamsDefinitionFilter `json:"filter,omitzero"`
 	// This field can be elided, and will marshal its zero value as "insight".
 	Kind constant.Insight `json:"kind" default:"insight"`
 	// Any of 1.
@@ -3889,7 +3925,7 @@ func (r *InsightNewParamsDefinition) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[InsightNewParamsDefinition](
-		"interval", "day", "week", "month",
+		"interval", "hour", "day", "week", "month",
 	)
 	apijson.RegisterFieldValidator[InsightNewParamsDefinition](
 		"version", 1,
@@ -3902,11 +3938,13 @@ type InsightNewParamsDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                   `json:"aggregation,omitzero" api:"required"`
-	EventNames  []string                                 `json:"eventNames,omitzero" api:"required"`
-	Name        string                                   `json:"name" api:"required"`
-	Filter      InsightNewParamsDefinitionMetricFilter   `json:"filter,omitzero"`
-	Property    InsightNewParamsDefinitionMetricProperty `json:"property,omitzero"`
+	Aggregation string   `json:"aggregation,omitzero" api:"required"`
+	EventNames  []string `json:"eventNames,omitzero" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents param.Opt[bool]                          `json:"allEvents,omitzero"`
+	Filter    InsightNewParamsDefinitionMetricFilter   `json:"filter,omitzero"`
+	Property  InsightNewParamsDefinitionMetricProperty `json:"property,omitzero"`
 	paramObj
 }
 
@@ -4408,9 +4446,10 @@ type InsightUpdateParams struct {
 	Description param.Opt[string] `json:"description,omitzero"`
 	// Display name for the saved Insight.
 	Name param.Opt[string] `json:"name,omitzero"`
-	// Version 1 Insight definition: one to ten metrics and a day, week, or month
-	// interval. Sum and average require a numeric event property. Filters use the
-	// analytics property catalog.
+	// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+	// month interval (up to 366 buckets). Sum and average require a numeric event
+	// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+	// Filters use the analytics property catalog.
 	Definition InsightUpdateParamsDefinition `json:"definition,omitzero"`
 	// UTC date range using either a preset or inclusive from/to calendar dates, up to
 	// 366 days.
@@ -4429,16 +4468,19 @@ func (r *InsightUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Version 1 Insight definition: one to ten metrics and a day, week, or month
-// interval. Sum and average require a numeric event property. Filters use the
-// analytics property catalog.
+// Version 1 Insight definition: one to ten metrics and an hour, day, week, or
+// month interval (up to 366 buckets). Sum and average require a numeric event
+// property. Metrics select eventNames or allEvents. includeBots defaults to false.
+// Filters use the analytics property catalog.
 //
 // The properties Interval, Kind, Metrics, Version are required.
 type InsightUpdateParamsDefinition struct {
-	// Any of "day", "week", "month".
+	// Any of "hour", "day", "week", "month".
 	Interval string                                `json:"interval,omitzero" api:"required"`
 	Metrics  []InsightUpdateParamsDefinitionMetric `json:"metrics,omitzero" api:"required"`
-	Filter   InsightUpdateParamsDefinitionFilter   `json:"filter,omitzero"`
+	// Include bot events and sessions; test events remain excluded. Defaults to false.
+	IncludeBots param.Opt[bool]                     `json:"includeBots,omitzero"`
+	Filter      InsightUpdateParamsDefinitionFilter `json:"filter,omitzero"`
 	// This field can be elided, and will marshal its zero value as "insight".
 	Kind constant.Insight `json:"kind" default:"insight"`
 	// Any of 1.
@@ -4456,7 +4498,7 @@ func (r *InsightUpdateParamsDefinition) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinition](
-		"interval", "day", "week", "month",
+		"interval", "hour", "day", "week", "month",
 	)
 	apijson.RegisterFieldValidator[InsightUpdateParamsDefinition](
 		"version", 1,
@@ -4469,11 +4511,13 @@ type InsightUpdateParamsDefinitionMetric struct {
 	// UUID when adding a metric; it is not an event or metric name.
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Any of "event_count", "unique_visitors", "sum", "average".
-	Aggregation string                                      `json:"aggregation,omitzero" api:"required"`
-	EventNames  []string                                    `json:"eventNames,omitzero" api:"required"`
-	Name        string                                      `json:"name" api:"required"`
-	Filter      InsightUpdateParamsDefinitionMetricFilter   `json:"filter,omitzero"`
-	Property    InsightUpdateParamsDefinitionMetricProperty `json:"property,omitzero"`
+	Aggregation string   `json:"aggregation,omitzero" api:"required"`
+	EventNames  []string `json:"eventNames,omitzero" api:"required"`
+	Name        string   `json:"name" api:"required"`
+	// Count every event name. Requires an empty eventNames array.
+	AllEvents param.Opt[bool]                             `json:"allEvents,omitzero"`
+	Filter    InsightUpdateParamsDefinitionMetricFilter   `json:"filter,omitzero"`
+	Property  InsightUpdateParamsDefinitionMetricProperty `json:"property,omitzero"`
 	paramObj
 }
 
